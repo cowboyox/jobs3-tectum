@@ -1,0 +1,487 @@
+.pricing_page {
+    padding: 0 7%;
+    .pricing_waves {
+        position: absolute;
+        top: 100px;
+        left: 0;
+        width: 100%;
+        z-index: 0;
+        user-select: none;
+        pointer-events: none;
+        img {
+            width: 100%;
+            opacity: .5;
+        }
+    }
+    & > * {
+        position: relative;
+        z-index: 1;
+    }
+    .pricing_heading {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        h2 {
+            z-index: 1;
+            color: #F5F5F5; 
+            font-size: 100px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 110px;
+            letter-spacing: -2px;
+            text-transform: capitalize;
+            text-align: center;
+            span {
+                color: var(--main-color);
+                display: block;
+                font: inherit;
+                text-shadow: 0px 34px 90px rgba(0, 0, 0, 0.80);
+            }
+        }
+        &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 300px;
+            border-radius: 50%;
+            background: linear-gradient(103deg, rgba(242, 130, 8, 0.65) -22.72%, rgba(232, 228, 216, 0.80) 116.37%);
+            filter: blur(200px);
+            z-index: 0;
+        }
+    }
+    .pricing_tables {
+        display: flex;
+        align-items: stretch;
+        gap: 5px;
+        .pricing_table {
+            border-radius: 24px;
+            background: #000;
+            box-shadow: 0px 0px 16px 0px #FFF inset;
+            padding: 40px 25px;
+            width: 100%;
+            height: 100%;
+            .table_name {
+                color: #F5F5F5; 
+                font-size: 20px; 
+                font-weight: 600; 
+            }
+            h3 {
+                color: var(--main-color); 
+                font-size: 36px;
+                font-style: normal;
+                font-weight: 600; 
+                letter-spacing: -0.5px;
+                span {
+                    font-size: .7em;
+                    font-weight: 400;
+                }
+            }
+            & > p {
+                color: #F5F5F5; 
+                opacity: .6;
+                line-height: 1.5em;
+                font-size: 16px; 
+                font-weight: 400; 
+                margin: 22px 0;
+            }
+            .features_list {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                .single_feature {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 10px;
+                    img {
+                        width: 20px;
+                    }
+                    span { 
+                        font-family: var(--font-blinker);
+                        color: #F5F5F5; 
+                        opacity: .6;
+                        line-height: 1.5em;
+                        font-size: 16px; 
+                        font-weight: 400; 
+                    }
+                }
+            }
+            .table_button {
+                padding: 14px;
+                width: 100%; 
+                border-radius: 50px;
+                border: 2.7px solid var(--main-color);
+                text-align: center;
+                color: var(--main-color);
+                font-size: 16px;
+                font-weight: 600;
+                letter-spacing: 0.43px;
+                transition: .3s;
+                margin-top: 30px;
+                cursor: pointer;
+                &:hover {
+                    background: var(--main-color);
+                    color: white;
+                } 
+            }
+        }
+    }
+    .pricing_info {
+        margin: 70px 0;
+        p {
+            color: #F5F5F5; 
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.8em;
+        }
+    }
+    .packages_comparison {
+        margin-top: 100px;
+        width: 100%;
+        table {
+            width: 100%;
+            border: none;
+            thead { 
+                tr {
+                    td {
+                        padding-bottom: 30px;
+                        color: #F5F5F5;
+                        text-align: center; 
+                        font-size: 20px; 
+                        font-weight: 500; 
+                    }
+                }
+            }
+            tbody {
+                tr {  
+                    &:nth-child(2n) {
+                        background: var(--main-color);
+                        td {
+                            color: black;
+                            opacity: 1;
+                        }
+                    }
+                    td { 
+                        text-align: center;
+                        height: 50px;
+                        vertical-align: middle;
+                        color: #F5F5F5;
+                        text-align: center;
+                        font-size: 18px;
+                        opacity: 0.6;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+    }
+    .pricing_accordion {
+        margin-top: 50px;
+        .single_accordion {
+            border-bottom: 1px solid white;
+            .accordion_heading {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 20px 0;
+                cursor: pointer;
+                span {
+                    color: #F5F5F5; 
+                    font-size: 20px; 
+                    font-weight: 600; 
+                    user-select: none;
+                }
+                img {
+                    width: 25px;
+                    transition: .3s;
+                }
+            }
+            .accordion_content {
+                border-top: 1px solid rgba(255, 255, 255, 0.27);
+                color: white;
+                transition: .3s;
+                transform: translateY(0px);
+                padding: 0;
+                opacity: 0;
+                font-size: 0;
+            }
+            &.open {
+                .accordion_heading {
+                    img {
+                        transform: rotate(180deg);
+                    }
+                }
+                .accordion_content {
+                    transform: translateY(0px);
+                    opacity: 1;
+                    padding: 20px 0;
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+    .have_question {
+        margin-top: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        h2 {
+            color: #F5F5F5;
+            text-align: center; 
+            font-size: 48px;
+            font-style: normal;
+            font-weight: 600; 
+            letter-spacing: -1px;
+        }
+        & > p {
+            color: #F5F5F5;
+            text-align: center; 
+            font-size: 16px; 
+            font-weight: 600; 
+        }
+        & > strong {
+            color: var(--main-color);
+            text-align: center; 
+            font-size: 16px; 
+            font-weight: 600; 
+            text-decoration-line: underline;
+        }
+        .faq_section {
+            width: 100%;
+            margin-top: 20px;
+            h3 {
+                color: var(--main-color);
+                text-align: center; 
+                font-size: 30px;
+                font-style: normal;
+                font-weight: 600; 
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+            }
+            .single_accordion {
+                border-bottom: 1px solid white;
+                width: 100%;
+                .accordion_heading {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 20px 0;
+                    cursor: pointer;
+                    span {
+                        color: #F5F5F5; 
+                        font-size: 20px; 
+                        font-weight: 600; 
+                        user-select: none;
+                    }
+                    img {
+                        width: 25px;
+                        transition: .3s;
+                    }
+                }
+                .accordion_content {
+                    border-top: 1px solid rgba(255, 255, 255, 0.27);
+                    color: white;
+                    transition: .3s;
+                    transform: translateY(0px);
+                    padding: 0;
+                    opacity: 0;
+                    font-size: 0;
+                }
+                &.open {
+                    .accordion_heading {
+                        img {
+                            transform: rotate(180deg);
+                        }
+                    }
+                    .accordion_content {
+                        transform: translateY(-0);
+                        opacity: 1;
+                        padding: 20px 0;
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+        .show_more_btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--main-color); 
+            font-size: 20px; 
+            font-weight: 600; 
+            user-select: none;
+            cursor: pointer;
+            img {
+                width: 15px;
+            }
+        }
+    }
+}
+@media (max-width: 768px) {
+    .pricing_page {
+        padding: 0 5%;
+        padding-top: 100px;
+        .pricing_waves {
+            position: absolute;
+            top: 100px;
+            left: 0;
+            width: 100%;
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+            img {
+                width: 100%;
+                opacity: .5;
+            }
+        }
+        & > * {
+            position: relative;
+            z-index: 1;
+        }
+        .pricing_heading { 
+            min-height: unset;
+            h2 { 
+                font-size: 27px;
+                line-height: 1.1em; 
+                margin-bottom: 30px;
+                letter-spacing: 0;
+            }
+            &::after { 
+                filter: blur(110px); 
+            }
+        }
+        .pricing_tables {
+            flex-direction: column;
+            .pricing_table {
+                border-radius: 5px;
+                padding: 25px;
+                box-shadow: 0px 0px 3.556px 0px #FFF inset;
+                .table_name {
+                    font-size: 20px;
+                }
+                h3 {
+                    font-size: 30px; 
+                }
+                & > p {
+                    display: none;
+                }
+                .features_list {
+                    margin-top: 10px;
+                    gap: 5px;
+                    .single_feature {
+                        gap: 5px;
+                        img {
+                            width: 15px;
+                        }
+                        span {
+                            font-size: 9px;
+                        }
+                    }
+                }
+                .table_button {
+                    margin-top: 10px;
+                    padding: 8px; 
+                    border: 1px solid var(--main-color);
+                    font-weight: 400;
+                    font-size: 14px;
+                }
+            }
+        }
+        .pricing_info {
+            margin: 20px 0;
+            p { 
+                font-size: 11px; 
+            }
+        }
+        .packages_comparison {
+            margin-top: 40px; 
+            table { 
+                thead { 
+                    tr {
+                        td {
+                            font-size: 12px; 
+                            padding-bottom: 10px; 
+                        }
+                    }
+                }
+                tbody {
+                    tr {
+                        td {  
+                            height: 40px;
+                            font-size: 11px;
+                            font-weight: 400;
+                        }
+                    }
+                }
+            }
+        }
+        .pricing_accordion {
+            margin-top: 20px;
+            .single_accordion { 
+                .accordion_heading { 
+                    padding: 10px 0;
+                    span {
+                        font-size: 14px; 
+                        font-weight: 400;
+                    }
+                    img {
+                        width: 15px;
+                    }
+                }
+                &.open { 
+                    .accordion_content { 
+                        padding: 15px 0;
+                        font-size: 11px;
+                    }
+                }
+            }
+        }
+        .have_question {
+            margin-top: 40px;
+            gap: 5px;
+            h2 {
+                font-size: 28px;
+            }
+            & > p { 
+                font-size: 13px; 
+            }
+            & > strong { 
+                font-size: 14px; 
+            }
+            .faq_section {  
+                h3 { 
+                    font-size: 20px; 
+                }
+                .single_accordion { 
+                    .accordion_heading { 
+                        padding: 10px 0;
+                        cursor: pointer;
+                        span { 
+                            font-size: 12px; 
+                            font-weight: 400;
+                        }
+                        img {
+                            width: 15px; 
+                        }
+                    }
+                    &.open { 
+                        .accordion_content { 
+                            padding: 15px 0;
+                            font-size: 11px;
+                        }
+                    }
+                }
+            }
+            .show_more_btn {
+                margin-top: 20px;
+            }
+        }
+    }
+}

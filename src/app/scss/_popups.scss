@@ -1,0 +1,619 @@
+/*=====================================|
+|               Popups                 |
+|=====================================*/
+.popup_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba($color: #000000, $alpha: .8);
+    z-index: 30;
+    @include toCenter();
+    .popup {
+        background: black;
+        border-radius: 15px;
+        width: 456px;
+        max-width: calc(100% - 20px);
+        border: 1px solid #242424;
+        padding: 40px 0;
+        animation: fadeUp .5s;
+        @keyframes fadeUp {
+            from {
+                transform: translateY(30px);
+            } to {
+                transform: translateY(0);
+            }
+        }
+        &.welcome_popup {
+            border: 2px solid var(--main-color);
+            border-radius: 20px;
+            .popup_content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+                h3 {
+                    color: #FAFBFC;
+                    text-align: center; 
+                    font-size: 45px; 
+                    max-width: 300px;
+                    font-weight: 400;
+                    line-height: 1em; 
+                    span {
+                        color: var(--main-color);
+                        font: inherit;
+                    }
+                }
+                .dashboard_options {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                    gap: 15px;
+                    .sl_button {
+                        padding: 15px;
+                        border-radius: 10px;
+                        color: #FAFBFC;
+                        text-align: center; 
+                        font-size: 16px; 
+                        font-weight: 500;
+                        line-height: 1.3em; 
+                        letter-spacing: 0.5px;
+                        text-transform: uppercase;
+                        cursor: pointer; 
+                        transition: .3s;
+                        &:hover {
+                            background: white !important;
+                            border-color: white !important;
+                            color: black !important;
+                        }
+                        &.sign_up {
+                            width: calc(50% - 7.5px);
+                            border: 1px solid var(--main-color);
+                        }
+                        &.sign_in {
+                            width: calc(50% - 7.5px);
+                            background: var(--main-color);
+                            border: 1px solid var(--main-color);
+                        }
+                        &.continue_wallet {
+                            width: 100%;
+                            background: #353535;
+                            border: 1px solid #353535;
+                        }
+                    }
+                }
+            }
+        }
+        .popup_content {
+            padding: 0 50px; 
+            .top_heading {
+                display: flex;
+                justify-content: space-between;
+                .left_side {
+                    width: 80%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 10px;
+                    h2 {
+                        all: unset;
+                        color: #FAFBFC !important; 
+                        font-size: 30px; 
+                        font-weight: 400;  
+                    }
+                    p {
+                        color: #AAA7B2; 
+                        font-size: 14px; 
+                        font-weight: 400;
+                        line-height: 2em; 
+                        letter-spacing: 0.1px;
+                    }
+                }
+                .right_side {
+                    display: flex;
+                    align-items: flex-start;
+                    justify-content: flex-end;
+                    padding-top: 20px;
+                    span {
+                        color: var(--main-color); 
+                        font-size: 14px; 
+                        font-weight: 600;
+                        line-height: 1.28emm; 
+                        letter-spacing: 0.4px;
+                        text-transform: uppercase;
+                        display: block;
+                    }
+                }
+            }
+            .form_container {
+                margin-top: 30px;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                .field_container {
+                    border: 1px solid #605F76;
+                    height: 48px;
+                    border-radius: 10px;
+                    position: relative;
+                    padding: 6px 20px;
+                    transition: .15s;
+                    .error_message {
+                        display: none;
+                        position: absolute;
+                        color: #EF3F26;
+                        top: calc(100% + 10px);
+                        left: 0;
+                        font-size: 10px;
+                    }
+                    &.field_error {
+                        border-color: #EF3F26;
+                        margin-bottom: 25px;
+                        label {
+                            color: #EF3F26;
+                        }
+                        .error_message {
+                            display: block;
+                        }
+                    }
+                    label {
+                        position: absolute;
+                        left: 20px; /* Hey Dev: You can change this to fit the field container padding */
+                        top: 50%;
+                        transform: translateY(-50%);
+                        color: #AAA7B2; 
+                        font-size: 16px; 
+                        font-weight: 400;
+                        line-height: 1.5em;
+                        transition: .15s;
+                        pointer-events: none;
+                    }
+                    input {
+                        width: 100%;
+                        height: 100%;
+                        background: transparent;
+                        outline: none;
+                        color: white;
+                        border: 0;
+                        padding-top: 10px;
+                        color: #AAA7B2;
+                    }
+                    input:focus + label,
+                    input.not_empty + label {
+                        transform: unset;
+                        top: 5px;
+                        font-size: 10px;
+                        opacity: .7;
+                    }
+                }
+                .acceptance {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    margin: 10px 0;
+                    input[type = checkbox] {
+                        accent-color: var(--main-color);
+                        height:20px;
+                        width: 20px;
+                    }
+                    label {
+                        color: #AAA7B2; 
+                        font-size: 12px; 
+                        font-weight: 400; 
+                        cursor: pointer;
+                    }
+                }
+                button.submit_form {
+                    height: 48px;
+                    border-radius: 10px;
+                    background: var(--main-color);
+                    border: 0;
+                    color: #FAFBFC;   
+                    font-size: 14px; 
+                    font-weight: 600;
+                    line-height: 1.3em;
+                    letter-spacing: 0.4px; 
+                    cursor: pointer;
+                }
+                button.wallet_continue {
+                    height: 48px;
+                    border-radius: 10px;
+                    background: #353535;
+                    border: 0;
+                    color: #FAFBFC;   
+                    font-size: 14px; 
+                    font-weight: 600;
+                    line-height: 1.3em;
+                    letter-spacing: 0.4px; 
+                    cursor: pointer;
+                }
+            }
+        }
+
+        // Sign In Popup Unique Properties
+        &.sign_in {
+            .forgot_password {
+                color: var(--main-color); 
+                font-size: 14px; 
+                font-weight: 600;
+                line-height: 1.28em;
+                letter-spacing: 0.4px;
+                text-transform: uppercase;
+                cursor: pointer;
+            } 
+            .divider {
+                position: relative;
+                border-bottom: 1px solid #605F76;
+                margin: 25px 0;
+                span {
+                    position: absolute;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    left: 50%;
+                    background: black;
+                    color: #AAA7B2; 
+                    font-size: 14px; 
+                    font-weight: 400; 
+                    padding: 0 10px;
+                }
+            } 
+            .login_options {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                .option_login {
+                    border: 1px solid #605F76;
+                    padding: 6px 12px;
+                    border-radius: 30px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px; 
+                    cursor: pointer;
+                    transition: .2s;
+                    svg {
+                        height: 30px;
+                        width: 30px;
+                        path { 
+                            transition: .2s;
+                        }
+                    }
+                    &.facebook {
+                        svg path {
+                            stroke: var(--main-color);
+                        }
+                        &:hover {
+                            background: var(--main-color);
+                            svg path {
+                                stroke: white;
+                            }
+                            span {
+                                color: white;
+                            }
+                        }
+                    }
+                    &.twitter {
+                        svg path {
+                            stroke: #fff;
+                        }
+                        &:hover {
+                            background: #fff;
+                            svg path {
+                                stroke: black;
+                            }
+                            span {
+                                color: black;
+                            }
+                        }
+                    }
+                    span {
+                        color: #AAA7B2; 
+                        font-size: 15px; 
+                        font-weight: 400;
+                        line-height: 1.5em;
+                        transition: .2s;
+                    }
+                }
+            }
+        }
+
+        // Modern Alerts
+        &.modern_alert {
+            .popup_content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                svg {
+                    width: 52px;
+                    height: 52px;
+                }
+                h2 {
+                    color: #FAFBFC; 
+                    font-size: 40px; 
+                    font-weight: 400;
+                    line-height: 1em;
+                }
+                p {
+                    color: #AAA7B2;
+                    text-align: center; 
+                    font-size: 15px; 
+                    font-weight: 400;
+                    line-height: 2em;
+                    letter-spacing: 0.1px;
+                }
+                .buttons_con {
+                    display: flex;
+                    justify-content: center;
+                    width: 100%;
+                    gap: 20px;
+                    .single_btn {
+                        width: 50%;
+                        height: 48px;
+                        border: 1px solid var(--main-color);
+                        border-radius: 10px;
+                        color: #FAFBFC; 
+                        @include toCenter();
+                        font-size: 14px; 
+                        font-weight: 600;
+                        line-height: 1.4em;
+                        letter-spacing: 0.4px;
+                        text-transform: uppercase;
+                        transition: .3s;
+                        cursor: pointer;
+                        &:nth-child(2),
+                        &:hover {
+                            color: white;
+                            background: var(--main-color);
+                        } 
+                    }
+                }
+                .email_form {
+                    height: 48px;
+                    position: relative;
+                    width: 100%; 
+                    border-top-right-radius: 10px;
+                    border-bottom-right-radius: 10px;
+                    overflow: hidden;
+                    input {
+                        height: 100%;
+                        width: 100%;
+                        padding-left: 20px;
+                        background: transparent;
+                        border: 1px solid var(--main-color);
+                        border-top-left-radius: 10px;
+                        border-bottom-left-radius: 10px;
+                        outline: none;
+                        color: white;
+                    }
+                    button {
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                        height: 100%;
+                        width: 25%;
+                        cursor: pointer;
+                        background: var(--main-color);
+                        border: 0;
+                        color: white;
+                        text-transform: uppercase;
+                    }
+                }
+            }
+        }
+        &.small_title { 
+            .popup_content {
+                h2 {
+                    font-size: 30px;
+                }
+            }
+        }
+    }
+}
+@media (max-width: 768px) {
+    .popup_overlay {
+        padding: 20px 0;
+        .popup { 
+            padding: 20px 0;
+            .popup_content {
+                padding: 0 15px;
+                .top_heading {
+                    .left_side {
+                        h2 {
+                            font-size: 20px;
+                        }
+                        p {
+                            font-size: 12px; 
+                        }
+                    }
+                    .right_side {
+                        padding-top: 10px;
+                        span {
+                            font-size: 12px; 
+                        }
+                    }
+                }
+                .form_container {
+                    margin-top: 10px;
+                    gap: 8px;
+                    .field_container {
+                        height: 40px;  
+                        .error_message {
+                            font-size: 9px;
+                        }
+                        label {
+                            font-size: 13px;
+                        }
+                        input {
+                            font-size: 12px;
+                        }
+                        input:focus + label,
+                        input.not_empty + label {
+                            font-size: 9px;
+                        }
+                    }
+                    .acceptance {
+                        input[type = checkbox] {
+                            height:12px;
+                            width: 12px;
+                        }
+                        label {
+                            font-size: 10px;
+                        }
+                    }
+                    button.submit_form {
+                        height: 35px;
+                        font-size: 13px;
+                    }
+                }
+            }
+    
+            // Sign In Popup Unique Properties
+            &.sign_in {
+                .forgot_password {
+                    font-size: 11px;
+                    margin-top: 10px;
+                } 
+                .divider {
+                    span {
+                        font-size: 12px;
+                    }
+                } 
+                .login_options {
+                    gap: 10px;
+                    .option_login {
+                        span { 
+                            font-size: 12px;  
+                        }
+                    }
+                }
+            }
+    
+            // Modern Alerts
+            &.modern_alert { 
+                .popup_content {
+                    gap: 12px;
+                    svg {
+                        width:  40px;
+                        height: 40px;
+                    }
+                    h2 {
+                        font-size: 25px;
+                    }
+                    p {
+                        font-size: 12px;
+                        line-height: 1.3em;
+                    }
+                    .buttons_con {
+                        gap: 10px;
+                        .single_btn {
+                            height: 40px;
+                            font-size: 12px; 
+                            line-height: 1.4em;
+                        }
+                    }
+                    .email_form { 
+                        height: 40px; 
+                    }
+                }
+            }
+            &.small_title { 
+                .popup_content {
+                    h2 {
+                        font-size: 20px; 
+                    }
+                }
+            }
+        }
+    }
+}
+
+/*==========================================|
+|              Messages Popups              |
+|==========================================*/
+.message_popup {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    width: 300px;
+    max-width: 90%;
+    z-index: 10000;
+    background: black;
+    border: 2px solid var(--main-color);
+    padding: {
+        left: 25px;
+        right: 25px;
+        top: 5px;
+        bottom: 20px;
+    };
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    &.success_popup {
+        svg { 
+            path {
+                fill: var(--main-color);
+            }
+        }
+    }
+    &.error_message {
+        svg { 
+            path {
+                fill: #C292EB;
+            }
+        }
+    }
+    svg {
+        width: 39px;
+        margin-bottom: -10px; 
+    }
+    h3 {
+        color: #FAFBFC;
+        text-align: center;  
+        font-size: 25px; 
+        font-weight: 400;
+        line-height: 1em; 
+        span {
+            color: var(--main-color);
+            font: inherit;
+        }
+    }
+    p {
+        color: #AAA7B2;
+        text-align: center; 
+        font-size: 16px; 
+        font-weight: 400;
+        line-height: 1.25em;
+        letter-spacing: 0.095px;
+    }
+}
+@media (max-width: 768px) {
+    .message_popup { 
+        top: 60px;
+        right: unset;
+        left: 50%;
+        transform: translateX(-50%); 
+        padding: {
+            left: 15px;
+            right: 15px;
+            top: 0px;
+            bottom: 10px;
+        };
+        svg {
+            width: 30px;
+            margin-bottom: -15px;
+        } 
+        h3 { 
+            font-size: 20px;  
+        }
+        p {
+            color: #AAA7B2;
+            text-align: center;
+            font-size: 14px; 
+            font-weight: 400;
+            line-height: 1.25em;
+            letter-spacing: 0.095px;
+        }
+    }
+}

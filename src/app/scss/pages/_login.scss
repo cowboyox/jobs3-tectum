@@ -1,0 +1,28 @@
+.login_page {
+    max-width: 1100px;
+    padding: 0 20px;
+    padding-top: 140px;
+    margin: 0 auto;
+    display: flex;
+    gap: 40px;
+    .popup_overlay {
+        all: unset;
+        width: 100%;
+        .popup {
+            width: 100%;
+            max-width: unset;
+            .popup_content {
+                .top_heading {
+                    .right_side {
+                        display: none;
+                    }
+                } 
+            }
+        }
+    }
+}
+@media (max-width: 768px) {
+    .login_page {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,129 @@
+.job_apply { 
+    margin-top: 20px;
+    max-width: 660px;
+    width: 100%;
+    h1 {
+        color: #F5F5F5; 
+        font-size: 40px; 
+        font-weight: 600; 
+        margin-bottom: 40px;
+        span {
+            font: inherit;
+            color: var(--main-color);
+        }
+    }
+    form {
+        padding: 30px;
+        border-radius: 23.575px;
+        border: 0.681px solid var(--main-color);
+        background: rgba(20, 27, 34, 0.70);
+        .fields_top {
+            display: flex;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            .field_container {
+                width: calc(50% - 10px);
+                display: flex;
+                flex-direction: column; 
+                gap: 7px;
+                margin-bottom: 20px;
+                label {
+                    color: var(--main-color); 
+                    font-size: 25px; 
+                    font-weight: 400; 
+                }
+                input {
+                    width: 100%;
+                    border: 1px solid var(--main-color);
+                    height: 40px;
+                    border-radius: 7px; 
+                    background: transparent;
+                    color: white;
+                    padding: 0 20px;
+                }
+                .inputDragAndDrop {
+                    width: 100%;
+                    .dropzone {
+                        padding: 10px;
+                        border-radius: 5px;
+                        border: 1px dashed var(--main-color);
+                        color: #F5F5F5;
+                        font-size: 15px;
+                        font-weight: 400;
+                        cursor: pointer;
+                        span {
+                            color: var(--main-color);
+                        }
+                    }
+                    .uploaded_files {
+                        .single_file {
+                            margin-top: 10px;
+                            color: white;
+                        }
+                    }
+                }
+            }
+        }
+        .write_message {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            label {
+                color: var(--main-color); 
+                font-size: 16px; 
+                font-weight: 400; 
+            }
+            textarea {
+                border-radius: 7px;
+                border: 1.6px solid var(--main-color);
+                height: 170px;
+                padding: 15px;
+                background: #0E1318;
+                color: white;
+                resize: none; 
+            }
+            button {
+                border-radius: 60px;
+                border: 0.7px solid var(--main-color);
+                background: var(--main-color);
+                height: 45px;
+                font-weight: 600;
+                font-size: 17px;
+                color: white;
+                cursor: pointer;
+                transition: .3s;
+                &:hover {
+                    color: black;
+                    border-color: white;
+                    background: white;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .job_apply { 
+        margin-top: 20px; 
+        h1 { 
+            font-size: 27px; 
+            margin-bottom: 30px; 
+        }
+        form {
+            padding: 0;
+            border-radius: 0;
+            border: 0 solid var(--main-color);
+            background: transparent;
+            .fields_top {
+                flex-direction: column;
+                .field_container {
+                    width: 100%;
+                    label {
+                        font-size: 18px;
+                    } 
+                }
+            }
+        }
+    }
+}

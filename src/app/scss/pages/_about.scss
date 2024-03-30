@@ -1,0 +1,497 @@
+.about_template {
+    position: relative; 
+    overflow: hidden;
+    .waves_about { 
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        z-index: 0;
+        opacity: .3;
+        pointer-events: none;
+    }
+}
+.about_page {
+    padding: 0 7%;
+    position: unset;
+    .heading_section {
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 300px;
+            border-radius: 50%;
+            background: linear-gradient(103deg, rgba(242, 130, 8, 0.65) -22.72%, rgba(232, 228, 216, 0.80) 116.37%);
+            filter: blur(200px);
+            z-index: 0;
+        }
+        h2 {
+            color: #F5F5F5;
+            text-align: center;
+            text-shadow: 0px 60.444px 160px rgba(0, 0, 0, 0.80); 
+            font-size: 100px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 158.222px; 
+            letter-spacing: -2.916px;
+            text-transform: capitalize;
+            position: relative;
+            z-index: 1;
+        }
+    }
+    .about_text_container {
+        display: flex;
+        flex-direction: column;
+        gap: 300px;
+        min-height: 260vh;
+        justify-content: space-between;
+        .waves_2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 0;
+        }
+        .waves_mobile_top {
+            display: none;
+        }
+        .waves_mobile_bottom {
+            display: none;
+        }
+        .about_txt {
+            max-width: 40%;
+            z-index: 1;
+            &:nth-child(2n) {
+                margin-left: auto;
+            }
+            h3 {
+                color: #F5F5F5; 
+                font-size: 72px; 
+                font-weight: 400; 
+                letter-spacing: -1.44px; 
+                span {
+                    color: var(--main-color);
+                }
+            }
+            p {
+                color: #D8D8D8; 
+                font-size: 19px; 
+                font-weight: 400; 
+                line-height: 1.6em;
+                text-transform: capitalize;
+            }
+        }
+    }
+    .jobs_section {
+        padding: {
+            top: 180px;
+            left: 7%;
+            right: 7%;
+            bottom: 80px;
+        }
+        h2 {
+            color: #F5F5F5;
+            text-align: center; 
+            font-size: 40px; 
+            font-weight: 400;
+            line-height: 40px;  
+            letter-spacing: -0.8px;
+            text-transform: capitalize;
+            span {
+                color: var(--main-color);
+            }
+        }
+        p {
+            color: #F5F5F5;
+            text-align: center; 
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 28px; 
+            text-transform: capitalize;
+        }
+        .jobs_navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            span {
+                color: #F5F5F5;
+                text-align: center; 
+                font-size: 18px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 28px; 
+                position: relative;
+                cursor: pointer;
+                &.active::after {
+                    width: 100%;
+                }
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: calc(100% + 10px);
+                    left:0;
+                    width: 0;
+                    transition: .3s;
+                    height: 1px;
+                    background: var(--main-color);
+                }
+            }
+        }
+        .job_content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 40px;
+            margin-top: 40px;
+            .job_card {
+                border: 2px solid var(--main-color);
+                padding: 22px 32px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                .job_tags {
+                    display: flex;
+                    gap: 15px;
+                    width: 100%;
+                    .sl_job_tag {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 5px;
+                        border: 1px solid #F5F5F5;
+                        color: white;
+                        width: 100%;
+                        padding: 14px 0;
+                        text-transform: capitalize;
+                    }
+                }
+                h3.job_title {
+                    color: #F5F5F5;
+                    text-align: center; 
+                    font-size: 33px; 
+                    font-weight: 400;
+                    line-height: normal;
+                    text-transform: capitalize;
+                    margin-top: 30px;
+                }
+                p {
+                    color: #F5F5F5;
+                    text-align: center; 
+                    font-size: 22px; 
+                    font-weight: 400;
+                    line-height: normal;
+                    text-transform: capitalize;
+                    margin-bottom: 30px;
+                }
+                .card_footer {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    width: 100%;
+                    a {
+                        color: white;
+                        border-radius: 7.5px;
+                        border: 2px solid #353535;
+                        width: 138px;
+                        height: 60px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        &:hover {
+                            background: #353535; 
+                        }
+                    }
+                    .people_applied {
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        color: white;
+                        svg {
+                            width: 25px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .sl_companies {
+        padding: {
+            top: 200px;
+            bottom: 50px;
+            left: 7%;
+            right: 7%;
+        };
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 48px;
+        position: relative;
+        &::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            height: 60px;
+            width: 70%;
+            border-radius: 50%;
+            background: rgba(229, 209, 181, 0.70);
+            filter: blur(150px);
+        }
+        h2 {
+            color: white;
+            font-family: var(--font-tektur);
+            font-size: 50px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 40px;
+            letter-spacing: -0.8px;
+            text-transform: capitalize;
+            text-align: center;
+            span {
+                color: var(--main-color);
+            }
+        }
+        .companies_logos {
+            display: flex;
+            justify-content: center;
+            max-width: 80%;
+            width: 1100px;
+            justify-content: space-around;
+        }
+    }
+    .rich_text {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 70px 0;
+        gap: 35px;
+        margin-top: 150px;
+        position: relative;
+        z-index: 10;
+        .text_side {
+            padding-right: 7%;
+            max-width: 650px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-end;
+            width: 100%;
+            h2 {
+                color: white;
+                font-family: var(--font-tektur);
+                font-size: 40px;
+                font-style: normal;
+                text-align: right;
+                font-weight: 500;
+                line-height: 40px;
+                letter-spacing: -0.8px;
+                text-transform: capitalize;
+                span {
+                    color: var(--main-color);
+                }
+            }
+            p {
+                color: #F5F5F5;
+                text-align: right;
+                font-size: 18px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 30px;
+                text-transform: capitalize;
+            }
+        } 
+    } 
+}
+@media (max-width: 768px) {
+    .about_page {
+        padding: 0; 
+        .heading_section {
+            min-height: 200px; 
+            &::after {
+                height: 120px; 
+                top: 90px;
+                filter: blur(60px);
+            }
+            h2 {
+                font-size: 50px;
+                text-shadow: 0px 7.556px 20px rgba(0, 0, 0, 0.80); 
+            } 
+        }
+        .about_text_container {
+            position: relative;
+            gap: unset;
+            min-height: unset;
+            justify-content: space-between;
+            .waves_2 {
+                display: none;
+            }
+            .waves_mobile_top {
+                width: 100%;
+                margin-top: -90px;
+                margin-bottom: -100px;
+                display: block;
+            }
+            .waves_mobile_bottom {
+                width: 100%;
+                margin-top: -70px;
+                display: block;
+            }
+            .about_txt {
+                max-width: 100%; 
+                padding: 0 5%; 
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                &:nth-child(5) {
+                    align-items: flex-start;
+                    h3, p {
+                        text-align: left;
+                    }
+                }
+                h3 { 
+                    font-size: 23px;
+                    text-align: center;
+                    span {
+                        font: inherit;
+                    }
+                }
+                p {
+                    font-size: 13px;
+                    line-height: 1.3em;
+                    text-align: center;
+                    max-width: 80%;
+                }
+            }
+        }
+        .jobs_section {
+            padding: {
+                top: 40px;
+                left: 5%;
+                right: 5%;
+                bottom: 30px;
+            }
+            h2 {
+                font-size: 30px; 
+                line-height: 1.1em; 
+                span {
+                    font: inherit;
+                }
+            }
+            p { 
+                font-size: 13px;
+                line-height: 1.1em; 
+                max-width: 80%;
+                margin: 0 auto;
+            }
+            .jobs_navigation {
+                flex-wrap: wrap;
+                gap: 5px; 
+                margin-top: 20px;
+                span { 
+                    font-size: 12px; 
+                    &.active::after {
+                        width: 100%;
+                    }
+                    &::after { 
+                        top: calc(100% + 5px); 
+                    }
+                }
+            }
+            .job_content { 
+                grid-template-columns: repeat(1, 1fr);
+                grid-gap: 20px;
+                margin-top: 20px;
+                .job_card {
+                    border: 1px solid var(--main-color);
+                    padding: 15px; 
+                    .job_tags { 
+                        gap: 10px; 
+                        .sl_job_tag { 
+                            width: 100%;
+                            padding: 7px 0; 
+                        }
+                    }
+                    h3.job_title { 
+                        font-size: 22px;  
+                        margin-top: 25px;
+                    }
+                    p { 
+                        font-size: 16px;  
+                        margin-bottom: 25px;
+                        margin-left: 0;
+                        margin-top: 5px;
+                    }
+                    .card_footer { 
+                        a { 
+                            width: 100px;
+                            height: 40px; 
+                            &:hover {
+                                background: #353535; 
+                            }
+                        } 
+                    }
+                }
+            }
+        }
+        .sl_companies {
+            padding: {
+                top: 30px;
+                bottom: 50px;
+                left: 5%;
+                right: 5%;
+            }; 
+            gap: 20px; 
+            &::after { 
+                height: 60px; 
+                filter: blur(60px);
+            }
+            h2 {
+                font-size: 22px;
+                line-height: 1.1em;
+                letter-spacing: 0; 
+                span {
+                    font: inherit;
+                }
+            }
+            .companies_logos {
+                img {
+                    width: calc(25% - 10px);
+                }
+            }
+        }
+        .rich_text {
+            padding: 30px 0;
+            gap: 20px;
+            margin-top: 0px;
+            .text_side {
+                padding: 0 5%;
+                gap: 20px;
+                h2 {
+                    font-size: 30px;
+                    text-align: center;
+                    line-height: 1.1em;
+                    span {
+                        font: inherit;
+                    }
+                }
+                p { 
+                    text-align: center;
+                    font-size: 15px;
+                    line-height: 1.1em;
+                }
+                .cta_button {
+                    margin: 0 auto;
+                }
+            } 
+        } 
+    }
+}

@@ -1,0 +1,43 @@
+/*-------------------------------------|
+|                FONTS                 |
+|-------------------------------------*/
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	text-decoration: none;
+	font-family: var(--font-blinker);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-tektur);
+}
+
+/*-------------------------------------|
+|                Root                  |
+|-------------------------------------*/
+
+:root {
+	--main-color: #dc4f14;
+}
+
+body {
+	background: black;
+	overflow-x: hidden;
+}
+
+@mixin toCenter() {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.main_layout {
+	overflow-x: hidden;
+}

@@ -1,0 +1,51 @@
+.dashboard_header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    width: 100%;
+    .main_logo {
+        display: none; 
+    }
+    .user_img {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+    }
+    a {
+        height: 42px;
+        width: 42px;
+        @include toCenter();
+        border-radius: 14.296px;
+        background: rgba(20, 27, 34, 0.70);
+        transition: .15s;
+        &:hover {
+            background: rgba(20, 27, 34, 1)
+        }
+    }
+}
+@media (max-width: 768px) {
+    .dashboard_header {
+        margin-bottom: 30px;
+        padding-top: 10px;
+        justify-content: center;
+        .main_logo {
+            display: block;
+            height: 30px;
+        }
+        .user_img {
+            width: 30px;
+            height: 30px; 
+        }
+        a {
+            height: 30px;
+            width: 30px;
+            svg {
+                height: 60%;
+                width: 60%;
+            }
+        }
+    }
+}
