@@ -23,7 +23,8 @@ const JobsList = () => {
 	const searchParams = useSearchParams();
 
 	const search = searchParams.get("search");
-	const [keywords, setKeywords] = useState(search);
+	const [keywords, setKeywords] = useState();
+	const [searchWord, setSearchWord] = useState(search);
 
 	const [selectedSectors, setSelectedSectors] = useState("");
 	const [selectedJobStyle, setSelectedJobStyle] = useState("");
@@ -39,7 +40,7 @@ const JobsList = () => {
 
 	const searchJobs = (e) => {
 		e.preventDefault();
-		fetchJobs(keywords);
+		setSearchWord(keywords);
 	};
 
 	// Get Jobs
@@ -96,9 +97,17 @@ const JobsList = () => {
 				selectedExperiences != ""
 					? `experience-level=${selectedExperiences}&`
 					: ""
+			}${
+				searchWord != "" ? `search=${searchWord}&` : ""
 			}orderby=date&order=desc&per_page=${jobsLoadCount}`
 		);
-	}, [selectedSectors, selectedJobStyle, selectedExperiences, jobsLoadCount]);
+	}, [
+		selectedSectors,
+		selectedJobStyle,
+		selectedExperiences,
+		jobsLoadCount,
+		searchWord,
+	]);
 
 	// Load More Jobs
 	const getMoreJobs = () => {
@@ -116,7 +125,7 @@ const JobsList = () => {
 
 	return (
 		<div className="container search_page">
-			<h2>{!keywords ? "Jobs" : keywords + " : Jobs"}</h2>
+			<h2>{!searchWord ? "Jobs" : searchWord + " : Jobs"}</h2>
 			<p>
 				This is a classifieds job board and therefore not subject to DAO
 				governance. Exercise caution when evaluating job posts
