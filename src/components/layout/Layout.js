@@ -9,6 +9,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import SplitText from "gsap/SplitText";
+import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 
 // Components
 import Header from "./Header";
@@ -39,6 +40,8 @@ const Layout = ({ children, pageClass }) => {
 				smoother.effects(".img-parallax", {
 					speed: "auto",
 				});
+
+				smoother.scrollTop(0);
 
 				return () => smoother.kill();
 			}
@@ -108,13 +111,21 @@ const Layout = ({ children, pageClass }) => {
 	}, []);
 
 	return (
-		<div ref={$wrapper}>
-			<div ref={$content} className={pageClass}>
-				<Header />
-				{children}
-				<Footer />
+		<>
+			<ProgressBar
+				height="4px"
+				color="#dc4f14"
+				options={{ showSpinner: false }}
+				shallowRouting
+			/>
+			<div ref={$wrapper}>
+				<div ref={$content} className={pageClass}>
+					<Header />
+					{children}
+					<Footer />
+				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 

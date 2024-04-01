@@ -1,15 +1,17 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 // Components
 import Layout from "@/components/layout/Layout";
 import JobsList from "@/components/pages/jobs/JobsList";
 
-const Jobs = () => {
+const jobs = async () => {
 	return (
 		<Layout>
-			<JobsList />
+			<Suspense fallback={null}>
+				<JobsList />
+			</Suspense>
 		</Layout>
 	);
 };
 
-export default Jobs;
+export default jobs;

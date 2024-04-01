@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+
+// Dependencies
+import { validateImage } from "image-validator";
 
 // Helpers
 import { fixHTMLEntities, timeSincePublication } from "@/utils/Helpers";
 
 const JobCard = ({ job }) => {
+	const [imageValid, setImageValid] = useState(false);
+
+	const urlValidation = async (url) => {
+		const isValidImage = await validateImage(url);
+		if (isValidImage) {
+			setImageValid(true);
+		} else {
+			setImageValid(false);
+		}
+	};
+
+	useEffect(() => {
+		let imageUrl = job._gofj_company_logo;
+		urlValidation(imageUrl);
+	}, [job._gofj_company_logo]);
+
 	return (
 		<div className="job_card">
 			<div className="job_body">
@@ -121,7 +140,7 @@ const JobCard = ({ job }) => {
 				</Link>
 				<div className="job_company_info">
 					<p className="job_company_name">{job._gofj_company}</p>
-					{job._gofj_company_logo != "" ? (
+					{job._gofj_company_logo != "" && imageValid === true ? (
 						<div className="job_image">
 							<img src={job._gofj_company_logo} />
 						</div>

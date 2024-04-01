@@ -37,15 +37,15 @@
 	}
 
 	.jobs-grid-loading > span:nth-child(1) {
-        width: 100%;
+		width: 100%;
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 40px;
 	}
 
-    .jobs-grid-loading br {
-        display: none;
-    }
+	.jobs-grid-loading br {
+		display: none;
+	}
 
 	&::after {
 		content: "";
@@ -264,6 +264,7 @@
 						border-radius: 15px;
 						display: flex;
 						flex-direction: column;
+						background: #000000c2;
 						gap: 20px;
 						.email_me_title {
 							color: white;
@@ -530,6 +531,15 @@
 		padding: 0;
 		padding-top: 150px;
 
+		.jobs-grid-loading > span:nth-child(1) {
+			grid-template-columns: 1fr;
+			gap: 22px;
+
+			.react-loading-skeleton {
+				height: 271px !important;
+			}
+		}
+
 		&::after {
 			height: 250px;
 			top: 15%;
@@ -547,13 +557,11 @@
 		}
 
 		form {
-			height: 35px;
-			width: calc(100% - 20px);
-			border-radius: 5px;
-			padding: 0 15px;
-
+			padding: 18px;
+			height: inherit;
+			border-radius: 50px;
 			input {
-				font-size: 10px;
+				font-size: 12px;
 			}
 		}
 
@@ -571,6 +579,7 @@
 			}
 		}
 		.search_results_filter_container {
+			margin-top: 0;
 			.filter_search_results {
 				display: none;
 			}
@@ -578,7 +587,25 @@
 				gap: 20px;
 				width: 100%;
 				.search_results_con {
+					padding: 0 5px;
 					width: 100%;
+					.search_results_top {
+						.email_me_form {
+							padding: 20px;
+							form {
+								.form_top {
+									display: grid;
+									gap: 10px;
+								}
+							}
+							.form_checkboxes {
+								gap: 10px;
+								font-size: 12px;
+								justify-content: space-between;
+								padding: 2px 5px;
+							}
+						}
+					}
 					.search_results_wrapper > div {
 						grid-template-columns: 1fr;
 					}

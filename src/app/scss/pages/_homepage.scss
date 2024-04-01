@@ -543,6 +543,15 @@
 		}
 	}
 	.blog_posts_section {
+		.posts-grid-loading-home > span {
+			margin-top: 50px;
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			grid-gap: 20px;
+		}
+		.posts-grid-loading-home br {
+			display: none;
+		}
 		position: relative;
 		z-index: 10;
 		display: flex;
@@ -595,18 +604,19 @@
 					padding-bottom: 10px;
 				}
 				& > img {
+					min-height: 150px;
 					height: 150px;
 					width: 100%;
 					border-radius: 8px;
 					object-fit: cover;
 				}
 				h3 {
-					font-size: 16px;
+					font-size: 18px;
 					font-family: var(--font-blinker);
 					color: white;
 					font-style: normal;
 					font-weight: 400;
-					margin-bottom: 10px;
+					margin-bottom: 16px;
 				}
 				span {
 					color: var(--main-color);
@@ -614,6 +624,9 @@
 					font-size: 13px;
 					font-style: normal;
 					font-weight: 400;
+				}
+				.published {
+					color: #fff !important;
 				}
 			}
 		}
@@ -627,6 +640,9 @@
 
 @media (max-width: 768px) {
 	.home_page {
+		.jobs-grid-loading-home > span {
+			grid-template-columns: repeat(1, 1fr) !important;
+		}
 		.hero_section {
 			&:after {
 				content: "";
@@ -655,16 +671,22 @@
 				gap: 20px;
 				padding-top: 130px;
 				z-index: 2;
+				background-color: rgba(0, 0, 0, 0.75);
 				h1 {
-					font-size: 32px;
+					font-size: 35px;
 					max-width: 80%;
 					line-height: 1.2em;
 				}
+				p {
+					padding: 0 24px;
+				}
 				form {
-					height: 35px;
-					width: calc(100% - 20px);
-					border-radius: 5px;
-					padding: 0 15px;
+					width: calc(100% - 52px);
+					padding: 18px;
+					height: inherit;
+					border-radius: 50px;
+					margin-top: 10px;
+					margin-bottom: 10px;
 					input {
 						font-size: 12px;
 					}
@@ -704,8 +726,9 @@
 				z-index: 1;
 				width: calc(100% - 50px);
 				margin: 0 auto;
-				padding-top: 50px;
-				padding-bottom: 50px;
+				padding-top: 80px;
+				padding-bottom: 80px;
+				display: grid;
 				h2 {
 					text-align: center;
 					span {
@@ -714,21 +737,16 @@
 				}
 				p {
 					text-align: center;
-					line-height: 1.2em;
+					line-height: 1.3em;
 					font-size: 16px;
+					font-weight: 200;
 				}
 				.cta_button {
 					margin: 0 auto;
 				}
 			}
 			& > img {
-				position: absolute;
-				top: 0;
-				left: 0;
-				z-index: 0;
-				width: 100%;
-				transform: translateX(-30%);
-				opacity: 0.5;
+				display: none;
 			}
 		}
 		.jobs_section {
@@ -746,10 +764,12 @@
 			}
 			p {
 				font-size: 14px;
-				max-width: 80%;
-				margin: 0 auto;
+				line-height: 1.3em;
+				margin-top: 8px;
+				margin-bottom: 35px;
 			}
 			.jobs_navigation {
+				display: none;
 				flex-wrap: wrap;
 				gap: 5px;
 				margin-top: 0px;
@@ -765,7 +785,7 @@
 			}
 			.job_content {
 				grid-template-columns: repeat(1, 1fr);
-				grid-gap: 20px;
+				grid-gap: 28px;
 				margin-top: 20px;
 			}
 		}
@@ -791,8 +811,7 @@
 				gap: 30px;
 				margin-top: 40px;
 				.popular_categories {
-					box-shadow: 0px 0px 15px 5px #da9556;
-					padding: 20px;
+					padding: 28px;
 					h3 {
 						font-size: 18px;
 					}
@@ -817,7 +836,6 @@
 						grid-template-columns: repeat(2, 1fr);
 						grid-gap: 10px;
 						.sl_category_panel {
-							border: 1px solid #dc4f14;
 							padding: 18px 10px;
 							gap: 15px;
 							svg {
@@ -828,6 +846,9 @@
 							span {
 								font-size: 13px;
 								line-height: 1.1em;
+							}
+							br {
+								display: none;
 							}
 						}
 					}
@@ -873,11 +894,14 @@
 			}
 		}
 		.rich_text_2 {
-			padding: 180px 0;
+			padding-bottom: 80px;
+			padding-top: 40px;
 			gap: 20px;
+			display: grid;
 			.text_side {
 				gap: 10px;
 				width: 100%;
+				align-items: center;
 				h2 {
 					font-size: 30px;
 					text-align: center;
@@ -893,15 +917,36 @@
 				}
 			}
 			& > img {
-				display: none;
+				display: block;
+				width: 75%;
+				margin: auto;
+				height: fit-content;
+				margin-top: 25px;
 			}
 			&::after {
 				pointer-events: none;
 			}
 		}
 		.rich_text_3 {
-			padding: 0px 0;
+			padding: 80px 0;
 			gap: 20px;
+			&::after {
+				content: "";
+				position: absolute;
+				bottom: 0;
+				right: 0;
+				width: 400px;
+				height: 400px;
+				border-radius: 50%;
+				background: linear-gradient(
+					118deg,
+					rgba(232, 228, 216, 0.4) -3.7%,
+					rgba(242, 130, 8, 0.4) 66.15%
+				);
+				filter: blur(450px);
+				transform: translate(50%, 50%);
+				z-index: -1;
+			}
 			.text_side {
 				gap: 10px;
 				width: 100%;

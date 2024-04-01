@@ -1,65 +1,28 @@
-import Image from "next/image";
+"use client";
+
 import React from "react";
 
+// Dependencies
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+
+// Components
+import PostCard from "@/components/elements/PostCard";
+
+// Util Components
+import FetchThis from "@/utils/FetchThis";
+
+// Skeleton Loading Styling
+import "react-loading-skeleton/dist/skeleton.css";
+
 const BlogPosts = () => {
-	const postsData = [
-		{
-			id: 0,
-			postImage: "thumbnail_1",
-			postTitle: "The Essential Guide to DeFi Taxes",
-			postReadMinutes: 10,
-			postDate: "Nov 23, 2022",
-		},
-		{
-			id: 1,
-			postImage: "thumbnail_2",
-			postTitle: "How I became a Solidity Developer in 12 Months?",
-			postReadMinutes: 10,
-			postDate: "Nov 22, 2022",
-		},
-		{
-			id: 2,
-			postImage: "thumbnail_3",
-			postTitle: "Web3 Developer Salary in 2022",
-			postReadMinutes: 10,
-			postDate: "May 9, 2022",
-		},
-		{
-			id: 3,
-			postImage: "thumbnail_4",
-			postTitle: "How to invest in web3?",
-			postReadMinutes: 7,
-			postDate: "Apr 14, 2022",
-		},
-		{
-			id: 4,
-			postImage: "thumbnail_5",
-			postTitle: "Top 10 Programming Languages to Write Smart Contract",
-			postReadMinutes: 15,
-			postDate: "Mar 29, 2022",
-		},
-		{
-			id: 5,
-			postImage: "thumbnail_6",
-			postTitle: "How to Find and Join a DAO?",
-			postReadMinutes: 5,
-			postDate: "Mar 7, 2022",
-		},
-		{
-			id: 6,
-			postImage: "thumbnail_7",
-			postTitle: "Complete Web3 Developer Roadmap - 2022",
-			postReadMinutes: 10,
-			postDate: "Feb 14, 2022",
-		},
-		{
-			id: 7,
-			postImage: "thumbnail_8",
-			postTitle: "How to Find a Entry-Level Cryptocurrency Job?",
-			postReadMinutes: 6,
-			postDate: "Jan 23, 2022",
-		},
-	];
+	const {
+		loading: loadingPosts,
+		error: errorPosts,
+		data: postsData,
+		count: postsNumber,
+	} = FetchThis(
+		"https://main.jobs3.io/wp-json/wp/v2/posts?_embed&per_page=8&orderby=id&order=desc"
+	);
 
 	return (
 		<div className="container blog_posts_section">
@@ -69,25 +32,22 @@ const BlogPosts = () => {
 			<p className="section_description">
 				Articles on web3, remote work, guides, tutorials etc.
 			</p>
-			<div className="posts_container">
-				{postsData.map((post, index) => (
-					<div className="single_post" key={index}>
-						<Image
-							src={`/assets/images/posts_thumbnails/${post.postImage}.jpeg`}
-							width={350}
-							height={150}
-							alt=""
-						/>
-						<div className="post_details">
-							<h3>{post.postTitle}</h3>
-							<span>
-								{post.postReadMinutes} min read •{" "}
-								{post.postDate}
-							</span>
-						</div>
+			{!loadingPosts &&
+			!errorPosts &&
+			postsData &&
+			Array.isArray(postsData) ? (
+				<div className="posts_container">
+					{postsData.slice(0, 8).map((post, index) => (
+						<PostCard key={index} post={post} />
+					))}
+				</div>
+			) : (
+				<SkeletonTheme baseColor="#202020" highlightColor="#444">
+					<div className="posts-grid-loading-home">
+						<Skeleton count={8} height={268} />
 					</div>
-				))}
-			</div>
+				</SkeletonTheme>
+			)}
 		</div>
 	);
 };

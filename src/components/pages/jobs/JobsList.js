@@ -24,7 +24,7 @@ const JobsList = () => {
 
 	const search = searchParams.get("search");
 	const [keywords, setKeywords] = useState();
-	const [searchWord, setSearchWord] = useState(search);
+	const [searchWord, setSearchWord] = useState(search == null ? "" : search);
 
 	const [selectedSectors, setSelectedSectors] = useState("");
 	const [selectedJobStyle, setSelectedJobStyle] = useState("");
@@ -112,13 +112,14 @@ const JobsList = () => {
 	// Load More Jobs
 	const getMoreJobs = () => {
 		if (dataJobs.length >= 200) {
-			console.log("STOP LOADING");
+			setHasMore(false);
+			return;
+		} else if (dataJobs.length < 12) {
 			setHasMore(false);
 			return;
 		}
 
 		setTimeout(() => {
-			console.log("LOADING COUNT");
 			setJobsLoadCount(jobsLoadCount + 12);
 		}, 500);
 	};
