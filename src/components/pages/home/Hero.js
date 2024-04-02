@@ -2,18 +2,19 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
+
+// Dependencies
+import Marquee from "react-fast-marquee";
 
 const Hero = () => {
-	const router = useRouter()
-
+	const router = useRouter();
 	const [search, setSearch] = useState();
 
 	const searchQuery = (e) => {
 		e.preventDefault();
-		
 		router.push(`/jobs?search=${search}`);
-	}
+	};
 
 	return (
 		<div className="hero_section">
@@ -57,32 +58,128 @@ const Hero = () => {
 						<span>partners</span>
 					</div>
 				</div>
-				<div className="sl_logos">
+				<Marquee className="sl_logos">
 					<Image
-						src={"/assets/images/logos/logo_1.svg"}
-						width={100}
-						height={50}
+						src={"/assets/uploads/logos/logo-1.png"}
+						width={450}
+						height={130}
 						alt=""
 					/>
 					<Image
-						src={"/assets/images/logos/logo_2.svg"}
-						width={100}
-						height={50}
+						src={"/assets/uploads/logos/logo-2-2.png"}
+						width={450}
+						height={130}
 						alt=""
 					/>
 					<Image
-						src={"/assets/images/logos/logo_3.svg"}
-						width={100}
-						height={50}
+						src={"/assets/uploads/logos/logo-3-3.png"}
+						width={450}
+						height={130}
 						alt=""
 					/>
 					<Image
-						src={"/assets/images/logos/logo_4.svg"}
-						width={100}
-						height={50}
+						src={"/assets/uploads/logos/logo-4.png"}
+						width={450}
+						height={130}
 						alt=""
 					/>
-				</div>
+					<Image
+						src={"/assets/uploads/logos/logo-5-5.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-6-6.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-7-7.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-8.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-9.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-10.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-1.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-2-2.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-3-3.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-4.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-5-5.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-6-6.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-7-7.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-8.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-9.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+					<Image
+						src={"/assets/uploads/logos/logo-10.png"}
+						width={450}
+						height={130}
+						alt=""
+					/>
+				</Marquee>
 			</div>
 		</div>
 	);

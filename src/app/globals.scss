@@ -172,6 +172,11 @@ $breakpoint-small: 768px;
 		}
 	}
 }
+
+.mobile-menu {
+	display: none;
+}
+
 @media (max-width: 768px) {
 	.main_header {
 		padding: 15px 0;
@@ -246,6 +251,82 @@ $breakpoint-small: 768px;
 			.btn_classified .btn_classified_content {
 				padding: 8px 20px;
 				font-size: 15px;
+			}
+		}
+	}
+
+	.mobile-menu {
+		display: block;
+		background-color: #000;
+		width: 100%;
+		height: 100vh;
+		overflow-y: scroll;
+		overflow-x: hidden;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 999;
+		padding: 32px;
+		transform: translateX(-100%);
+		border-right: 2px solid #dc4f14;
+		a {
+			background-color: #3535354d;
+			padding: 12px 14px;
+			font-size: 22px;
+			color: #fff;
+			width: 100%;
+			display: block;
+			border-radius: 8px;
+			margin-bottom: 8px;
+		}
+		.dd-link {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			svg {
+				width: 18px;
+			}
+		}
+		.mm-head {
+			margin-bottom: 35px;
+			display: flex;
+			justify-content: flex-end;
+			.close-button {
+				background-color: transparent;
+				border: none;
+				display: flex;
+				gap: 5px;
+				align-items: center;
+				font-size: 16px;
+				cursor: pointer;
+				span {
+					color: #fff;
+				}
+			}
+		}
+		.dropdown-link-mobile {
+			ul {
+				height: 0;
+				overflow: hidden;
+			}
+		}
+		.btn_classified {
+			position: relative;
+			border-radius: 50px;
+			font-size: 18px;
+			color: #dfdfdf;
+			border: 1px solid #dc4f14;
+			background-color: transparent;
+			padding: 15px 50px;
+			letter-spacing: 1px;
+			transition: border 0.3s;
+			transition: background 0.3s;
+			text-align: center;
+			width: 100%;
+			margin-top: 50px;
+			&:hover {
+				background-color: #dc4f14;
+				border: 2px solid #dc4f14;
 			}
 		}
 	}
