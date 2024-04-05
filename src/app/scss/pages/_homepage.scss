@@ -19,6 +19,7 @@
 	}
 }
 .home_page {
+	overflow-x: hidden;
 	.hero_section {
 		overflow: hidden;
 		position: relative;
@@ -156,19 +157,21 @@
 				}
 			}
 			.sl_logos {
-				position: relative;
 				border-top: 1px solid #353535;
 				border-bottom: 1px solid #353535;
 				background: var(--Dark, #000);
 				width: 100%;
 				padding: 27px 0;
-				.rfm-initial-child-container {
+				.logos-set {
 					display: flex;
 					gap: 55px;
-				}
-				img {
-					width: 100%;
-					height: auto;
+					align-items: center;
+					justify-items: center;
+					padding-right: 50px;
+					img {
+						width: auto;
+						height: 60px;
+					}
 				}
 			}
 		}
