@@ -44,8 +44,8 @@ const Hero = () => {
 						</svg>
 					</button>
 				</form>
-				<div className="sl_counters" >
-					{/* <div className="single_counter">
+				{/* <div className="sl_counters" >
+					<div className="single_counter">
 						<strong>20M+</strong>
 						<span>users</span>
 					</div>
@@ -56,8 +56,8 @@ const Hero = () => {
 					<div className="single_counter">
 						<strong>100+</strong>
 						<span>partners</span>
-					</div> */}
-				</div>
+					</div>
+				</div> */}
 				<Marquee className="sl_logos">
 					<div className="logos-set">
 						<Image
