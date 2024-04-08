@@ -44,8 +44,8 @@ const Hero = () => {
 						</svg>
 					</button>
 				</form>
-				<div className="sl_counters">
-					<div className="single_counter">
+				<div className="sl_counters" >
+					{/* <div className="single_counter">
 						<strong>20M+</strong>
 						<span>users</span>
 					</div>
@@ -56,7 +56,7 @@ const Hero = () => {
 					<div className="single_counter">
 						<strong>100+</strong>
 						<span>partners</span>
-					</div>
+					</div> */}
 				</div>
 				<Marquee className="sl_logos">
 					<Image
@@ -132,12 +132,6 @@ const Hero = () => {
 						alt=""
 					/>
 					<Image
-						src={"/assets/uploads/logos/logo-3-3.png"}
-						width={450}
-						height={130}
-						alt=""
-					/>
-					<Image
 						src={"/assets/uploads/logos/logo-4.png"}
 						width={450}
 						height={130}
@@ -166,13 +160,7 @@ const Hero = () => {
 						width={450}
 						height={130}
 						alt=""
-					/>
-					<Image
-						src={"/assets/uploads/logos/logo-9.png"}
-						width={450}
-						height={130}
-						alt=""
-					/>
+					/> 
 					<Image
 						src={"/assets/uploads/logos/logo-10.png"}
 						width={450}
