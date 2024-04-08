@@ -36,12 +36,16 @@ $breakpoint-small: 768px;
 
 	@media screen and (min-width: $breakpoint-large) {
 		max-width: 1480px;
+		padding-left: 30px;
+		padding-right: 30px;
 	}
 
 	@media screen and (max-width: $breakpoint-large) {
-		max-width: 100%;
-		padding-left: 30px;
-		padding-right: 30px;
+		max-width: 1300px;
+		padding: {
+			left: 20px !important;
+			right: 20px !important;
+		}
 	}
 
 	@media screen and (max-width: $breakpoint-medium) {
