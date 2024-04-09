@@ -1,5 +1,5 @@
 import { blinker, tektur } from "@/utils/fonts";
-import "./css/globals.scss";
+import "./globals.scss";
 
 export const metadata = {
 	title: "JOBS3 - Decentralising and globalising the employment landscape",

@@ -615,6 +615,8 @@ a.cta_button {
 			letter-spacing: 1px;
 			transition: border 0.3s;
 			transition: background 0.3s;
+			white-space: nowrap;
+			font-size: 14px;
 			&:hover {
 				background-color: transparent;
 				border: 2px solid #dc4f14;
