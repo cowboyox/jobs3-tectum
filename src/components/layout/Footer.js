@@ -26,7 +26,7 @@ const Footer = () => {
 				<p className="footer_description">Find Us On Social Media:</p>
 				<div className="social_icons">
 					<a
-						href={"https://t.me/web3jobs3"}
+						href={"https://t.me/Threeprotocol"}
 						target="_blank"
 						className="icon_circle"
 					>
@@ -74,7 +74,7 @@ const Footer = () => {
 						</svg>
 					</a>
 					<a
-						href={"https://twitter.com/JOBS3_io"}
+						href={"https://x.com/threeprotocol"}
 						target="_blank"
 						className="icon_circle"
 					>
