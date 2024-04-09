@@ -61,49 +61,31 @@ const Hero = () => {
 				<Marquee className="sl_logos">
 					<div className="logos-set">
 						<Image
-							src={"/assets/uploads/logos/logo-1.png"}
+							src={"/assets/images/Partners/Partner-1.webp"}
 							width={450}
 							height={130}
 							alt=""
 						/>
 						<Image
-							src={"/assets/uploads/logos/logo-2-2.png"}
-							width={450}
-							height={130}
-							alt=""
-						/> 
-						<Image
-							src={"/assets/uploads/logos/logo-4.png"}
+							src={"/assets/images/Partners/Partner-2.png"}
 							width={450}
 							height={130}
 							alt=""
 						/>
 						<Image
-							src={"/assets/uploads/logos/logo-5-5.png"}
+							src={"/assets/images/Partners/Partner-3.png"}
 							width={450}
 							height={130}
 							alt=""
 						/>
 						<Image
-							src={"/assets/uploads/logos/logo-6-6.png"}
+							src={"/assets/images/Partners/Partner-4.png"}
 							width={450}
 							height={130}
 							alt=""
 						/>
 						<Image
-							src={"/assets/uploads/logos/logo-7-7.png"}
-							width={450}
-							height={130}
-							alt=""
-						/>
-						<Image
-							src={"/assets/uploads/logos/logo-8.png"}
-							width={450}
-							height={130}
-							alt=""
-						/> 
-						<Image
-							src={"/assets/uploads/logos/logo-10.png"}
+							src={"/assets/images/Partners/Partner-5.png"}
 							width={450}
 							height={130}
 							alt=""
