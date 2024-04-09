@@ -90,7 +90,7 @@ const Footer = () => {
 						</svg>
 					</a>
 					<a
-						href={"https://www.linkedin.com/company/jobs3io/"}
+						href={"https://www.linkedin.com/company/threeprotocol/"}
 						target="_blank"
 						className="icon_circle"
 					>
