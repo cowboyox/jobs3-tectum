@@ -12,6 +12,7 @@
 @import "./scss/pages/employer";
 @import "./scss/pages/single_job";
 @import "./scss/pages/login";
+@import "./scss/pages/roadmap";
 
 @import "./scss/dashboard/sidebar";
 @import "./scss/dashboard/dashboard_header";
@@ -420,10 +421,19 @@ footer {
 				align-items: center;
 				justify-content: center;
 				border-radius: 50%;
-				img {
+				transition: 0.3s ease border;
+				&:hover {
+					border: 1px solid #dc4f14;
+					svg {
+						fill: #dc4f14;
+					}
+				}
+				svg {
 					width: 18px;
 					height: 18px;
 					object-fit: contain;
+					fill: #fff;
+					transition: 0.3s ease fill;
 				}
 			}
 		}
@@ -478,11 +488,6 @@ footer {
 					height: 30px;
 					width: 30px;
 					font-size: 14px;
-					img {
-						width: 16px;
-						height: 16px;
-						object-fit: contain;
-					}
 				}
 			}
 			hr {

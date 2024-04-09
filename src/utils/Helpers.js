@@ -90,3 +90,9 @@ export const formatDate = (dateString) => {
 
   return `${month} ${day}, ${year}`;
 }
+
+export const isEnglish = (text) => {
+	var englishRegex = /^[a-zA-Z\s!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]+$/;
+	
+	return englishRegex.test(text);
+}

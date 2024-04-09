@@ -11,6 +11,9 @@ import JobCard from "@/components/elements/JobCard";
 // Util Components
 import FetchThis from "@/utils/FetchThis";
 
+// Helper Funcitons
+import { isEnglish } from "@/utils/Helpers";
+
 // Skeleton Loading Styling
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -96,9 +99,9 @@ const FeaturedJobs = () => {
 
 			{!loadingJobs && !errorJobs && jobData && Array.isArray(jobData) ? (
 				<div className="job_content">
-					{jobData.slice(0, 6).map((job, index) => (
-						<JobCard key={index} job={job} />
-					))}
+					{jobData.slice(0, 6).map((job, index) => {
+						return <JobCard key={index} job={job} />;
+					})}
 				</div>
 			) : (
 				<SkeletonTheme baseColor="#202020" highlightColor="#444">
