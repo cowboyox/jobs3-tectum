@@ -51,7 +51,7 @@ const roadmap = () => {
 						<div className="grid-right">
 							<ul>
 								<li>
-									<h2 className="milestone">Milestone 2</h2>
+									<h2 className="milestone">Milestone 2 <small className="date">(April)</small></h2>
 								</li>
 								<li>
 									<img
@@ -90,7 +90,7 @@ const roadmap = () => {
 						<div className="grid-left">
 							<ul>
 								<li>
-									<h2 className="milestone">Milestone 3</h2>
+									<h2 className="milestone">Milestone 3 <small className="date">(May)</small></h2>
 								</li>
 								<li>
 									<img
@@ -140,7 +140,7 @@ const roadmap = () => {
 						<div className="grid-right">
 							<ul>
 								<li>
-									<h2 className="milestone">Milestone 4</h2>
+									<h2 className="milestone">Milestone 4 <small className="date">(June)</small></h2>
 								</li>
 								<li>
 									<img
@@ -173,7 +173,7 @@ const roadmap = () => {
 						<div className="grid-left">
 							<ul>
 								<li>
-									<h2 className="milestone">Milestone 5</h2>
+									<h2 className="milestone">Milestone 5 <small className="date">(Q2 2025)</small></h2>
 								</li>
 								<li>
 									<img
@@ -206,7 +206,7 @@ const roadmap = () => {
 						<div className="grid-right">
 							<ul>
 								<li>
-									<h2 className="milestone">Milestone 5</h2>
+									<h2 className="milestone">Milestone 5 <small className="date">(Q3 2025)</small></h2>
 								</li>
 								<li>
 									<img
