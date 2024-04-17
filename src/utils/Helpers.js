@@ -78,21 +78,47 @@ export const manipulateIds = (str, idToAdd) => {
 };
 
 export const formatDate = (dateString) => {
-  const months = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-  ];
+	const months = [
+		"Jan",
+		"Feb",
+		"Mar",
+		"Apr",
+		"May",
+		"Jun",
+		"Jul",
+		"Aug",
+		"Sep",
+		"Oct",
+		"Nov",
+		"Dec",
+	];
 
-  const date = new Date(dateString);
-  const month = months[date.getMonth()];
-  const day = date.getDate();
-  const year = date.getFullYear();
+	const date = new Date(dateString);
+	const month = months[date.getMonth()];
+	const day = date.getDate();
+	const year = date.getFullYear();
 
-  return `${month} ${day}, ${year}`;
-}
+	return `${month} ${day}, ${year}`;
+};
 
 export const isEnglish = (text) => {
 	var englishRegex = /^[a-zA-Z\s!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]+$/;
-	
+
 	return englishRegex.test(text);
+};
+
+export const formatMilestoneDate = (dateString) => {
+  const { date } = JSON.parse(dateString);
+
+  const parsedDate = new Date(date);
+
+  const day = parsedDate.getDate();
+  const month = parsedDate.toLocaleString('default', { month: 'long' });
+  const year = parsedDate.getFullYear();
+
+  return `${day} ${month} ${year}`;
 }
+
+export const isEven = (number) => {
+	return number % 2 === 0;
+};
