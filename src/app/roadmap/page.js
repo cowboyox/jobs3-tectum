@@ -7,24 +7,26 @@ import Layout from "@/components/layout/Layout";
 import { formatMilestoneDate, isEven } from "@/utils/Helpers";
 
 const fetchBoardData = async () => {
-  try {
-    const response = await fetch('https://api.monday.com/v2', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjMxMDgxNTM5MSwiYWFpIjoxMSwidWlkIjo2NDI5OTYxLCJpYWQiOiIyMDI0LTAxLTE2VDE1OjI3OjE1LjAwMFoiLCJwZXIiOiJtZTp3cml0ZSIsImFjdGlkIjoyOTAyODM2LCJyZ24iOiJ1c2UxIn0.Upn8J5NCmS-djtLbl3OzzBmPLxIbh7UHMgOdjM2gGzc'
-      },
-      body: JSON.stringify({
-        query: `query { boards(ids: 6240500320) { id name groups(ids: ["new_group14820"]) { title items_page { items { name subitems { name column_values { id value } } } } } } }`
-      })
-    });
+	try {
+		const response = await fetch("https://api.monday.com/v2", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization:
+					"Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjMxMDgxNTM5MSwiYWFpIjoxMSwidWlkIjo2NDI5OTYxLCJpYWQiOiIyMDI0LTAxLTE2VDE1OjI3OjE1LjAwMFoiLCJwZXIiOiJtZTp3cml0ZSIsImFjdGlkIjoyOTAyODM2LCJyZ24iOiJ1c2UxIn0.Upn8J5NCmS-djtLbl3OzzBmPLxIbh7UHMgOdjM2gGzc",
+				"cache-control": "no-store",
+			},
+			body: JSON.stringify({
+				query: `query { boards(ids: 6240500320) { id name groups(ids: ["new_group14820"]) { title items_page { items { name subitems { name column_values { id value } } } } } } }`,
+			}),
+		});
 
-    const data = await response.json();
-    return data.data.boards[0].groups[0].items_page.items;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return null;
-  }
+		const data = await response.json();
+		return data.data.boards[0].groups[0].items_page.items;
+	} catch (error) {
+		console.error("Error fetching data:", error);
+		return null;
+	}
 };
 
 const roadmap = async () => {
@@ -84,8 +86,16 @@ const roadmap = async () => {
 								// Block - Left
 								return (
 									<div key={index} className="grid-roadmap">
-										<div className={`grid-left ${index == 0 ? 'active' : ''}`}>
-											<ul className={`${index == 0 ? 'active' : ''}`}>
+										<div
+											className={`grid-left ${
+												index == 0 ? "active" : ""
+											}`}
+										>
+											<ul
+												className={`${
+													index == 0 ? "active" : ""
+												}`}
+											>
 												<li>
 													<h2 className="milestone">
 														{milestone.name}

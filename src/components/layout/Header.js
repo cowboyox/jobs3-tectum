@@ -88,6 +88,9 @@ const Header = () => {
 							<Link href={"#"}>$THREE</Link>
 							<ul>
 								<li>
+									<Link href={"/roadmap"}>Roadmap</Link>
+								</li>
+								<li>
 									<Link
 										href={
 											"https://three-3.gitbook.io/litepaper"
@@ -111,7 +114,10 @@ const Header = () => {
 
 			<div className="mobile-menu" ref={mobileMenu}>
 				<div className="mm-head">
-					<button className="close-button" onClick={() => handleMenuClick(false)}>
+					<button
+						className="close-button"
+						onClick={() => handleMenuClick(false)}
+					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
@@ -154,6 +160,9 @@ const Header = () => {
 						</svg>
 					</Link>
 					<ul ref={dropdownLink}>
+						<li>
+							<Link href={"/roadmap"}>Roadmap</Link>
+						</li>
 						<li>
 							<Link
 								href={"https://three-3.gitbook.io/litepaper"}
