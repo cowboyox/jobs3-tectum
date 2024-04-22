@@ -105,7 +105,7 @@ const Header = () => {
 								</li>
 							</ul>
 						</div>
-						<Link href={"#"} className="btn_classified">
+						<Link href={"/jobs"} className="btn_classified">
 							Classified
 						</Link>
 					</div>
@@ -176,7 +176,7 @@ const Header = () => {
 						</li>
 					</ul>
 				</div>
-				<Link href={"#"} className="btn_classified">
+				<Link href={"/jobs"} className="btn_classified">
 					Classified
 				</Link>
 			</div>
