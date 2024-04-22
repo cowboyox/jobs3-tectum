@@ -119,6 +119,16 @@ export const formatMilestoneDate = (dateString) => {
   return `${day} ${month} ${year}`;
 }
 
+export const formatMilestoneTime = (timeString) => {
+	const { hour, minute } = JSON.parse(timeString);
+
+	const tHour = hour < 10 ? `0${hour}` : hour.toString()
+	const tMin = minute < 10 ? `0${minute}` : minute.toString()
+	const period = hour > 12 ? 'PM' : 'AM'
+
+	return `${tHour} : ${tMin} ${period}`
+}
+
 export const isEven = (number) => {
 	return number % 2 === 0;
 };

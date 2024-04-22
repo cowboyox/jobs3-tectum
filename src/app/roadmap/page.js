@@ -4,7 +4,7 @@ import React from "react";
 import Layout from "@/components/layout/Layout";
 
 // Helpers
-import { formatMilestoneDate, isEven } from "@/utils/Helpers";
+import { formatMilestoneDate, formatMilestoneTime, isEven } from "@/utils/Helpers";
 
 const fetchBoardData = async () => {
 	try {
@@ -55,25 +55,108 @@ const roadmap = async () => {
 												</li>
 												{milestone?.subitems.map(
 													(goal, index) => {
+														console.log("sub item right => ", goal.column_values)
+														let link = null;
+														if (goal.column_values[4].value) {
+															const { url } = JSON.parse(goal.column_values[4].value);
+															link = url;
+														}
 														return (
 															<li key={index}>
-																<p>
-																	{goal.name}
-																</p>
-																<p
-																	className="now"
-																	style={{
-																		color: "#de9749",
-																	}}
-																>
-																	(
-																	{formatMilestoneDate(
-																		goal
-																			.column_values[2]
-																			.value
-																	)}
-																	)
-																</p>
+																{
+																	link ? <a href={link} target="_blank" className="now" style={{color: '#fff', display: 'flex', textDecoration: 'underline'}}>
+																		<p style={ goal.column_values[4].value && {textDecoration: 'underline'} }>
+																			{goal.name}
+																		</p>
+																		{
+																			(goal.column_values[2].value || goal.column_values[3].value) && <p
+																				className="now"
+																				style={{
+																					color: "#de9749",
+																					marginLeft: 10
+																				}}>(
+																				{
+																					goal
+																						.column_values[2]
+																						.value ? <span
+																							className="now"
+																							style={{
+																								color: "#de9749",
+																							}}
+																						>
+																						{formatMilestoneDate(
+																							goal
+																								.column_values[2]
+																								.value
+																						)}
+																					</span> : null
+																				}
+																				{
+																					goal
+																						.column_values[3]
+																						.value ? <span
+																							className="now"
+																							style={{
+																								color: "#de9749",
+																								marginLeft: 10
+																							}}
+																						>
+																						{formatMilestoneTime(
+																							goal
+																								.column_values[3]
+																								.value
+																						)}
+																					</span> : null
+																				}
+																				)</p>
+																		}
+																	</a> : <><p>
+																		{goal.name}
+																	</p>
+																		{
+																			(goal.column_values[2].value || goal.column_values[3].value) && <p
+																				className="now"
+																				style={{
+																					color: "#de9749",
+																				}}>(
+																				{
+																					goal
+																						.column_values[2]
+																						.value ? <span
+																							className="now"
+																							style={{
+																								color: "#de9749",
+																							}}
+																						>
+																						{formatMilestoneDate(
+																							goal
+																								.column_values[2]
+																								.value
+																						)}
+																					</span> : null
+																				}
+																				{
+																					goal
+																						.column_values[3]
+																						.value ? <span
+																							className="now"
+																							style={{
+																								color: "#de9749",
+																								marginLeft: 10
+																							}}
+																						>
+																						{formatMilestoneTime(
+																							goal
+																								.column_values[3]
+																								.value
+																						)}
+																					</span> : null
+																				}
+																				)</p>
+																		}</>
+																}
+
+
 															</li>
 														);
 													}
@@ -87,14 +170,12 @@ const roadmap = async () => {
 								return (
 									<div key={index} className="grid-roadmap">
 										<div
-											className={`grid-left ${
-												index == 0 ? "active" : ""
-											}`}
+											className={`grid-left ${index == 0 ? "active" : ""
+												}`}
 										>
 											<ul
-												className={`${
-													index == 0 ? "active" : ""
-												}`}
+												className={`${index == 0 ? "active" : ""
+													}`}
 											>
 												<li>
 													<h2 className="milestone">
@@ -103,25 +184,106 @@ const roadmap = async () => {
 												</li>
 												{milestone?.subitems.map(
 													(goal, index) => {
+														console.log("sub item left => ", goal.column_values)
+														let link = null;
+														if (goal.column_values[4].value) {
+															const { url } = JSON.parse(goal.column_values[4].value);
+															link = url;
+														}
 														return (
 															<li key={index}>
-																<p>
-																	{goal.name}
-																</p>
-																<p
-																	className="now"
-																	style={{
-																		color: "#de9749",
-																	}}
-																>
-																	(
-																	{formatMilestoneDate(
-																		goal
-																			.column_values[2]
-																			.value
-																	)}
-																	)
-																</p>
+																{
+																	link ? <a href={link} target="_blank" className="now" style={{color: '#fff', display: 'flex'}}>
+																		<p style={ goal.column_values[4].value && {textDecoration: 'underline'} }>
+																			{goal.name}
+																		</p>
+																		{
+																			(goal.column_values[2].value || goal.column_values[3].value) && <p
+																				className="now"
+																				style={{
+																					color: "#de9749",
+																					marginLeft: 10
+																				}}>(
+																				{
+																					goal
+																						.column_values[2]
+																						.value ? <span
+																							className="now"
+																							style={{
+																								color: "#de9749",
+																							}}
+																						>
+																						{formatMilestoneDate(
+																							goal
+																								.column_values[2]
+																								.value
+																						)}
+																					</span> : null
+																				}
+																				{
+																					goal
+																						.column_values[3]
+																						.value ? <span
+																							className="now"
+																							style={{
+																								color: "#de9749",
+																								marginLeft: 10
+																							}}
+																						>
+																						{formatMilestoneTime(
+																							goal
+																								.column_values[3]
+																								.value
+																						)}
+																					</span> : null
+																				}
+																				)</p>
+																		}
+																	</a> : <><p>
+																		{goal.name}
+																	</p>
+																		{
+																			(goal.column_values[2].value || goal.column_values[3].value) && <p
+																				className="now"
+																				style={{
+																					color: "#de9749",
+																				}}>(
+																				{
+																					goal
+																						.column_values[2]
+																						.value ? <span
+																							className="now"
+																							style={{
+																								color: "#de9749",
+																							}}
+																						>
+																						{formatMilestoneDate(
+																							goal
+																								.column_values[2]
+																								.value
+																						)}
+																					</span> : null
+																				}
+																				{
+																					goal
+																						.column_values[3]
+																						.value ? <span
+																							className="now"
+																							style={{
+																								color: "#de9749",
+																								marginLeft: 10
+																							}}
+																						>
+																						{formatMilestoneTime(
+																							goal
+																								.column_values[3]
+																								.value
+																						)}
+																					</span> : null
+																				}
+																				)</p>
+																		}</>
+																}
 															</li>
 														);
 													}
