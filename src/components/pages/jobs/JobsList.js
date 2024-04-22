@@ -31,6 +31,7 @@ const JobsList = () => {
 	const [selectedExperiences, setSelectedExperiences] = useState("");
 
 	const [jobsLoadCount, setJobsLoadCount] = useState(12);
+	const [jobsLoadPage, setJobsLoadPage] = useState(1);
 	const [seeMoreCategories, setSeeMoreCategories] = useState(false);
 	const [hasMore, setHasMore] = useState(true);
 
@@ -99,13 +100,14 @@ const JobsList = () => {
 					: ""
 			}${
 				searchWord != "" ? `search=${searchWord}&` : ""
-			}orderby=date&order=desc&per_page=${jobsLoadCount}`
+			}orderby=date&order=desc&per_page=${jobsLoadCount}&page=${jobsLoadPage}`
 		);
 	}, [
 		selectedSectors,
 		selectedJobStyle,
 		selectedExperiences,
 		jobsLoadCount,
+		jobsLoadPage,
 		searchWord,
 	]);
 
@@ -121,6 +123,10 @@ const JobsList = () => {
 
 		setTimeout(() => {
 			setJobsLoadCount(jobsLoadCount + 12);
+			if (jobsLoadCount >= 100) {
+				setJobsLoadCount(12) 
+				setJobsLoadPage(jobsLoadPage + 1)
+			} 
 		}, 500);
 	};
 
