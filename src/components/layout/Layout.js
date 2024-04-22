@@ -10,7 +10,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import SplitText from "gsap/SplitText";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
-import getCurrentBrowser from '@/utils/Helpers';
 
 // Components
 import Header from "./Header";
