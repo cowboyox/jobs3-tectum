@@ -10,6 +10,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import SplitText from "gsap/SplitText";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
+import getCurrentBrowser from '@/utils/Helpers';
 
 // Components
 import Header from "./Header";
@@ -23,32 +24,33 @@ const Layout = ({ children, pageClass }) => {
 	const $wrapper = useRef();
 	const $content = useRef();
 
-	useGSAP(
-		() => {
-			if (ScrollTrigger.isTouch !== 1) {
-				let smoother = ScrollSmoother.create({
-					wrapper: $wrapper.current,
-					content: $content.current,
-					smooth: 1.5,
-					smoothTouch: 0,
-					effects: ScrollTrigger.isTouch === 1 ? false : true,
-					preventDefault: true,
-					normalizeScroll: { allowNestedScroll: true },
-					ignoreMobileResize: true,
-				});
+	// Temporarily disabled smooth scrolling to avoid lagging
+	// useGSAP(
+	// 	() => {
+	// 		if (ScrollTrigger.isTouch !== 1 && navigator.userAgent.includes("Safari") ) {
+	// 			let smoother = ScrollSmoother.create({
+	// 				wrapper: $wrapper.current,
+	// 				content: $content.current,
+	// 				smooth: 1.5,
+	// 				smoothTouch: 0,
+	// 				effects: ScrollTrigger.isTouch === 1 ? false : true,
+	// 				preventDefault: true,
+	// 				normalizeScroll: { allowNestedScroll: true },
+	// 				ignoreMobileResize: true,
+	// 			});
 
-				smoother.effects(".img-parallax", {
-					speed: "auto",
-				});
+	// 			smoother.effects(".img-parallax", {
+	// 				speed: "auto",
+	// 			});
 
-				smoother.scrollTop(0);
+	// 			smoother.scrollTop(0);
 
-				return () => smoother.kill();
-			}
-		},
-		{ scope: $wrapper },
-		[]
-	);
+	// 			return () => smoother.kill();
+	// 		}
+	// 	},
+	// 	{ scope: $wrapper },
+	// 	[]
+	// );
 
 	useGSAP(() => {
 		let ctx = gsap.context(() => {
