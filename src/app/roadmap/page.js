@@ -15,6 +15,7 @@ const fetchBoardData = async () => {
 				Authorization:
 					"Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjMxMDgxNTM5MSwiYWFpIjoxMSwidWlkIjo2NDI5OTYxLCJpYWQiOiIyMDI0LTAxLTE2VDE1OjI3OjE1LjAwMFoiLCJwZXIiOiJtZTp3cml0ZSIsImFjdGlkIjoyOTAyODM2LCJyZ24iOiJ1c2UxIn0.Upn8J5NCmS-djtLbl3OzzBmPLxIbh7UHMgOdjM2gGzc",
 				"cache-control": "no-store",
+				'API-Version' : '2024-07',
 			},
 			body: JSON.stringify({
 				query: `query { boards(ids: 6240500320) { id name groups(ids: ["new_group14820"]) { title items_page { items { name subitems { name column_values { id value } } } } } } }`,
@@ -55,7 +56,7 @@ const roadmap = async () => {
 												</li>
 												{milestone?.subitems.map(
 													(goal, index) => {
-														console.log("sub item right => ", goal.column_values)
+														// console.log("sub item right => ", goal.column_values)
 														let link = null;
 														if (goal.column_values[4].value) {
 															const { url } = JSON.parse(goal.column_values[4].value);
@@ -184,7 +185,7 @@ const roadmap = async () => {
 												</li>
 												{milestone?.subitems.map(
 													(goal, index) => {
-														console.log("sub item left => ", goal.column_values)
+														// console.log("sub item left => ", goal.column_values)
 														let link = null;
 														if (goal.column_values[4].value) {
 															const { url } = JSON.parse(goal.column_values[4].value);
