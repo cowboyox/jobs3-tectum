@@ -27,7 +27,7 @@ const Layout = ({ children, pageClass }) => {
 	// Temporarily disabled smooth scrolling to avoid lagging
 	// useGSAP(
 	// 	() => {
-	// 		if (ScrollTrigger.isTouch !== 1 && navigator.userAgent.includes("Safari") ) {
+	// 		if (ScrollTrigger.isTouch !== 1) ) {
 	// 			let smoother = ScrollSmoother.create({
 	// 				wrapper: $wrapper.current,
 	// 				content: $content.current,
