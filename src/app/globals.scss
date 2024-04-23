@@ -155,6 +155,9 @@ $breakpoint-small: 768px;
 			color: white;
 			font-size: 20px;
 			transition: 0.3s;
+			background-color: transparent;
+			border: none;
+			cursor: pointer;
 			&:hover {
 				color: var(--main-color);
 			}

@@ -5,7 +5,12 @@ import Link from "next/link";
 // Dependencies
 import gsap from "gsap";
 
+// Components
+import { usePopupFunctions } from "../popups/popups";
+
 const Header = () => {
+	const { openPopup, renderPopup } = usePopupFunctions();
+
 	const mobileMenu = useRef();
 
 	const dropdownLink = useRef();
@@ -58,6 +63,8 @@ const Header = () => {
 
 	return (
 		<>
+			{renderPopup()}
+
 			<header className="main_header">
 				<div className="container">
 					<Link href={"/"} className="main_logo">
@@ -105,6 +112,12 @@ const Header = () => {
 								</li>
 							</ul>
 						</div>
+						<button
+							className="btn_sign_up"
+							onClick={() => openPopup("SignUp")}
+						>
+							Sign Up
+						</button>
 						<Link href={"/jobs"} className="btn_classified">
 							Classified
 						</Link>
