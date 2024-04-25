@@ -6,7 +6,7 @@ const ForEmployers = () => {
 		<div className="container rich_text_2">
 			<div className="text_side">
 				<h2>
-					Perfect for <br /> <span>Emloyers</span>
+					Perfect for <br /> <span>Employers</span>
 				</h2>
 				<p>The hiring solution made to grow your business</p>
 			</div>
