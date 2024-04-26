@@ -8,7 +8,7 @@ import Layout from "@/components/layout/Layout";
 const auth_token = "gb_api_xJJ3C8FfWoyRUvz4k5uUUCrEcFoQY4NQhEQ2QyCi"
 const org_id = "DcbpJzL6nvm3ObPyucua"
 
-const litepaper = () => {
+const Litepaper = () => {
 	const [org, setOrg] = useState(null)
 	const [pages, setPages] = useState([])
 	const [content, setContent] = useState(null)
@@ -171,4 +171,4 @@ const litepaper = () => {
 	)
 };
 
-export default litepaper;
+export default Litepaper;
