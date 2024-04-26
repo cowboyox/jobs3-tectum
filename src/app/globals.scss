@@ -13,6 +13,7 @@
 @import "./scss/pages/single_job";
 @import "./scss/pages/login";
 @import "./scss/pages/roadmap";
+@import "./scss/pages/litepaper";
 
 @import "./scss/dashboard/sidebar";
 @import "./scss/dashboard/dashboard_header";
@@ -347,7 +348,7 @@ $breakpoint-small: 768px;
 footer {
 	padding: 0 7%;
 	position: relative;
-	z-index: 1;
+	z-index: 900;
 	.email_subscribe {
 		padding: 100px 7%;
 		display: flex;

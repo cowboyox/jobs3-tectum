@@ -100,9 +100,8 @@ const Header = () => {
 								<li>
 									<Link
 										href={
-											"https://three-3.gitbook.io/litepaper"
+											"/litepaper"
 										}
-										target="_blank"
 									>
 										LitePaper
 									</Link>
