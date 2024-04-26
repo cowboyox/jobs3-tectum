@@ -1,5 +1,5 @@
-"use client";
-import React, { useEffect, useState } from 'react';
+"use client"
+import React, { useState, useEffect } from 'react';
 import { GitBookAPI } from '@gitbook/api';
 // Components
 import Layout from "@/components/layout/Layout";
