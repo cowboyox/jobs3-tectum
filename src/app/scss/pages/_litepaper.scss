@@ -73,7 +73,7 @@
 
 			.page_nav {
 				cursor: pointer;
-				font-size: 1.2em;
+				font-size: 1.5em;
 				transition: all 100ms ease-in;
 
 				&:hover {
@@ -110,6 +110,10 @@
 				font-style: normal;
 				text-align: center;
 				font-size: small;
+			}
+
+			p {
+				font-size: 1.4em;
 			}
 		}
 
