@@ -22,6 +22,7 @@ const litepaper = () => {
 
 	useEffect(() => {
 		async function fetchListOfPages() {
+			document.getElementById('mask').style.display = 'flex'
 			const user_response = await client.user.getAuthenticatedUser()
 			const { id } = user_response.data;
 			const res = await client.orgs.listSpacesInOrganizationById(org_id)
@@ -36,6 +37,7 @@ const litepaper = () => {
 			setContent(document_res.data)
 			setNavigation({ prev: null, next: space_res.data.pages[1] })
 			setPages(space_res.data.pages.slice(0, space_res.data.pages.length - 1))
+			document.getElementById('mask').style.display = 'none'
 		}
 		fetchListOfPages();
 	}, [])
