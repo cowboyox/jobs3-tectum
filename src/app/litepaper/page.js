@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GitBookAPI } from '@gitbook/api';
 // Components
 import Layout from "@/components/layout/Layout";
@@ -13,8 +13,6 @@ const litepaper = () => {
 	const [content, setContent] = useState(null)
 	const [fileUrl, setFileUrl] = useState(null)
 	const [navigationData, setNavigation] = useState({ prev: null, next: null })
-
-	const pageContainer = useRef(null);
 
 	const client = new GitBookAPI({
 		authToken: auth_token
@@ -109,7 +107,7 @@ const litepaper = () => {
 	}
 
 	return (
-		<Layout pageClass={`litepaper_page`} ref={pageContainer}>
+		<Layout pageClass={`litepaper_page`}>
 				<div className='litepaper_page_preview'>
 				</div>
 				<div className='litepaper_mainpage'>
