@@ -132,14 +132,14 @@ const Litepaper = () => {
 										if (item.nodes[0].leaves[0].marks[0].type === 'bold')
 											return <h3 className='page_content_subtitle' key={`content-title-${content_index}`}>{item.nodes[0].leaves[0].text}</h3>
 										else {
-											return <div key={`content-text-${content_index}`} style={{ margin: '10px 0' }}>{item.nodes[0].leaves.map((node, index) => <span style={node.marks.length > 0 ? { fontStyle: node.marks[0].type } : null}>{node.text}</span>)}</div>
+											return <div key={`content-text-1-${content_index}`} style={{ margin: '10px 0' }}>{item.nodes[0].leaves.map((node, index) => <span style={node.marks.length > 0 ? { fontStyle: node.marks[0].type } : null}>{node.text}</span>)}</div>
 										}
 									} else if (item.nodes.length !== 3 && item.nodes[0].object === 'text' && !item.nodes[0].leaves[0].marks.length) {
-										return <p style={{ margin: '5px 0' }} key={`content-text-${content_index}`}>{item.nodes[0].leaves[0].text}</p>
+										return <p style={{ margin: '5px 0' }} key={`content-text-2-${content_index}`}>{item.nodes[0].leaves[0].text}</p>
 									} else if (item.nodes.length === 3) {
 										return <>{
 											item.nodes.map((node) => {
-												if (node.object === 'text') return <span key={`page_content_link_item_${node.leaves[0].text}`}>{node.leaves[0].text}</span>
+												if (node.object === 'text') return <span key={`page_content_text_item_${node.leaves[0].text}`}>{node.leaves[0].text}</span>
 												else if (node.object === 'inline') return <div key={`page_content_link_item_${node.nodes[0].leaves[0].text}`}><a href={node.nodes[0].leaves[0].text}>{node.nodes[0].leaves[0].text}</a><br /></div>
 											})
 										}</>
