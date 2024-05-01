@@ -1,7 +1,31 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState, useContext, useEffect } from "react";
+import ContextProvider from "@/context/Context";
+import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { useRouter } from "next/navigation";
+import { useAccount } from "wagmi";
 
 export function SignUpPopup({ onClose, onSwitchPopup }) {
+	const [email, setEmail] = useState(null)
+	const [name, setName] = useState(null)
+	const [password, setPassword] = useState(null)
+	const [confirmPwd, setConfirmPwd] = useState(null)
+	const [accept, setAccept] = useState(null)
+
+	const auth = useContext(ContextProvider)
+	const { open } = useWeb3Modal()
+	const router = useRouter()
+
+	const { address, isConnected, isDisconnected } = useAccount()
+
+	useEffect(() => {
+		if(isConnected){
+			onClose()
+			auth.signUpwithWallet(address)
+			router.push('/jobs')
+		}
+	}, [isConnected, isDisconnected])
+
 	const validateEmail = (email) => {
 		return String(email)
 			.toLowerCase()
@@ -9,7 +33,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 				/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 			);
 	};
-	function checkInput(ev) {
+	function checkInput(ev, attr) {
 		// Check if input is empty
 		if (ev.target.value.trim() !== "") {
 			ev.target.classList.add("not_empty");
@@ -24,13 +48,94 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 				} else {
 					ev.target
 						.closest(".field_container")
-						.classList.remove("field_error");
+						?.classList.remove("field_error");
+					setEmail(ev.target.value)
 				}
+			}
+			if (attr === "name") {
+				if (ev.target.value.length < 1) {
+					ev.target
+						.closest(".field_container")
+						.classList.add("field_error");
+				} else {
+					ev.target
+						.closest(".field_container")
+						?.classList.remove("field_error");
+					setName(ev.target.value)
+				}
+			}
+			if (attr === "password") {
+				console.log(ev.target.value)
+				if (ev.target.value.length < 8) {
+					ev.target
+						.closest(".field_container")
+						.classList.add("field_error");
+				} else {
+					ev.target
+						.closest(".field_container")
+						?.classList.remove("field_error");
+					setPassword(ev.target.value)
+				}
+			}
+			if (attr === "confirmPassword") {
+				console.log(password, "   ===   ", ev.target.value)
+				if (ev.target.value.length < 8 || !password || password !== ev.target.value) {
+					ev.target
+						.closest(".field_container")
+						.classList.add("field_error");
+				} else {
+					ev.target
+						.closest(".field_container")
+						?.classList.remove("field_error");
+					setConfirmPwd(ev.target.value)
+				}
+			}
+			if (attr === "accept") {
+				if (!ev.target.checked) {
+					ev.target
+						.closest(".acceptance")
+						.classList.add("field_error");
+				} else {
+					ev.target
+						.closest(".acceptance")
+						?.classList.remove("field_error");
+				}
+				setAccept(ev.target.value)
 			}
 		} else {
 			ev.target.classList.remove("not_empty");
 		}
 	}
+
+	const validateUserInfo = () => {
+		if (!name || !email || !password || !confirmPwd || !accept) {
+			return false;
+		}
+		console.log('1111')
+		if (name.length === 0 || !validateEmail(email) || password.length < 8 || confirmPwd.length < 8 || password !== confirmPwd || !accept) {
+			return false
+		}
+		console.log('222')
+		return true
+	}
+
+	const onRegisterSubmit = async (e) => {
+		if (!validateUserInfo()) {
+			console.log('validate error!')
+			window.alert('Please check your infomation')
+			return false;
+		}
+		console.log('clicked')
+		try{
+			const verified = await auth.register({ name, email, password })
+			if(!verified) onSwitchPopup("Verification")
+			else router.push('/jobs')
+		}catch(err){
+			console.log('error => ', err)
+			alert("Register error!")
+		}
+	}
+
 	return (
 		<div className="popup_overlay" onClick={onClose}>
 			<div className="popup" onClick={(e) => e.stopPropagation()}>
@@ -56,17 +161,20 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 								type="text"
 								id="sign_up_full_name"
 								onChange={(ev) => {
-									checkInput(ev);
+									checkInput(ev, 'name');
 								}}
 							/>
 							<label htmlFor="sign_up_full_name">Full name</label>
+							<span className="error_message">
+								Please enter your full name.
+							</span>
 						</div>
 						<div className="field_container">
 							<input
 								type="email"
 								id="sign_up_email"
 								onChange={(ev) => {
-									checkInput(ev);
+									checkInput(ev, 'email');
 								}}
 							/>
 							<label htmlFor="sign_up_email">Email address</label>
@@ -80,40 +188,46 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 								type="password"
 								id="sign_up_password"
 								onChange={(ev) => {
-									checkInput(ev);
+									checkInput(ev, 'password');
 								}}
 							/>
 							<label htmlFor="sign_up_password">
 								Create Password
 							</label>
+							<span className="error_message">
+								The length of password should be more than 8 characters.
+							</span>
 						</div>
 						<div className="field_container">
 							<input
 								type="password"
 								id="sign_up_confirm_password"
 								onChange={(ev) => {
-									checkInput(ev);
+									checkInput(ev, 'confirmPassword');
 								}}
 							/>
 							<label htmlFor="sign_up_confirm_password">
 								Confirm Password
 							</label>
+							<span className="error_message">
+								The confirm password should be more than 8 characters and matched with your password.
+							</span>
 						</div>
 						<div className="acceptance">
 							<input
 								type="checkbox"
 								id="acceptance"
 								onChange={(ev) => {
-									checkInput(ev);
+									checkInput(ev, 'accept');
 								}}
 							/>
-							<label htmlFor="acceptance">
+							<label htmlFor="acceptance" style={{ marginLeft: 10 }}>
 								By creating an account you agree to Privacy
 								Policy
 							</label>
 						</div>
-						<button className="submit_form">Sign Up</button>
-						<button className="wallet_continue">
+						<button type="submit" className="submit_form" onClick={onRegisterSubmit}>Sign Up</button>
+						<button className="wallet_continue" onClick={() => open()}>
 							Continue with wallet
 						</button>
 					</div>
@@ -123,6 +237,24 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 	);
 }
 export function SignInPopup({ onClose, onSwitchPopup }) {
+	const [email, setEmail] = useState(null)
+	const [password, setPassword] = useState(null)
+	const [accept, setAccept] = useState(null)
+
+	const auth = useContext(ContextProvider)
+	const { open } = useWeb3Modal()
+	const router = useRouter()
+
+	const { address, isConnected, isDisconnected } = useAccount()
+
+	useEffect(() => {
+		if(isConnected){
+			onClose()
+			auth.signInwithWallet(address)
+			router.push('/jobs')
+		}
+	}, [isConnected, isDisconnected])
+
 	const validateEmail = (email) => {
 		return String(email)
 			.toLowerCase()
@@ -130,7 +262,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 				/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 			);
 	};
-	function checkInput(ev) {
+	function checkInput(ev, type) {
 		// Check if input is empty
 		if (ev.target.value.trim() !== "") {
 			ev.target.classList.add("not_empty");
@@ -146,10 +278,50 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 					ev.target
 						.closest(".field_container")
 						.classList.remove("field_error");
+					setEmail(ev.target.value)
 				}
+			}
+			if(type === 'password'){
+				if(ev.target.value.length < 8){
+					ev.target
+						.closest(".field_container")
+						.classList.add("field_error");
+				}else{
+					ev.target
+						.closest(".field_container")
+						.classList.remove("field_error");
+					setPassword(ev.target.value)
+				}
+			}
+			if (type === "accept") {
+				if (!ev.target.checked) {
+					ev.target
+						.closest(".acceptance")
+						.classList.add("field_error");
+				} else {
+					ev.target
+						.closest(".acceptance")
+						?.classList.remove("field_error");
+				}
+				setAccept(ev.target.checked)
 			}
 		} else {
 			ev.target.classList.remove("not_empty");
+		}
+	}
+
+	const handleLogin = async (e) => {
+		console.log(email, password, accept)
+		if(!email || !password || password.length < 8 || !validateEmail(email) || !accept){
+			alert("Please check your information.")
+			return false;
+		}
+		try{
+			await auth.login({ email, password });
+			router.push('/jobs')
+		}catch(err){
+			console.log(err)
+			alert("Try again to login!")
 		}
 	}
 	return (
@@ -177,7 +349,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 								type="email"
 								id="sign_in_email"
 								onChange={(ev) => {
-									checkInput(ev);
+									checkInput(ev, 'email');
 								}}
 							/>
 							<label htmlFor="sign_in_email">Email address</label>
@@ -191,27 +363,30 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 								type="password"
 								id="sign_in_password"
 								onChange={(ev) => {
-									checkInput(ev);
+									checkInput(ev, 'password');
 								}}
 							/>
 							<label htmlFor="sign_in_password">
 								Create Password
 							</label>
+							<span className="error_message">
+								Please type your password here.
+							</span>
 						</div>
 						<div className="acceptance">
 							<input
 								type="checkbox"
 								id="acceptance"
 								onChange={(ev) => {
-									checkInput(ev);
+									checkInput(ev, 'accept');
 								}}
 							/>
 							<label htmlFor="acceptance">
 								Keep me logged in
 							</label>
 						</div>
-						<button className="submit_form">Log in</button>
-						<button className="wallet_continue">
+						<button className="submit_form" onClick={handleLogin}>Log in</button>
+						<button className="wallet_continue" onClick={() => open()}>
 							Continue with wallet
 						</button>
 						<span className="forgot_password">
@@ -454,6 +629,24 @@ export function SubscibePopup({ onClose }) {
 	);
 }
 export function VerificationPopup({ onClose }) {
+	let content = "";
+	const auth = useContext(ContextProvider)
+	const handleChange = (e) => {
+		content = e.target.value
+	}
+
+	const handleSubmit = async (e) => {
+		if (!content || content.length < 1) {
+			alert('Please enter your email to verify')
+			return false;
+		}
+		try {
+			await auth.verifyOTP(content)
+			location.href = "/jobs"
+		} catch (err) {
+			console.log('error', err)
+		}
+	}
 	return (
 		<div className="popup_overlay" onClick={onClose}>
 			<div
@@ -472,8 +665,8 @@ export function VerificationPopup({ onClose }) {
 					<h2>Verification</h2>
 					<p>Enter your email to confirm your account </p>
 					<div className="email_form">
-						<input type="email" placeholder="Your Email" />
-						<button type="submit">Submit</button>
+						<input type="text" placeholder="Your Email" onChange={handleChange} />
+						<button type="submit" onClick={handleSubmit}>Submit</button>
 					</div>
 				</div>
 			</div>
@@ -502,7 +695,7 @@ export function CodePopup({ onClose }) {
 						enter it in the form below{" "}
 					</p>
 					<div className="email_form">
-						<input type="email" placeholder="Your Email" />
+						<input type="text" placeholder="I've sent you the OTP code." />
 						<button type="submit">Submit</button>
 					</div>
 				</div>
