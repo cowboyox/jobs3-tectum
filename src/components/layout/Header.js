@@ -1,12 +1,14 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
+import { useCustomContext } from "@/context/use-custom";
+import { useRouter } from "next/navigation";
 // Dependencies
 import gsap from "gsap";
 
 // Components
 import { usePopupFunctions } from "../popups/popups";
+import { useDisconnect } from "wagmi";
 
 const Header = () => {
 	const { openPopup, renderPopup } = usePopupFunctions();
@@ -16,6 +18,17 @@ const Header = () => {
 	const dropdownLink = useRef();
 	const dropdownArrow = useRef();
 	const [dropdownStatus, setDropdownStatus] = useState(false);
+
+	const router = useRouter()
+	const auth = useCustomContext()
+	const { disconnect } = useDisconnect()
+
+	useEffect(() => {
+		// check if user is authenticated
+		if(!auth.isAuthenticated){
+			router.replace('/')
+		}
+	}, [auth])
 
 	const handleMenuClick = (status) => {
 		if (status == true) {
@@ -60,6 +73,12 @@ const Header = () => {
 
 		setDropdownStatus(!dropdownStatus);
 	};
+
+	const handleSignOut = () => {
+		disconnect()
+		auth.signOut()
+		router.replace('/')
+	}
 
 	return (
 		<>
@@ -111,12 +130,19 @@ const Header = () => {
 								</li>
 							</ul>
 						</div>
-						<button
-							className="btn_sign_up"
-							onClick={() => openPopup("SignUp")}
-						>
-							Sign Up
-						</button>
+						{
+							!auth?.isAuthenticated ? <button
+								className="btn_sign_up"
+								onClick={() => openPopup("SignUp")}
+							>
+								Sign Up
+							</button> : <button
+								className="btn_sign_up"
+								onClick={handleSignOut}
+							>
+								Sign Out
+							</button>
+						}
 						<Link href={"/jobs"} className="btn_classified">
 							Classified
 						</Link>

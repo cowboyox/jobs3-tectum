@@ -1,9 +1,9 @@
 import Image from "next/image";
-import React, { useState, useContext, useEffect } from "react";
-import ContextProvider from "@/context/Context";
+import React, { useState, useEffect } from "react";
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useRouter } from "next/navigation";
-import { useAccount } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
+import { useCustomContext } from "@/context/use-custom";
 
 export function SignUpPopup({ onClose, onSwitchPopup }) {
 	const [email, setEmail] = useState(null)
@@ -12,17 +12,23 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 	const [confirmPwd, setConfirmPwd] = useState(null)
 	const [accept, setAccept] = useState(null)
 
-	const auth = useContext(ContextProvider)
+	const auth = useCustomContext()
 	const { open } = useWeb3Modal()
 	const router = useRouter()
 
 	const { address, isConnected, isDisconnected } = useAccount()
 
 	useEffect(() => {
-		if(isConnected){
-			onClose()
-			auth.signUpwithWallet(address)
-			router.push('/jobs')
+		if (isConnected) {
+			console.log('2222222222222')
+			try {
+				auth.signUpwithWallet(address)
+				onClose()
+				router.push('/jobs')
+			} catch (err) {
+				console.log(err)
+				// router.replace('/')
+			}
 		}
 	}, [isConnected, isDisconnected])
 
@@ -126,11 +132,11 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 			return false;
 		}
 		console.log('clicked')
-		try{
+		try {
 			const verified = await auth.register({ name, email, password })
-			if(!verified) onSwitchPopup("Verification")
+			if (!verified) onSwitchPopup("Verification")
 			else router.push('/jobs')
-		}catch(err){
+		} catch (err) {
 			console.log('error => ', err)
 			alert("Register error!")
 		}
@@ -241,17 +247,22 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 	const [password, setPassword] = useState(null)
 	const [accept, setAccept] = useState(null)
 
-	const auth = useContext(ContextProvider)
+	const auth = useCustomContext()
 	const { open } = useWeb3Modal()
 	const router = useRouter()
 
 	const { address, isConnected, isDisconnected } = useAccount()
 
 	useEffect(() => {
-		if(isConnected){
-			onClose()
-			auth.signInwithWallet(address)
-			router.push('/jobs')
+		if (isConnected) {
+			try {
+				auth.signInwithWallet(address)
+				onClose()
+				router.push('/jobs')
+			} catch (err) {
+				console.log(err)
+				// router.replace('/')
+			}
 		}
 	}, [isConnected, isDisconnected])
 
@@ -281,12 +292,12 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 					setEmail(ev.target.value)
 				}
 			}
-			if(type === 'password'){
-				if(ev.target.value.length < 8){
+			if (type === 'password') {
+				if (ev.target.value.length < 8) {
 					ev.target
 						.closest(".field_container")
 						.classList.add("field_error");
-				}else{
+				} else {
 					ev.target
 						.closest(".field_container")
 						.classList.remove("field_error");
@@ -312,14 +323,14 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 
 	const handleLogin = async (e) => {
 		console.log(email, password, accept)
-		if(!email || !password || password.length < 8 || !validateEmail(email) || !accept){
+		if (!email || !password || password.length < 8 || !validateEmail(email) || !accept) {
 			alert("Please check your information.")
 			return false;
 		}
-		try{
+		try {
 			await auth.login({ email, password });
 			router.push('/jobs')
-		}catch(err){
+		} catch (err) {
 			console.log(err)
 			alert("Try again to login!")
 		}

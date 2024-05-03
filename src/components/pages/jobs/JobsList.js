@@ -19,6 +19,8 @@ import { manipulateIds } from "@/utils/Helpers";
 // Skeleton Loading Styling
 import "react-loading-skeleton/dist/skeleton.css";
 
+import { useCustomContext } from "@/context/use-custom";
+
 const JobsList = () => {
 	const searchParams = useSearchParams();
 
@@ -38,6 +40,8 @@ const JobsList = () => {
 	const [filterQuery, setFilterQuery] = useState(
 		"https://main.jobs3.io/wp-json/wp/v2/jobs?orderby=date&order=desc"
 	);
+
+	const auth = useCustomContext()
 
 	const searchJobs = (e) => {
 		e.preventDefault();
@@ -91,6 +95,7 @@ const JobsList = () => {
 
 	// Filters Setup
 	useEffect(() => {
+		if(auth.isAuthenticated){
 		setFilterQuery(
 			`https://main.jobs3.io/wp-json/wp/v2/jobs?${
 				selectedSectors != "" ? `sector=${selectedSectors}&` : ""
@@ -102,6 +107,7 @@ const JobsList = () => {
 				searchWord != "" ? `search=${searchWord}&` : ""
 			}orderby=date&order=desc&per_page=${jobsLoadCount}&page=${jobsLoadPage}`
 		);
+		}
 	}, [
 		selectedSectors,
 		selectedJobStyle,

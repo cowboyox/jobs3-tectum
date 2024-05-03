@@ -1,11 +1,81 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, {useReducer, createContext} from "react";
+import PropTypes from 'prop-types'
 const { useState } = React;
 
 // Context API
-import Context from "./Context";
+// import AuthContext from "./Context";
 import api from "@/utils/api";
+
+const HANDLERS = {
+  INITIALIZE: 'INITIALIZE',
+  SIGN_IN: 'SIGN_IN',
+  SIGN_OUT: 'SIGN_OUT',
+  SIGN_IN_WALLET: 'SIGN_IN_WALLET'
+};
+
+const initialState = {
+  isAuthenticated: false,
+  isLoading: true,
+  user: null,
+  wallet: null
+};
+
+const handlers = {
+  [HANDLERS.INITIALIZE]: (state, action) => {
+    const user = action.payload;
+
+    return {
+      ...state,
+      ...(
+        // if payload (user) is provided, then is authenticated
+        user
+          ? ({
+            isAuthenticated: true,
+            isLoading: false,
+            user
+          })
+          : ({
+            isLoading: false
+          })
+      )
+    };
+  },
+  [HANDLERS.SIGN_IN]: (state, action) => {
+    const user = action.payload;
+
+    return {
+      ...state,
+      isAuthenticated: true,
+      user
+    };
+  },
+  [HANDLERS.SIGN_OUT]: (state) => {
+    return {
+      ...state,
+      isAuthenticated: false,
+      user: null,
+      wallet: null
+    };
+  },
+  [HANDLERS.SIGN_IN_WALLET]: (state, action) => {
+    const wallet = action.payload;
+
+    return {
+      ...state,
+      isAuthenticated: true,
+      wallet,
+      user: null
+    };
+  }
+};
+
+const reducer = (state, action) => (
+  handlers[action.type] ? handlers[action.type](state, action) : state
+);
+
+export const CustomContext = createContext({ undefined });
 
 const ContextProvider = ({ children }) => {
   // Context API States
@@ -17,54 +87,73 @@ const ContextProvider = ({ children }) => {
     // Define your context data here
     message: 'Hello, world!',
   };
+  const [verify_id, setVerify] = useState(null)
 
-  let isAuthenticated = false
-  let g_user = null;
-  let g_jobs = null;
-  let verify_id = null;
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const login = async (credentials) => {
     const { data } = await api.post('/api/v1/user/login', { ...credentials });
     const { user, token, verified } = data;
     api.defaults.headers.common.Authorization = token
     localStorage.setItem('jobs_2024_token', token)
-    g_user = user
-    isAuthenticated = verified
+    dispatch({
+      type: HANDLERS.SIGN_IN,
+      payload: user
+    })
+  }
+
+  const setUser = (user) => {
+    dispatch({
+      type: HANDLERS.SIGN_IN,
+      payload: user
+    });
   }
 
   const register = async (credentials) => {
       const { data } = await api.post('/api/v1/user/register', { ...credentials })
       const { user_id } = data;
-      verify_id = user_id
+      setVerify(user_id)
   }
 
   const verifyOTP = async (credential) => {
-    console.log(verify_id, credential)
     const { data } = await api.post('/api/v1/user/verify', { user_id: verify_id, otp: credential });
     const { user, token, verified } = data;
-    g_user = user
     api.defaults.headers.common.Authorization = token
     localStorage.setItem('jobs_2024_token', token)
-    isAuthenticated = verified
+    dispatch({
+      type: HANDLERS.SIGN_IN,
+      payload: user
+    })
   }
 
   const signUpwithWallet = async (wallet) => {
     const {data} = await api.post('/api/v1/user/wallet/register', { wallet });
-    g_user = wallet
-    isAuthenticated = true;
+    dispatch({
+      type: HANDLERS.SIGN_IN_WALLET,
+      payload: wallet
+    })
     return data;
   }
 
   const signInwithWallet = async (wallet) => {
     const {data} = await api.post('/api/v1/user/wallet/login', {wallet})
-    g_user = wallet
-    isAuthenticated = true;
+    dispatch({
+      type: HANDLERS.SIGN_IN_WALLET,
+      payload: wallet
+    })
     return data;
   }
 
+  const signOut = () => {
+    dispatch({
+      type: HANDLERS.SIGN_OUT,
+    })
+  }
+
   return (
-    <Context.Provider
+    <CustomContext.Provider
       value={{
+        ...state,
         preloader: [loading, setLoading],
         loading3D: [load3D, setLoad3D],
         scroll: [scrollPause, setScrollPause],
@@ -74,15 +163,22 @@ const ContextProvider = ({ children }) => {
         verifyOTP,
         signUpwithWallet,
         signInwithWallet,
-        isAuthenticated,
-        verify_id,
+        signOut,
         contextValue
       }}
     >
       {children}
-    </Context.Provider>
+    </CustomContext.Provider>
   );
 };
+
+ContextProvider.propTypes = {
+  children: PropTypes.node
+};
+
+export const CustomConsumer = CustomContext.Consumer;
+
+export const useCustomContext = () => useContext(CustomContext);
 
 export default ContextProvider;
 
