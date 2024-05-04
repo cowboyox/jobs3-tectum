@@ -256,9 +256,10 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 	useEffect(() => {
 		if (isConnected) {
 			try {
+				console.log('login 1111111111111111111111')
 				auth.signInwithWallet(address)
-				onClose()
-				router.push('/jobs')
+				console.log('login 22222222222222222222222')
+				router.replace('/jobs')
 			} catch (err) {
 				console.log(err)
 				// router.replace('/')

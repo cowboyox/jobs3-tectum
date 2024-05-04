@@ -77,7 +77,7 @@ const Header = () => {
 	const handleSignOut = () => {
 		disconnect()
 		auth.signOut()
-		router.replace('/')
+		location.href = "/"
 	}
 
 	return (
