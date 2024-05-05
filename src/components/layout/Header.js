@@ -133,7 +133,7 @@ const Header = () => {
 						{
 							!auth?.isAuthenticated ? <button
 								className="btn_sign_up"
-								onClick={() => openPopup("SignUp")}
+								onClick={() => openPopup("TypeOfAccount")}
 							>
 								Sign Up
 							</button> : <button

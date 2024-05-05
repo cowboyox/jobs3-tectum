@@ -10,6 +10,7 @@ import {
 	VerificationPopup,
 	CodePopup,
 	DashboardOptions,
+	TypeOfAccount
 } from "./popups_components";
 
 export function usePopupFunctions() {
@@ -67,6 +68,8 @@ export function usePopupFunctions() {
 						}}
 					/>
 				);
+			case "TypeOfAccount":
+				return <TypeOfAccount onClose={closePopups} />;
 			default:
 				return null;
 		}

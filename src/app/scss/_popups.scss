@@ -430,6 +430,73 @@
 					font-size: 30px;
 				}
 			}
+		} 
+		// Type Of Account
+		&.type_of_account_popup {
+			border-color: var(--main-color);
+			padding: 0;
+			.popup_content {
+				padding: 30px;
+				.left_side {
+					width: 100%;
+					align-items: center;
+					* {
+						text-align: center;
+					}
+				}
+				.all_account_types {
+					display: flex;
+					flex-direction: column;
+					gap: 20px;
+					.single_account_type {
+						padding-bottom: 20px;
+						display: flex;
+						align-items: center;
+						justify-content: space-between;
+						border-bottom: 1px solid var(--main-color);
+						.account_type_text {
+							display: flex;
+							flex-direction: column;
+							gap: 6px;
+							cursor: pointer;
+							h4 {
+								font-size: 23px;
+								font-weight: 400;
+								color: white;
+							}
+							p {
+								font-size: 15px;
+								color: white;
+								opacity: .6;
+							}
+						}
+						input {
+							display: none;
+						}
+						input[type=radio]:checked + .checkbox_simulate {
+							background: var(--main-color) !important;
+							svg { 
+								transform: scale(1);
+							}
+						}
+						.checkbox_simulate {
+							background: #aaaaaa75;
+							height: 20px;
+							width: 20px;
+							border-radius: 5px;
+							@include toCenter();
+							transition: .3s;
+							svg { 
+								transition: .3s;
+								transform: scale(0);
+								path {
+									fill: white;
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }

@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { useAccount, useDisconnect } from "wagmi";
 import { useCustomContext } from "@/context/use-custom";
 
+// Icons
+import { FaCheck } from "react-icons/fa";
+
 export function SignUpPopup({ onClose, onSwitchPopup }) {
 	const [email, setEmail] = useState(null)
 	const [name, setName] = useState(null)
@@ -745,6 +748,71 @@ export function DashboardOptions({ onClose, onSwitchPopup }) {
 							Continue with wallet
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+	);
+}
+export function TypeOfAccount({ onClose }) {
+	const account_types = [
+		{
+			id: 0,
+			account_name: 'Talent',
+			account_desc: 'Freelancers who work on the basis of a gig',
+		},
+		{
+			id: 1,
+			account_name: 'Employee',
+			account_desc: 'People looking for a long-term job and apply on the Jobs Board',
+		},
+		{
+			id: 2,
+			account_name: 'Employee',
+			account_desc: 'Companies that can post jobs on the Jobs Board',
+		},
+		{
+			id: 3,
+			account_name: 'Client',
+			account_desc: 'Users who hire people on the basis of a gig',
+		}
+	]
+	const [choosen_account_type, setChoosenAccountType] = useState(account_types[0].account_name)
+	return (
+		<div className="popup_overlay" onClick={onClose}>
+			<div
+				className="popup type_of_account_popup"
+				onClick={(e) => e.stopPropagation()}
+			>
+				<div className="popup_content">
+					<div className="top_heading">
+						<div className="left_side">
+							<h2>
+								Type Of Account
+							</h2>
+							<p>Select which account you want to create</p>
+						</div>
+					</div>
+					<form className="form_container">
+						<div className="all_account_types">
+							{account_types.map((single_acc)=> (
+								<div className="single_account_type" key={single_acc.id}>
+									<label 
+									className="account_type_text" 
+									htmlFor={`account_type_${single_acc.id}`}>
+										<h4>{single_acc.account_name}</h4>
+										<p>{single_acc.account_desc}</p>
+									</label>
+									<input id={`account_type_${single_acc.id}`} type="radio" name="acc_type"
+										onChange={ ()=> { setChoosenAccountType(single_acc.account_name) } } 
+									/>
+									<div className="checkbox_simulate">
+										<FaCheck />
+									</div>
+								</div>
+							))}
+						</div>
+						<button className="submit_form">Continue as a {choosen_account_type}</button>
+					</form>
 				</div>
 			</div>
 		</div>
