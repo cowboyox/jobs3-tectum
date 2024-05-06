@@ -643,6 +643,8 @@ export function SubscibePopup({ onClose }) {
 export function VerificationPopup({ onClose }) {
 	let content = "";
 	const auth = useCustomContext()
+	const router = useRouter()
+
 	const handleChange = (e) => {
 		content = e.target.value
 	}
@@ -654,7 +656,7 @@ export function VerificationPopup({ onClose }) {
 		}
 		try {
 			await auth.verifyOTP(content)
-			location.href = "/jobs"
+			router.push('/jobs')
 		} catch (err) {
 			console.log('error', err)
 		}
@@ -805,23 +807,23 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
 					</div>
 					<form className="form_container" onSubmit={handleSubmit}>
 						<div className="all_account_types">
-							{account_types.map((single_acc)=> {
-								return (
-									<div className="single_account_type" key={single_acc.id}>
-										<label
-											className="account_type_text"
-											htmlFor={`account_type_${single_acc.id}`}>
-											<h4>{single_acc.account_name}</h4>
-											<p>{single_acc.account_desc}</p>
-										</label>
-										<input id={`account_type_${single_acc.id}`} type="radio" name="acc_type"
-											onChange={() => { handleAccounType(single_acc.account_name, single_acc.id); } } />
-										<div className="checkbox_simulate">
-											<FaCheck />
-										</div>
-									</div>
-								);
-							})}
+							{account_types.map((single_acc) => (
+								<div className="single_account_type" key={single_acc.id}>
+									<label
+										className="account_type_text"
+										htmlFor={`account_type_${single_acc.id}`}>
+										<h4>{single_acc.account_name}</h4>
+										<p>{single_acc.account_desc}</p>
+									</label>
+									<input id={`account_type_${single_acc.id}`} type="radio" name="acc_type"
+										onChange={() => { handleAccounType(single_acc.account_name, single_acc.id) }}
+									/>
+									<label className="checkbox_simulate"
+										htmlFor={`account_type_${single_acc.id}`}>
+										<FaCheck />
+									</label>
+								</div>
+							))}
 						</div>
 						<button className="submit_form" type="submit">Continue as a {choosen_account_type}</button>
 					</form>

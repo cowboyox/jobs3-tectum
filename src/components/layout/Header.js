@@ -24,7 +24,6 @@ const Header = () => {
 	const { disconnect } = useDisconnect()
 
 	useEffect(() => {
-		// check if user is authenticated
 		if(!auth.isAuthenticated){
 			router.replace('/')
 		}

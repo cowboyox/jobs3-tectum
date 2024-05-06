@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useReducer, createContext } from "react";
+import React, { useReducer, createContext, useEffect } from "react";
 import PropTypes from 'prop-types'
 const { useState } = React;
 
@@ -58,7 +58,8 @@ const handlers = {
       ...state,
       isAuthenticated: false,
       user: null,
-      wallet: null
+      wallet: null,
+      acc_type: null
     };
   },
   [HANDLERS.SIGN_IN_WALLET]: (state, action) => {
@@ -102,7 +103,7 @@ const ContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const login = async (credentials) => {
-    if (!state.acc_type) {
+    if (state.acc_type === null) {
       alert('Please select account type');
       return;
     }
@@ -117,7 +118,7 @@ const ContextProvider = ({ children }) => {
   }
 
   const register = async (credentials) => {
-    if(!state.acc_type){
+    if(state.acc_type === null){
       alert("Please select account type")
       return;
     }
@@ -127,7 +128,7 @@ const ContextProvider = ({ children }) => {
   }
 
   const verifyOTP = async (credential) => {
-    if(!state.acc_type){
+    if(state.acc_type === null){
       alert("Please select account type")
       return;
     }
@@ -142,7 +143,7 @@ const ContextProvider = ({ children }) => {
   }
 
   const signUpwithWallet = async (wallet) => {
-    if(!state.acc_type){
+    if(state.acc_type === null){
       alert("Please select account type")
       return;
     }
@@ -155,7 +156,7 @@ const ContextProvider = ({ children }) => {
   }
 
   const signInwithWallet = async (wallet) => {
-    if(!state.acc_type){
+    if(state.acc_type === null){
       alert("Please select account type")
       return;
     }
@@ -168,7 +169,6 @@ const ContextProvider = ({ children }) => {
   }
 
   const signOut = () => {
-    setAccountType(null)
     dispatch({
       type: HANDLERS.SIGN_OUT,
     })
@@ -180,6 +180,10 @@ const ContextProvider = ({ children }) => {
       payload: role
     })
   }
+
+  useEffect(() => {
+    console.log("current state => ", state)
+  }, [state])
 
   return (
     <CustomContext.Provider

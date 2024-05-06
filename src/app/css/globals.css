@@ -9044,6 +9044,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   transition: 0.3s;
 }
 .popup_overlay .popup.type_of_account_popup .popup_content .all_account_types .single_account_type .checkbox_simulate svg {
