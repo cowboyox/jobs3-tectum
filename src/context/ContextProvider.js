@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useReducer, createContext} from "react";
+import React, { useReducer, createContext } from "react";
 import PropTypes from 'prop-types'
 const { useState } = React;
 
@@ -12,14 +12,16 @@ const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
   SIGN_IN: 'SIGN_IN',
   SIGN_OUT: 'SIGN_OUT',
-  SIGN_IN_WALLET: 'SIGN_IN_WALLET'
+  SIGN_IN_WALLET: 'SIGN_IN_WALLET',
+  ACCOUNT_TYPE: 'ACCOUNT_TYPE'
 };
 
 const initialState = {
   isAuthenticated: false,
   isLoading: true,
   user: null,
-  wallet: null
+  wallet: null,
+  acc_type: null
 };
 
 const handlers = {
@@ -68,6 +70,14 @@ const handlers = {
       wallet,
       user: null
     };
+  },
+  [HANDLERS.ACCOUNT_TYPE]: (state, action) => {
+    const acc_type = action.payload;
+
+    return {
+      ...state,
+      acc_type
+    }
   }
 };
 
@@ -92,7 +102,11 @@ const ContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const login = async (credentials) => {
-    const { data } = await api.post('/api/v1/user/login', { ...credentials });
+    if (!state.acc_type) {
+      alert('Please select account type');
+      return;
+    }
+    const { data } = await api.post('/api/v1/user/login', { ...credentials, acc_type: state.acc_type });
     const { user, token, verified } = data;
     api.defaults.headers.common.Authorization = token
     localStorage.setItem('jobs_2024_token', token)
@@ -102,21 +116,22 @@ const ContextProvider = ({ children }) => {
     })
   }
 
-  const setUser = (user) => {
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
-  }
-
   const register = async (credentials) => {
-      const { data } = await api.post('/api/v1/user/register', { ...credentials })
-      const { user_id } = data;
-      setVerify(user_id)
+    if(!state.acc_type){
+      alert("Please select account type")
+      return;
+    }
+    const { data } = await api.post('/api/v1/user/register', { ...credentials, acc_type: state.acc_type })
+    const { user_id } = data;
+    setVerify(user_id)
   }
 
   const verifyOTP = async (credential) => {
-    const { data } = await api.post('/api/v1/user/verify', { user_id: verify_id, otp: credential });
+    if(!state.acc_type){
+      alert("Please select account type")
+      return;
+    }
+    const { data } = await api.post('/api/v1/user/verify', { user_id: verify_id, otp: credential, acc_type: state.acc_type });
     const { user, token, verified } = data;
     api.defaults.headers.common.Authorization = token
     localStorage.setItem('jobs_2024_token', token)
@@ -127,7 +142,11 @@ const ContextProvider = ({ children }) => {
   }
 
   const signUpwithWallet = async (wallet) => {
-    const {data} = await api.post('/api/v1/user/wallet/register', { wallet });
+    if(!state.acc_type){
+      alert("Please select account type")
+      return;
+    }
+    const { data } = await api.post('/api/v1/user/wallet/register', { wallet, acc_type: state.acc_type });
     dispatch({
       type: HANDLERS.SIGN_IN_WALLET,
       payload: wallet
@@ -136,7 +155,11 @@ const ContextProvider = ({ children }) => {
   }
 
   const signInwithWallet = async (wallet) => {
-    const {data} = await api.post('/api/v1/user/wallet/login', {wallet})
+    if(!state.acc_type){
+      alert("Please select account type")
+      return;
+    }
+    const { data } = await api.post('/api/v1/user/wallet/login', { wallet, acc_type: state.acc_type })
     dispatch({
       type: HANDLERS.SIGN_IN_WALLET,
       payload: wallet
@@ -145,8 +168,16 @@ const ContextProvider = ({ children }) => {
   }
 
   const signOut = () => {
+    setAccountType(null)
     dispatch({
       type: HANDLERS.SIGN_OUT,
+    })
+  }
+
+  const setRole = (role) => {
+    dispatch({
+      type: HANDLERS.ACCOUNT_TYPE,
+      payload: role
     })
   }
 
@@ -164,6 +195,7 @@ const ContextProvider = ({ children }) => {
         signUpwithWallet,
         signInwithWallet,
         signOut,
+        setRole,
         contextValue
       }}
     >

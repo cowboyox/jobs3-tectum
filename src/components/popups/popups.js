@@ -69,7 +69,9 @@ export function usePopupFunctions() {
 					/>
 				);
 			case "TypeOfAccount":
-				return <TypeOfAccount onClose={closePopups} />;
+				return <TypeOfAccount onClose={closePopups} onSwitchPopup={(switchTo) => {
+					openPopup(switchTo);
+				}} />;
 			default:
 				return null;
 		}

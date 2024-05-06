@@ -23,7 +23,6 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 
 	useEffect(() => {
 		if (isConnected) {
-			console.log('2222222222222')
 			try {
 				auth.signUpwithWallet(address)
 				onClose()
@@ -259,9 +258,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 	useEffect(() => {
 		if (isConnected) {
 			try {
-				console.log('login 1111111111111111111111')
 				auth.signInwithWallet(address)
-				console.log('login 22222222222222222222222')
 				router.replace('/jobs')
 			} catch (err) {
 				console.log(err)
@@ -645,7 +642,7 @@ export function SubscibePopup({ onClose }) {
 }
 export function VerificationPopup({ onClose }) {
 	let content = "";
-	const auth = useContext(ContextProvider)
+	const auth = useCustomContext()
 	const handleChange = (e) => {
 		content = e.target.value
 	}
@@ -753,11 +750,11 @@ export function DashboardOptions({ onClose, onSwitchPopup }) {
 		</div>
 	);
 }
-export function TypeOfAccount({ onClose }) {
+export function TypeOfAccount({ onClose, onSwitchPopup }) {
 	const account_types = [
 		{
 			id: 0,
-			account_name: 'Talent',
+			account_name: 'Freelancer',
 			account_desc: 'Freelancers who work on the basis of a gig',
 		},
 		{
@@ -777,6 +774,20 @@ export function TypeOfAccount({ onClose }) {
 		}
 	]
 	const [choosen_account_type, setChoosenAccountType] = useState(account_types[0].account_name)
+
+	const auth = useCustomContext()
+
+	const handleAccounType = (name, id) => {
+		auth.setRole(id)
+		setChoosenAccountType(name)
+	}
+
+	const handleSubmit = (e) => {
+		e.preventDefault()
+		// onClose()
+		onSwitchPopup("SignUp")
+	}
+
 	return (
 		<div className="popup_overlay" onClick={onClose}>
 			<div
@@ -792,26 +803,27 @@ export function TypeOfAccount({ onClose }) {
 							<p>Select which account you want to create</p>
 						</div>
 					</div>
-					<form className="form_container">
+					<form className="form_container" onSubmit={handleSubmit}>
 						<div className="all_account_types">
-							{account_types.map((single_acc)=> (
-								<div className="single_account_type" key={single_acc.id}>
-									<label 
-									className="account_type_text" 
-									htmlFor={`account_type_${single_acc.id}`}>
-										<h4>{single_acc.account_name}</h4>
-										<p>{single_acc.account_desc}</p>
-									</label>
-									<input id={`account_type_${single_acc.id}`} type="radio" name="acc_type"
-										onChange={ ()=> { setChoosenAccountType(single_acc.account_name) } } 
-									/>
-									<div className="checkbox_simulate">
-										<FaCheck />
+							{account_types.map((single_acc)=> {
+								return (
+									<div className="single_account_type" key={single_acc.id}>
+										<label
+											className="account_type_text"
+											htmlFor={`account_type_${single_acc.id}`}>
+											<h4>{single_acc.account_name}</h4>
+											<p>{single_acc.account_desc}</p>
+										</label>
+										<input id={`account_type_${single_acc.id}`} type="radio" name="acc_type"
+											onChange={() => { handleAccounType(single_acc.account_name, single_acc.id); } } />
+										<div className="checkbox_simulate">
+											<FaCheck />
+										</div>
 									</div>
-								</div>
-							))}
+								);
+							})}
 						</div>
-						<button className="submit_form">Continue as a {choosen_account_type}</button>
+						<button className="submit_form" type="submit">Continue as a {choosen_account_type}</button>
 					</form>
 				</div>
 			</div>
