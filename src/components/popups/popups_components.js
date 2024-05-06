@@ -757,7 +757,7 @@ export function TypeOfAccount({ onClose }) {
 	const account_types = [
 		{
 			id: 0,
-			account_name: 'Talent',
+			account_name: 'Freelancer',
 			account_desc: 'Freelancers who work on the basis of a gig',
 		},
 		{
@@ -805,9 +805,10 @@ export function TypeOfAccount({ onClose }) {
 									<input id={`account_type_${single_acc.id}`} type="radio" name="acc_type"
 										onChange={ ()=> { setChoosenAccountType(single_acc.account_name) } } 
 									/>
-									<div className="checkbox_simulate">
+									<label className="checkbox_simulate"
+									htmlFor={`account_type_${single_acc.id}`}>
 										<FaCheck />
-									</div>
+									</label>
 								</div>
 							))}
 						</div>
