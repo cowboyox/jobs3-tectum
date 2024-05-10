@@ -26,7 +26,6 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 			try {
 				auth.signUpwithWallet(address)
 				onClose()
-				router.push('/jobs')
 			} catch (err) {
 				console.log(err)
 				// router.replace('/')
@@ -259,7 +258,6 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 		if (isConnected) {
 			try {
 				auth.signInwithWallet(address)
-				router.replace('/jobs')
 			} catch (err) {
 				console.log(err)
 				// router.replace('/')
