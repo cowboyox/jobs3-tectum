@@ -1,6 +1,6 @@
 "use client";
 import Layout from "@/components/layout/Layout";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -29,15 +29,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-
-
 import RichText from "@/components/elements/RichText";
 
-const FormSchema = z.object({
-  
-});
+const FormSchema = z.object({});
 
-export default function InputForm() {
+// Temporarily
+const pageReadyToLaunch = false;
+
+const PostJob = ()=> {
   const router = useRouter();
   const currentUrl = router.asPath;
   
@@ -58,7 +57,7 @@ export default function InputForm() {
   return (
     <Layout>
       <div className='container post_job'>
-        {currentUrl.includes('jobs3.io') ? (
+        {pageReadyToLaunch == false ? (
           <div className='top_section'>
               <h2>Post a New Job</h2>
               <p>
@@ -331,3 +330,4 @@ export default function InputForm() {
     </Layout>
   );
 }
+export default PostJob
