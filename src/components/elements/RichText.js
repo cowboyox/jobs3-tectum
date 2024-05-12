@@ -51,7 +51,7 @@ const MenuBar = ({ editor }) => {
   )
 }
 
-export default () => {
+const RichText = () => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -72,3 +72,5 @@ export default () => {
     </div>
   )
 }
+
+export default RichText;
