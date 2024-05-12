@@ -1,5 +1,6 @@
 "use client";
 import Layout from "@/components/layout/Layout";
+import { useRouter } from 'next/router';
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -37,6 +38,9 @@ const FormSchema = z.object({
 });
 
 export default function InputForm() {
+  const router = useRouter();
+  const currentUrl = router.asPath;
+  
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -54,7 +58,7 @@ export default function InputForm() {
   return (
     <Layout>
       <div className='container post_job'>
-        {window.location.href.includes('jobs3.io') ? (
+        {currentUrl.includes('jobs3.io') ? (
           <div className='top_section'>
               <h2>Post a New Job</h2>
               <p>
