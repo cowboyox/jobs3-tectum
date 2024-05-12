@@ -2,6 +2,7 @@
 
 import React, { useReducer, createContext, useEffect } from "react";
 import PropTypes from 'prop-types'
+import { useRouter } from "next/navigation";
 const { useState } = React;
 
 // Context API
@@ -100,6 +101,7 @@ const ContextProvider = ({ children }) => {
   };
   const [verify_id, setVerify] = useState(null)
 
+  const router = useRouter()
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const login = async (credentials) => {
@@ -118,7 +120,7 @@ const ContextProvider = ({ children }) => {
   }
 
   const register = async (credentials) => {
-    if(state.acc_type === null){
+    if (state.acc_type === null) {
       alert("Please select account type")
       return;
     }
@@ -128,7 +130,7 @@ const ContextProvider = ({ children }) => {
   }
 
   const verifyOTP = async (credential) => {
-    if(state.acc_type === null){
+    if (state.acc_type === null) {
       alert("Please select account type")
       return;
     }
@@ -143,29 +145,37 @@ const ContextProvider = ({ children }) => {
   }
 
   const signUpwithWallet = async (wallet) => {
-    if(state.acc_type === null){
+    if (state.acc_type === null) {
       alert("Please select account type")
       return;
     }
-    const { data } = await api.post('/api/v1/user/wallet/register', { wallet, acc_type: state.acc_type });
-    dispatch({
-      type: HANDLERS.SIGN_IN_WALLET,
-      payload: wallet
-    })
-    return data;
+    try {
+      const { data } = await api.post('/api/v1/user/wallet/register', { wallet, acc_type: state.acc_type });
+      dispatch({
+        type: HANDLERS.SIGN_IN_WALLET,
+        payload: wallet
+      })
+      router.push('/jobs')
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   const signInwithWallet = async (wallet) => {
-    if(state.acc_type === null){
+    if (state.acc_type === null) {
       alert("Please select account type")
       return;
     }
-    const { data } = await api.post('/api/v1/user/wallet/login', { wallet, acc_type: state.acc_type })
-    dispatch({
-      type: HANDLERS.SIGN_IN_WALLET,
-      payload: wallet
-    })
-    return data;
+    try {
+      const { data } = await api.post('/api/v1/user/wallet/login', { wallet, acc_type: state.acc_type })
+      dispatch({
+        type: HANDLERS.SIGN_IN_WALLET,
+        payload: wallet
+      })
+      router.replace('/jobs')
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   const signOut = () => {
