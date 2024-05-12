@@ -13,7 +13,7 @@ import BlogPosts from "@/components/pages/home/BlogPosts";
 
 export default function Home() {
 	return (
-		<Layout pageClass="home_page">
+		<Layout pageClass="home_page"> 
 			<Hero />
 			<GetPaid />
 			<FeaturedJobs />

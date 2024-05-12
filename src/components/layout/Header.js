@@ -21,13 +21,13 @@ const Header = () => {
 
 	const router = useRouter()
 	const auth = useCustomContext()
-	const { disconnect } = useDisconnect()
+	// const { disconnect } = useDisconnect()
 
-	useEffect(() => {
-		if(!auth.isAuthenticated){
-			router.replace('/')
-		}
-	}, [auth])
+	// useEffect(() => {
+	// 	if(!auth.isAuthenticated){
+	// 		router.replace('/')
+	// 	}
+	// }, [auth])
 
 	const handleMenuClick = (status) => {
 		if (status == true) {
@@ -118,14 +118,14 @@ const Header = () => {
 								<li>
 									<Link
 										href={
-											"/litepaper"
+											"https://three-3.gitbook.io/litepaper"
 										}
 									>
 										LitePaper
 									</Link>
 								</li>
 								<li>
-									<Link href={"#"}>Tokenomics</Link>
+									<Link href={"https://three-3.gitbook.io/litepaper/tokenomics-of-the-three-protocol"}>Tokenomics</Link>
 								</li>
 							</ul>
 						</div>

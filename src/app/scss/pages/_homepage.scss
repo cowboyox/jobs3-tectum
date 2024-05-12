@@ -160,18 +160,26 @@
 			.sl_logos {
 				border-top: 1px solid #353535;
 				border-bottom: 1px solid #353535;
-				background: var(--Dark, #000);
+				background: #000;
 				width: 100%;
 				padding: 27px 0;
+				.rfm-marquee {
+					min-width: auto !important;
+				}
 				.logos-set {
 					display: flex;
 					gap: 55px;
 					align-items: center;
 					justify-items: center;
-					padding-right: 50px;
+					padding-right: 30px;
 					img {
 						width: auto;
-						height: 60px;
+						height: 50px;
+						filter: grayscale(100%);
+						transition: .3s;
+						&:hover {
+							filter: grayscale(0);
+						}
 					}
 				}
 			}

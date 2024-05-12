@@ -1,0 +1,120 @@
+.post_job {
+	padding: 0;
+	padding-top: 200px;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+    gap: 60px;
+    
+	&::after {
+		content: "";
+		position: absolute;
+		left: 50%;
+		top: 350px;
+		transform: translateX(-50%);
+		height: 220px;
+		width: 60%;
+		border-radius: 50%;
+		background: linear-gradient(
+			103deg,
+			rgba(242, 130, 8, 0.65) -22.72%,
+			rgba(232, 228, 216, 0.8) 116.37%
+		);
+		filter: blur(300px);
+	}
+
+    .top_section {
+        h2 {
+            color: #f5f5f5;
+            text-align: center;
+            text-shadow: 0px 60.444px 160px rgba(0, 0, 0, 0.8);
+            font-size: 100px;
+            font-style: normal;
+            font-weight: 400;
+            letter-spacing: -2.916px;
+            text-transform: capitalize;
+            position: relative;
+            z-index: 1;
+        }
+    
+        & > p {
+            margin-top: 60px;
+            color: #f5f5f5;
+            text-align: center;
+            font-size: 22px;
+            font-style: normal;
+            font-weight: 400;
+            text-transform: capitalize;
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+        }
+    }
+    .jobs_forms_container {
+        border-radius: 20px;
+        border: 1px solid #aaaaaaaa;
+        width: 100%;
+        .job_form {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 50px;
+            border-bottom: 1px solid #aaaaaaaa;
+            &:last-child {
+                border-bottom: 0;
+            }
+            h3 {
+                font-size: 40px;
+                color: white;
+            }
+            @for $i from 1 through 100 {
+                .cols-#{$i} {
+                    display: grid;
+                    grid-gap: 30px;
+                    grid-template-columns: repeat(#{$i}, 1fr);
+                }
+            };
+
+            label {
+                font-size: 20px;
+            }
+
+            /* Text Editor Styles */
+            .editor_container { 
+                display: flex;
+                flex-direction: column;
+                border: 1px solid #313744;
+                border-radius: 5px;
+                .editor_topbar { 
+                    border-bottom: 1px solid #313744;
+                    padding: 20px;
+                    display: flex;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    & > div {
+                        border: 1px solid white;
+                        padding: 2px 10px;
+                        border-radius: 5px;
+                        transition: .3s;
+                        cursor: pointer;
+                        &:hover,
+                        &.is-active {
+                            background: white;
+                            color: black;
+                        }
+                    }
+                }
+                .editor_con {
+                    padding: 20px;
+                    .tiptap {
+                        outline: none;
+                        max-height: 300px;
+                        min-height: 100px;
+                        overflow-y: scroll;
+                    }
+                }
+            }
+        }
+    }
+}
