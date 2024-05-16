@@ -30,7 +30,7 @@ h6 {
 }
 
 body {
-  background: black;
+  background-color: black !important;
   overflow-x: hidden;
 }
 
@@ -197,20 +197,28 @@ body {
 .home_page .hero_section .section_content .sl_logos {
   border-top: 1px solid #353535;
   border-bottom: 1px solid #353535;
-  background: var(--Dark, #000);
+  background: #000;
   width: 100%;
   padding: 27px 0;
+}
+.home_page .hero_section .section_content .sl_logos .rfm-marquee {
+  min-width: auto !important;
 }
 .home_page .hero_section .section_content .sl_logos .logos-set {
   display: flex;
   gap: 55px;
   align-items: center;
   justify-items: center;
-  padding-right: 50px;
+  padding-right: 30px;
 }
 .home_page .hero_section .section_content .sl_logos .logos-set img {
   width: auto;
-  height: 60px;
+  height: 50px;
+  filter: grayscale(100%);
+  transition: 0.3s;
+}
+.home_page .hero_section .section_content .sl_logos .logos-set img:hover {
+  filter: grayscale(0);
 }
 .home_page .rich_text {
   display: flex;
@@ -6901,6 +6909,608 @@ body {
     border: 1px solid var(--main-color);
   }
 }
+.post_job {
+  padding: 0;
+  padding-top: 200px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60px;
+}
+.post_job::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 350px;
+  transform: translateX(-50%);
+  height: 220px;
+  width: 60%;
+  border-radius: 50%;
+  background: linear-gradient(103deg, rgba(242, 130, 8, 0.65) -22.72%, rgba(232, 228, 216, 0.8) 116.37%);
+  filter: blur(300px);
+}
+.post_job .top_section h2 {
+  color: #f5f5f5;
+  text-align: center;
+  text-shadow: 0px 60.444px 160px rgba(0, 0, 0, 0.8);
+  font-size: 100px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -2.916px;
+  text-transform: capitalize;
+  position: relative;
+  z-index: 1;
+}
+.post_job .top_section > p {
+  margin-top: 60px;
+  color: #f5f5f5;
+  text-align: center;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 400;
+  text-transform: capitalize;
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+}
+.post_job .jobs_forms_container {
+  border-radius: 20px;
+  border: 1px solid rgba(170, 170, 170, 0.6666666667);
+  width: 100%;
+}
+.post_job .jobs_forms_container .job_form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 50px;
+  border-bottom: 1px solid rgba(170, 170, 170, 0.6666666667);
+  /* Text Editor Styles */
+}
+.post_job .jobs_forms_container .job_form:last-child {
+  border-bottom: 0;
+}
+.post_job .jobs_forms_container .job_form h3 {
+  font-size: 40px;
+  color: white;
+}
+.post_job .jobs_forms_container .job_form .cols-1 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(1, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-2 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(2, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-3 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(3, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-4 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(4, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-5 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(5, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-6 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(6, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-7 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(7, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-8 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(8, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-9 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(9, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-10 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(10, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-11 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(11, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-12 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(12, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-13 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(13, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-14 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(14, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-15 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(15, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-16 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(16, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-17 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(17, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-18 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(18, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-19 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(19, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-20 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(20, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-21 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(21, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-22 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(22, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-23 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(23, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-24 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(24, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-25 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(25, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-26 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(26, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-27 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(27, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-28 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(28, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-29 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(29, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-30 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(30, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-31 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(31, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-32 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(32, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-33 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(33, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-34 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(34, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-35 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(35, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-36 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(36, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-37 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(37, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-38 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(38, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-39 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(39, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-40 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(40, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-41 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(41, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-42 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(42, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-43 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(43, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-44 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(44, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-45 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(45, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-46 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(46, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-47 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(47, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-48 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(48, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-49 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(49, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-50 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(50, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-51 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(51, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-52 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(52, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-53 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(53, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-54 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(54, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-55 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(55, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-56 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(56, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-57 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(57, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-58 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(58, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-59 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(59, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-60 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(60, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-61 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(61, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-62 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(62, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-63 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(63, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-64 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(64, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-65 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(65, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-66 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(66, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-67 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(67, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-68 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(68, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-69 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(69, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-70 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(70, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-71 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(71, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-72 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(72, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-73 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(73, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-74 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(74, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-75 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(75, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-76 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(76, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-77 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(77, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-78 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(78, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-79 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(79, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-80 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(80, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-81 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(81, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-82 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(82, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-83 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(83, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-84 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(84, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-85 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(85, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-86 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(86, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-87 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(87, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-88 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(88, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-89 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(89, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-90 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(90, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-91 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(91, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-92 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(92, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-93 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(93, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-94 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(94, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-95 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(95, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-96 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(96, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-97 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(97, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-98 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(98, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-99 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(99, 1fr);
+}
+.post_job .jobs_forms_container .job_form .cols-100 {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(100, 1fr);
+}
+.post_job .jobs_forms_container .job_form label {
+  font-size: 20px;
+}
+.post_job .jobs_forms_container .job_form .editor_container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #313744;
+  border-radius: 5px;
+}
+.post_job .jobs_forms_container .job_form .editor_container .editor_topbar {
+  border-bottom: 1px solid #313744;
+  padding: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.post_job .jobs_forms_container .job_form .editor_container .editor_topbar > div {
+  border: 1px solid white;
+  padding: 2px 10px;
+  border-radius: 5px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.post_job .jobs_forms_container .job_form .editor_container .editor_topbar > div:hover, .post_job .jobs_forms_container .job_form .editor_container .editor_topbar > div.is-active {
+  background: white;
+  color: black;
+}
+.post_job .jobs_forms_container .job_form .editor_container .editor_con {
+  padding: 20px;
+}
+.post_job .jobs_forms_container .job_form .editor_container .editor_con .tiptap {
+  outline: none;
+  max-height: 300px;
+  min-height: 100px;
+  overflow-y: scroll;
+}
+
 .main_sidebar {
   background: #0e1318;
   width: 300px;
