@@ -6093,6 +6093,7 @@ body {
 .litepaper_page .litepaper_mainpage .litepaper_bottom_navigation .page_navigationBtn {
   width: 48%;
   color: #222 !important;
+  background-color: rgba(255, 255, 255, 1);
   display: flex;
   justify-content: space-between;
   align-items: center;
