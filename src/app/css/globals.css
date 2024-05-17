@@ -6091,10 +6091,10 @@ body {
   margin: 20px 0;
 }
 .litepaper_page .litepaper_mainpage .litepaper_bottom_navigation .page_navigationBtn {
+  display: flex;
   width: 48%;
   color: #222 !important;
-  background-color: rgba(255, 255, 255, 1);
-  display: flex;
+  background-color: rgba(255, 255, 255, 1) !important;
   justify-content: space-between;
   align-items: center;
   padding: 8px;
