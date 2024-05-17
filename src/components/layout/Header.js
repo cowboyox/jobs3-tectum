@@ -21,7 +21,7 @@ const Header = () => {
 
 	const router = useRouter()
 	const auth = useCustomContext()
-	// const { disconnect } = useDisconnect()
+	const { disconnect } = useDisconnect()
 
 	// useEffect(() => {
 	// 	if(!auth.isAuthenticated){
@@ -116,9 +116,16 @@ const Header = () => {
 									<Link href={"/roadmap"}>Roadmap</Link>
 								</li>
 								<li>
-									<Link
+									{/* <Link
 										href={
 											"https://three-3.gitbook.io/litepaper"
+										}
+									>
+										LitePaper
+									</Link> */}
+									<Link
+										href={
+											"/litepaper"
 										}
 									>
 										LitePaper
