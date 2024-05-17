@@ -116,20 +116,20 @@ const Header = () => {
 									<Link href={"/roadmap"}>Roadmap</Link>
 								</li>
 								<li>
-									{/* <Link
+									<Link
 										href={
 											"https://three-3.gitbook.io/litepaper"
 										}
 									>
 										LitePaper
-									</Link> */}
-									<Link
+									</Link>
+									{/* <Link
 										href={
 											"/litepaper"
 										}
 									>
 										LitePaper
-									</Link>
+									</Link> */}
 								</li>
 								<li>
 									<Link href={"https://three-3.gitbook.io/litepaper/tokenomics-of-the-three-protocol"}>Tokenomics</Link>
