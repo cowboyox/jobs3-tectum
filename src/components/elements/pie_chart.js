@@ -2,8 +2,9 @@ import React from 'react';
  
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official'; 
-import variablePie from 'highcharts/modules/variable-pie';
-variablePie(Highcharts); 
+// Switched to pie instead of variable pie as it's causing issues for nextjs deployment
+// import variablePie from 'highcharts/modules/variable-pie';
+// variablePie(Highcharts);  
 
 export default function PieChart( props ) {  
     return ( 

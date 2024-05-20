@@ -115,6 +115,7 @@ const JobsList = () => {
 		jobsLoadCount,
 		jobsLoadPage,
 		searchWord,
+		auth.isAuthenticated
 	]);
 
 	// Load More Jobs

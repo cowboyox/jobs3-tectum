@@ -10,7 +10,7 @@ import DataTable from  '../../../components/elements/data_table';
 export default function ClientDashboard() {
     const assets_data = {
         chart: {
-            type: 'variablepie',
+            type: 'pie',
             backgroundColor: 'transparent',
         },
         title: {

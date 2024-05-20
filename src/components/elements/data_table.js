@@ -5,7 +5,7 @@ import { IoClipboardOutline } from "react-icons/io5";
 import { FaAngleDown } from "react-icons/fa6";
 
 
-export default function DataTable( props ) {
+const DataTable = ( props )=> {
     const [selectedStatusOption, setSelectedStatusOption] = useState('all');
     const filteredRows = props.data_rows.filter(single_data => {
         if (selectedStatusOption === 'all') {
@@ -45,7 +45,7 @@ export default function DataTable( props ) {
             </div>
             <div className="table_content">
                 { filteredRows.map(single_data => (
-                    <div className="table_row" key={single_data.row_id}>
+                    <div className="table_row" key={single_data.id}>
                         <div className="half_table">
                             <div className="col_1 content_name">
                                 <div className={`copy_clypboard ${single_data.row_status}`}><IoClipboardOutline /></div> 
@@ -73,3 +73,4 @@ export default function DataTable( props ) {
         </div>
     )
 }
+export default DataTable
