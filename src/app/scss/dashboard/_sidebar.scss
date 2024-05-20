@@ -204,7 +204,7 @@
         gap: 14px;
         font-size: 22.254px;
         font-style: normal;
-        font-weight: 700;
+        font-weight: 500;
         line-height: normal;
         padding: 0 18px;
         margin-top: 20px;
@@ -240,8 +240,9 @@
                 border-radius: 50%;
                 border: 1px solid transparent;
                 transition: .3s;
+                aspect-ratio: 1 / 1;
                 svg {
-                    width: 100%;
+                    width: 50%;
                     height: fit-content;
                 }
                 &:hover {

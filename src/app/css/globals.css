@@ -6091,10 +6091,10 @@ body {
   margin: 20px 0;
 }
 .litepaper_page .litepaper_mainpage .litepaper_bottom_navigation .page_navigationBtn {
-  display: flex;
   width: 48%;
   color: #222 !important;
-  background-color: rgba(255, 255, 255, 1) !important;
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px;
@@ -7698,7 +7698,7 @@ body {
   gap: 14px;
   font-size: 22.254px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 500;
   line-height: normal;
   padding: 0 18px;
   margin-top: 20px;
@@ -7742,9 +7742,10 @@ body {
   border-radius: 50%;
   border: 1px solid transparent;
   transition: 0.3s;
+  aspect-ratio: 1/1;
 }
 .main_sidebar .menu_bottom .social_icons a svg {
-  width: 100%;
+  width: 50%;
   height: -moz-fit-content;
   height: fit-content;
 }
@@ -7949,7 +7950,7 @@ body {
   border-radius: 10px;
   border: 1px solid rgba(250, 251, 252, 0.54);
   color: rgba(250, 251, 252, 0.54);
-  font-family: var(--font-blinker);
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -8313,10 +8314,10 @@ body {
   background: var(--main-color);
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_top .pie_chart .chart_keys .chart_item .chart_color.light_c {
-  background: #353535;
+  background: #96B0BD;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_top .pie_chart .chart_keys .chart_item .chart_color.dark_c {
-  background: #353535;
+  background: #516170;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_top .pie_chart .chart_keys .chart_item span {
   color: #FAFBFC;
@@ -8358,7 +8359,7 @@ body {
   line-height: normal;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_bottom .data_table .table_head .table_type {
-  color: #353535;
+  color: #516170;
   font-size: 18px;
   font-weight: 600;
   text-transform: capitalize;
@@ -8369,7 +8370,7 @@ body {
   cursor: pointer;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_bottom .data_table .table_head .table_category {
-  color: #353535;
+  color: #96B0BD;
   font-size: 18px;
   font-weight: 600;
   text-transform: capitalize;
@@ -8396,7 +8397,7 @@ body {
   border-radius: 10px;
   border: 1px solid rgba(250, 251, 252, 0.54);
   color: rgba(250, 251, 252, 0.54);
-  font-family: var(--font-blinker);
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -8468,7 +8469,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #353535;
+  background: #516170;
   border-radius: 50%;
   position: relative;
   cursor: pointer;
@@ -8482,7 +8483,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 1px solid #353535;
+  border: 1px solid #516170;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_bottom .data_table .table_content .content_name .copy_clypboard svg {
   height: 60%;
@@ -8499,7 +8500,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #353535;
+  color: #96B0BD;
   font-size: 18px;
   font-weight: 500;
   text-transform: capitalize;
@@ -8509,7 +8510,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #353535;
+  color: #516170;
   font-size: 16px;
   font-weight: 6600;
   text-transform: capitalize;
@@ -8526,8 +8527,8 @@ body {
   width: -moz-fit-content;
   width: fit-content;
   border-radius: 10px;
-  border: 1px solid #353535;
-  color: #353535;
+  border: 1px solid #516170;
+  color: #516170;
   font-size: 14px;
   text-transform: capitalize;
 }
@@ -8602,7 +8603,7 @@ body {
   letter-spacing: 0.6px;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_right_side .single_user_data .user_data_content .user_data_left span {
-  color: #353535;
+  color: #96B0BD;
   font-size: 22px;
   font-style: normal;
   font-weight: 600;
@@ -8758,7 +8759,7 @@ body {
   .client_dashboard_page .client_dashboard_dashboard .client_dashboard_right_side .single_user_data > h3 {
     font-size: 18px;
     font-weight: 500;
-    font-family: var(--font-blinker);
+    font-family: "Inter", sans-serif;
   }
   .client_dashboard_page .client_dashboard_dashboard .client_dashboard_right_side .single_user_data .user_data_content {
     display: flex;
@@ -8836,6 +8837,10 @@ body {
   letter-spacing: -0.24px;
   cursor: pointer;
 }
+.proposals_page .form_filter .filter_options .f_option svg {
+  width: 25px;
+  height: 25px;
+}
 .proposals_page .data_table {
   margin-top: 60px;
   padding-left: 30px;
@@ -8870,7 +8875,7 @@ body {
   line-height: normal;
 }
 .proposals_page .data_table .table_head .table_type {
-  color: #353535;
+  color: #516170;
   font-size: 18px;
   font-weight: 600;
   text-transform: capitalize;
@@ -8881,7 +8886,7 @@ body {
   cursor: pointer;
 }
 .proposals_page .data_table .table_head .table_category {
-  color: #353535;
+  color: #96B0BD;
   font-size: 18px;
   font-weight: 600;
   text-transform: capitalize;
@@ -8907,7 +8912,7 @@ body {
   border-radius: 10px;
   border: 1px solid rgba(250, 251, 252, 0.54);
   color: rgba(250, 251, 252, 0.54);
-  font-family: var(--font-blinker);
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -8960,7 +8965,7 @@ body {
   transform: translateY(10px);
 }
 .proposals_page .data_table .table_head .col_1:not(.table_status) {
-  color: #353535;
+  color: #96B0BD;
   font-size: 17px;
   font-weight: 500;
   letter-spacing: -0.25px;
@@ -8985,7 +8990,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #353535;
+  background: #516170;
   border-radius: 50%;
   position: relative;
   cursor: pointer;
@@ -8999,7 +9004,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 1px solid #353535;
+  border: 1px solid #516170;
 }
 .proposals_page .data_table .table_content .content_name .copy_clypboard svg {
   height: 60%;
@@ -9020,8 +9025,8 @@ body {
   width: -moz-fit-content;
   width: fit-content;
   border-radius: 10px;
-  border: 1px solid #353535;
-  color: #353535;
+  border: 1px solid #516170;
+  color: #516170;
   font-size: 14px;
   text-transform: capitalize;
 }
@@ -9052,7 +9057,7 @@ body {
   margin-top: 20px;
 }
 .proposals_page .data_table .table_pagination p.showing_data {
-  color: #353535;
+  color: #96B0BD;
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.25px;
@@ -9069,7 +9074,7 @@ body {
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  background: #353535;
+  background: #96B0BD;
   font-size: 14px;
   cursor: pointer;
   color: white;
