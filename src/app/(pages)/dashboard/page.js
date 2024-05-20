@@ -224,7 +224,7 @@ export default function ClientDashboard() {
                 <div className="client_dashboard_right_side panels_container">
                     <div className="panel">
                         {allUserDataAnalytics.map(singleDataAnalytics => (
-                            <div className="single_user_data">
+                            <div className="single_user_data" key={singleDataAnalytics.id}>
                                 <h3>{singleDataAnalytics.dataTitle}</h3>
                                 <div className="user_data_content">
                                     <div className="user_data_left">
