@@ -139,7 +139,6 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 			else router.push('/jobs')
 		} catch (err) {
 			console.log('error => ', err)
-			alert("Register error!")
 		}
 	}
 
@@ -331,7 +330,6 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 			router.push('/jobs')
 		} catch (err) {
 			console.log(err)
-			alert("Try again to login!")
 		}
 	}
 	return (
