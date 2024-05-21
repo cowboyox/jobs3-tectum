@@ -23,16 +23,18 @@ const Litepaper = () => {
 		async function fetchListOfPages() {
 			document.getElementById('mask').style.display = 'flex'
 			const user_response = await client.user.getAuthenticatedUser()
+			// console.log("result:", user_response.data)
 			const { id } = user_response.data;
 			const res = await client.orgs.listSpacesInOrganizationById(org_id)
 			const { items } = res.data;
+			console.log("items:", items)
 			const space_res = await client.spaces.listPages(items[1].id)
 			console.log(space_res.data.pages)
-			const document_res = await client.spaces.getPageById(items[items.length - 1].id, space_res.data.pages[0].id, { format: 'document' })
+			const document_res = await client.spaces.getPageById(items[1].id, space_res.data.pages[0].id, { format: 'document' })
 			console.log(document_res.data)
 			// const file_res = await client.spaces.getFileById(items[items.length - 1].id, "jygegVi0ytQNQ1wBByb9")
 			// console.log(file_res.data.downloadURL)
-			setOrg(items[items.length - 1])
+			setOrg(items[1])
 			setContent(document_res.data)
 			setNavigation({ prev: null, next: space_res.data.pages[1] })
 			setPages(space_res.data.pages.slice(0, space_res.data.pages.length - 1))
