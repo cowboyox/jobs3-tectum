@@ -647,7 +647,7 @@ export function VerificationPopup({ onClose }) {
 
 	const handleSubmit = async (e) => {
 		if (!content || content.length < 1) {
-			alert('Please enter your email to verify')
+			alert('Please enter the code to verify')
 			return false;
 		}
 		try {
@@ -673,9 +673,9 @@ export function VerificationPopup({ onClose }) {
 						/>
 					</div>
 					<h2>Verification</h2>
-					<p>Enter your email to confirm your account </p>
+					<p>Enter your code to confirm your account </p>
 					<div className="email_form">
-						<input type="text" placeholder="Your Email" onChange={handleChange} />
+						<input type="text" placeholder="Your Code" onChange={handleChange} />
 						<button type="submit" onClick={handleSubmit}>Submit</button>
 					</div>
 				</div>
