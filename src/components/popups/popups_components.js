@@ -13,6 +13,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 	const [name, setName] = useState(null)
 	const [password, setPassword] = useState(null)
 	const [confirmPwd, setConfirmPwd] = useState(null)
+	const [referralUser, setReferralUser] = useState(null)
 	const [accept, setAccept] = useState(null)
 
 	const auth = useCustomContext()
@@ -97,6 +98,13 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 					setConfirmPwd(ev.target.value)
 				}
 			}
+			if (attr === "referralUser") {
+				console.log(referralUser, "   ===   ", ev.target.value);
+				ev.target
+						.closest(".field_container")
+						?.classList.remove("field_error");
+					setReferralUser(ev.target.value);
+			}
 			if (attr === "accept") {
 				if (!ev.target.checked) {
 					ev.target
@@ -134,7 +142,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 		}
 		console.log('clicked')
 		try {
-			const verified = await auth.register({ name, email, password })
+			const verified = await auth.register({ name, email, password, referralUser })
 			if (!verified) onSwitchPopup("Verification")
 			else router.push('/jobs')
 		} catch (err) {
@@ -217,6 +225,21 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 							</label>
 							<span className="error_message">
 								The confirm password should be more than 8 characters and matched with your password.
+							</span>
+						</div>
+						<div className="field_container">
+							<input
+								type="text"
+								id="referral_user"
+								onChange={(ev) => {
+									checkInput(ev, 'referralUser');
+								}}
+							/>
+							<label htmlFor="referral_user">
+								Referral User
+							</label>
+							<span className="error_message">
+								
 							</span>
 						</div>
 						<div className="acceptance">
