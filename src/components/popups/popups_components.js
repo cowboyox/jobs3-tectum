@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { useWeb3Modal } from '@web3modal/wagmi/react'
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAccount, useDisconnect } from "wagmi";
 import { useCustomContext } from "@/context/use-custom";
 
@@ -9,18 +9,25 @@ import { useCustomContext } from "@/context/use-custom";
 import { FaCheck } from "react-icons/fa";
 
 export function SignUpPopup({ onClose, onSwitchPopup }) {
+	const searchParams = useSearchParams();
 	const [email, setEmail] = useState(null)
 	const [name, setName] = useState(null)
 	const [password, setPassword] = useState(null)
 	const [confirmPwd, setConfirmPwd] = useState(null)
 	const [referralUser, setReferralUser] = useState(null)
+	const [referrer, setReferrer] = useState("");
 	const [accept, setAccept] = useState(null)
-
+	
 	const auth = useCustomContext()
 	const { open } = useWeb3Modal()
 	const router = useRouter()
-
+	
 	const { address, isConnected, isDisconnected } = useAccount()
+	
+	useEffect(() => {
+		const tmp = searchParams.get('referrer');
+		setReferrer(tmp);
+	}, []);
 
 	useEffect(() => {
 		if (isConnected) {
@@ -142,7 +149,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 		}
 		console.log('clicked')
 		try {
-			const verified = await auth.register({ name, email, password, referralUser })
+			const verified = await auth.register({ name, email, password, referralUser, referrer })
 			if (!verified) onSwitchPopup("Verification")
 			else router.push('/jobs')
 		} catch (err) {
@@ -227,21 +234,23 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 								The confirm password should be more than 8 characters and matched with your password.
 							</span>
 						</div>
-						<div className="field_container">
-							<input
-								type="text"
-								id="referral_user"
-								onChange={(ev) => {
-									checkInput(ev, 'referralUser');
-								}}
-							/>
-							<label htmlFor="referral_user">
-								Referral User
-							</label>
-							<span className="error_message">
-								
-							</span>
-						</div>
+						{!referrer &&
+							<div className="field_container">
+								<input
+									type="text"
+									id="referral_user"
+									onChange={(ev) => {
+										checkInput(ev, 'referralUser');
+									}}
+								/>
+								<label htmlFor="referral_user">
+									Referral User
+								</label>
+								<span className="error_message">
+									
+								</span>
+							</div>
+						}
 						<div className="acceptance">
 							<input
 								type="checkbox"
