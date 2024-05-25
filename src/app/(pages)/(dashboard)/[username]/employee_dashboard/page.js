@@ -161,7 +161,7 @@ export default function Profile(parameters) {
                                                 💪 Flexible problem-solving approach
                                             </p>
                                             <p>
-                                                Also, I'm the founder of an Indonesia-based design agency, where I lead a team of talented Website designer, UX designers and Figma designer. I take a flexible problem-solving approach to every project, and I'm confident that my experience and expertise can help us create a functional and visually appealing design for your website or app.
+                                                Also, I&apos;m the founder of an Indonesia-based design agency, where I lead a team of talented Website designer, UX designers and Figma designer. I take a flexible problem-solving approach to every project, and I&apos;m confident that my experience and expertise can help us create a functional and visually appealing design for your website or app.
                                             </p>
                                             <p>
                                                 My design deliverables: <br />
@@ -187,7 +187,7 @@ export default function Profile(parameters) {
                                                 🎨 TRELLO / ASANA for project management
                                             </p>
                                             <p>
-                                                Take a look at my Upwork profile and portfolio to see if I'm the right fit for your project. I'm excited to hear more about your ideas and help bring them to life. Don't hesitate to send me a job invitation and let's chat!
+                                                Take a look at my Upwork profile and portfolio to see if I&apos;m the right fit for your project. I&apos;m excited to hear more about your ideas and help bring them to life. Don&apos;t hesitate to send me a job invitation and let&apos;s chat!
                                             </p>
                                             <p>
                                                 ----- <br />
