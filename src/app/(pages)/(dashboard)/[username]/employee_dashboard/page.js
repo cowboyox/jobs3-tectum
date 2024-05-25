@@ -8,7 +8,7 @@ import { fixHTMLEntities, formatDate } from "@/utils/Helpers";
 import { GoChevronRight } from "react-icons/go"; 
 import { FaLink } from "react-icons/fa6";
 
-export default function Profile(parameters) {  
+export default function EmployerProfile(parameters) {  
     const [activeProfileTab, setactiveProfileTab] = useState('all_work');
     const handleTabClick = (tabName) => {
         setactiveProfileTab(tabName);
