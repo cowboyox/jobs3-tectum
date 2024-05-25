@@ -1,22 +1,6 @@
 .profile_page {
     position: relative;
-    padding: 0 5%;
-    margin-top: 150px; 
-    &::after {
-        content: '';
-        position: absolute; 
-        top: 0;
-        width: 514px;
-        transform: translateY(-20px);
-        height: 300px;
-        border-radius: 50%;
-        background: linear-gradient(103deg, rgba(242, 130, 8, 0.65) -22.72%, rgba(232, 228, 216, 0.80) 116.37%);
-        filter: blur(200px);
-        z-index: 0;
-    }
     .profile_container {
-        border: 1px solid #353535;
-        border-radius: 21px ;
         display: flex;
         flex-direction: column;
         position: relative;
@@ -24,7 +8,6 @@
         .profile_top {
             width: 100%;
             border-bottom: 1px solid #353535;
-            padding: 42px;
             padding-bottom: 60px;
             display: flex;
             align-items: flex-start;
@@ -38,10 +21,12 @@
                     border-radius: 50%;
                     z-index: 0;
                 }
-                svg {
+                .status_icon {
                     position: absolute;
                     top: 0;
                     left: 0;
+                    width:  25px;
+                    height: 25px;
                     z-index: 1;
                 }
             }
@@ -106,7 +91,7 @@
             .profile_left {
                 width: 100%;
                 .navigate_profile_tabs { 
-                    padding: 40px;
+                    padding: 40px 20px 40px 0; 
                     border-bottom: 1px solid #353535;
                     display: flex;
                     flex-direction: column;
@@ -160,7 +145,7 @@
                     }
                 }
                 .ready_to_work { 
-                    padding: 33px;
+                    padding: 40px 20px 40px 0; 
                     border-bottom: 1px solid #353535;
                     display: flex;
                     flex-direction: column;
@@ -195,7 +180,7 @@
                     }
                 }
                 .profile_summary_stats { 
-                    padding: 33px;
+                    padding: 40px 20px 40px 0; 
                     border-bottom: 1px solid #353535;
                     display: flex;
                     align-items: center;
@@ -220,7 +205,7 @@
                     }
                 }
                 .other_profile_details { 
-                    padding: 33px;
+                    padding: 40px 20px 40px 0; 
                     display: flex;
                     align-items: center;
                     flex-wrap: wrap;
@@ -319,6 +304,7 @@
                         letter-spacing: 0.5px;
                     }
                     .book_consultation_container {
+                        position: relative;
                         padding: 40px;
                         border-radius: 25px;
                         border: 1.3px solid #353535;
@@ -367,23 +353,24 @@
                                 }
                             }
                         }
-                        .right_consultation {
-                            a {
-                                border-radius: 50px;
-                                border: 2.7px solid var(--main-color);
-                                background: rgba(60, 78, 87, 0.08);
-                                padding: 10px 25px;
-                                color: var(--main-color);
-                                font-size: 16px;
-                                font-weight: 600;
-                                letter-spacing: 0.43px;
-                                transition: .3s;
-                                &:hover {
-                                    background: var(--main-color);
-                                    color: white;
-                                }
+                        a.book_consultaion_cta {
+                            position: absolute;
+                            top: 20px;
+                            right: 20px;
+                            border-radius: 50px;
+                            border: 2.7px solid var(--main-color);
+                            background: rgba(60, 78, 87, 0.08);
+                            padding: 10px 25px;
+                            color: var(--main-color);
+                            font-size: 16px;
+                            font-weight: 600;
+                            letter-spacing: 0.43px;
+                            transition: .3s;
+                            &:hover {
+                                background: var(--main-color);
+                                color: white;
                             }
-                        }
+                        } 
                     }
                 }
                 .work_history {
@@ -697,17 +684,17 @@
         padding: 0 5%;
         margin-top: 60px;  
         .profile_container {
-            border: 1px solid #353535;
             border-radius: 5px ; 
+            border: 1px solid #353535;
             .profile_top { 
                 padding-bottom: unset;
-                padding: 8px 10px;
+                padding: 20px;
                 .profile_img {
                     img { 
                         height: 50px;
                         width:  50px;
                     }
-                    svg {
+                    .status_icon {
                         position: absolute;
                         height: 15px;
                         width:  15px; 
@@ -719,6 +706,7 @@
                         gap: 10px;
                         h2 { 
                             font-size: 20px; 
+                            text-transform: capitalize;
                         }
                         img {
                             width: 20px;
@@ -841,8 +829,10 @@
                             padding: 10px;
                             border-radius: 8px; 
                             position: relative;
+                            flex-direction: column;
+                            gap: 20px;
                             .left_consultation {
-                                gap: 5px;
+                                gap: 10px;
                                 h4 { 
                                     font-size: 15px; 
                                 }
@@ -861,15 +851,14 @@
                                     }
                                 }
                             }
-                            .right_consultation {
-                                position: absolute;
-                                top: 10px;
-                                right: 10px;
-                                a {
-                                    padding: 3px 10px;
-                                    border:1px solid var(--main-color);
-                                    font-size: 9px;
-                                }
+                            a.book_consultaion_cta {
+                                position: relative;
+                                top: unset;
+                                right: unset;
+                                padding: 3px 10px;
+                                border:1px solid var(--main-color);
+                                font-size: 9px; 
+                                text-align: center;
                             }
                         }
                     }

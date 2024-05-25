@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 /*--------- Hooks ---------*/
-import { usePopupFunctions } from '../../../../components/popups/popups';
+import { usePopupFunctions } from '../../../../../components/popups/popups';
 
 export default function PopupsForDev() {
     const { openPopup, renderPopup } = usePopupFunctions(); 

@@ -6,7 +6,6 @@ import HighchartsReact from 'highcharts-react-official';
 import PieChart from '../../../components/elements/pie_chart';
 import DataTable from  '../../../components/elements/data_table';
 
-
 export default function ClientDashboard() {
     const assets_data = {
         chart: {
