@@ -4,7 +4,7 @@ import Link from "next/link";
 
 // Helpers
 import { fixHTMLEntities, formatDate } from "@/utils/Helpers";
-
+              
 const PostCard = ({ post }) => {
 	return (
 		<Link href={"/blog/" + post.slug} scroll={false} className="single_post">

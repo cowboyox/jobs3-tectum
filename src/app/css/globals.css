@@ -2537,24 +2537,8 @@ body {
 }
 .profile_page {
   position: relative;
-  padding: 0 5%;
-  margin-top: 150px;
-}
-.profile_page::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 514px;
-  transform: translateY(-20px);
-  height: 300px;
-  border-radius: 50%;
-  background: linear-gradient(103deg, rgba(242, 130, 8, 0.65) -22.72%, rgba(232, 228, 216, 0.8) 116.37%);
-  filter: blur(200px);
-  z-index: 0;
 }
 .profile_page .profile_container {
-  border: 1px solid #353535;
-  border-radius: 21px;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -2563,7 +2547,6 @@ body {
 .profile_page .profile_container .profile_top {
   width: 100%;
   border-bottom: 1px solid #353535;
-  padding: 42px;
   padding-bottom: 60px;
   display: flex;
   align-items: flex-start;
@@ -2580,10 +2563,12 @@ body {
   border-radius: 50%;
   z-index: 0;
 }
-.profile_page .profile_container .profile_top .profile_img svg {
+.profile_page .profile_container .profile_top .profile_img .status_icon {
   position: absolute;
   top: 0;
   left: 0;
+  width: 25px;
+  height: 25px;
   z-index: 1;
 }
 .profile_page .profile_container .profile_top .profile_details {
@@ -2648,7 +2633,7 @@ body {
   width: 100%;
 }
 .profile_page .profile_container .profile_bottom .profile_left .navigate_profile_tabs {
-  padding: 40px;
+  padding: 40px 20px 40px 0;
   border-bottom: 1px solid #353535;
   display: flex;
   flex-direction: column;
@@ -2702,7 +2687,7 @@ body {
   margin-right: 0;
 }
 .profile_page .profile_container .profile_bottom .profile_left .ready_to_work {
-  padding: 33px;
+  padding: 40px 20px 40px 0;
   border-bottom: 1px solid #353535;
   display: flex;
   flex-direction: column;
@@ -2737,7 +2722,7 @@ body {
   color: var(--main-color);
 }
 .profile_page .profile_container .profile_bottom .profile_left .profile_summary_stats {
-  padding: 33px;
+  padding: 40px 20px 40px 0;
   border-bottom: 1px solid #353535;
   display: flex;
   align-items: center;
@@ -2762,7 +2747,7 @@ body {
   letter-spacing: 0.43px;
 }
 .profile_page .profile_container .profile_bottom .profile_left .other_profile_details {
-  padding: 33px;
+  padding: 40px 20px 40px 0;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -2856,6 +2841,7 @@ body {
   letter-spacing: 0.5px;
 }
 .profile_page .profile_container .profile_bottom .profile_right .book_consultation .book_consultation_container {
+  position: relative;
   padding: 40px;
   border-radius: 25px;
   border: 1.3px solid #353535;
@@ -2905,7 +2891,10 @@ body {
 .profile_page .profile_container .profile_bottom .profile_right .book_consultation .book_consultation_container .left_consultation .consultation_tags .single_tag:hover {
   background: var(--main-color);
 }
-.profile_page .profile_container .profile_bottom .profile_right .book_consultation .book_consultation_container .right_consultation a {
+.profile_page .profile_container .profile_bottom .profile_right .book_consultation .book_consultation_container a.book_consultaion_cta {
+  position: absolute;
+  top: 20px;
+  right: 20px;
   border-radius: 50px;
   border: 2.7px solid var(--main-color);
   background: rgba(60, 78, 87, 0.08);
@@ -2916,7 +2905,7 @@ body {
   letter-spacing: 0.43px;
   transition: 0.3s;
 }
-.profile_page .profile_container .profile_bottom .profile_right .book_consultation .book_consultation_container .right_consultation a:hover {
+.profile_page .profile_container .profile_bottom .profile_right .book_consultation .book_consultation_container a.book_consultaion_cta:hover {
   background: var(--main-color);
   color: white;
 }
@@ -3219,18 +3208,18 @@ body {
     margin-top: 60px;
   }
   .profile_page .profile_container {
-    border: 1px solid #353535;
     border-radius: 5px;
+    border: 1px solid #353535;
   }
   .profile_page .profile_container .profile_top {
     padding-bottom: unset;
-    padding: 8px 10px;
+    padding: 20px;
   }
   .profile_page .profile_container .profile_top .profile_img img {
     height: 50px;
     width: 50px;
   }
-  .profile_page .profile_container .profile_top .profile_img svg {
+  .profile_page .profile_container .profile_top .profile_img .status_icon {
     position: absolute;
     height: 15px;
     width: 15px;
@@ -3243,6 +3232,7 @@ body {
   }
   .profile_page .profile_container .profile_top .profile_details .profile_name h2 {
     font-size: 20px;
+    text-transform: capitalize;
   }
   .profile_page .profile_container .profile_top .profile_details .profile_name img {
     width: 20px;
@@ -3361,9 +3351,11 @@ body {
     padding: 10px;
     border-radius: 8px;
     position: relative;
+    flex-direction: column;
+    gap: 20px;
   }
   .profile_page .profile_container .profile_bottom .profile_right .book_consultation .book_consultation_container .left_consultation {
-    gap: 5px;
+    gap: 10px;
   }
   .profile_page .profile_container .profile_bottom .profile_right .book_consultation .book_consultation_container .left_consultation h4 {
     font-size: 15px;
@@ -3382,15 +3374,14 @@ body {
     padding: 5px 7px;
     font-size: 9px;
   }
-  .profile_page .profile_container .profile_bottom .profile_right .book_consultation .book_consultation_container .right_consultation {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-  .profile_page .profile_container .profile_bottom .profile_right .book_consultation .book_consultation_container .right_consultation a {
+  .profile_page .profile_container .profile_bottom .profile_right .book_consultation .book_consultation_container a.book_consultaion_cta {
+    position: relative;
+    top: unset;
+    right: unset;
     padding: 3px 10px;
     border: 1px solid var(--main-color);
     font-size: 9px;
+    text-align: center;
   }
   .profile_page .profile_container .profile_bottom .profile_right .work_history {
     border-top: 1px solid #353535;
@@ -6091,10 +6082,10 @@ body {
   margin: 20px 0;
 }
 .litepaper_page .litepaper_mainpage .litepaper_bottom_navigation .page_navigationBtn {
-  display: flex;
   width: 48%;
   color: #222 !important;
-  background-color: rgba(255, 255, 255, 1) !important;
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px;
@@ -7698,7 +7689,7 @@ body {
   gap: 14px;
   font-size: 22.254px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 500;
   line-height: normal;
   padding: 0 18px;
   margin-top: 20px;
@@ -7742,9 +7733,10 @@ body {
   border-radius: 50%;
   border: 1px solid transparent;
   transition: 0.3s;
+  aspect-ratio: 1/1;
 }
 .main_sidebar .menu_bottom .social_icons a svg {
-  width: 100%;
+  width: 50%;
   height: -moz-fit-content;
   height: fit-content;
 }
@@ -7836,7 +7828,7 @@ body {
     width: 60%;
   }
 }
-.quanmed_dashboard_app {
+.jobs3_dashboard_app {
   min-height: 100vh;
   background: var(--page_background);
   display: flex;
@@ -7846,35 +7838,35 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
-.quanmed_dashboard_app .routes_container {
+.jobs3_dashboard_app .routes_container {
   width: 100%;
   padding: 12px 30px;
   padding-bottom: 100px;
 }
 @media (min-width: 767px) {
-  .quanmed_dashboard_app .routes_container {
+  .jobs3_dashboard_app .routes_container {
     max-width: calc(100% - 300px);
   }
 }
 @media (max-width: 767px) {
-  .quanmed_dashboard_app .routes_container {
+  .jobs3_dashboard_app .routes_container {
     padding: 12px;
   }
 }
-.quanmed_dashboard_app .animatedTitle {
+.jobs3_dashboard_app .animatedTitle {
   color: white;
   margin-top: 12px;
 }
-.quanmed_dashboard_app .animatedTitle h1 {
+.jobs3_dashboard_app .animatedTitle h1 {
   font-size: 33px;
   font-weight: 700;
 }
 @media (max-width: 768px) {
-  .quanmed_dashboard_app .animatedTitle h1 {
+  .jobs3_dashboard_app .animatedTitle h1 {
     font-size: 20px;
   }
 }
-.quanmed_dashboard_app .page_description {
+.jobs3_dashboard_app .page_description {
   color: #FAFBFC;
   font-size: 18px;
   font-weight: 300;
@@ -7882,65 +7874,65 @@ body {
   max-width: 869px;
 }
 @media (max-width: 768px) {
-  .quanmed_dashboard_app .page_description {
+  .jobs3_dashboard_app .page_description {
     font-size: 13px;
   }
 }
-.quanmed_dashboard_app .main_dashboard .animatedTitle .char {
+.jobs3_dashboard_app .main_dashboard .animatedTitle .char {
   background: linear-gradient(105deg, #C292EB -10.78%, #607BCC 47.43%, #99EDF9 146.27%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.quanmed_dashboard_app .page_paragraph {
+.jobs3_dashboard_app .page_paragraph {
   font-size: 21px;
   font-weight: 500;
   color: #FAFBFC;
   margin-top: 50px;
 }
 @media (max-width: 768px) {
-  .quanmed_dashboard_app .page_paragraph {
+  .jobs3_dashboard_app .page_paragraph {
     margin-top: 10px;
     font-size: 14px;
   }
 }
-.quanmed_dashboard_app .panels_container {
+.jobs3_dashboard_app .panels_container {
   margin-top: 30px;
   display: flex;
   flex-direction: column;
   gap: 40px;
 }
-.quanmed_dashboard_app .panels_container .panel {
+.jobs3_dashboard_app .panels_container .panel {
   padding: 20px 30px 30px 30px;
   border-radius: 10px;
   background: rgba(20, 27, 34, 0.7);
   display: flex;
   flex-direction: column;
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top {
+.jobs3_dashboard_app .panels_container .panel .panel_top {
   display: flex;
   align-items: center;
   width: 100%;
   z-index: 10;
   justify-content: space-between;
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .left_side .panel_heading {
+.jobs3_dashboard_app .panels_container .panel .panel_top .left_side .panel_heading {
   font-size: 22px;
   font-weight: 700;
   color: #EDEDED;
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .right_side {
+.jobs3_dashboard_app .panels_container .panel .panel_top .right_side {
   display: flex;
   align-items: center;
   gap: 14px;
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown {
+.jobs3_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown {
   position: relative;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_trigger {
+.jobs3_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_trigger {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7949,28 +7941,28 @@ body {
   border-radius: 10px;
   border: 1px solid rgba(250, 251, 252, 0.54);
   color: rgba(250, 251, 252, 0.54);
-  font-family: var(--font-blinker);
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: 0.3s;
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_trigger .three_dots {
+.jobs3_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_trigger .three_dots {
   display: flex;
   align-items: center;
   gap: 3px;
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_trigger .three_dots .sl_dot {
+.jobs3_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_trigger .three_dots .sl_dot {
   height: 4px;
   width: 4px;
   border-radius: 50%;
   background: #3b424c;
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_trigger:hover {
+.jobs3_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_trigger:hover {
   background: rgba(250, 251, 252, 0.05);
   border: 1px solid rgba(250, 251, 252, 0.7);
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_dropdown_content {
+.jobs3_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_dropdown_content {
   position: absolute;
   right: 0;
   top: 100%;
@@ -7989,7 +7981,7 @@ body {
   pointer-events: none;
   transform: translateY(0);
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_dropdown_content .dropdown_option {
+.jobs3_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_dropdown_content .dropdown_option {
   padding: 3px 12px;
   white-space: nowrap;
   border-radius: 5px;
@@ -7999,94 +7991,94 @@ body {
   transition: 0.15s;
   cursor: pointer;
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_dropdown_content .dropdown_option:hover {
+.jobs3_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_dropdown_content .dropdown_option:hover {
   background: rgba(250, 251, 252, 0.05);
   border: 1px solid rgba(250, 251, 252, 0.7);
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_dropdown_content .dropdown_option.choosen_option {
+.jobs3_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_dropdown_content .dropdown_option.choosen_option {
   border-color: white;
   color: white;
 }
-.quanmed_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown.open .button_dropdown_content {
+.jobs3_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown.open .button_dropdown_content {
   opacity: 1;
   pointer-events: all;
   transform: translateY(10px);
 }
 @media (max-width: 768px) {
-  .quanmed_dashboard_app .panels_container .panel {
+  .jobs3_dashboard_app .panels_container .panel {
     padding: 12px 10px;
   }
-  .quanmed_dashboard_app .panels_container .panel .panel_top .left_side .panel_heading {
+  .jobs3_dashboard_app .panels_container .panel .panel_top .left_side .panel_heading {
     font-size: 13px;
     font-weight: 400;
   }
-  .quanmed_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_trigger {
+  .jobs3_dashboard_app .panels_container .panel .panel_top .right_side .button_dropdown .button_trigger {
     font-size: 11px;
     padding: 6px 10px;
     border-radius: 3px;
   }
 }
-.quanmed_dashboard_app .sl_table {
+.jobs3_dashboard_app .sl_table {
   margin-top: 15px;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-.quanmed_dashboard_app .sl_table .col_1 {
+.jobs3_dashboard_app .sl_table .col_1 {
   width: 100%;
 }
-.quanmed_dashboard_app .sl_table .col_2 {
+.jobs3_dashboard_app .sl_table .col_2 {
   width: 200%;
 }
-.quanmed_dashboard_app .sl_table .col_3 {
+.jobs3_dashboard_app .sl_table .col_3 {
   width: 300%;
 }
-.quanmed_dashboard_app .sl_table .col_4 {
+.jobs3_dashboard_app .sl_table .col_4 {
   width: 400%;
 }
-.quanmed_dashboard_app .sl_table .col_5 {
+.jobs3_dashboard_app .sl_table .col_5 {
   width: 500%;
 }
-.quanmed_dashboard_app .sl_table .table_head {
+.jobs3_dashboard_app .sl_table .table_head {
   display: flex;
 }
-.quanmed_dashboard_app .sl_table .table_head .col_1 {
+.jobs3_dashboard_app .sl_table .table_head .col_1 {
   color: #475D96;
   font-size: 16px;
   font-weight: 600;
   text-transform: capitalize;
 }
-.quanmed_dashboard_app .sl_table .table_head .col_1:not(:nth-child(1)) {
+.jobs3_dashboard_app .sl_table .table_head .col_1:not(:nth-child(1)) {
   text-align: center;
 }
-.quanmed_dashboard_app .sl_table .table_body {
+.jobs3_dashboard_app .sl_table .table_body {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 @media (max-width: 768px) {
-  .quanmed_dashboard_app .sl_table {
+  .jobs3_dashboard_app .sl_table {
     gap: 10px;
   }
-  .quanmed_dashboard_app .sl_table .table_head .col_1 {
+  .jobs3_dashboard_app .sl_table .table_head .col_1 {
     font-size: 7.5px;
   }
-  .quanmed_dashboard_app .sl_table .table_body {
+  .jobs3_dashboard_app .sl_table .table_body {
     gap: 10px;
   }
 }
-.quanmed_dashboard_app .live_test h2 {
+.jobs3_dashboard_app .live_test h2 {
   color: white;
   font-size: 50px;
   margin-bottom: 30px;
 }
-.quanmed_dashboard_app .live_test .buttons_popups {
+.jobs3_dashboard_app .live_test .buttons_popups {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 20px;
 }
-.quanmed_dashboard_app .live_test .buttons_popups .open_popup {
+.jobs3_dashboard_app .live_test .buttons_popups .open_popup {
   border: 1px solid var(--main-color);
   background: transparent;
   color: white;
@@ -8097,14 +8089,14 @@ body {
   padding: 10px 20px;
   cursor: pointer;
 }
-.quanmed_dashboard_app .live_test .buttons_popups .open_popup:hover {
+.jobs3_dashboard_app .live_test .buttons_popups .open_popup:hover {
   background: var(--main-color);
 }
 @media (max-width: 768px) {
-  .quanmed_dashboard_app .live_test h2 {
+  .jobs3_dashboard_app .live_test h2 {
     font-size: 30px;
   }
-  .quanmed_dashboard_app .live_test .buttons_popups {
+  .jobs3_dashboard_app .live_test .buttons_popups {
     grid-template-columns: repeat(1, 1fr);
   }
 }
@@ -8313,10 +8305,10 @@ body {
   background: var(--main-color);
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_top .pie_chart .chart_keys .chart_item .chart_color.light_c {
-  background: #353535;
+  background: #96B0BD;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_top .pie_chart .chart_keys .chart_item .chart_color.dark_c {
-  background: #353535;
+  background: #516170;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_top .pie_chart .chart_keys .chart_item span {
   color: #FAFBFC;
@@ -8358,7 +8350,7 @@ body {
   line-height: normal;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_bottom .data_table .table_head .table_type {
-  color: #353535;
+  color: #516170;
   font-size: 18px;
   font-weight: 600;
   text-transform: capitalize;
@@ -8369,7 +8361,7 @@ body {
   cursor: pointer;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_bottom .data_table .table_head .table_category {
-  color: #353535;
+  color: #96B0BD;
   font-size: 18px;
   font-weight: 600;
   text-transform: capitalize;
@@ -8396,7 +8388,7 @@ body {
   border-radius: 10px;
   border: 1px solid rgba(250, 251, 252, 0.54);
   color: rgba(250, 251, 252, 0.54);
-  font-family: var(--font-blinker);
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -8468,7 +8460,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #353535;
+  background: #516170;
   border-radius: 50%;
   position: relative;
   cursor: pointer;
@@ -8482,7 +8474,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 1px solid #353535;
+  border: 1px solid #516170;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_left_side .dashboard_bottom .data_table .table_content .content_name .copy_clypboard svg {
   height: 60%;
@@ -8499,7 +8491,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #353535;
+  color: #96B0BD;
   font-size: 18px;
   font-weight: 500;
   text-transform: capitalize;
@@ -8509,7 +8501,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #353535;
+  color: #516170;
   font-size: 16px;
   font-weight: 6600;
   text-transform: capitalize;
@@ -8526,8 +8518,8 @@ body {
   width: -moz-fit-content;
   width: fit-content;
   border-radius: 10px;
-  border: 1px solid #353535;
-  color: #353535;
+  border: 1px solid #516170;
+  color: #516170;
   font-size: 14px;
   text-transform: capitalize;
 }
@@ -8602,7 +8594,7 @@ body {
   letter-spacing: 0.6px;
 }
 .client_dashboard_page .client_dashboard_dashboard .client_dashboard_right_side .single_user_data .user_data_content .user_data_left span {
-  color: #353535;
+  color: #96B0BD;
   font-size: 22px;
   font-style: normal;
   font-weight: 600;
@@ -8758,7 +8750,7 @@ body {
   .client_dashboard_page .client_dashboard_dashboard .client_dashboard_right_side .single_user_data > h3 {
     font-size: 18px;
     font-weight: 500;
-    font-family: var(--font-blinker);
+    font-family: "Inter", sans-serif;
   }
   .client_dashboard_page .client_dashboard_dashboard .client_dashboard_right_side .single_user_data .user_data_content {
     display: flex;
@@ -8836,6 +8828,10 @@ body {
   letter-spacing: -0.24px;
   cursor: pointer;
 }
+.proposals_page .form_filter .filter_options .f_option svg {
+  width: 25px;
+  height: 25px;
+}
 .proposals_page .data_table {
   margin-top: 60px;
   padding-left: 30px;
@@ -8870,7 +8866,7 @@ body {
   line-height: normal;
 }
 .proposals_page .data_table .table_head .table_type {
-  color: #353535;
+  color: #516170;
   font-size: 18px;
   font-weight: 600;
   text-transform: capitalize;
@@ -8881,7 +8877,7 @@ body {
   cursor: pointer;
 }
 .proposals_page .data_table .table_head .table_category {
-  color: #353535;
+  color: #96B0BD;
   font-size: 18px;
   font-weight: 600;
   text-transform: capitalize;
@@ -8907,7 +8903,7 @@ body {
   border-radius: 10px;
   border: 1px solid rgba(250, 251, 252, 0.54);
   color: rgba(250, 251, 252, 0.54);
-  font-family: var(--font-blinker);
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -8960,7 +8956,7 @@ body {
   transform: translateY(10px);
 }
 .proposals_page .data_table .table_head .col_1:not(.table_status) {
-  color: #353535;
+  color: #96B0BD;
   font-size: 17px;
   font-weight: 500;
   letter-spacing: -0.25px;
@@ -8985,7 +8981,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #353535;
+  background: #516170;
   border-radius: 50%;
   position: relative;
   cursor: pointer;
@@ -8999,7 +8995,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 1px solid #353535;
+  border: 1px solid #516170;
 }
 .proposals_page .data_table .table_content .content_name .copy_clypboard svg {
   height: 60%;
@@ -9020,8 +9016,8 @@ body {
   width: -moz-fit-content;
   width: fit-content;
   border-radius: 10px;
-  border: 1px solid #353535;
-  color: #353535;
+  border: 1px solid #516170;
+  color: #516170;
   font-size: 14px;
   text-transform: capitalize;
 }
@@ -9052,7 +9048,7 @@ body {
   margin-top: 20px;
 }
 .proposals_page .data_table .table_pagination p.showing_data {
-  color: #353535;
+  color: #96B0BD;
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.25px;
@@ -9069,7 +9065,7 @@ body {
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  background: #353535;
+  background: #96B0BD;
   font-size: 14px;
   cursor: pointer;
   color: white;

@@ -57,10 +57,10 @@
                                     background: var(--main-color);
                                 }
                                 &.light_c {
-                                    background: #353535;
+                                    background: #96B0BD;
                                 }
                                 &.dark_c {
-                                    background: #353535;
+                                    background: #516170;
                                 }
                             } 
                             span {
@@ -108,7 +108,7 @@
                             line-height: normal;
                         }
                         .table_type {
-                            color: #353535; 
+                            color: #516170; 
                             font-size: 18px; 
                             font-weight: 600; 
                             text-transform: capitalize;
@@ -117,7 +117,7 @@
                             cursor: pointer; 
                         }
                         .table_category {
-                            color: #353535; 
+                            color: #96B0BD; 
                             font-size: 18px; 
                             font-weight: 600; 
                             text-transform: capitalize;
@@ -138,7 +138,7 @@
                                     border-radius: 10px;
                                     border: 1px solid rgba(250, 251, 252, 0.54);
                                     color: rgba(250, 251, 252, 0.54);
-                                    font-family: var(--font-blinker);
+                                    font-family: 'Inter', sans-serif;
                                     font-size: 14px; 
                                     font-weight: 500; 
                                     cursor: pointer;
@@ -210,7 +210,7 @@
                                 height: 40px;
                                 width: 40px;
                                 @include toCenter();
-                                background: #353535;
+                                background: #516170;
                                 border-radius: 50%;
                                 position: relative;
                                 cursor: pointer;
@@ -223,7 +223,7 @@
                                     top: 50%;
                                     left: 50%;
                                     transform: translate(-50%, -50%);
-                                    border: 1px solid #353535;
+                                    border: 1px solid #516170;
                                 }
                                 svg {
                                     height: 60%;
@@ -240,7 +240,7 @@
                         }
                         .content_category {
                             @include toCenter();
-                            color: #353535; 
+                            color: #96B0BD; 
                             font-size: 18px; 
                             font-weight: 500; 
                             text-transform: capitalize;
@@ -248,7 +248,7 @@
                         }
                         .content_type {
                             @include toCenter();
-                            color: #353535; 
+                            color: #516170; 
                             font-size: 16px; 
                             font-weight: 6600; 
                             text-transform: capitalize;
@@ -263,8 +263,8 @@
                                 padding: 8px 10px;
                                 width: fit-content;
                                 border-radius: 10px;
-                                border: 1px solid #353535;
-                                color: #353535;
+                                border: 1px solid #516170;
+                                color: #516170;
                                 font-size: 14px;
                                 text-transform: capitalize;
                                 &.active {
@@ -344,7 +344,7 @@
                             letter-spacing: 0.6px;
                         }
                         span {
-                            color: #353535; 
+                            color: #96B0BD; 
                             font-size: 22px;
                             font-style: normal;
                             font-weight: 600; 
@@ -515,7 +515,7 @@
                     & > h3 { 
                         font-size: 18px;
                         font-weight: 500;
-                        font-family: var(--font-blinker);
+                        font-family: 'Inter', sans-serif;
                     }
                     .user_data_content {
                         display: flex;

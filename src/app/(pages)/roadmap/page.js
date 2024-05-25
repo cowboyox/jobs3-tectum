@@ -18,7 +18,31 @@ const fetchBoardData = async () => {
 				"cache-control": "no-store",
 			},
 			body: JSON.stringify({
-				query: `query { boards(ids: 6240500320) { id name groups(ids: ["new_group14820"]) { title items_page { items { name subitems { name column_values { id value } } } } } } }`,
+				query: `
+				query { 
+					boards(ids: 6240500320) 
+					{ 
+						id 
+						name 
+						groups(ids: ["new_group14820"]) { 
+							title 
+							items_page { 
+								items { 
+									name 
+									subitems 
+									{ 
+										name 
+										column_values 
+										{ 
+											id 
+											value 
+										} 
+									} 
+								} 
+							} 
+						} 
+					} 
+				}`,
 			}),
 		});
 

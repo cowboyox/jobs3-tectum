@@ -39,7 +39,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 				// router.replace('/')
 			}
 		}
-	}, [isConnected, isDisconnected])
+	}, [isConnected, isDisconnected, address, auth, onClose])
 
 	const validateEmail = (email) => {
 		return String(email)
@@ -294,7 +294,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 				// router.replace('/')
 			}
 		}
-	}, [isConnected, isDisconnected])
+	}, [isConnected, isDisconnected, address, auth])
 
 	const validateEmail = (email) => {
 		return String(email)
