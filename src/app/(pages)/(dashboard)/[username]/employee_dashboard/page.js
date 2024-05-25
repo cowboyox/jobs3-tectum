@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import StarRatings from 'react-star-ratings'; 
+import { fixHTMLEntities, formatDate } from "@/utils/Helpers";
 
 /*------------------| Images |------------------*/    
 import { GoChevronRight } from "react-icons/go"; 
@@ -147,52 +148,56 @@ export default function Profile(parameters) {
                                     </div>
                                 </div>
                                 <div className="profile_tab_description">
-                                    <p>
-                                        Highly experienced and strong 7 years of experience in ui & ux design to help you make a great wow factor and boost your customer satisfaction for your website design, mobile design or Figma design.
-                                    </p>
-                                    <p>
-                                        🏆 Top 3% on Upwork as Top-rated Plus talent <br />
-                                        ⭐ 70+ finished projects & products <br />
-                                        2000+ hours as professional <br />
-                                        😁 Fun to work with <br />
-                                        💪 Flexible problem-solving approach
-                                    </p>
-                                    <p>
-                                        Also, I'm the founder of an Indonesia-based design agency, where I lead a team of talented Website designer, UX designers and Figma designer. I take a flexible problem-solving approach to every project, and I'm confident that my experience and expertise can help us create a functional and visually appealing design for your website or app.
-                                    </p>
-                                    <p>
-                                        My design deliverables: <br />
-                                        ✅ Dashboard UI UX Design <br />
-                                        ✅ Website UI UX Design <br />
-                                        ✅ Android UI UX Design <br />
-                                        ✅ iOS UI UX Design <br />
-                                        ✅ Responsive website design <br />
-                                        ✅ Sitemap <br />
-                                        ✅ User Flow <br />
-                                        ✅ Wireframes <br />
-                                        ✅ Prototyping <br />
-                                        ✅ UX Research <br />
-                                        ✅ Design system / Design tokens <br />
-                                        ✅ Design documentation
-                                    </p>
-                                    <p>
-                                        I always begin every project by working closely with clients to understand their needs and brainstorm ideas. I then create a rough product requirements or sitemap and craft high-fidelity designs that meet their unique needs.
-                                    </p>
-                                    <p>
-                                        My design tools: <br />
-                                        🎨 FIGMA / SKETCH for design <br />
-                                        🎨 TRELLO / ASANA for project management
-                                    </p>
-                                    <p>
-                                        Take a look at my Upwork profile and portfolio to see if I'm the right fit for your project. I'm excited to hear more about your ideas and help bring them to life. Don't hesitate to send me a job invitation and let's chat!
-                                    </p>
-                                    <p>
-                                        ----- <br />
-                                        My specialities <br />
-                                        UI/UX Designer, Website designer, Mobile app designer, Figma designer, User Interface, User Experience,
-                                        Android designer, iOS designer, Professional designer, Senior designer, Website redesign, Mobile app redesign,
-                                        Dashboard designer, Dashboard redesign, Responsive website designer, SaaS designer
-                                    </p>
+                                    {fixHTMLEntities( 
+                                        <>
+                                            <p>
+                                                Highly experienced and strong 7 years of experience in ui & ux design to help you make a great wow factor and boost your customer satisfaction for your website design, mobile design or Figma design.
+                                            </p>
+                                            <p>
+                                                🏆 Top 3% on Upwork as Top-rated Plus talent <br />
+                                                ⭐ 70+ finished projects & products <br />
+                                                2000+ hours as professional <br />
+                                                😁 Fun to work with <br />
+                                                💪 Flexible problem-solving approach
+                                            </p>
+                                            <p>
+                                                Also, I'm the founder of an Indonesia-based design agency, where I lead a team of talented Website designer, UX designers and Figma designer. I take a flexible problem-solving approach to every project, and I'm confident that my experience and expertise can help us create a functional and visually appealing design for your website or app.
+                                            </p>
+                                            <p>
+                                                My design deliverables: <br />
+                                                ✅ Dashboard UI UX Design <br />
+                                                ✅ Website UI UX Design <br />
+                                                ✅ Android UI UX Design <br />
+                                                ✅ iOS UI UX Design <br />
+                                                ✅ Responsive website design <br />
+                                                ✅ Sitemap <br />
+                                                ✅ User Flow <br />
+                                                ✅ Wireframes <br />
+                                                ✅ Prototyping <br />
+                                                ✅ UX Research <br />
+                                                ✅ Design system / Design tokens <br />
+                                                ✅ Design documentation
+                                            </p>
+                                            <p>
+                                                I always begin every project by working closely with clients to understand their needs and brainstorm ideas. I then create a rough product requirements or sitemap and craft high-fidelity designs that meet their unique needs.
+                                            </p>
+                                            <p>
+                                                My design tools: <br />
+                                                🎨 FIGMA / SKETCH for design <br />
+                                                🎨 TRELLO / ASANA for project management
+                                            </p>
+                                            <p>
+                                                Take a look at my Upwork profile and portfolio to see if I'm the right fit for your project. I'm excited to hear more about your ideas and help bring them to life. Don't hesitate to send me a job invitation and let's chat!
+                                            </p>
+                                            <p>
+                                                ----- <br />
+                                                My specialities <br />
+                                                UI/UX Designer, Website designer, Mobile app designer, Figma designer, User Interface, User Experience,
+                                                Android designer, iOS designer, Professional designer, Senior designer, Website redesign, Mobile app redesign,
+                                                Dashboard designer, Dashboard redesign, Responsive website designer, SaaS designer
+                                            </p>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         }
