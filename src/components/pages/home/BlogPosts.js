@@ -19,7 +19,6 @@ const BlogPosts = () => {
 		loading: loadingPosts,
 		error: errorPosts,
 		data: postsData,
-		count: postsNumber,
 	} = FetchThis(
 		"https://main.jobs3.io/wp-json/wp/v2/posts?_embed&per_page=8&orderby=id&order=desc"
 	);
