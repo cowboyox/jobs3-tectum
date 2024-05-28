@@ -3208,8 +3208,6 @@ body {
 @media (max-width: 768px) {
   .profile_page {
     position: relative;
-    padding: 0 5%;
-    margin-top: 60px;
   }
   .profile_page .profile_container {
     border-radius: 5px;
