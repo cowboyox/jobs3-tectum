@@ -150,7 +150,7 @@ const Header = () => {
 							</button>
 						}
 						<Link href={"/jobs"} className="btn_classified">
-							Classified
+							Sign Up
 						</Link>
 					</div>
 				</div>
@@ -221,7 +221,7 @@ const Header = () => {
 					</ul>
 				</div>
 				<Link href={"/jobs"} className="btn_classified">
-					Classified
+					Sign Up
 				</Link>
 			</div>
 		</>
