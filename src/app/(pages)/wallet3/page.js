@@ -12,7 +12,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
-export default function Proposals() {
+export default function Wallet3() {
 
     return (
         <div className='pl-8 mt-[-20px] pr-8'>
@@ -29,7 +29,7 @@ export default function Proposals() {
                 </div>
             </div>
             <div className='text-4xl mt-3'>Assets</div>
-            <div className='flex flex-row items-center gap-6 mt-3 overflow-x-auto max-w-[80vw] touch-pan-x'>
+            <div className='flex flex-row items-center gap-6 mt-3 overflow-x-auto max-w-[80vw] touch-pan-x overscroll-x-contain'>
                 <div className='flex-none grid grid-cols-2 border border-[#353535] p-5 rounded-xl xl:w-[250px]'>
                     <div className='col-span-1'>
                         <div className='text-2xl'>
@@ -188,6 +188,7 @@ export default function Proposals() {
             </div>
             <div className='grid grid-cols-12 mt-2 bg-[#141B22B2] p-5 rounded-xl'>
                 <div className='col-span-2'>
+                    
                     <img src='/assets/images/token_logos/transaction-solana.svg' width={'50'} height={'50'}></img>
                 </div>
                 <div className='col-span-7'>
