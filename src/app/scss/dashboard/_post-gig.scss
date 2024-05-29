@@ -1,0 +1,35 @@
+.gig_posting {
+    .gig_skills {
+        .search_bar { 
+            border-bottom: 0 !important;
+            padding: 0 !important;
+            input {
+                padding: 0 !important;
+                height: unset !important;
+            }
+        }
+        .suggested_skills {
+            @for $i from 6 through 200 {
+                .skill_name:nth-child(#{$i}) { display: none !important;  } 
+            } 
+        }
+    }
+    .radio_items { 
+        .radio_item { 
+            label { 
+                margin-left: 0 !important; 
+            } 
+            input:checked + label { 
+                border-color: var(--main-color) !important; 
+            } 
+        } 
+    } 
+    .file_container { 
+        .file_container {
+            width: 100% !important;
+        }
+    } 
+    form > button {
+        background: var(--main-color) !important;
+    }
+}

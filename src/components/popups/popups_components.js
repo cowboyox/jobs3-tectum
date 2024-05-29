@@ -794,7 +794,7 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
 		},
 		{
 			id: 2,
-			account_name: 'Employee',
+			account_name: 'Employer',
 			account_desc: 'Companies that can post jobs on the Jobs Board',
 		},
 		{

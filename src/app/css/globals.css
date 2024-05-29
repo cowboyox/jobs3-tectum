@@ -29,6 +29,10 @@ h6 {
   --main-color: #dc4f14;
 }
 
+.main_color {
+  color: var(--main-color) !important;
+}
+
 body {
   background-color: black !important;
   overflow-x: hidden;
@@ -3204,8 +3208,6 @@ body {
 @media (max-width: 768px) {
   .profile_page {
     position: relative;
-    padding: 0 5%;
-    margin-top: 60px;
   }
   .profile_page .profile_container {
     border-radius: 5px;
@@ -7503,276 +7505,6 @@ body {
   overflow-y: scroll;
 }
 
-.main_sidebar {
-  background: #0e1318;
-  width: 300px;
-  min-height: 100vh;
-  max-height: 100vh;
-  height: 100vh;
-  overflow-y: scroll;
-  position: sticky;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-}
-.main_sidebar::-webkit-scrollbar {
-  display: none;
-}
-.main_sidebar .logo_container {
-  position: sticky;
-  top: 0;
-  left: 0;
-  z-index: 5;
-  background: #0e1318;
-  padding-top: 29px;
-  padding-right: 41px;
-  padding-bottom: 4px;
-  padding-left: 37px;
-  margin-bottom: 35px;
-}
-.main_sidebar .logo_container img {
-  width: 100%;
-  transition: 0.3s;
-  transform-origin: left;
-}
-.main_sidebar .logo_container img:hover {
-  transform: scale(1.03);
-}
-.main_sidebar .logo_container span {
-  color: rgba(249, 250, 251, 0.7);
-  font-size: 20px;
-  font-weight: 400;
-  line-height: normal;
-  letter-spacing: 0.2px;
-  text-transform: capitalize;
-  transition: 0.3s;
-  transform-origin: left;
-}
-.main_sidebar .logo_container span:hover {
-  letter-spacing: 1px;
-  color: var(--main-color);
-}
-.main_sidebar .menu_content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  max-height: calc(100% - 150px);
-}
-.main_sidebar .menu_content .links_container {
-  padding-left: 18px;
-  padding-right: 35px;
-  padding-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.main_sidebar .menu_content .links_container .menu_heading {
-  color: #6E7481;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  letter-spacing: 2.52px;
-}
-.main_sidebar .menu_content .links_container .menu_item .menu_control.current {
-  border: 1px solid var(--main-color);
-}
-.main_sidebar .menu_content .links_container .menu_item.dropdown_container .dropdown_content {
-  margin: 8px 14px;
-  margin-top: 4px;
-  margin-left: 44px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  position: relative;
-}
-.main_sidebar .menu_content .links_container .menu_item.dropdown_container .dropdown_content::before {
-  content: "";
-  height: 100%;
-  width: 2px;
-  background: rgba(250, 251, 252, 0.5);
-  position: absolute;
-  top: 0;
-  right: calc(100% + 20px);
-  border-radius: 5px;
-}
-.main_sidebar .menu_content .links_container .menu_item.dropdown_container .dropdown_content a {
-  padding: 5px 12px;
-  color: #C0C5D2;
-  font-size: 16px;
-  position: relative;
-}
-.main_sidebar .menu_content .links_container .menu_item.dropdown_container .dropdown_content a.current::before {
-  background: var(--main-color);
-}
-.main_sidebar .menu_content .links_container .menu_item.dropdown_container .dropdown_content a:hover:not(.current)::before {
-  background: white;
-}
-.main_sidebar .menu_content .links_container .menu_item.dropdown_container .dropdown_content a::before {
-  content: "";
-  height: 80%;
-  width: 2px;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: calc(100% + 20px);
-  transition: 0.3s;
-}
-.main_sidebar .menu_content .links_container .menu_item .menu_control {
-  height: 40px;
-  padding: 8px 14px;
-  display: flex;
-  gap: 10px;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.main_sidebar .menu_content .links_container .menu_item .menu_control svg {
-  transition: 0.3s;
-}
-.main_sidebar .menu_content .links_container .menu_item .menu_control span {
-  color: #C0C5D2;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  white-space: nowrap;
-  transition: 0.3s;
-}
-.main_sidebar .menu_content .links_container .menu_item .menu_control svg {
-  width: 20px;
-  height: -moz-fit-content;
-  height: fit-content;
-}
-.main_sidebar .menu_content .links_container:first-child .menu_item:not(.dropdown_container) .menu_control:hover {
-  background: rgba(96, 123, 204, 0.0745098039);
-}
-.main_sidebar .menu_content .links_container:first-child .menu_item:not(.dropdown_container) .menu_control:hover span {
-  letter-spacing: 0.5px;
-}
-.main_sidebar .menu_content .links_container:first-child .menu_item:not(.dropdown_container) .menu_control:hover svg {
-  transform: scale(1.1);
-}
-.main_sidebar .menu_content .links_container:first-child .menu_item:not(.dropdown_container) .menu_control:hover svg path {
-  fill: var(--main-color);
-}
-.main_sidebar .menu_content .links_container:first-child .menu_item.dropdown_container .menu_control:hover {
-  background: rgba(96, 123, 204, 0.0745098039);
-}
-.main_sidebar .menu_content .links_container:first-child .menu_item.dropdown_container .menu_control:hover span {
-  letter-spacing: 0.5px;
-}
-.main_sidebar .menu_content .links_container:first-child .menu_item.dropdown_container .menu_control:hover svg {
-  transform: scale(1.1);
-}
-.main_sidebar .menu_content .links_container:first-child .menu_item.dropdown_container .menu_control:hover svg path {
-  stroke: var(--main-color);
-}
-.main_sidebar .menu_content .links_container:nth-child(2) .menu_item .menu_control:hover {
-  background: rgba(96, 123, 204, 0.0745098039);
-}
-.main_sidebar .menu_content .links_container:nth-child(2) .menu_item .menu_control:hover span {
-  letter-spacing: 0.5px;
-}
-.main_sidebar .menu_content .links_container:nth-child(2) .menu_item .menu_control:hover svg {
-  transform: scale(1.1);
-}
-.main_sidebar .menu_content .links_container:nth-child(2) .menu_item .menu_control:hover svg path {
-  stroke: var(--main-color);
-}
-.main_sidebar .logout {
-  color: var(--main-color);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 22.254px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-  padding: 0 18px;
-  margin-top: 20px;
-  margin-bottom: 50px;
-}
-.main_sidebar .logout:hover svg {
-  margin-right: 10px;
-}
-.main_sidebar .logout svg {
-  width: 27px;
-  height: -moz-fit-content;
-  height: fit-content;
-  transition: 0.3s;
-}
-.main_sidebar .logout svg path {
-  fill: var(--main-color);
-}
-.main_sidebar .menu_bottom {
-  padding: 0px 50px 10px 50px;
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin-top: auto;
-  gap: 50px;
-}
-.main_sidebar .menu_bottom .social_icons {
-  min-width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.main_sidebar .menu_bottom .social_icons a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: -moz-fit-content;
-  height: fit-content;
-  border-radius: 50%;
-  border: 1px solid transparent;
-  transition: 0.3s;
-  aspect-ratio: 1/1;
-}
-.main_sidebar .menu_bottom .social_icons a svg {
-  width: 50%;
-  height: -moz-fit-content;
-  height: fit-content;
-}
-.main_sidebar .menu_bottom .social_icons a:hover {
-  border-color: white;
-}
-
-@media (max-width: 768px) {
-  .main_sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    transform: translateX(-100%);
-    background: #0e1318;
-    z-index: 20;
-    transition: 0.3s;
-  }
-  .main_sidebar .logo_container {
-    width: 100%;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    flex-direction: column;
-  }
-  .main_sidebar .logo_container img {
-    height: 35px;
-    width: -moz-fit-content;
-    width: fit-content;
-  }
-  .main_sidebar .logo_container span {
-    display: block;
-    font-size: 16px;
-  }
-  .main_sidebar.open {
-    transform: translateX(0);
-  }
-}
 .dashboard_header {
   display: flex;
   align-items: center;
@@ -9836,6 +9568,612 @@ body {
     letter-spacing: 0.095px;
   }
 }
+.gig_posting .gig_skills .search_bar {
+  border-bottom: 0 !important;
+  padding: 0 !important;
+}
+.gig_posting .gig_skills .search_bar input {
+  padding: 0 !important;
+  height: unset !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(6) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(7) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(8) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(9) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(10) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(11) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(12) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(13) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(14) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(15) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(16) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(17) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(18) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(19) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(20) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(21) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(22) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(23) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(24) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(25) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(26) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(27) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(28) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(29) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(30) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(31) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(32) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(33) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(34) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(35) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(36) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(37) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(38) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(39) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(40) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(41) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(42) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(43) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(44) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(45) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(46) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(47) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(48) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(49) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(50) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(51) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(52) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(53) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(54) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(55) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(56) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(57) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(58) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(59) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(60) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(61) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(62) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(63) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(64) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(65) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(66) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(67) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(68) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(69) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(70) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(71) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(72) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(73) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(74) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(75) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(76) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(77) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(78) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(79) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(80) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(81) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(82) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(83) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(84) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(85) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(86) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(87) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(88) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(89) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(90) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(91) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(92) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(93) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(94) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(95) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(96) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(97) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(98) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(99) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(100) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(101) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(102) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(103) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(104) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(105) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(106) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(107) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(108) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(109) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(110) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(111) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(112) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(113) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(114) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(115) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(116) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(117) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(118) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(119) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(120) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(121) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(122) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(123) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(124) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(125) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(126) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(127) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(128) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(129) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(130) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(131) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(132) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(133) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(134) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(135) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(136) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(137) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(138) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(139) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(140) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(141) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(142) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(143) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(144) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(145) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(146) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(147) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(148) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(149) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(150) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(151) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(152) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(153) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(154) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(155) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(156) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(157) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(158) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(159) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(160) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(161) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(162) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(163) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(164) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(165) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(166) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(167) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(168) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(169) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(170) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(171) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(172) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(173) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(174) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(175) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(176) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(177) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(178) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(179) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(180) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(181) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(182) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(183) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(184) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(185) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(186) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(187) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(188) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(189) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(190) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(191) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(192) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(193) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(194) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(195) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(196) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(197) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(198) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(199) {
+  display: none !important;
+}
+.gig_posting .gig_skills .suggested_skills .skill_name:nth-child(200) {
+  display: none !important;
+}
+.gig_posting .radio_items .radio_item label {
+  margin-left: 0 !important;
+}
+.gig_posting .radio_items .radio_item input:checked + label {
+  border-color: var(--main-color) !important;
+}
+.gig_posting .file_container .file_container {
+  width: 100% !important;
+}
+.gig_posting form > button {
+  background: var(--main-color) !important;
+}
+
 /*-----------------------------------|
 |                Container           |
 |-----------------------------------*/
@@ -10079,7 +10417,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 999;
+    z-index: 29;
     padding: 32px;
     transform: translateX(-100%);
     border-right: 2px solid #dc4f14;

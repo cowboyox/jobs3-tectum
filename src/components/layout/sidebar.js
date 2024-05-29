@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 
 /*----------- Icons -----------*/ 
@@ -11,112 +11,95 @@ import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { TiChartPieOutline } from "react-icons/ti";
 import { RiMoneyDollarBoxLine } from "react-icons/ri";
 import { CiCircleQuestion } from "react-icons/ci";
-import { IoSettingsOutline } from "react-icons/io5";
-import { IoIosLogOut } from "react-icons/io";
-import { FaLinkedinIn } from "react-icons/fa";
-import { FaTelegramPlane } from "react-icons/fa";
-import { FaFacebookF } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import { IoSettingsOutline } from "react-icons/io5"; 
 
-export default function SideBar() {
-    useEffect(() => {
-        const menu_links = document.querySelectorAll('.main_sidebar a');
-        menu_links.forEach(single_link => {
-            single_link.addEventListener('click', () => {
-                const menu_controls = document.querySelectorAll('.main_sidebar .menu_control')
-                menu_links.forEach(will_remove_current => { will_remove_current.classList.remove('current'); });
-                menu_controls.forEach(will_remove_current => { will_remove_current.classList.remove('current'); });
+const menu_data = [
+    {
+        id: 0,
+        icon: <CiUser className='w-7 h-7' />,
+        name: 'Profile',
+        href: '/profile',
+    },
+    {
+        id: 1,
+        icon: <AiOutlineFileSearch className='w-7 h-7' />,
+        name: 'My Projects',
+        href: '/dashboard/proposals',
+    },
+    {
+        id: 2,
+        icon: <LuCalendarSearch className='w-7 h-7' />,
+        name: 'My Schedule',
+        href: '/dashboard/proposals',
+    },
+    {
+        id: 3,
+        icon: <TiDocumentText className='w-7 h-7' />,
+        name: 'Job Listing',
+        href: '/jobs',
+    },
+    {
+        id: 4,
+        icon: <HiOutlineClipboardDocumentList className='w-7 h-7' />,
+        name: 'All Contracts',
+        href: '/dashboard/proposals',
+    },
+    {
+        id: 5,
+        icon: <TiChartPieOutline className='w-7 h-7' />,
+        name: 'Statistics',
+        href: '/dashboard',
+    },
+    {
+        id: 6,
+        icon: <RiMoneyDollarBoxLine className='w-7 h-7' />,
+        name: 'Balance',
+        href: '/dashboard',
+    },
+    {
+        id: 7,
+        icon: <CiCircleQuestion className='w-7 h-7' />,
+        name: 'Help',
+        href: '/dashboard',
+    },
+    {
+        id: 8,
+        icon: <IoSettingsOutline className='w-7 h-7' />,
+        name: 'Settings',
+        href: '/dashboard/settings',
+    }
+];
 
-                single_link.classList.add('current')
-
-                const from_dropdown = single_link.closest('.dropdown_container');
-                if (from_dropdown) {
-                    from_dropdown.querySelector('.menu_control').classList.add('current')
-                }
-            })
-        });
-    }, []);
+const SideBar = ()=> {
+    const sideBarRef = useRef(null); 
     function OpenSideBar() {
-        document.querySelector('.main_sidebar').classList.toggle('open')
+        if (window.innerWidth <= 768) { 
+            sideBarRef.current.classList.toggle('-translate-x-full');
+        }
     } 
     return (
-        <div className='main_sidebar'>
-            <div className="logo_container" onClick={() => { OpenSideBar() }}>
-                <img src='/assets/images/logo.svg' alt="Logo" />
-                {/* <span>Portal</span> */}
+        <div ref={sideBarRef} className="main_sidebar md:w-60 p-10 w-10/12 fixed left-0 bg-black z-40 min-h-screen transition md:sticky top-0 -translate-x-full md:translate-x-0">
+            <div onClick={OpenSideBar} className="w-10/12 mx-auto mb-10">
+                <img src='/assets/images/logo.svg' className='w-100'/> 
             </div> 
-            <div className="menu_content" onClick={() => { OpenSideBar() }}>
-                <div className="links_container" > 
-                    <div className="menu_item">
-                        <Link href="/profile" className="menu_control">
-                            <CiUser /> <span>PROFILE</span>
-                        </Link>
-                    </div>
-                    <div className="menu_item">
-                        <Link href="/dashboard/proposals" className="menu_control">
-                            <AiOutlineFileSearch />
-                            <span>MY PROJECTS</span>
-                        </Link>
-                    </div>
-                    <div className="menu_item">
-                        <Link href="/dashboard/proposals" className="menu_control">
-                            <LuCalendarSearch /> <span>MY SCHEDULE</span>
-                        </Link>
-                    </div>
-                    <div className="menu_item">
-                        <Link href="/jobs" className="menu_control">
-                            <TiDocumentText /> <span>JOB LISTING</span>
-                        </Link>
-                    </div>
-                    <div className="menu_item">
-                        <Link href="/dashboard/proposals" className="menu_control">
-                            <HiOutlineClipboardDocumentList /> <span>ALL CONTRACTS</span>
-                        </Link>
-                    </div>
-                    <div className="menu_item">
-                        <Link href="/dashboard" className="menu_control">
-                            <TiChartPieOutline /> <span>Statistics</span>
-                        </Link>
-                    </div>
-                    <div className="menu_item">
-                        <Link href="/dashboard" className="menu_control">
-                            <RiMoneyDollarBoxLine /> <span>BALANCE</span>
-                        </Link>
-                    </div>
-                    <div className="menu_item">
-                        <Link href="/dashboard" className="menu_control">
-                            <CiCircleQuestion /> <span>HELP</span>
-                        </Link>
-                    </div>
+            <div onClick={OpenSideBar}>
+                <div className="flex flex-col gap-3">
+                    {menu_data.map(item => (
+                        <Link 
+                            key={item.id}
+                            href={item.href}
+                            className="flex gap-4 py-1 w-full transition-all hover:pl-1"
+                        >
+                            {item.icon} 
+                            <span className='text-base uppercase text-slate-500 font-medium'>
+                                {item.name.toUpperCase()}
+                            </span>
+                        </Link> 
+                    ))}
                 </div> 
-                <div className="links_container" >
-                    <div className="menu_heading">Support</div>
-                    <div className="menu_item">
-                        <Link href="/dashboard/settings" className="menu_control">
-                            <IoSettingsOutline /> <span>Settings</span>
-                        </Link>
-                    </div>
-                </div>
-                <Link href="/mydemed/logout" className='logout'>
-                    <strong>Logout</strong> <IoIosLogOut />
-                </Link>
-                <div className="menu_bottom">
-                    <div className="social_icons">
-                        <Link href="#"> 
-                            <FaLinkedinIn /> 
-                        </Link>
-                        <Link href="#"> 
-                            <FaXTwitter /> 
-                        </Link>
-                        <Link href="#"> 
-                            <FaFacebookF /> 
-                        </Link>
-                        <Link href="#"> 
-                            <FaTelegramPlane /> 
-                        </Link>
-                    </div>
-                </div>
             </div>
         </div>
     )
 }
+
+export default SideBar
