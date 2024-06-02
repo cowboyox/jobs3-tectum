@@ -1,7 +1,7 @@
 import { blinker, tektur } from "@/utils/fonts";
 import "./globals.scss";
 import "./globals.css"; 
-
+import { Toaster } from "@/components/ui/toaster"
 
 export const metadata = {
 	title: "JOBS3 - Decentralising and globalising the employment landscape",
@@ -21,6 +21,7 @@ export default function RootLayout({ children }) {
 						{children}
 					</ContextProvider>
 				</Web3Modal>
+				<Toaster />
 			</body>
 		</html>
 	);

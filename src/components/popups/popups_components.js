@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { useWeb3Modal } from '@web3modal/wagmi/react'
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAccount, useDisconnect } from "wagmi";
 import { useCustomContext } from "@/context/use-custom";
 
@@ -9,17 +9,25 @@ import { useCustomContext } from "@/context/use-custom";
 import { FaCheck } from "react-icons/fa";
 
 export function SignUpPopup({ onClose, onSwitchPopup }) {
+	const searchParams = useSearchParams();
 	const [email, setEmail] = useState(null)
 	const [name, setName] = useState(null)
 	const [password, setPassword] = useState(null)
 	const [confirmPwd, setConfirmPwd] = useState(null)
+	const [referralUser, setReferralUser] = useState(null)
+	const [referrer, setReferrer] = useState("");
 	const [accept, setAccept] = useState(null)
-
+	
 	const auth = useCustomContext()
 	const { open } = useWeb3Modal()
 	const router = useRouter()
-
+	
 	const { address, isConnected, isDisconnected } = useAccount()
+	
+	useEffect(() => {
+		const tmp = searchParams.get('referrer');
+		setReferrer(tmp);
+	}, []);
 
 	useEffect(() => {
 		if (isConnected) {
@@ -97,6 +105,13 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 					setConfirmPwd(ev.target.value)
 				}
 			}
+			if (attr === "referralUser") {
+				console.log(referralUser, "   ===   ", ev.target.value);
+				ev.target
+						.closest(".field_container")
+						?.classList.remove("field_error");
+					setReferralUser(ev.target.value);
+			}
 			if (attr === "accept") {
 				if (!ev.target.checked) {
 					ev.target
@@ -134,12 +149,11 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 		}
 		console.log('clicked')
 		try {
-			const verified = await auth.register({ name, email, password })
+			const verified = await auth.register({ name, email, password, referralUser, referrer })
 			if (!verified) onSwitchPopup("Verification")
 			else router.push('/jobs')
 		} catch (err) {
 			console.log('error => ', err)
-			alert("Register error!")
 		}
 	}
 
@@ -220,6 +234,23 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 								The confirm password should be more than 8 characters and matched with your password.
 							</span>
 						</div>
+						{!referrer &&
+							<div className="field_container">
+								<input
+									type="text"
+									id="referral_user"
+									onChange={(ev) => {
+										checkInput(ev, 'referralUser');
+									}}
+								/>
+								<label htmlFor="referral_user">
+									Referral User
+								</label>
+								<span className="error_message">
+									
+								</span>
+							</div>
+						}
 						<div className="acceptance">
 							<input
 								type="checkbox"
@@ -331,7 +362,6 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 			router.push('/jobs')
 		} catch (err) {
 			console.log(err)
-			alert("Try again to login!")
 		}
 	}
 	return (
@@ -649,7 +679,7 @@ export function VerificationPopup({ onClose }) {
 
 	const handleSubmit = async (e) => {
 		if (!content || content.length < 1) {
-			alert('Please enter your email to verify')
+			alert('Please enter the code to verify')
 			return false;
 		}
 		try {
@@ -675,9 +705,9 @@ export function VerificationPopup({ onClose }) {
 						/>
 					</div>
 					<h2>Verification</h2>
-					<p>Enter your email to confirm your account </p>
+					<p>Enter your code to confirm your account </p>
 					<div className="email_form">
-						<input type="text" placeholder="Your Email" onChange={handleChange} />
+						<input type="text" placeholder="Your Code" onChange={handleChange} />
 						<button type="submit" onClick={handleSubmit}>Submit</button>
 					</div>
 				</div>
