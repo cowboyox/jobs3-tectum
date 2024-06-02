@@ -21,6 +21,7 @@ import { GoChevronDown } from "react-icons/go";
 import { FiPlus } from "react-icons/fi";
 import { GoTrash } from "react-icons/go";
 import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from 'next/navigation';
 
 function FileUploadBody() {
     return <div className="h-52 w-full border border-dashed border-slate-500 p-3 flex items-center justify-center rounded-xl">
@@ -174,7 +175,7 @@ const all_form_structure = {
 const GigPosting = () => {
 
     const { toast } = useToast();
-
+    const router = useRouter();
     const [open, setOpen] = useState(false);
     const [jobCategory, setCategoryValue] = useState("");
     const [skillSet, setSkillSet] = useState([]);
@@ -225,8 +226,8 @@ const GigPosting = () => {
         if (!postData.gigTitle) {
             return toast({
                 variant: "default",
-                title: "Warning",
-                description: "Input Gig Title",
+                title: <h1 className='text-center'>Warning</h1>,
+                description: <h3 className='text-center'>Input Gig Title</h3>,
                 className: "bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
             });
         }
@@ -239,19 +240,25 @@ const GigPosting = () => {
                 'Content-Type': 'multipart/form-data',
             },
         };
-        await api.post('/api/v1/client_gig/post_gig', postData).then(data => {
-            api.post(`/api/v1/client_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
+        await api.post('/api/v1/client_gig/post_gig', postData).then(async (data) => {
+            await api.post(`/api/v1/client_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
                 console.log("Successfully uploaded");
             })
             toast({
                 variant: "default",
-                title: "Success",
-                description: `Successfully posted gig titled ${postData.gigTitle}`,
+                title: <h1 className='text-center'>Success</h1>,
+                description: <h3>Successfully posted gig titled {postData.gigTitle}</h3>,
                 className: "bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
-            })
+            });
+            router.push('/jobs');
         }).catch(err => {
             console.log("Error corrupted during posting gig", err);
-            alert("error", err)
+            toast({
+                variant: "destructive",
+                title: <h1 className='text-center'>Error</h1>,
+                description: <h3>Internal Server Error</h3>,
+                className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+            });
         });
     }
 
