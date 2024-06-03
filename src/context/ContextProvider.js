@@ -199,6 +199,7 @@ const ContextProvider = ({ children }) => {
     <CustomContext.Provider
       value={{
         ...state,
+        dispatch,
         preloader: [loading, setLoading],
         loading3D: [load3D, setLoad3D],
         scroll: [scrollPause, setScrollPause],

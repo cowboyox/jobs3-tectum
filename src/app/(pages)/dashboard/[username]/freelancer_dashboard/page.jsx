@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import Link from 'next/link';
 import StarRatings from '@/components/elements/starRating';  
@@ -6,6 +7,7 @@ import { LuPlus } from "react-icons/lu";
 import { FaLinkedinIn } from 'react-icons/fa';
 import { FaTelegramPlane } from "react-icons/fa";
 import { FaFacebookF } from "react-icons/fa";
+import { useCustomContext } from "@/context/use-custom";
 
 // Placeholder Data for Active job postings
 const active_job_postings = [
@@ -160,6 +162,8 @@ const profileInfoData = [
 ];
 
 const ProfileInfo = ({ info }) => {
+  const auth = useCustomContext();
+  console.log("auth===========>: ", auth);
   return (
     <div className="flex flex-col gap-4">
       <h3 className="uppercase text-lg tracking-wider text-slate-500 font-inter hidden md:block">Profile info</h3>
