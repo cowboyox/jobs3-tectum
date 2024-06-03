@@ -29,7 +29,7 @@ const DashboardHeader = ()=> {
         document.querySelector('.main_sidebar').classList.toggle('-translate-x-full')
     }
     return (
-        <header className='flex justify-end flex-wrap items-center pb-5'>
+        <header className='flex justify-end flex-wrap items-center pb-5' id='header_container'>
             {renderPopup()}
             <div className='w-full md:hidden'>
                 <img src="/assets/images/logo.svg" className="h-6" />
