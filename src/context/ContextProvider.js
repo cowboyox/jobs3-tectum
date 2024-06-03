@@ -112,7 +112,7 @@ const ContextProvider = ({ children }) => {
     const { data } = await api.post('/api/v1/user/login', { ...credentials, acc_type: state.acc_type });
     const { user, token, verified } = data;
     api.defaults.headers.common.Authorization = token
-    localStorage.setItem('jobs_2024_token', token)
+    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
     dispatch({
       type: HANDLERS.SIGN_IN,
       payload: user
@@ -126,6 +126,7 @@ const ContextProvider = ({ children }) => {
     }
     const { data } = await api.post('/api/v1/user/register', { ...credentials, acc_type: state.acc_type })
     const { user_id } = data;
+    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
     setVerify(user_id)
   }
 
@@ -137,7 +138,7 @@ const ContextProvider = ({ children }) => {
     const { data } = await api.post('/api/v1/user/verify', { user_id: verify_id, otp: credential, acc_type: state.acc_type });
     const { user, token, verified } = data;
     api.defaults.headers.common.Authorization = token
-    localStorage.setItem('jobs_2024_token', token)
+    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
     dispatch({
       type: HANDLERS.SIGN_IN,
       payload: user
@@ -155,6 +156,7 @@ const ContextProvider = ({ children }) => {
         type: HANDLERS.SIGN_IN_WALLET,
         payload: wallet
       })
+      localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
       router.push('/jobs')
     } catch (err) {
       console.log(err)
@@ -172,6 +174,7 @@ const ContextProvider = ({ children }) => {
         type: HANDLERS.SIGN_IN_WALLET,
         payload: wallet
       })
+      localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
       router.replace('/jobs')
     } catch (err) {
       console.log(err)
@@ -179,6 +182,7 @@ const ContextProvider = ({ children }) => {
   }
 
   const signOut = () => {
+    localStorage.removeItem('jobs_2024_token')
     dispatch({
       type: HANDLERS.SIGN_OUT,
     })
@@ -192,8 +196,22 @@ const ContextProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    console.log("current state => ", state)
-  }, [state])
+    const storedData = localStorage.getItem('jobs_2024_token')
+    try {
+      const data = JSON.parse(storedData)
+      if (data && typeof (data) === 'object') {
+        const { user, token, verified } = data.data;
+        api.defaults.headers.common.Authorization = token
+        dispatch({
+          type: HANDLERS.SIGN_IN,
+          payload: user
+        })
+        router.push('/jobs')
+      }
+    } catch (err) {
+      console.log('Error getting data!')
+    }
+  }, [])
 
   return (
     <CustomContext.Provider
