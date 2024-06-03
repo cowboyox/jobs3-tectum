@@ -29,6 +29,21 @@ h6 {
 .main_color {
 	color: var(--main-color) !important;
 }
+.customize_search_input {
+	.search_bar { 
+		border-bottom: 0 !important;
+		padding: 0 !important;
+		input {
+			padding: 0 !important;
+			height: unset !important;
+		}
+	}
+	.suggestions_container {
+		@for $i from 10 through 200 {
+			.suggestion_item:nth-child(#{$i}) { display: none !important;  } 
+		} 
+	}
+}
 
 body {
 	background-color: black !important;
