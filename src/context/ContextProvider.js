@@ -197,15 +197,19 @@ const ContextProvider = ({ children }) => {
 
   useEffect(() => {
     const storedData = localStorage.getItem('jobs_2024_token')
-    const data = JSON.parse(storedData)
-    if (data && typeof(data) === 'object') {
-      const { user, token, verified } = data.data;
-      api.defaults.headers.common.Authorization = token
-      dispatch({
-        type: HANDLERS.SIGN_IN,
-        payload: user
-      })
-      router.push('/jobs')
+    try {
+      const data = JSON.parse(storedData)
+      if (data && typeof (data) === 'object') {
+        const { user, token, verified } = data.data;
+        api.defaults.headers.common.Authorization = token
+        dispatch({
+          type: HANDLERS.SIGN_IN,
+          payload: user
+        })
+        router.push('/jobs')
+      }
+    } catch (err) {
+      console.log('Error getting data!')
     }
   }, [])
 
