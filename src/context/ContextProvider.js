@@ -206,7 +206,7 @@ const ContextProvider = ({ children }) => {
           type: HANDLERS.SIGN_IN,
           payload: user
         })
-        router.push('/jobs')
+        // router.push('/jobs')
       }
     } catch (err) {
       console.log('Error getting data!')

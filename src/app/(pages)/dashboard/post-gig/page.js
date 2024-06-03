@@ -12,6 +12,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover"
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
 import FileUpload from "react-drag-n-drop-image";
 import api from "@/utils/api";
 
@@ -20,7 +21,6 @@ import { IoCheckmark } from "react-icons/io5";
 import { GoChevronDown } from "react-icons/go";
 import { FiPlus } from "react-icons/fi";
 import { GoTrash } from "react-icons/go";
-import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from 'next/navigation';
 
 function FileUploadBody() {
@@ -45,15 +45,15 @@ const all_form_structure = {
     categories_list: [
         {
             value: "category_1",
-            label: "Category 1",
+            label: "Accounting & Consulting",
         },
         {
             value: "category_2",
-            label: "Category 2",
+            label: "Admin Support",
         },
         {
             value: "category_3",
-            label: "Category 3",
+            label: "Customer Service",
         },
         {
             value: "category_4",
