@@ -198,8 +198,8 @@ const ContextProvider = ({ children }) => {
   useEffect(() => {
     const storedData = localStorage.getItem('jobs_2024_token')
     const data = JSON.parse(storedData)
-    if (data) {
-      const { user, token, verified } = data;
+    if (data && typeof(data) === 'object') {
+      const { user, token, verified } = data.data;
       api.defaults.headers.common.Authorization = token
       dispatch({
         type: HANDLERS.SIGN_IN,
