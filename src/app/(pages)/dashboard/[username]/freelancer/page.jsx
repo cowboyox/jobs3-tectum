@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './remove_horizontal_padding.css';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
@@ -7,15 +7,25 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { GoPlus } from "react-icons/go";
 import { GoChevronDown } from "react-icons/go";
-import CollapsibleText from "@/components/elements/collapsible_text";
-
-import StarRating from '@/components/elements/starRating';
-
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
+import { useDropzone } from "react-dropzone";
+import { IoCloudUploadOutline } from "react-icons/io5";
+import Link from 'next/link';
+import Image from 'next/image';
 
+import CollapsibleText from "@/components/elements/collapsible_text";
+import { useToast } from "@/components/ui/use-toast";
+import StarRating from '@/components/elements/starRating';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import Portfolio from '@/components/pages/dashboard/freelancer/Portfolio';
+import MyGigs from '@/components/pages/dashboard/freelancer/MyGigs';
+import api from '@/utils/api';
+import RadialProgress from "@/components/ui/progress";
 
 const ProfileInfoItem = ({ iconSrc, label, value }) => {
+
   return (
     <div className="w-full flex justify-between">
       <div className="w-1/2 flex gap-2 items-center">
@@ -26,13 +36,6 @@ const ProfileInfoItem = ({ iconSrc, label, value }) => {
     </div>
   );
 };
-const EmptyItem = ()=> {
-  return ( 
-    <div className="w-full h-72 bg-[#1a272c] rounded-2xl flex items-center justify-center border border-dashed border-[#526872] cursor-pointer transition hover:bg-[#23343b]">
-    <GoPlus className='h-12 w-12 opacity-65' />
-  </div>
-  )
-}
 
 const reviews = [
   {
@@ -65,22 +68,91 @@ const reviews = [
 ];
 
 const Freelancer = () => {
+  const [selectedImage, setSelectedImage] = useState([]);
+  const [uploadedImagePath, setUploadedImagePath] = useState([]);
+  const [uploadedGigPath, setUploadedGigPath] = useState([]);
+
+  const { toast } = useToast();
+  const [user, setUser] = useState({
+    email: "",
+    name: "",
+    role: "",
+    verified: false
+  });
+  const [isEditBio, setStatusBio] = useState(true);
+  const [bio, setBio] = useState("Please input your bio here.");
+  const [previewBio, setPreviewBio] = useState("");
+  const [expandedBio, setExpandedBio] = useState("");
+
+  useEffect(() => {
+    let tmp = localStorage.getItem('jobs_2024_token');
+    setUser(JSON.parse(tmp).data.user);
+  }, []);
+
+  useEffect(() => {
+    const lines = bio.split(/\r\n|\r|\n/).length;
+    const letterCnt = bio.length;
+    console.log(lines, letterCnt)
+    if (lines > 4) {
+      let tmp = bio.split(/\r\n|\r|\n/);
+      let previewText = "";
+      let expandedText = "";
+
+      tmp.forEach((item, index) => {
+        if (index <= 4) {
+          previewText += item + "\n"; // Add a line break for each item
+        } else {
+          expandedText += item + "\n"; // Add a line break for each item
+        }
+      });
+
+      setPreviewBio(previewText); // Update previewBio with the formatted text
+      setExpandedBio(expandedText); // Update expandedBio with the formatted text
+    } else {
+      setPreviewBio(bio); // If the text is less than or equal to 4 lines, set previewBio to the original text
+    }
+  }, [bio])
+
+  const handleEditBio = () => {
+    console.log("EditBio: ", isEditBio);
+    if (isEditBio) {
+      api.put(`/api/v1/profile/update-freelancer-bio/${user.email}`, {
+        freelancerBio: bio
+      }).then(data => {
+        toast({
+          variant: "default",
+          title: <h1 className='text-center'>Success</h1>,
+          description: <h3>Successfully updated Freelancer Bio</h3>,
+          className: "bg-green-500 border-none rounded-xl absolute top-[-94vh] xl:w-[15vw] md:w-[30vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+        });
+      }).catch(err => {
+        toast({
+          variant: "destructive",
+          title: <h1 className='text-center'>Error</h1>,
+          description: <h3>Internal Server Error</h3>,
+          className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+        });
+      })
+    }
+    setStatusBio(!isEditBio);
+  }
+
   return (
-    <div className='p-0'> 
+    <div className='p-0'>
       <img src="/assets/images/freelancer-image.jpeg" className='rounded-b-2xl h-64 w-full object-cover' />
       <div className=" max-w-7xl mx-auto flex flex-col gap-3 px-0 md:px-8 -translate-y-8">
         <Tabs defaultValue="edit-profile" >
           <div className="bg-[#10191D] md:p-8 px-3 py-4 rounded-xl flex md:flex-row flex-col md:gap-0 gap-4">
-            <div className='w-full md:w-3/4 flex md:gap-7 gap-4 items-center'> 
-              <div className="w-16 md:w-24 w-16 md:h-24 relative">
+            <div className='w-full md:w-3/4 flex md:gap-7 gap-4 items-center'>
+              <div className="w-16 md:w-24 md:h-24 relative">
                 <img src='/assets/images/users/user-5.png' className='rounded-full w-full h-full aspect-square' />
                 {/* Change background color depending on user online status */}
                 <div className="rounded-full h-4 w-4 absolute right-1 bottom-1 bg-green-500"></div>
               </div>
               <div className="flex flex-col gap-4">
                 <div className='flex items-center gap-4'>
-                  <h2 className='text-2xl md:text-3xl'>Devon Miles</h2> 
-                  <img src='/assets/images/icons/checkmark.svg' className='w-5 h-5' /> 
+                  <h2 className='text-2xl md:text-3xl'>{user.name}</h2>
+                  <img src='/assets/images/icons/checkmark.svg' className='w-5 h-5' />
                 </div>
                 <div className="flex md:flex-row flex-col gap-2 md:gap-4">
                   <div className="flex gap-2 items-center">
@@ -96,13 +168,13 @@ const Freelancer = () => {
             </div>
             <div className='w-full md:w-1/4 flex justify-end items-center'>
               <TabsList className='rounded-xl md:w-auto w-full'>
-                <TabsTrigger 
+                <TabsTrigger
                   className='rounded-xl data-[state=active]:bg-[#dc4f14] px-6 w-full'
                   value="preview"
                 >
                   Preview
                 </TabsTrigger>
-                <TabsTrigger 
+                <TabsTrigger
                   className='rounded-xl data-[state=active]:bg-[#dc4f14] px-6 w-full'
                   value="edit-profile"
                 >
@@ -110,13 +182,18 @@ const Freelancer = () => {
                 </TabsTrigger>
               </TabsList>
             </div>
-          </div> 
-          <div className='flex md:flex-row flex-col mt-5'> 
+          </div>
+          <div className='flex md:flex-row flex-col mt-5'>
             {/* Sidebar */}
             <div className="md:w-1/4 w-full">
               <div className="flex flex-col w-full rounded-xl overflow-hidden">
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d] border-[#28373e]">
-                  <p className="text-[#96B0BD] text-lg">Profile info</p>
+                  <div className='flex flex-row justify-between'>
+                    <div className="text-[#96B0BD] text-lg">Profile info</div>
+                    <div className='text-xl text-[#96B0BD]'>
+                      <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => handleEditBio()} />
+                    </div>
+                  </div>
                   <ProfileInfoItem
                     iconSrc="/assets/images/icons/personalcard.svg"
                     label="ZKP ID"
@@ -154,7 +231,7 @@ const Freelancer = () => {
                     iconSrc="/assets/images/icons/calendar-2.svg"
                     label="Monthly"
                     value="$3500"
-                  /> 
+                  />
                 </div>
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d]">
                   <p className="text-[#96B0BD] text-lg">Skills</p>
@@ -173,7 +250,7 @@ const Freelancer = () => {
                     <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">English</div>
                     <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">German</div>
                     <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">Russian</div>
-                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">Spanish</div> 
+                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">Spanish</div>
                   </div>
                 </div>
               </div>
@@ -183,14 +260,22 @@ const Freelancer = () => {
               <TabsContent value="preview">Preview</TabsContent>
               <TabsContent value="edit-profile">
                 <div className="flex flex-col gap-5">
-                  <div className="w-full flex flex-col p-5 pb-12 rounded-xl gap-2 bg-[#10191d]"> 
-                    <p className='text-xl text-[#96B0BD]'>About</p>
-                    <CollapsibleText 
-                      previewText="I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness."
-                      expandedText="No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but occasionally circumstances occur in which toil and pain can procure him some great pleasure."
+                  <div className="w-full flex flex-col p-5 pb-12 rounded-xl gap-2 bg-[#10191d]">
+                    <div className='flex flex-row justify-between'>
+                      <div className='text-xl text-[#96B0BD]'>About</div>
+                      <div className='text-xl text-[#96B0BD]'>
+                        <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => handleEditBio()} />
+                      </div>
+                    </div>
+                    <CollapsibleText
+                      previewText={previewBio}
+                      expandedText={expandedBio}
+                      isEditBio={isEditBio}
+                      bio={bio}
+                      setBio={setBio}
                     />
                   </div>
-                  <div className="w-full flex justify-between flex-col p-5 rounded-xl gap-5 bg-[#10191d]"> 
+                  <div className="w-full flex justify-between flex-col p-5 rounded-xl gap-5 bg-[#10191d]">
                     <div className="flex justify-between">
                       <div className='text-xl md:text-2xl text-[#96B0BD] flex items-center gap-3'>
                         My Portfolio
@@ -204,7 +289,7 @@ const Freelancer = () => {
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-                      </div> 
+                      </div>
                       <div className="flex gap-3 md:gap-4 ml-auto items-center">
                         <p className="cursor-pointer text-white text-sm underline">Active</p>
                         <p className="cursor-pointer text-slate-400 text-sm hover:text-white">Drafts</p>
@@ -212,25 +297,29 @@ const Freelancer = () => {
                       </div>
                     </div>
                     <div className="grid-cols-3 gap-4 hidden md:grid">
-                      <EmptyItem />
-                      <EmptyItem />
-                      <EmptyItem />
+                      {
+                        uploadedImagePath.length > 0 && uploadedImagePath.map((imagePath, index) => (
+                          // <EmptyItem key={index} imagePath={imagePath} setUploadedImagePath={setUploadedImagePath} type={"false"} />
+                          <Portfolio key={index} imagePath={imagePath} setUploadedImagePath={setUploadedImagePath} email={user.email} />
+                        ))
+                      }
+                      <Portfolio key={`extra-${uploadedImagePath.length}`} imagePath="" setUploadedImagePath={setUploadedImagePath} email={user.email} />
                     </div>
                     <div className="md:hidden">
                       <Swiper
                         spaceBetween={20}
                         slidesPerView={1.2}
                       >
-                        <SwiperSlide> <EmptyItem /> </SwiperSlide>
-                        <SwiperSlide> <EmptyItem /> </SwiperSlide>
-                        <SwiperSlide> <EmptyItem /> </SwiperSlide>
+                        <SwiperSlide> <Portfolio /> </SwiperSlide>
+                        <SwiperSlide> <Portfolio /> </SwiperSlide>
+                        <SwiperSlide> <Portfolio /> </SwiperSlide>
                       </Swiper>
                     </div>
                     <span className="cursor-pointer flex items-center gap-2 shadow-inner mx-auto">
                       Show more <GoChevronDown />
                     </span>
-                  </div> 
-                  <div className="w-full flex justify-between flex-col p-5 rounded-xl gap-5 bg-[#10191d]"> 
+                  </div>
+                  <div className="w-full flex justify-between flex-col p-5 rounded-xl gap-5 bg-[#10191d]">
                     <div className="flex justify-between">
                       <div className='text-xl md:text-2xl text-[#96B0BD] flex items-center gap-3'>
                         My Gigs
@@ -244,7 +333,7 @@ const Freelancer = () => {
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-                      </div> 
+                      </div>
                       <div className="flex gap-3 md:gap-4 ml-auto items-center">
                         <p className="cursor-pointer text-white text-sm underline">Active</p>
                         <p className="cursor-pointer text-slate-400 text-sm hover:text-white">Drafts</p>
@@ -252,32 +341,35 @@ const Freelancer = () => {
                       </div>
                     </div>
                     <div className="grid-cols-3 gap-4 hidden md:grid">
-                      <EmptyItem />
-                      <EmptyItem />
-                      <EmptyItem />
+                      {
+                        uploadedGigPath.length > 0 && uploadedGigPath.map((imagePath, index) => (
+                          <MyGigs key={index} imagePath={imagePath} setUploadedGigPath={setUploadedGigPath} email={user.email} />
+                        ))
+                      }
+                      <MyGigs key={`extra-${uploadedGigPath.length}`} imagePath="" setUploadedGigPath={setUploadedGigPath} email={user.email} />
                     </div>
                     <div className="md:hidden">
                       <Swiper
                         spaceBetween={20}
                         slidesPerView={1.2}
                       >
-                        <SwiperSlide> <EmptyItem /> </SwiperSlide>
-                        <SwiperSlide> <EmptyItem /> </SwiperSlide>
-                        <SwiperSlide> <EmptyItem /> </SwiperSlide>
+                        <SwiperSlide> <MyGigs /> </SwiperSlide>
+                        <SwiperSlide> <MyGigs /> </SwiperSlide>
+                        <SwiperSlide> <MyGigs /> </SwiperSlide>
                       </Swiper>
                     </div>
                     <span className="cursor-pointer flex items-center gap-2 shadow-inner mx-auto">
                       Show more <GoChevronDown />
                     </span>
-                  </div> 
-                  <div className="w-full flex flex-col p-5 pb-12 rounded-xl gap-2 bg-[#10191d]"> 
+                  </div>
+                  <div className="w-full flex flex-col p-5 pb-12 rounded-xl gap-2 bg-[#10191d]">
                     <p className='text-2xl text-[#96B0BD]'>Reviews</p>
                     <div className='flex flex-col gap-6 mt-4'>
                       {reviews.map(review => (
                         <div key={review.id} className="w-full flex gap-6">
                           <div className="w-full flex flex-col gap-2 border-b pb-6 border-[#28373e]">
                             <div className="flex items-center gap-4 flex-wrap md:flex-nowrap">
-                              <img src={review.imgSrc} className='w-10 h-10 aspect-square rounded-full object-cover' alt="user" /> 
+                              <img src={review.imgSrc} className='w-10 h-10 aspect-square rounded-full object-cover' alt="user" />
                               <div className="flex w-auto items-center gap-2">
                                 <p className="text-xl">{review.name}</p>
                                 <img src={review.flagSrc} className='w-6 h-fit bg-white' alt="flag" />
@@ -296,8 +388,8 @@ const Freelancer = () => {
                         </div>
                       ))}
                       <span className="cursor-pointer flex items-center gap-2 shadow-inner mx-auto">
-                      Show more <GoChevronDown />
-                    </span>
+                        Show more <GoChevronDown />
+                      </span>
                     </div>
                   </div>
                 </div>
