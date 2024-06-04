@@ -42,28 +42,28 @@ const ClientDashboard = () => {
             <div className='bg-[#10191D] md:p-8 px-5 py-4 md:rounded-xl grid grid-cols-3 gap-4'>
               {/* Sidebar */}
               <div className='flex flex-col gap-1'>
-                <p className='text-[#96B0BD] text-base md:text-lg md:text-center'>Total Spent</p>
-                <p className="text-white text-3xl md:text-center">$9K+</p>
+                <p className='text-[#96B0BD] text-base md:text-center'>Total Spent</p>
+                <p className="text-white text-2xl md:text-center">$9K+</p>
               </div>
               <div className='flex flex-col gap-1'>
-                <p className='text-[#96B0BD] text-base md:text-lg md:text-center'>Total jobs</p>
-                <p className="text-white text-3xl md:text-center">44</p>
+                <p className='text-[#96B0BD] text-base md:text-center'>Total jobs</p>
+                <p className="text-white text-2xl md:text-center">44</p>
               </div>
               <div className='flex flex-col gap-1'>
-                <p className='text-[#96B0BD] text-base md:text-lg md:text-center'>Total hours</p>
-                <p className="text-white text-3xl md:text-center">240</p>
+                <p className='text-[#96B0BD] text-base md:text-center'>Total hours</p>
+                <p className="text-white text-2xl md:text-center">240</p>
               </div>
               <div className='flex flex-col gap-1'>
-                <p className='text-[#96B0BD] text-base md:text-lg md:text-center'>Hire rate</p>
-                <p className="text-white text-3xl md:text-center">81%</p>
+                <p className='text-[#96B0BD] text-base md:text-center'>Hire rate</p>
+                <p className="text-white text-2xl md:text-center">81%</p>
               </div>
               <div className='flex flex-col gap-1'>
-                <p className='text-[#96B0BD] text-base md:text-lg md:text-center'>Hires</p>
-                <p className="text-white text-3xl md:text-center">44</p>
+                <p className='text-[#96B0BD] text-base md:text-center'>Hires</p>
+                <p className="text-white text-2xl md:text-center">44</p>
               </div>
               <div className='flex flex-col gap-1'>
-                <p className='text-[#96B0BD] text-base md:text-lg md:text-center'>H / rate paid</p>
-                <p className="text-white text-3xl md:text-center">~$22</p>
+                <p className='text-[#96B0BD] text-base md:text-center'>H / rate paid</p>
+                <p className="text-white text-2xl md:text-center">~$22</p>
               </div>
             </div> 
           </div>

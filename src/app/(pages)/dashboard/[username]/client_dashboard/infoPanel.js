@@ -9,12 +9,12 @@ const InfoItem = (props)=> {
       <p className="text-base text-[#96B0BD]">{props.label}</p> 
       {props.edit_mode ? (
         <input 
-          className="text-white text-sm md:text-[18px] outline-none font-medium bg-transparent pb-2 border-b focus:border-white" 
+          className="text-white text-sm md:text-[18px] md:font-medium outline-none font-medium bg-transparent pb-2 border-b focus:border-white" 
           value={inputValue} 
           onChange={(evnt)=> (setInputValue(evnt.target.value))} 
         />
       ) : (
-        <p className="text-white text-sm md:text-[18px] font-medium">{props.value}</p> 
+        <p className="text-white text-sm md:text-[18px] md:font-medium font-medium">{props.value}</p> 
       )} 
     </div>
   )
@@ -25,7 +25,7 @@ const InfoPanel = (props)=> {
     <div className='bg-[#10191D] md:p-8 px-3 py-4 md:rounded-xl flex flex-col gap-4'>
       {/* Content */}
       <div className="flex w-full justify-between">
-        <p className="text-[#96B0BD] text-xl font-medium">{props.title}</p> 
+        <p className="text-[#96B0BD] text-[18px] font-medium">{props.title}</p> 
         <img 
           src="/assets/images/icons/edit-pen.svg" 
           className='w-5 cursor-pointer' 
