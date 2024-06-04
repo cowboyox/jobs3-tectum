@@ -24,15 +24,53 @@ import MyGigs from '@/components/pages/dashboard/freelancer/MyGigs';
 import api from '@/utils/api';
 import RadialProgress from "@/components/ui/progress";
 
-const ProfileInfoItem = ({ iconSrc, label, value }) => {
+const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) => {
+  const handleValue = (value) => {
+    if (label === 'created') {
+      const month = new Date(value).toLocaleString('en-EN', { month: 'short' });
+      const year = new Date(value).getFullYear();
+      return month + " " + year;
+    }
+    return value;
+  }
+  const handleLabel = () => {
+    if (label === 'zkpId') {
+      return "ZKP ID"
+    } else if (label === 'location') {
+      return "Location"
+    } else if (label === 'created') {
+      return "Member since";
+    } else if (label === 'avgResponseTime') {
+      return "Avg.resp.time";
+    } else if (label === 'timeZone') {
+      return "Time Zone";
+    } else if (label === 'hourlyRate') {
+      return "Per hour";
+    } else if (label === 'monthlyRate') {
+      return "Monthly";
+    }
+  }
 
   return (
     <div className="w-full flex justify-between">
       <div className="w-1/2 flex gap-2 items-center">
         <img src={iconSrc} className='w-5 h-5 object-contain object-center' />
-        <span className='text-sm'>{label}</span>
+        <span className='text-sm'>{handleLabel()}</span>
       </div>
-      <span className='text-[#96B0BD] text-sm'>{value}</span>
+      {
+        editable && label !== "created" ?
+          <span>
+            <input className='text-[#96B0BD] text-sm outline-none bg-transparent border-b focus:border-white text-right'
+              value={handleValue(value)}
+              onChange={(e) => setProfileData((prev) => ({
+                ...prev,
+                [label]: e.target.value
+              }))}
+            ></input>
+          </span>
+          :
+          <span className='text-[#96B0BD] text-sm'>{handleValue(value)}</span>
+      }
     </div>
   );
 };
@@ -80,13 +118,38 @@ const Freelancer = () => {
     verified: false
   });
   const [isEditBio, setStatusBio] = useState(true);
+  const [isEditProfileInfo, setEditProfileInfo] = useState(false);
+  const [isEditPrice, setEditPrice] = useState(false);
   const [bio, setBio] = useState("Please input your bio here.");
   const [previewBio, setPreviewBio] = useState("");
   const [expandedBio, setExpandedBio] = useState("");
+  const [profileData, setProfileData] = useState({
+    avgResponseTime: "",
+    email: "",
+    created: "",
+    freelancerBio: "",
+    fullName: "",
+    hourlyRate: "",
+    languages: [],
+    location: "",
+    monthlyRate: "",
+    myGigs: [],
+    portfolio: [],
+    profileType: 0,
+    skills: [],
+    timeZone: "",
+    userId: "",
+    zkpId: ""
+  });
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
+    let email = JSON.parse(tmp).data.user.email;
     setUser(JSON.parse(tmp).data.user);
+    api.get(`/api/v1/profile/get-profile/${email}`).then((data) => {
+      console.log('------getprofile: ', data.data.profile)
+      setProfileData(data.data.profile);
+    })
   }, []);
 
   useEffect(() => {
@@ -135,6 +198,44 @@ const Freelancer = () => {
       })
     }
     setStatusBio(!isEditBio);
+  }
+
+  const handleSaveProfileInfo = () => {
+    setEditProfileInfo(false);
+    api.put(`/api/v1/profile/update-profileinfo/${user.email}`, profileData).then(data => {
+      return toast({
+        variant: "default",
+        title: <h1 className='text-center'>Success</h1>,
+        description: <h3>Successfully updated Profile Info</h3>,
+        className: "bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+      });
+    }).catch(err => {
+      toast({
+        variant: "destructive",
+        title: <h1 className='text-center'>Error</h1>,
+        description: <h3>Internal Server Error</h3>,
+        className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+      });
+    })
+  }
+
+  const handleSavePriceInfo = () => {
+    setEditPrice(false);
+    api.put(`/api/v1/profile/update-profileinfo/${user.email}`, profileData).then(data => {
+      return toast({
+        variant: "default",
+        title: <h1 className='text-center'>Success</h1>,
+        description: <h3>Successfully updated Price Info</h3>,
+        className: "bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+      });
+    }).catch(err => {
+      toast({
+        variant: "destructive",
+        title: <h1 className='text-center'>Error</h1>,
+        description: <h3>Internal Server Error</h3>,
+        className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+      });
+    })
   }
 
   return (
@@ -191,46 +292,75 @@ const Freelancer = () => {
                   <div className='flex flex-row justify-between'>
                     <div className="text-[#96B0BD] text-lg">Profile info</div>
                     <div className='text-xl text-[#96B0BD]'>
-                      <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => handleEditBio()} />
+                      {
+                        isEditProfileInfo ?
+                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => handleSaveProfileInfo()} />
+                          :
+                          <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditProfileInfo(true)} />
+                      }
                     </div>
                   </div>
                   <ProfileInfoItem
                     iconSrc="/assets/images/icons/personalcard.svg"
-                    label="ZKP ID"
-                    value="Devon865"
+                    label={"zkpId"}
+                    value={profileData.zkpId}
+                    setProfileData={setProfileData}
+                    editable={isEditProfileInfo}
                   />
                   <ProfileInfoItem
                     iconSrc="/assets/images/icons/buildings.svg"
-                    label="Location"
-                    value="Oslo, Norway"
+                    label={"location"}
+                    value={profileData.location}
+                    setProfileData={setProfileData}
+                    editable={isEditProfileInfo}
                   />
                   <ProfileInfoItem
                     iconSrc="/assets/images/icons/user-portal.svg"
-                    label="Member since"
-                    value="Mar 2022"
+                    label="created"
+                    value={profileData.created}
+                    setProfileData={setProfileData}
+                    editable={isEditProfileInfo}
                   />
                   <ProfileInfoItem
                     iconSrc="/assets/images/icons/clocks.svg"
-                    label="Avg. resp. time"
-                    value="1h"
+                    label="avgResponseTime"
+                    value={profileData.avgResponseTime}
+                    setProfileData={setProfileData}
+                    editable={isEditProfileInfo}
                   />
                   <ProfileInfoItem
                     iconSrc="/assets/images/icons/watch.svg"
-                    label="Time Zone"
-                    value="GMT+7"
+                    label={"timeZone"}
+                    value={profileData.timeZone}
+                    setProfileData={setProfileData}
+                    editable={isEditProfileInfo}
                   />
                 </div>
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d] border-[#28373e]">
-                  <p className="text-[#96B0BD] text-lg">Price</p>
+                  <div className='flex flex-row justify-between'>
+                    <p className="text-[#96B0BD] text-lg">Price</p>
+                    <div className='text-xl text-[#96B0BD]'>
+                      {
+                        isEditPrice ?
+                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => handleSavePriceInfo()} />
+                          :
+                          <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditPrice(true)} />
+                      }
+                    </div>
+                  </div>
                   <ProfileInfoItem
                     iconSrc="/assets/images/icons/receipt-item.svg"
-                    label="Per hour"
-                    value="$70"
+                    label={"hourlyRate"}
+                    value={profileData.hourlyRate}
+                    setProfileData={setProfileData}
+                    editable={isEditPrice}
                   />
                   <ProfileInfoItem
                     iconSrc="/assets/images/icons/calendar-2.svg"
-                    label="Monthly"
-                    value="$3500"
+                    label={"monthlyRate"}
+                    value={profileData.monthlyRate}
+                    setProfileData={setProfileData}
+                    editable={isEditPrice}
                   />
                 </div>
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d]">
