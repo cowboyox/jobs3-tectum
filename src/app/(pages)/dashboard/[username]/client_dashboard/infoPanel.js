@@ -36,11 +36,11 @@ const InfoPanel = (props)=> {
         <div className="grid grid-cols-2 gap-3">
           {props.information_data.map((singleInfo)=> ( 
             <InfoItem 
-              key={singleInfo.id} 
-              label={singleInfo.label} 
-              value={singleInfo.value} 
-              edit_mode={editMode} 
-            /> 
+              key={singleInfo.id}
+              label={singleInfo.label}
+              value={singleInfo.value}
+              edit_mode={editMode}
+            />
           ))}
         </div>
         {editMode && (

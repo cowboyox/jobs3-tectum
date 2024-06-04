@@ -1,12 +1,18 @@
 import React from 'react';
 import '/src/app/css/remove_horizontal_padding.css';
+import { IoCameraOutline } from "react-icons/io5";
 
 import InfoPanel from './infoPanel';
 
 const ClientDashboard = () => {
   return (
     <div className='p-0'> 
-      <img src="/assets/images/freelancer-image.jpeg" className='rounded-b-2xl h-64 w-full object-cover' />
+      <div className='group relative cursor-pointer'> 
+        <img src="/assets/images/freelancer-image.jpeg" className='rounded-b-2xl h-64 w-full object-cover transition group-hover:opacity-75' />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 rounded-full flex items-center justify-center bg-[#1a272c] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <IoCameraOutline className='w-6 h-6' />
+        </div>
+      </div>
       <div className=" max-w-7xl mx-auto flex flex-col gap-3 px-0 md:px-8 -translate-y-8">
         <div className="bg-[#10191D] md:p-8 px-3 py-4 md:rounded-xl rounded-t-xl flex md:gap-7 gap-4 md:items-center items-start">
           <div className="w-20 md:w-24 md:h-24 relative">
@@ -62,6 +68,7 @@ const ClientDashboard = () => {
             </div> 
           </div>
           <div className='w-full md:w-2/3 md:pl-4 flex flex-col gap-4'> 
+            {/* All this should be dynamic data for sure */}
             <InfoPanel
                 title="Personal Information"
                 editAction='editPersonalInfo'
