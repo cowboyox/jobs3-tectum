@@ -23,6 +23,7 @@ import Portfolio from '@/components/pages/dashboard/freelancer/Portfolio';
 import MyGigs from '@/components/pages/dashboard/freelancer/MyGigs';
 import api from '@/utils/api';
 import RadialProgress from "@/components/ui/progress";
+import skillSets from '@/utils/skillsets';
 
 const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) => {
   const handleValue = (value) => {
@@ -366,12 +367,11 @@ const Freelancer = () => {
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d]">
                   <p className="text-[#96B0BD] text-lg">Skills</p>
                   <div className="flex flex-wrap gap-2">
-                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">UI/UX</div>
-                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">Design</div>
-                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">Webdesign</div>
-                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">Prototyping</div>
-                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">Wireframing</div>
-                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">Research</div>
+                    {
+                      skillSets.map((skill, index) => {
+                        return <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm" key={index}>{skill}</div>
+                      })
+                    }
                   </div>
                 </div>
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d]">
