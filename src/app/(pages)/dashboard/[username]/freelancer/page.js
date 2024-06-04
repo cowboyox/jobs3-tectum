@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import './remove_horizontal_padding.css';
+import '/src/app/css/remove_horizontal_padding.css';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
