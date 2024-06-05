@@ -6,8 +6,9 @@ import { GoPlus } from "react-icons/go";
 import RadialProgress from "@/components/ui/progress";
 import { Input } from '@/components/ui/input';
 import api from '@/utils/api';
+import { backend_url } from "@/utils/variables";
 
-const MyGigs = ({ imagePath, setUploadedGigPath, email }) => {
+const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData }) => {
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
 
@@ -56,6 +57,11 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email }) => {
                     URL.createObjectURL(image)
                 ])
                 console.log("---------- ", image)
+                let tmp = `/images/uploads/${email}/mygigs/${image.name}`;
+                setProfileData((prev) => ({
+                    ...prev,
+                    myGigs: [...prev.myGigs, tmp]
+                }));
                 // if (onUploadComplete) {
                 //   onUploadComplete(res.data.url);
                 // }
@@ -110,7 +116,7 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email }) => {
                             <Image
                                 width={1000}
                                 height={1000}
-                                src={imagePath}
+                                src={`${backend_url}/${imagePath}`}
                                 className="w-full object-contain opacity-70 rounded-xl"
                                 alt="uploaded image"
                                 key={imagePath}

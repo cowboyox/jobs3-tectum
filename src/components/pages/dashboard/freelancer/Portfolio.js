@@ -6,8 +6,9 @@ import { GoPlus } from "react-icons/go";
 import RadialProgress from "@/components/ui/progress";
 import { Input } from '@/components/ui/input';
 import api from '@/utils/api';
+import { backend_url } from "@/utils/variables";
 
-const Portfolio = ({ imagePath, setUploadedImagePath, email }) => {
+const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData }) => {
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
 
@@ -56,6 +57,12 @@ const Portfolio = ({ imagePath, setUploadedImagePath, email }) => {
                     URL.createObjectURL(image)
                 ])
                 console.log("---------- ", image)
+                let tmp = `/images/uploads/${email}/portfolio/${image.name}`
+                setProfileData((prev) => ({
+                    ...prev,
+                    portfolio: [...prev.portfolio, tmp]
+                }))
+
                 // if (onUploadComplete) {
                 //   onUploadComplete(res.data.url);
                 // }
@@ -110,7 +117,7 @@ const Portfolio = ({ imagePath, setUploadedImagePath, email }) => {
                             <Image
                                 width={1000}
                                 height={1000}
-                                src={imagePath}
+                                src={`${backend_url}/${imagePath}`}
                                 className="w-full object-contain opacity-70 rounded-xl"
                                 alt="uploaded image"
                                 key={imagePath}
