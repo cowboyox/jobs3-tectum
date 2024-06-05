@@ -26,7 +26,7 @@ const InfoPanel = (props) => {
   }
   const [editMode, setEditMode] = useState(false);
   return (
-    <div className='bg-[#10191D] md:p-8 px-3 py-4 md:rounded-xl flex flex-col gap-4'>
+    <div className='bg-[#10191D] md:p-8 px-3 py-4 md:rounded-xl flex flex-col gap-4' key={props.index}>
       {/* Content */}
       <div className="flex w-full justify-between">
         <p className="text-[#96B0BD] text-[18px] font-medium">{props.title}</p>
@@ -38,8 +38,8 @@ const InfoPanel = (props) => {
       </div>
       <form> {/* After the form is submitted the user data should be saved in the backend */}
         <div className="grid grid-cols-2 gap-3">
-          {props.information_data.map((singleInfo) => (
-            <div className="flex flex-col gap-1">
+          {props.information_data.map((singleInfo, cntNum) => (
+            <div className="flex flex-col gap-1" key={cntNum}>
               <p className="text-base text-[#96B0BD]">{singleInfo.label}</p>
               {editMode ? (
                 <input
