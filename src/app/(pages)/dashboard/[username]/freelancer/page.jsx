@@ -23,7 +23,7 @@ import Portfolio from '@/components/pages/dashboard/freelancer/Portfolio';
 import MyGigs from '@/components/pages/dashboard/freelancer/MyGigs';
 import api from '@/utils/api';
 import RadialProgress from "@/components/ui/progress";
-import skillSets from '@/utils/skillsets';
+import { skillSets, languages } from '@/utils/constants';
 
 const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) => {
   const handleValue = (value) => {
@@ -120,6 +120,8 @@ const Freelancer = () => {
   });
   const [isEditBio, setStatusBio] = useState(true);
   const [isEditProfileInfo, setEditProfileInfo] = useState(false);
+  const [isEditSkills, setEditSkills] = useState(false);
+  const [isEditLang, setEditLang] = useState(false);
   const [isEditPrice, setEditPrice] = useState(false);
   const [bio, setBio] = useState("Please input your bio here.");
   const [previewBio, setPreviewBio] = useState("");
@@ -201,32 +203,19 @@ const Freelancer = () => {
     setStatusBio(!isEditBio);
   }
 
-  const handleSaveProfileInfo = () => {
-    setEditProfileInfo(false);
-    api.put(`/api/v1/profile/update-profileinfo/${user.email}`, profileData).then(data => {
-      return toast({
-        variant: "default",
-        title: <h1 className='text-center'>Success</h1>,
-        description: <h3>Successfully updated Profile Info</h3>,
-        className: "bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
-      });
-    }).catch(err => {
-      toast({
-        variant: "destructive",
-        title: <h1 className='text-center'>Error</h1>,
-        description: <h3>Internal Server Error</h3>,
-        className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
-      });
-    })
+  const handleSetSkills = (skill) => {
+    setProfileData((prev) => ({
+      ...prev,
+      skills: [...prev.skills, skill]
+    }));
   }
 
-  const handleSavePriceInfo = () => {
-    setEditPrice(false);
+  const saveProfile = () => {
     api.put(`/api/v1/profile/update-profileinfo/${user.email}`, profileData).then(data => {
       return toast({
         variant: "default",
         title: <h1 className='text-center'>Success</h1>,
-        description: <h3>Successfully updated Price Info</h3>,
+        description: <h3>Successfully updated Skills</h3>,
         className: "bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
       });
     }).catch(err => {
@@ -295,7 +284,7 @@ const Freelancer = () => {
                     <div className='text-xl text-[#96B0BD]'>
                       {
                         isEditProfileInfo ?
-                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => handleSaveProfileInfo()} />
+                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditProfileInfo(false); }} />
                           :
                           <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditProfileInfo(true)} />
                       }
@@ -343,7 +332,7 @@ const Freelancer = () => {
                     <div className='text-xl text-[#96B0BD]'>
                       {
                         isEditPrice ?
-                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => handleSavePriceInfo()} />
+                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditPrice(false); }} />
                           :
                           <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditPrice(true)} />
                       }
@@ -365,23 +354,109 @@ const Freelancer = () => {
                   />
                 </div>
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d]">
-                  <p className="text-[#96B0BD] text-lg">Skills</p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className='flex flex-row justify-between'>
+                    <p className="text-[#96B0BD] text-lg">Skills</p>
+                    <div className='text-xl text-[#96B0BD]'>
+                      {
+                        isEditSkills ?
+                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditSkills(false); }} />
+                          :
+                          <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditSkills(true)} />
+                      }
+                    </div>
+                  </div>
+                  <div className={`flex flex-wrap gap-2 ${(profileData.skills.length !== skillSets.length && isEditSkills) ? 'border-b pb-3' : ''}`}>
                     {
-                      skillSets.map((skill, index) => {
-                        return <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm" key={index}>{skill}</div>
+                      profileData.skills.map((skill, index) => {
+                        return <div className={`${isEditSkills ? 'cursor-pointer' : ''} p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm`}
+                          key={index}
+                          onClick={
+                            () => {
+                              if (isEditSkills) {
+                                let tmp = profileData.skills.filter((Iskill, num) => { return Iskill !== skill });
+                                return setProfileData(prev => ({
+                                  ...prev,
+                                  skills: tmp
+                                }))
+                              }
+                            }
+                          }
+                        >{skill}</div>
                       })
                     }
                   </div>
+                  {
+                    isEditSkills &&
+                    <div className="flex flex-wrap gap-2">
+                      {
+                        skillSets.map((skill, index) => {
+                          return !profileData.skills.includes(skill) && (
+                            <div className={`bg-[#28373e] p-2 rounded-full border border-[#3e525b] text-sm cursor-pointer`}
+                              key={index}
+                              onClick={() => handleSetSkills(skill)}
+                            >
+                              {skill}
+                            </div>
+
+                          )
+                        })
+                      }
+                    </div>
+                  }
                 </div>
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d]">
-                  <p className="text-[#96B0BD] text-lg">Languages</p>
-                  <div className="flex flex-wrap gap-2">
-                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">English</div>
-                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">German</div>
-                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">Russian</div>
-                    <div className="p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm">Spanish</div>
+                  <div className="flex flex-row justify-between">
+                    <p className="text-[#96B0BD] text-lg">Languages</p>
+                    <div className='text-xl text-[#96B0BD]'>
+                      {
+                        isEditLang ?
+                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditLang(false); }} />
+                          :
+                          <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditLang(true)} />
+                      }
+                    </div>
                   </div>
+                  <div className={`flex flex-wrap gap-2 ${(profileData.languages.length !== languages.length && isEditLang) ? 'border-b pb-3' : ''}`}>
+                    {
+                      profileData.languages.map((lang, index) => {
+                        return <div className={`${isEditLang ? 'cursor-pointer' : ''} p-2 bg-[#28373e] rounded-full border border-[#3e525b] text-sm`}
+                          key={index}
+                          onClick={
+                            () => {
+                              if (isEditLang) {
+                                let tmp = profileData.languages.filter((Ilang, num) => { return Ilang !== lang });
+                                return setProfileData(prev => ({
+                                  ...prev,
+                                  languages: tmp
+                                }))
+                              }
+                            }
+                          }
+                        >{lang}</div>
+                      })
+                    }
+                  </div>
+                  {
+                    isEditLang &&
+                    <div className="flex flex-wrap gap-2">
+                      {
+                        languages.map((lang, index) => {
+                          return !profileData.languages.includes(lang) && (
+                            <div className={`bg-[#28373e] p-2 rounded-full border border-[#3e525b] text-sm cursor-pointer`}
+                              key={index}
+                              onClick={() => setProfileData((prev) => ({
+                                ...prev,
+                                languages: [...prev.languages, lang]
+                              }))
+                              }
+                            >
+                              {lang}
+                            </div>
+                          )
+                        })
+                      }
+                    </div>
+                  }
                 </div>
               </div>
             </div>
@@ -394,7 +469,12 @@ const Freelancer = () => {
                     <div className='flex flex-row justify-between'>
                       <div className='text-xl text-[#96B0BD]'>About</div>
                       <div className='text-xl text-[#96B0BD]'>
-                        <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => handleEditBio()} />
+                        {
+                          isEditBio ?
+                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => handleEditBio() } />
+                          :
+                          <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => handleEditBio()} />
+                        }
                       </div>
                     </div>
                     <CollapsibleText
@@ -428,12 +508,11 @@ const Freelancer = () => {
                     </div>
                     <div className="grid-cols-3 gap-4 hidden md:grid">
                       {
-                        uploadedImagePath.length > 0 && uploadedImagePath.map((imagePath, index) => (
-                          // <EmptyItem key={index} imagePath={imagePath} setUploadedImagePath={setUploadedImagePath} type={"false"} />
-                          <Portfolio key={index} imagePath={imagePath} setUploadedImagePath={setUploadedImagePath} email={user.email} />
+                        profileData.portfolio.length > 0 && profileData.portfolio.map((imagePath, index) => (
+                          <Portfolio key={index} imagePath={imagePath} setUploadedImagePath={setUploadedImagePath} email={user.email} setProfileData={setProfileData}/>
                         ))
                       }
-                      <Portfolio key={`extra-${uploadedImagePath.length}`} imagePath="" setUploadedImagePath={setUploadedImagePath} email={user.email} />
+                      <Portfolio key={`extra-${uploadedImagePath.length}`} imagePath="" setUploadedImagePath={setUploadedImagePath} email={user.email} setProfileData={setProfileData}/>
                     </div>
                     <div className="md:hidden">
                       <Swiper
@@ -472,11 +551,11 @@ const Freelancer = () => {
                     </div>
                     <div className="grid-cols-3 gap-4 hidden md:grid">
                       {
-                        uploadedGigPath.length > 0 && uploadedGigPath.map((imagePath, index) => (
-                          <MyGigs key={index} imagePath={imagePath} setUploadedGigPath={setUploadedGigPath} email={user.email} />
+                        profileData.myGigs.length > 0 && profileData.myGigs.map((imagePath, index) => (
+                          <MyGigs key={index} imagePath={imagePath} setUploadedGigPath={setUploadedGigPath} email={user.email} setProfileData={setProfileData}/>
                         ))
                       }
-                      <MyGigs key={`extra-${uploadedGigPath.length}`} imagePath="" setUploadedGigPath={setUploadedGigPath} email={user.email} />
+                      <MyGigs key={`extra-${uploadedGigPath.length}`} imagePath="" setUploadedGigPath={setUploadedGigPath} email={user.email} setProfileData={setProfileData}/>
                     </div>
                     <div className="md:hidden">
                       <Swiper
@@ -527,8 +606,8 @@ const Freelancer = () => {
             </div>
           </div>
         </Tabs>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
 
