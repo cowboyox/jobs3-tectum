@@ -149,6 +149,7 @@ const ClientDashboard = () => {
                   index={index}
                   profileData={profileData}
                   email={user.email}
+                  key={index}
                 />
               })
             }

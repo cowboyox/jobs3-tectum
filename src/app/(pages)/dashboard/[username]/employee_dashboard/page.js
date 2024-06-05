@@ -232,8 +232,8 @@ export default function EmployerProfile(parameters) {
                             </div>
                             {activeReviewTab === 'completed_jobs' &&
                                 <div className="reviews_tab_container">
-                                    {fakeReviewsData.map(review => (
-                                        <div className="single_review" key={review.id}>
+                                    {fakeReviewsData.map((review, index) => (
+                                        <div className="single_review" key={review.id + " " + index}>
                                             <h4>{review.projectName}</h4>
                                             <div className="reviews_details">
                                                 <div className="star_rating">
