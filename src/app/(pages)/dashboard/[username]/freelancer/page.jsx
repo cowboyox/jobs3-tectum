@@ -110,6 +110,7 @@ const Freelancer = () => {
   const [selectedImage, setSelectedImage] = useState([]);
   const [uploadedImagePath, setUploadedImagePath] = useState([]);
   const [uploadedGigPath, setUploadedGigPath] = useState([]);
+  const [viewMode, setViewMode] = useState("edit");
 
   const { toast } = useToast();
   const [user, setUser] = useState({
@@ -262,12 +263,14 @@ const Freelancer = () => {
                 <TabsTrigger
                   className='rounded-xl data-[state=active]:bg-[#dc4f14] px-6 w-full'
                   value="preview"
+                  onClick={() => setViewMode("preview")}
                 >
                   Preview
                 </TabsTrigger>
                 <TabsTrigger
                   className='rounded-xl data-[state=active]:bg-[#dc4f14] px-6 w-full'
                   value="edit-profile"
+                  onClick={() => setViewMode("edit")}
                 >
                   Edit profile
                 </TabsTrigger>
@@ -281,14 +284,17 @@ const Freelancer = () => {
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d] border-[#28373e]">
                   <div className='flex flex-row justify-between'>
                     <div className="text-[#96B0BD] text-lg">Profile info</div>
-                    <div className='text-xl text-[#96B0BD]'>
-                      {
-                        isEditProfileInfo ?
-                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditProfileInfo(false); }} />
-                          :
-                          <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditProfileInfo(true)} />
-                      }
-                    </div>
+                    {
+                      viewMode === "edit" &&
+                      <div className='text-xl text-[#96B0BD]'>
+                        {
+                          isEditProfileInfo ?
+                            <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditProfileInfo(false); }} />
+                            :
+                            <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditProfileInfo(true)} />
+                        }
+                      </div>
+                    }
                   </div>
                   <ProfileInfoItem
                     iconSrc="/assets/images/icons/personalcard.svg"
@@ -329,14 +335,17 @@ const Freelancer = () => {
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d] border-[#28373e]">
                   <div className='flex flex-row justify-between'>
                     <p className="text-[#96B0BD] text-lg">Price</p>
-                    <div className='text-xl text-[#96B0BD]'>
-                      {
-                        isEditPrice ?
-                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditPrice(false); }} />
-                          :
-                          <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditPrice(true)} />
-                      }
-                    </div>
+                    {
+                      viewMode === "edit" &&
+                      <div className='text-xl text-[#96B0BD]'>
+                        {
+                          isEditPrice ?
+                            <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditPrice(false); }} />
+                            :
+                            <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditPrice(true)} />
+                        }
+                      </div>
+                    }
                   </div>
                   <ProfileInfoItem
                     iconSrc="/assets/images/icons/receipt-item.svg"
@@ -356,14 +365,17 @@ const Freelancer = () => {
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d]">
                   <div className='flex flex-row justify-between'>
                     <p className="text-[#96B0BD] text-lg">Skills</p>
-                    <div className='text-xl text-[#96B0BD]'>
-                      {
-                        isEditSkills ?
-                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditSkills(false); }} />
-                          :
-                          <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditSkills(true)} />
-                      }
-                    </div>
+                    {
+                      viewMode === "edit" &&
+                      <div className='text-xl text-[#96B0BD]'>
+                        {
+                          isEditSkills ?
+                            <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditSkills(false); }} />
+                            :
+                            <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditSkills(true)} />
+                        }
+                      </div>
+                    }
                   </div>
                   <div className={`flex flex-wrap gap-2 ${(profileData.skills.length !== skillSets.length && isEditSkills) ? 'border-b pb-3' : ''}`}>
                     {
@@ -407,14 +419,17 @@ const Freelancer = () => {
                 <div className="p-6 flex flex-col gap-3 border-b bg-[#10191d]">
                   <div className="flex flex-row justify-between">
                     <p className="text-[#96B0BD] text-lg">Languages</p>
-                    <div className='text-xl text-[#96B0BD]'>
-                      {
-                        isEditLang ?
-                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditLang(false); }} />
-                          :
-                          <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditLang(true)} />
-                      }
-                    </div>
+                    {
+                      viewMode === "edit" &&
+                      <div className='text-xl text-[#96B0BD]'>
+                        {
+                          isEditLang ?
+                            <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => { saveProfile(); setEditLang(false); }} />
+                            :
+                            <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => setEditLang(true)} />
+                        }
+                      </div>
+                    }
                   </div>
                   <div className={`flex flex-wrap gap-2 ${(profileData.languages.length !== languages.length && isEditLang) ? 'border-b pb-3' : ''}`}>
                     {
@@ -462,7 +477,134 @@ const Freelancer = () => {
             </div>
             {/* Content */}
             <div className="md:w-3/4 w-full md:pl-6">
-              <TabsContent value="preview">Preview</TabsContent>
+              <TabsContent value="preview">
+                <div className="flex flex-col gap-5">
+                  <div className="w-full flex flex-col p-5 pb-12 rounded-xl gap-2 bg-[#10191d]">
+                    <div className='flex flex-row justify-between'>
+                      <div className='text-xl text-[#96B0BD]'>About</div>
+                    </div>
+                    <CollapsibleText
+                      previewText={previewBio}
+                      expandedText={expandedBio}
+                      isEditBio={false}
+                      bio={bio}
+                      setBio={setBio}
+                    />
+                  </div>
+                  <div className="w-full flex justify-between flex-col p-5 rounded-xl gap-5 bg-[#10191d]">
+                    <div className="flex justify-between">
+                      <div className='text-xl md:text-2xl text-[#96B0BD] flex items-center gap-3'>
+                        My Portfolio
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger className='flex items-center'>
+                              <IoInformationCircleOutline className='w-6 h-6' />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Info
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <div className="flex gap-3 md:gap-4 ml-auto items-center">
+                        <p className="cursor-pointer text-white text-sm underline">Active</p>
+                        <p className="cursor-pointer text-slate-400 text-sm hover:text-white">Drafts</p>
+                      </div>
+                    </div>
+                    <div className="grid-cols-3 gap-4 hidden md:grid">
+                      {
+                        profileData.portfolio.length > 0 && profileData.portfolio.map((imagePath, index) => (
+                          <Portfolio key={index} imagePath={imagePath} setUploadedImagePath={setUploadedImagePath} email={user.email} setProfileData={setProfileData} viewMode={"preview"} />
+                        ))
+                      }
+                    </div>
+                    <div className="md:hidden">
+                      <Swiper
+                        spaceBetween={20}
+                        slidesPerView={1.2}
+                      >
+                        <SwiperSlide> <Portfolio /> </SwiperSlide>
+                        <SwiperSlide> <Portfolio /> </SwiperSlide>
+                        <SwiperSlide> <Portfolio /> </SwiperSlide>
+                      </Swiper>
+                    </div>
+                    <span className="cursor-pointer flex items-center gap-2 shadow-inner mx-auto">
+                      Show more <GoChevronDown />
+                    </span>
+                  </div>
+                  <div className="w-full flex justify-between flex-col p-5 rounded-xl gap-5 bg-[#10191d]">
+                    <div className="flex justify-between">
+                      <div className='text-xl md:text-2xl text-[#96B0BD] flex items-center gap-3'>
+                        My Gigs
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger className='flex items-center'>
+                              <IoInformationCircleOutline className='w-6 h-6' />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Info
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <div className="flex gap-3 md:gap-4 ml-auto items-center">
+                        <p className="cursor-pointer text-white text-sm underline">Active</p>
+                        <p className="cursor-pointer text-slate-400 text-sm hover:text-white">Drafts</p>
+                      </div>
+                    </div>
+                    <div className="grid-cols-3 gap-4 hidden md:grid">
+                      {
+                        profileData.myGigs.length > 0 && profileData.myGigs.map((imagePath, index) => (
+                          <MyGigs key={index} imagePath={imagePath} setUploadedGigPath={setUploadedGigPath} email={user.email} setProfileData={setProfileData} viewMode={"preview"} />
+                        ))
+                      }
+                    </div>
+                    <div className="md:hidden">
+                      <Swiper
+                        spaceBetween={20}
+                        slidesPerView={1.2}
+                      >
+                        <SwiperSlide> <MyGigs /> </SwiperSlide>
+                        <SwiperSlide> <MyGigs /> </SwiperSlide>
+                        <SwiperSlide> <MyGigs /> </SwiperSlide>
+                      </Swiper>
+                    </div>
+                    <span className="cursor-pointer flex items-center gap-2 shadow-inner mx-auto">
+                      Show more <GoChevronDown />
+                    </span>
+                  </div>
+                  <div className="w-full flex flex-col p-5 pb-12 rounded-xl gap-2 bg-[#10191d]">
+                    <p className='text-2xl text-[#96B0BD]'>Reviews</p>
+                    <div className='flex flex-col gap-6 mt-4'>
+                      {reviews.map(review => (
+                        <div key={review.id} className="w-full flex gap-6">
+                          <div className="w-full flex flex-col gap-2 border-b pb-6 border-[#28373e]">
+                            <div className="flex items-center gap-4 flex-wrap md:flex-nowrap">
+                              <img src={review.imgSrc} className='w-10 h-10 aspect-square rounded-full object-cover' alt="user" />
+                              <div className="flex w-auto items-center gap-2">
+                                <p className="text-xl">{review.name}</p>
+                                <img src={review.flagSrc} className='w-6 h-fit bg-white' alt="flag" />
+                              </div>
+                              <div className="ml-auto flex items-center gap-3 w-full md:w-auto md:justify-normal justify-between">
+                                <p className="text-base text-[#526872]">{review.timeAgo}</p>
+                                <StarRating rating={review.rating} />
+                              </div>
+                            </div>
+                            <div className="md:pl-14 mt-2 md:mt-0">
+                              <p className='text-white text-base'>
+                                {review.reviewText}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <span className="cursor-pointer flex items-center gap-2 shadow-inner mx-auto">
+                        Show more <GoChevronDown />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
               <TabsContent value="edit-profile">
                 <div className="flex flex-col gap-5">
                   <div className="w-full flex flex-col p-5 pb-12 rounded-xl gap-2 bg-[#10191d]">
@@ -471,9 +613,9 @@ const Freelancer = () => {
                       <div className='text-xl text-[#96B0BD]'>
                         {
                           isEditBio ?
-                          <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => handleEditBio() } />
-                          :
-                          <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => handleEditBio()} />
+                            <img src='/assets/images/icons/save.png' width={25} height={25} className="cursor-pointer" onClick={() => handleEditBio()} />
+                            :
+                            <img src='/assets/images/icons/edit-pen.svg' className="cursor-pointer" onClick={() => handleEditBio()} />
                         }
                       </div>
                     </div>
@@ -509,10 +651,10 @@ const Freelancer = () => {
                     <div className="grid-cols-3 gap-4 hidden md:grid">
                       {
                         profileData.portfolio.length > 0 && profileData.portfolio.map((imagePath, index) => (
-                          <Portfolio key={index} imagePath={imagePath} setUploadedImagePath={setUploadedImagePath} email={user.email} setProfileData={setProfileData}/>
+                          <Portfolio key={index} imagePath={imagePath} setUploadedImagePath={setUploadedImagePath} email={user.email} setProfileData={setProfileData} viewMode={"edit"} />
                         ))
                       }
-                      <Portfolio key={`extra-${uploadedImagePath.length}`} imagePath="" setUploadedImagePath={setUploadedImagePath} email={user.email} setProfileData={setProfileData}/>
+                      <Portfolio key={`extra-${uploadedImagePath.length}`} imagePath="" setUploadedImagePath={setUploadedImagePath} email={user.email} setProfileData={setProfileData} viewMode={"edit"} />
                     </div>
                     <div className="md:hidden">
                       <Swiper
@@ -552,10 +694,10 @@ const Freelancer = () => {
                     <div className="grid-cols-3 gap-4 hidden md:grid">
                       {
                         profileData.myGigs.length > 0 && profileData.myGigs.map((imagePath, index) => (
-                          <MyGigs key={index} imagePath={imagePath} setUploadedGigPath={setUploadedGigPath} email={user.email} setProfileData={setProfileData}/>
+                          <MyGigs key={index} imagePath={imagePath} setUploadedGigPath={setUploadedGigPath} email={user.email} setProfileData={setProfileData} viewMode={"edit"} />
                         ))
                       }
-                      <MyGigs key={`extra-${uploadedGigPath.length}`} imagePath="" setUploadedGigPath={setUploadedGigPath} email={user.email} setProfileData={setProfileData}/>
+                      <MyGigs key={`extra-${uploadedGigPath.length}`} imagePath="" setUploadedGigPath={setUploadedGigPath} email={user.email} setProfileData={setProfileData} viewMode={"edit"} />
                     </div>
                     <div className="md:hidden">
                       <Swiper

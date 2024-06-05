@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import api from '@/utils/api';
 import { backend_url } from "@/utils/variables";
 
-const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData }) => {
+const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode }) => {
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
 
@@ -89,7 +89,7 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData }) => {
             <div {...getRootProps()} className="h-full">
                 <label
                     htmlFor="dropzone-file"
-                    className="w-full h-72 bg-[#1a272c] rounded-2xl flex items-center justify-center border border-dashed border-[#526872] cursor-pointer transition hover:bg-[#23343b]"
+                    className={`w-full h-72 bg-[#1a272c] rounded-2xl flex items-center justify-center border border-dashed border-[#526872] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
                     onClick={e => e.stopPropagation()}
                 >
                     {loading && (
@@ -124,16 +124,18 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData }) => {
                         </div>
                     )}
                 </label>
-
-                <Input
-                    {...getInputProps()}
-                    id="dropzone-file"
-                    accept="image/png, image/jpeg"
-                    type="file"
-                    className="hidden"
-                    disabled={loading}
-                    onChange={handleImageChange}
-                />
+                {
+                    viewMode === "edit" &&
+                    <Input
+                        {...getInputProps()}
+                        id="dropzone-file"
+                        accept="image/png, image/jpeg"
+                        type="file"
+                        className="hidden"
+                        disabled={loading}
+                        onChange={handleImageChange}
+                    />
+                }
             </div>
 
             {/* {!!uploadedImagePath && (
