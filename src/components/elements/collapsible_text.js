@@ -34,7 +34,7 @@ const CollapsibleText = ({ previewText, expandedText, isEditBio, bio, setBio }) 
             ))}
           </div>
           :
-          <Textarea className="rounded-xl outline-none" value={bio} onChange={e => setBio(e.target.value)} rows={7}></Textarea>
+          <Textarea className="rounded-xl outline-none" value={previewText + expandedText} onChange={e => setBio(e.target.value)} rows={7}></Textarea>
       }
       {
         !isEditBio &&
