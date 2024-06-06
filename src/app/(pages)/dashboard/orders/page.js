@@ -36,11 +36,6 @@ const Orders = () => {
     ])
     const [orders, setOrders] = useState([1, 2, 3]);
 
-    const searchQuery = (e) => {
-        e.preventDefault();
-        router.push(`/jobs?search=${search}`);
-    };
-
     const [placeholderText, setPlaceholderText] = useState('Search by Order title...');
     const [isSmallScreen, setIsSmallScree] = useState(false);
     useEffect(() => {
@@ -156,8 +151,8 @@ const Orders = () => {
                 </span>
             </div>
             {
-                orders.map(i => {
-                    return <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl">
+                orders.map((order, index) => {
+                    return <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl" key={index}>
                         <div className="flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start">
                             <div className="flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3">Digital Interface for finance project</div>
                             <div className="flex-none flex flex-row gap-2 items-center">
