@@ -55,14 +55,11 @@ const Orders = () => {
             }
           };
       
-          // Initial setup
           handleResize();
       
-          // Add event listener
           window.addEventListener('resize', handleResize);
       
           return () => {
-            // Cleanup
             window.removeEventListener('resize', handleResize);
           };
     }, [])
