@@ -6,7 +6,7 @@ module.exports = {
     './pages/**/*.{ts,js,tsx,jsx}',
     './components/**/*.{ts,js,tsx,jsx}',
     './app/**/*.{ts,js,tsx,jsx}',
-    './src/**/*.{ts,js,tsx,jsx}', // Add .jsx if needed
+    './src/**/*.{ts,tsx,js,jsx}', // Add .jsx if needed
   ],
   prefix: "",
   theme: {
@@ -73,6 +73,9 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
+    backgroundImage: {
+      'radial-gradient': 'radial-gradient(circle at 50% 75%, #DC4F13, #151A1E)',
+    }
   },
   plugins: [require("tailwindcss-animate")],
 }
