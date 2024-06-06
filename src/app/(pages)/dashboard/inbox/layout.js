@@ -203,7 +203,35 @@ const InboxPage = ({ children }) => {
         className='flex overflow-hidden' 
         style={{ maxHeight: 'calc(100vh - 100px)' }}
       >
-        {/* still working on it locally */}
+        <div className='w-1/3 border-r border-[#28373E] p-8 flex flex-col gap-4'>
+          {/* Search chats */}
+          <div className='flex h-auto px-4 items-center border border-[#526872] rounded-xl'>
+            <IoIosSearch />
+            <input className='w-full h-16 pl-4 bg-transparent text-base outline-none' placeholder='Search' />
+          </div>
+          {/* Filter Chats */}
+          <Select className="w-full">
+            <SelectTrigger className='bg-[#1a272c] text-[#A0B4C0] rounded-[8px] gap-2 w-full px-2 md:px-4 text-left'>
+              <SelectValue placeholder='All Messages' />
+            </SelectTrigger>
+            <SelectContent className='bg-[#1a272c] rounded-xl'>
+              {chats_filters.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {/* Chats */}
+          <div className="flex flex-col gap-2 overflow-scroll">
+            {messages.map((message) => (
+              <MessageItem key={message.id} message={message} />
+            ))}
+          </div>
+        </div>
+        <div className="w-2/3">
+          { children }
+        </div>
       </div>
     </div>
   )
