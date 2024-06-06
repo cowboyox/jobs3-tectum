@@ -36,11 +36,6 @@ const Orders = () => {
     ])
     const [orders, setOrders] = useState([1, 2, 3]);
 
-    const searchQuery = (e) => {
-        e.preventDefault();
-        router.push(`/jobs?search=${search}`);
-    };
-
     const [placeholderText, setPlaceholderText] = useState('Search by Order title...');
     const [isSmallScreen, setIsSmallScree] = useState(false);
     useEffect(() => {
