@@ -76,7 +76,7 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode
     const onDrop = useCallback(async (acceptedFiles) => {
         if (acceptedFiles.length > 0) {
             const image = acceptedFiles[0];
-            setSelectedImage(image);
+            // setSelectedImage(image);
             handleImageUpload(image);
         }
     }, []);
