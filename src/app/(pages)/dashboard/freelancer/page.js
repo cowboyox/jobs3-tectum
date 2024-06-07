@@ -56,7 +56,7 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
   return (
     <div className="w-full flex justify-between">
       <div className="w-1/2 flex gap-2 items-center">
-        <img src={iconSrc} className='w-5 h-5 object-contain object-center' />
+        <img src={iconSrc} className='size-5 object-contain object-center' />
         <span className='text-sm'>{handleLabel()}</span>
       </div>
       {
@@ -149,8 +149,8 @@ const Freelancer = () => {
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
-    let email = JSON.parse(tmp).data.user.email;
-    setUser(JSON.parse(tmp).data.user);
+    let email = JSON.parse(tmp)?.data?.user?.email;
+    setUser(JSON.parse(tmp)?.data?.user);
     api.get(`/api/v1/profile/get-profile/${email}`).then((data) => {
       console.log('------getprofile: ', data.data.profile)
       setProfileData(data.data.profile);
