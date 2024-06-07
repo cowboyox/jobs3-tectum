@@ -17,11 +17,20 @@ const Hero = () => {
 	};
 
 	return (
-		<div className="hero_section">
-			<div className="section_content">
-				<h1>YOUR WEB3 CAREER STARTS HERE</h1>
-				<p>Decentralising and globalising the employment landscape</p>
-				<form onSubmit={(e) => searchQuery(e)}>
+		<div className="hero_section-wrapper">
+			<div className="hero_section">
+				<div className="section_content">
+					<Image
+						src={"/assets/images/logo.svg"}
+						width={209}
+						height={53}
+						alt="Jobs3"
+					/>
+					<h1>Your Web3 Career <span>Starts Here</span></h1>
+					<p className="section_subtitle">Decentralising and globalising the employment landscape</p>
+					<p className="version">2024 -V01</p>
+
+					{/* <form onSubmit={(e) => searchQuery(e)}>
 					<input
 						type="text"
 						placeholder="Search: Frontend developer, Marketing, Binance, etc."
@@ -43,8 +52,8 @@ const Hero = () => {
 							/>
 						</svg>
 					</button>
-				</form>
-				{/* <div className="sl_counters" >
+				</form> */}
+					{/* <div className="sl_counters" >
 					<div className="single_counter">
 						<strong>20M+</strong>
 						<span>users</span>
@@ -58,7 +67,7 @@ const Hero = () => {
 						<span>partners</span>
 					</div>
 				</div> */}
-				<Marquee className="sl_logos">
+					{/* <Marquee className="sl_logos">
 					<div className="logos-set">
 						<Image
 							src={"/assets/images/Partners/Partner-1.webp"}
@@ -91,7 +100,8 @@ const Hero = () => {
 							alt=""
 						/>
 					</div>
-				</Marquee>
+				</Marquee> */}
+				</div>
 			</div>
 		</div>
 	);
