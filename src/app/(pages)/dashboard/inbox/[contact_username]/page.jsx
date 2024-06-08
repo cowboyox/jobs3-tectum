@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import Link from 'next/link';
 
 import { BsPatchCheckFill } from "react-icons/bs";
 import { TbDotsCircleHorizontal } from "react-icons/tb";
@@ -10,6 +11,7 @@ import { CiCircleCheck } from "react-icons/ci";
 import { CiReceipt } from "react-icons/ci";
 import { IoMdAttach } from "react-icons/io";
 import { GoArrowUp } from "react-icons/go";
+import { FaAngleLeft } from "react-icons/fa6";
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import { Button } from '@/components/ui/button';
@@ -217,13 +219,33 @@ const Offer = (props)=> {
 const ChatPage = (parameters) => {
   return (
     <div className='flex flex-col h-full'>
+      {/* 
+        * Selmani NOTE:
+        * I used this basic method to toggle chat on mobile which works just fine
+        * Any better method is welcome as well :)
+      */}
+      <style>{`
+        @media(max-width: 768px) { 
+          .chats_col {
+            opacity: 0 !important;
+            pointer-events: none;
+          } 
+          .chat_content {
+            opacity: 1;
+            pointer-events: all;
+          }
+        }
+      `}</style>
       {messages.map((chat)=> (
         chat.user.username == parameters.params.contact_username && (
           <>
             {/* Chat header */}
-            <div className="flex px-8 border-b border-[#28373E] h-24">
+            <div className="flex px-8 border-b border-[#28373E] h-24 mobile:py-3 mobile:px-5">
               <div className="w-3/5 flex items-center gap-3">
-                <div className="min-w-6 h-6 md:min-w-10 md:h-10 relative">
+                <Link href="../inbox" className='md:hidden'>
+                  <FaAngleLeft />
+                </Link>
+                <div className="min-w-10 h-10 relative">
                   <img
                       src={chat.user.avatar}
                       alt={chat.user.name}
@@ -236,13 +258,13 @@ const ChatPage = (parameters) => {
                   ></div>
                 </div>
                 <div className="flex flex-col gap-1 w-full">
-                  <p className="text-white font-semibold text-xl flex gap-3 items-center text-nowrap"> 
+                  <p className="text-white font-semibold text-xl flex gap-3 items-center text-nowrap mobile:text-base"> 
                     {chat.user.name}
                     {chat.user.isVerified && (
                       <BsPatchCheckFill fill='#148fe8' /> 
                     )}
                   </p>
-                  <p className="text-[#526872] text-sm text-nowrap relative w-full ">
+                  <p className="text-[#526872] text-sm text-nowrap relative w-full mobile:text-xs">
                       @{chat.user.name}
                   </p>
                 </div>
@@ -302,7 +324,7 @@ const ChatPage = (parameters) => {
             </div>
             {/* Chat Content */}
             <div className="flex flex-col items-center relative overflow-scroll">
-              <div className="max-w-[464px] flex flex-col gap-9 pt-8 pb-3">
+              <div className="max-w-[464px] flex flex-col gap-9 pt-8 pb-3 mobile:px-5">
                 {/* Chat */}
                 <div className="flex flex-col gap-3"> 
                   <MessageDetails 
@@ -347,7 +369,7 @@ const ChatPage = (parameters) => {
               </div>
             </div>
             {/* Message Input */}
-            <div className="w-full h-24 flex items-center justify-center">
+            <div className="w-full h-24 flex items-center justify-center mobile:p-2">
               <form className="w-full py-2 max-w-[684px] mx-auto flex border rounded-2xl border-[#526872] h-14 overflow-hidden pl-4 pr-2 items-center gap-4">
                 <IoMdAttach className='w-6 h-6 cursor-pointer hover:fill-[#dc4f14] transition' />
                 <textarea placeholder='Send message...' className='w-full h-full bg-transparent pt-2 placeholder:text-[#96B0BD] outline-none resize-none' />

@@ -6,7 +6,7 @@ module.exports = {
     './pages/**/*.{ts,js,tsx,jsx}',
     './components/**/*.{ts,js,tsx,jsx}',
     './app/**/*.{ts,js,tsx,jsx}',
-    './src/**/*.{ts,tsx,js,jsx}', // Add .jsx if needed
+    './src/**/*.{ts,tsx,js,jsx}', 
   ],
   prefix: "",
   theme: {
@@ -71,6 +71,9 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      screens: {
+        'mobile': {'max': '768px'},
       },
     },
     backgroundImage: {

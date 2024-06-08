@@ -10,7 +10,7 @@ export default function DashboardApp({ children }) {
   return (
     <div className="jobs3_dashboard_app"> 
       <SideBar />
-      <div className='w-full p-4 pt-0 md:w-5/6'>
+      <div className='site_container w-full p-4 pt-0 md:w-5/6'>
         <div id='page_content_layout'>
           <DashboardHeader />
           {children}

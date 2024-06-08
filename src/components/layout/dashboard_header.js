@@ -29,12 +29,12 @@ const DashboardHeader = ()=> {
         document.querySelector('.main_sidebar').classList.toggle('-translate-x-full')
     }
     return (
-        <header className='flex justify-end flex-wrap items-center h-20' id='header_container'>
+        <header className='flex justify-end flex-wrap items-center md:h-20 h-28 mobile:flex-col mobile:gap-3 mobile:justify-center' id='header_container'>
             {renderPopup()}
             <div className='w-full md:hidden'>
                 <img src="/assets/images/logo.svg" className="h-6" />
             </div>
-            <div className='flex items-center gap-3 md:gap-6 py-3 md:py-0 w-full md:w-auto'>
+            <div className='flex items-center gap-3 md:gap-6 w-full md:w-auto'>
                 <LuAlignLeft className='md:hidden mr-auto h-5 w-5' onClick={() => { OpenSideBar() }} />
                 <DropdownMenu>
                     <DropdownMenuTrigger className='hidden md:flex'>

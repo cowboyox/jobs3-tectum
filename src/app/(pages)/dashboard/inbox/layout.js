@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import './layout.css';
 
 import Link from 'next/link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -151,7 +152,7 @@ const MessageItem = ({ message }) => {
     <Link href={'/dashboard/inbox/' + message.user.username}>
         <div className="p-4 cursor-pointer flex gap-4 transition hover:bg-[#1a272c] group rounded-xl">
         <div className="w-3/5 flex gap-3">
-            <div className="min-w-6 h-6 md:min-w-10 md:h-10 relative">
+            <div className="min-w-10 h-10 relative">
                 <img
                     src={message.user.avatar}
                     alt={message.user.name}
@@ -198,16 +199,30 @@ const MessageItem = ({ message }) => {
 
 const InboxPage = ({ children }) => {
   return (
-    <div className='inbox-page border border-[#28373E]'>
-      <div 
-        className='flex overflow-hidden' 
-        style={{ maxHeight: 'calc(100vh - 100px)' }}
-      >
-        <div className='w-1/3 border-r border-[#28373E] p-8 flex flex-col gap-4'>
+    <div className='inbox-page border-t border-[#28373E]'>
+    {/* 
+      * Selmani NOTE:
+      * I used this basic method to toggle chat on mobile which works just fine
+      * Any better method is welcome as well :)
+    */}
+      <style>{`
+        @media(max-width: 768px) { 
+          .chats_col {
+            opacity: 1;
+            pointer-events: all;
+          } 
+          .chat_content {
+            opacity: 0;
+            pointer-events: none;
+          }
+        }
+      `}</style>
+      <div className='flex overflow-hidden w-full inbox-container'>
+        <div className='w-full md:w-1/3 border-r border-[#28373E] p-6 mobile:p-3 flex flex-col gap-4 absolute md:relative left-o top-0x mobile:h-full chats_col'>
           {/* Search chats */}
           <div className='flex h-auto px-4 items-center border border-[#526872] rounded-xl'>
             <IoIosSearch />
-            <input className='w-full h-16 pl-4 bg-transparent text-base outline-none' placeholder='Search' />
+            <input className='w-full h-12 pl-4 bg-transparent text-base outline-none' placeholder='Search' />
           </div>
           {/* Filter Chats */}
           <Select className="w-full">
@@ -229,7 +244,7 @@ const InboxPage = ({ children }) => {
             ))}
           </div>
         </div>
-        <div className="w-2/3">
+        <div className="w-full md:w-2/3 md:translate-x-0 transition mobile:h-full chat_content">
           { children }
         </div>
       </div>
