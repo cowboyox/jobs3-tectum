@@ -154,26 +154,28 @@ const Freelancer = () => {
     api.get(`/api/v1/profile/get-profile/${email}`).then((data) => {
       console.log('------getprofile: ', data.data.profile)
       setProfileData(data.data.profile);
-      const lines = data.data.profile.freelancerBio.split(/\r\n|\r|\n/).length;
-      const letterCnt = data.data.profile.freelancerBio.length;
-      console.log(lines, letterCnt)
-      if (lines > 4) {
-        let tmp = data.data.profile.freelancerBio.split(/\r\n|\r|\n/);
-        let previewText = "";
-        let expandedText = "";
-  
-        tmp.forEach((item, index) => {
-          if (index <= 4) {
-            previewText += item + "\n"; // Add a line break for each item
-          } else {
-            expandedText += item + "\n"; // Add a line break for each item
-          }
-        });
-  
-        setPreviewBio(previewText); // Update previewBio with the formatted text
-        setExpandedBio(expandedText); // Update expandedBio with the formatted text
-      } else {
-        setPreviewBio(data.data.profile.freelancerBio); // If the text is less than or equal to 4 lines, set previewBio to the original text
+      if (data.data.profile.freelancerBio) {
+        const lines = data.data.profile.freelancerBio.split(/\r\n|\r|\n/).length;
+        const letterCnt = data.data.profile.freelancerBio.length;
+        console.log(lines, letterCnt)
+        if (lines > 4) {
+          let tmp = data.data.profile.freelancerBio.split(/\r\n|\r|\n/);
+          let previewText = "";
+          let expandedText = "";
+    
+          tmp.forEach((item, index) => {
+            if (index <= 4) {
+              previewText += item + "\n"; // Add a line break for each item
+            } else {
+              expandedText += item + "\n"; // Add a line break for each item
+            }
+          });
+    
+          setPreviewBio(previewText); // Update previewBio with the formatted text
+          setExpandedBio(expandedText); // Update expandedBio with the formatted text
+        } else {
+          setPreviewBio(data.data.profile.freelancerBio); // If the text is less than or equal to 4 lines, set previewBio to the original text
+        }
       }
     })
   }, []);
@@ -238,7 +240,7 @@ const Freelancer = () => {
       return toast({
         variant: "default",
         title: <h1 className='text-center'>Success</h1>,
-        description: <h3>Successfully updated Skills</h3>,
+        description: <h3>Successfully updated Profiles</h3>,
         className: "bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
       });
     }).catch(err => {
