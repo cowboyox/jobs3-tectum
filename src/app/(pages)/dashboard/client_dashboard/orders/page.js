@@ -42,7 +42,6 @@ const Orders = () => {
         const handleResize = () => {
             if (window.innerWidth < 768) {
               setIsSmallScree(true);
-              setPlaceholderText("")
             } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
               setIsSmallScree(false);
             } else {
@@ -78,7 +77,7 @@ const Orders = () => {
                             />
                         </svg>
                     </button>
-                    <input type="text" placeholder={placeholderText} className=" bg-transparent outline-none w-full" />
+                    <input type="text" placeholder={isSmallScreen ? '' : 'Search by Order title...'} className=" bg-transparent outline-none w-full" />
                     {
                         isSmallScreen &&
                         <button>
