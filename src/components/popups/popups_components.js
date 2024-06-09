@@ -361,7 +361,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 
 	const handleLogin = async (e) => {
 		console.log(email, password, accept)
-		if (!email || !password || password.length < 8 || !validateEmail(email) || !accept) {
+		if (!email || !password || password.length < 8 || !validateEmail(email)) {
 			alert("Please check your information.")
 			return false;
 		}
@@ -369,6 +369,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 			await auth.login({ email, password });
 			router.push('/jobs')
 		} catch (err) {
+			alert("Please register first.")
 			console.log(err)
 		}
 	}
