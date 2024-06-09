@@ -157,7 +157,7 @@ const FindJob = () => {
                     </div>
                 </div>
             </div>
-            <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl">You have <span className="text-[#DC4F13] font-bold">1496</span> Jobs😊</div>
+            <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl">You have <span className="text-[#DC4F13] font-bold">{gigList.length}</span> Jobs😊</div>
             <div className="flex flex-row gap-3 mt-4 items-center text-[#F5F5F5] overflow-x-auto touch-pan-x overscroll-x-contain">
                 {
                     filterCategory.map((item, index) => {
