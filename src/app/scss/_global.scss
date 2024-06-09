@@ -1,13 +1,13 @@
 /*-------------------------------------|
 |                FONTS                 |
 |-------------------------------------*/
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Tektur:wght@400..900&display=swap');
+
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 	text-decoration: none;
-	font-family: "Roboto", sans-serif;
+	font-family: var(--font-blinker);
 }
 
 h1,
@@ -16,34 +16,15 @@ h3,
 h4,
 h5,
 h6 {
-	// font-family: "Tektur", sans-serif;
-	font-family: "Roboto", sans-serif;
+	font-family: var(--font-tektur);
 }
 
 /*-------------------------------------|
 |                Root                  |
-|-------------------------------------*/ 
+|-------------------------------------*/
 
 :root {
 	--main-color: #dc4f14;
-}
-.main_color {
-	color: var(--main-color) !important;
-}
-.customize_search_input {
-	.search_bar { 
-		border-bottom: 0 !important;
-		padding: 0 !important;
-		input {
-			padding: 0 !important;
-			height: unset !important;
-		}
-	}
-	.suggestions_container {
-		@for $i from 10 through 200 {
-			.suggestion_item:nth-child(#{$i}) { display: none !important;  } 
-		} 
-	}
 }
 
 body {

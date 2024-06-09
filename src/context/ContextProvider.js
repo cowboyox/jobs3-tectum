@@ -206,7 +206,7 @@ const ContextProvider = ({ children }) => {
           type: HANDLERS.SIGN_IN,
           payload: user
         })
-        // router.push('/jobs')
+        router.push('/jobs')
       }
     } catch (err) {
       console.log('Error getting data!')
@@ -217,7 +217,6 @@ const ContextProvider = ({ children }) => {
     <CustomContext.Provider
       value={{
         ...state,
-        dispatch,
         preloader: [loading, setLoading],
         loading3D: [load3D, setLoad3D],
         scroll: [scrollPause, setScrollPause],

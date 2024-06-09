@@ -15,6 +15,5 @@ module.exports = {
 				pathname: "/**",
 			},
 		],
-		domains: ['localhost', '127.0.0.1', 'jobs3-backend.vercel.app']
 	},
 }

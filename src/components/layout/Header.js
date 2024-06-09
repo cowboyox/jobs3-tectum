@@ -15,6 +15,10 @@ const Header = () => {
 
 	const mobileMenu = useRef();
 
+	const dropdownLink = useRef();
+	const dropdownArrow = useRef();
+	const [dropdownStatus, setDropdownStatus] = useState(false);
+
 	const router = useRouter()
 	const auth = useCustomContext()
 	const { disconnect } = useDisconnect()
@@ -39,6 +43,34 @@ const Header = () => {
 				duration: 0.5,
 			});
 		}
+	};
+
+	const toggleDropdown = () => {
+		if (dropdownStatus == true) {
+			gsap.to(dropdownLink.current, {
+				height: "115px",
+				duration: 0.6,
+			});
+
+			gsap.to(dropdownArrow.current, {
+				rotate: "90deg",
+				duration: 0.6,
+			});
+		}
+
+		if (dropdownStatus == false) {
+			gsap.to(dropdownLink.current, {
+				height: "0",
+				duration: 0.6,
+			});
+
+			gsap.to(dropdownArrow.current, {
+				rotate: "0deg",
+				duration: 0.6,
+			});
+		}
+
+		setDropdownStatus(!dropdownStatus);
 	};
 
 	const handleSignOut = () => {
@@ -78,18 +110,48 @@ const Header = () => {
 					</nav>
 					<div className="right_side">
 						<div className="dropdown-link">
-							<Link href={"https://threeprotocol.ai"} target="_blank">$THREE</Link>
+							<Link href={"#"}>$THREE</Link>
+							<ul>
+								<li>
+									<Link href={"/roadmap"}>Roadmap</Link>
+								</li>
+								<li>
+									{/* <Link
+										href={
+											"https://three-3.gitbook.io/litepaper"
+										}
+									>
+										LitePaper
+									</Link> */}
+									<Link
+										href={
+											"/litepaper"
+										}
+									>
+										LitePaper
+									</Link>
+								</li>
+								<li>
+									<Link href={"https://three-3.gitbook.io/litepaper/tokenomics-of-the-three-protocol"}>Tokenomics</Link>
+								</li>
+							</ul>
 						</div>
 						{
-							!auth?.isAuthenticated ?
-							<Link href={"#sign-out"} onClick={() => openPopup("TypeOfAccount")} className="btn_classified">
+							!auth?.isAuthenticated ? <button
+								className="btn_sign_up"
+								onClick={() => openPopup("TypeOfAccount")}
+							>
 								Sign Up
-							</Link>
-							: 
-							<Link href={"/jobs"} className="btn_classified" onClick={handleSignOut}>
+							</button> : <button
+								className="btn_sign_up"
+								onClick={handleSignOut}
+							>
 								Sign Out
-							</Link>
+							</button>
 						}
+						<Link href={"/jobs"} className="btn_classified">
+							Classified
+						</Link>
 					</div>
 				</div>
 			</header>
@@ -121,23 +183,46 @@ const Header = () => {
 				<Link href={"/jobs"}>JOBS</Link>
 				<div className="dropdown-link-mobile">
 					<Link
-						href={"https://threeprotocol.ai"}
-						target="_blank"
-						className="dd-link" 
+						href={"#"}
+						className="dd-link"
+						onClick={() => toggleDropdown()}
 					>
 						<span>$THREE</span>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							strokeWidth={1.5}
+							stroke="currentColor"
+							ref={dropdownArrow}
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								d="m8.25 4.5 7.5 7.5-7.5 7.5"
+							/>
+						</svg>
 					</Link>
+					<ul ref={dropdownLink}>
+						<li>
+							<Link href={"/roadmap"}>Roadmap</Link>
+						</li>
+						<li>
+							<Link
+								href={"https://three-3.gitbook.io/litepaper"}
+								target="_blank"
+							>
+								LitePaper
+							</Link>
+						</li>
+						<li>
+							<Link href={"#"}>Tokenomics</Link>
+						</li>
+					</ul>
 				</div>
-				{
-					!auth?.isAuthenticated ?
-					<Link href={"#sign-out"} onClick={() => openPopup("TypeOfAccount")} className="btn_classified">
-						Sign Up
-					</Link>
-					: 
-					<Link href={"/jobs"} className="btn_classified" onClick={handleSignOut}>
-						Sign Out
-					</Link>
-				}
+				<Link href={"/jobs"} className="btn_classified">
+					Classified
+				</Link>
 			</div>
 		</>
 	);
