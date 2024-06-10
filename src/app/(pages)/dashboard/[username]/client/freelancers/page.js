@@ -159,7 +159,7 @@ const Freelancers = () => {
                 </span>
             </div>
             {
-                freelancers.map((freelancer, index) => {
+                freelancers && freelancers.map((freelancer, index) => {
                     return <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl" key={index}>
                         <div className="flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start">
                             <div className="flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3">Front-End Developer</div>
@@ -197,7 +197,7 @@ const Freelancers = () => {
                         </div>
                         <div className="flex flex-row gap-3 mt-4 items-center text-[#F5F5F5] overflow-x-auto touch-pan-x overscroll-x-contain">
                             {
-                                freelancer.skills.map((item, index) => {
+                                freelancer.skills && freelancer.skills.map((item, index) => {
                                     return <span key={index} className="bg-[#28373E] pl-2 pr-2 p-1 rounded-full border border-[#3E525B] gap-1 flex flex-row items-center">
                                         <FaX className="p-[2px] bg-[#3E525B] rounded-full" />{item}
                                     </span>
