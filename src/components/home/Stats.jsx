@@ -89,8 +89,8 @@ const Stats = () => {
                         </div>
                         <div className='flex flex-col justify-between gap-2 flex-1'>
                             {
-                                spendings.map((spend) => (
-                                    <div className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
+                                spendings.map((spend,index) => (
+                                    <div key={index} className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
                                         <div className='w-[70%]'>
                                             <h3 className='text-white text-lg truncate'>{spend.title}</h3>
                                             <div className='flex gap-1 items-center text-medGray'>
@@ -114,8 +114,8 @@ const Stats = () => {
                         </div>
                         <div className='flex flex-col justify-between gap-2 flex-1'>
                             {
-                                recentHires.map((spend) => (
-                                    <div className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
+                                recentHires.map((spend,index) => (
+                                    <div key={index} className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
 
                                         <div className='flex-1 flex justify-center items-center'>
                                             <div className=' w-[90%] h-10 outline-none border-none flex justify-center items-center'><Image src={spend.pic} alt='pic' width={1000} height={1000} className='w-full h-full object-contain' /></div>
@@ -141,8 +141,8 @@ const Stats = () => {
                         </div>
                         <div className='flex flex-col justify-between gap-2 flex-1'>
                             {
-                                recentHires.map((spend) => (
-                                    <div className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
+                                recentHires.map((spend,index) => (
+                                    <div key={index} className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
 
                                         <div className='flex-1 flex justify-center items-center'>
                                             <div className=' w-[90%] h-10 outline-none border-none flex justify-center items-center'><Image src={spend.pic} alt='pic' width={1000} height={1000} className='w-full h-full object-contain' /></div>
