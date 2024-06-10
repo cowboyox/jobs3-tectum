@@ -1,8 +1,8 @@
-import FillProfile from '@/components/dashboard/home/FillProfile'
-import Gigs from '@/components/dashboard/home/Gigs'
-import RecentlyViewed from '@/components/dashboard/home/RecentlyViewed'
-import Stats from '@/components/dashboard/home/Stats'
-import Hero from '@/components/dashboard/home/hero'
+import FillProfile from '@/components/home/FillProfile'
+import Gigs from '@/components/home/Gigs'
+import RecentlyViewed from '@/components/home/RecentlyViewed'
+import Stats from '@/components/home/Stats'
+import Hero from '@/components/home/hero'
 import React from 'react'
 
 const page = () => {
