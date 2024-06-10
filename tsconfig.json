@@ -50,7 +50,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/components/dashboard/home/Stats.jsx", "src/components/dashboard/home/RecentlyViewed.jsx", "src/components/dashboard/home/hero.jsx", "src/components/dashboard/home/FillProfile.jsx", "src/components/dashboard/home/Gigs.jsx", "src/app/(pages)/dashboard/home/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]
