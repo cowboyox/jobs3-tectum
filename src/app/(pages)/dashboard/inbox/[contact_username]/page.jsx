@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 import { BsPatchCheckFill } from "react-icons/bs";
@@ -16,138 +17,143 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import { Button } from '@/components/ui/button';
 
+import { useCustomContext } from "@/context/use-custom";
+import api from '@/utils/api';
+import { useSocket } from '@/context/socket';
+
+
 /* For backend: 
  * I used the same messages from the parent to simulate like a backend query
  * But this needs to be changed for sure
 */
-const messages = [
-  {
-    id: 1,
-    user: {
-      name: "Emily Rose",
-      username: 'emily_rose',
-      avatar: "/assets/images/users/user-6.png",
-      online: true,
-      isVerified: true,
-    },
-    message: "Thank you for your help!",
-    timestamp: "4 hours",
-    unreadCount: 3,
-    starred: true,
-  },
-  {
-    id: 2,
-    user: {
-      name: "John Doe",
-      username: 'john_doe',
-      avatar: "/assets/images/users/user-7.png",
-      online: false,
-      isVerified: true,
-    },
-    message: "Can we reschedule our meeting?",
-    timestamp: "2 hours",
-    unreadCount: 1,
-    starred: false,
-  },
-  {
-    id: 3,
-    user: {
-      name: "Anna Smith",
-      username: 'anna_smith',
-      avatar: "/assets/images/users/user-8.png",
-      online: true,
-      isVerified: false,
-    },
-    message: "I'll send the report by tomorrow.",
-    timestamp: "1 day",
-    unreadCount: 0,
-    starred: true,
-  },
-  {
-    id: 4,
-    user: {
-      name: "Michael Brown",
-      username: 'michael_brown',
-      avatar: "/assets/images/users/user-9.png",
-      online: false,
-      isVerified: false,
-    },
-    message: "Looking forward to our meeting.",
-    timestamp: "3 days",
-    unreadCount: 5,
-    starred: true,
-  },
-  {
-    id: 5,
-    user: {
-      name: "Lisa Johnson",
-      username: 'lisa_johnson',
-      avatar: "/assets/images/users/user-10.png",
-      online: true,
-      isVerified: false,
-    },
-    message: "Please review the attached document.",
-    timestamp: "6 hours",
-    unreadCount: 2,
-    starred: false,
-  },
-  {
-    id: 6,
-    user: {
-      name: "David Wilson",
-      username: 'david_wilson',
-      avatar: "/assets/images/users/user-11.png",
-      online: true,
-      isVerified: true,
-    },
-    message: "Happy to assist with your inquiry.",
-    timestamp: "1 hour",
-    unreadCount: 0,
-    starred: false,
-  },
-  {
-    id: 7,
-    user: {
-      name: "Sophia Lee",
-      username: 'sophia_lee',
-      avatar: "/assets/images/users/user-12.png",
-      online: false,
-      isVerified: true,
-    },
-    message: "Can you provide more details?",
-    timestamp: "2 days",
-    unreadCount: 4,
-    starred: true,
-  },
-  {
-    id: 8,
-    user: {
-      name: "James Martinez",
-      username: 'james_martinez',
-      avatar: "/assets/images/users/user-13.png",
-      online: true,
-      isVerified: false,
-    },
-    message: "I've updated the project status.",
-    timestamp: "5 hours",
-    unreadCount: 0,
-    starred: false,
-  },
-  {
-    id: 9,
-    user: {
-      name: "Mia Clark",
-      username: 'mida_clark',
-      avatar: "/assets/images/users/user-14.png",
-      online: true,
-      isVerified: true,
-    },
-    message: "Thank you for the prompt response.",
-    timestamp: "8 hours",
-    unreadCount: 1,
-    starred: true,
-  },
-];
+// const messages = [
+//   {
+//     id: 1,
+//     user: {
+//       name: "Emily Rose",
+//       username: 'emily_rose',
+//       avatar: "/assets/images/users/user-6.png",
+//       online: true,
+//       isVerified: true,
+//     },
+//     message: "Thank you for your help!",
+//     timestamp: "4 hours",
+//     unreadCount: 3,
+//     starred: true,
+//   },
+//   {
+//     id: 2,
+//     user: {
+//       name: "John Doe",
+//       username: 'john_doe',
+//       avatar: "/assets/images/users/user-7.png",
+//       online: false,
+//       isVerified: true,
+//     },
+//     message: "Can we reschedule our meeting?",
+//     timestamp: "2 hours",
+//     unreadCount: 1,
+//     starred: false,
+//   },
+//   {
+//     id: 3,
+//     user: {
+//       name: "Anna Smith",
+//       username: 'anna_smith',
+//       avatar: "/assets/images/users/user-8.png",
+//       online: true,
+//       isVerified: false,
+//     },
+//     message: "I'll send the report by tomorrow.",
+//     timestamp: "1 day",
+//     unreadCount: 0,
+//     starred: true,
+//   },
+//   {
+//     id: 4,
+//     user: {
+//       name: "Michael Brown",
+//       username: 'michael_brown',
+//       avatar: "/assets/images/users/user-9.png",
+//       online: false,
+//       isVerified: false,
+//     },
+//     message: "Looking forward to our meeting.",
+//     timestamp: "3 days",
+//     unreadCount: 5,
+//     starred: true,
+//   },
+//   {
+//     id: 5,
+//     user: {
+//       name: "Lisa Johnson",
+//       username: 'lisa_johnson',
+//       avatar: "/assets/images/users/user-10.png",
+//       online: true,
+//       isVerified: false,
+//     },
+//     message: "Please review the attached document.",
+//     timestamp: "6 hours",
+//     unreadCount: 2,
+//     starred: false,
+//   },
+//   {
+//     id: 6,
+//     user: {
+//       name: "David Wilson",
+//       username: 'david_wilson',
+//       avatar: "/assets/images/users/user-11.png",
+//       online: true,
+//       isVerified: true,
+//     },
+//     message: "Happy to assist with your inquiry.",
+//     timestamp: "1 hour",
+//     unreadCount: 0,
+//     starred: false,
+//   },
+//   {
+//     id: 7,
+//     user: {
+//       name: "Sophia Lee",
+//       username: 'sophia_lee',
+//       avatar: "/assets/images/users/user-12.png",
+//       online: false,
+//       isVerified: true,
+//     },
+//     message: "Can you provide more details?",
+//     timestamp: "2 days",
+//     unreadCount: 4,
+//     starred: true,
+//   },
+//   {
+//     id: 8,
+//     user: {
+//       name: "James Martinez",
+//       username: 'james_martinez',
+//       avatar: "/assets/images/users/user-13.png",
+//       online: true,
+//       isVerified: false,
+//     },
+//     message: "I've updated the project status.",
+//     timestamp: "5 hours",
+//     unreadCount: 0,
+//     starred: false,
+//   },
+//   {
+//     id: 9,
+//     user: {
+//       name: "Mia Clark",
+//       username: 'mida_clark',
+//       avatar: "/assets/images/users/user-14.png",
+//       online: true,
+//       isVerified: true,
+//     },
+//     message: "Thank you for the prompt response.",
+//     timestamp: "8 hours",
+//     unreadCount: 1,
+//     starred: true,
+//   },
+// ];
 
 const MessageDetails = (props)=> {
   return (
@@ -217,6 +223,51 @@ const Offer = (props)=> {
 }
 
 const ChatPage = (parameters) => {
+  const socket = useSocket();
+  const auth = useCustomContext();
+  const [receiver, setRceiver] = useState(null)
+  const [conversations, setConversation] = useState([])
+  const [input, setInput] = useState('')
+  useEffect(() => {
+    api.get(`/api/v1/user/get-user/${parameters.params.contact_username}`)
+    .then((res) => {
+      let data = res.data
+      data.name = data.chosen_visible_name,
+      data.isVerified = true,
+      data.avatar = '/assets/images/users/user-14.png',
+      data.online = true,
+      data.unreadCount = 0,
+      data.starred = true,
+      data.message = "",
+      data.timestamp = "",
+      data.starred = true
+      setRceiver(data)
+      if (auth.user){
+        let from = auth.user._id
+        let to = data._id
+        socket.emit('getHistory', { from, to})
+      }
+    })
+
+    socket?.on('history', (history) => {
+      setConversation(history);
+    });
+    // Handle incoming messages
+    socket?.on('newMessage', (message) => {
+      setConversation((prevMessages) => [...prevMessages, message]);
+    });
+    return () => {
+      socket?.off('newMessage');
+    };
+  }, [auth])
+
+  const sendMessage = () => {
+    const message = { senderId: auth.user._id, receiverId : receiver._id, messageText: input };
+    socket.emit('sendMessage', message);
+    setInput('');
+    setConversation((prevMessages) => [...prevMessages, message]);
+  }
+
   return (
     <div className='flex flex-col h-full'>
       {/* 
@@ -236,8 +287,10 @@ const ChatPage = (parameters) => {
           }
         }
       `}</style>
-      {messages.map((chat)=> (
-        chat.user.username == parameters.params.contact_username && (
+      {/* {messages.map((chat)=> (
+        chat.user.username == parameters.params.contact_username && */}
+        {receiver && 
+         ( 
           <>
             {/* Chat header */}
             <div className="flex px-8 border-b border-[#28373E] h-24 mobile:py-3 mobile:px-5">
@@ -247,32 +300,32 @@ const ChatPage = (parameters) => {
                 </Link>
                 <div className="min-w-10 h-10 relative">
                   <img
-                      src={chat.user.avatar}
-                      alt={chat.user.name}
+                      src={receiver.avatar}
+                      alt={receiver.name}
                       className="rounded-full w-full h-full aspect-square object-cover"
                   />
                   <div
                       className={`rounded-full h-[10px] w-[10px] absolute right-0 bottom-0 ${
-                      chat.user.online ? "bg-green-500" : "bg-gray-500"
+                        receiver.online ? "bg-green-500" : "bg-gray-500"
                       }`}
                   ></div>
                 </div>
                 <div className="flex flex-col gap-1 w-full">
                   <p className="text-white font-semibold text-xl flex gap-3 items-center text-nowrap mobile:text-base"> 
-                    {chat.user.name}
-                    {chat.user.isVerified && (
+                    {receiver.name}
+                    {receiver.isVerified && (
                       <BsPatchCheckFill fill='#148fe8' /> 
                     )}
                   </p>
                   <p className="text-[#526872] text-sm text-nowrap relative w-full mobile:text-xs">
-                      @{chat.user.name}
+                      @{receiver.name}
                   </p>
                 </div>
               </div>
               <div className="w-2/5 flex justify-end items-center gap-4">
                 <HiOutlineExclamationTriangle className="stroke-[#96B0BD] w-6 h-6 cursor-pointer" />
 
-                {chat.starred ? (
+                {receiver.starred ? (
                   <FaStar className="fill-[#96B0BD] w-5 h-5 cursor-pointer" />
                 ) : (
                   <FaRegStar className="fill-[#96B0BD] w-5 h-5 cursor-pointer" />
@@ -326,7 +379,18 @@ const ChatPage = (parameters) => {
             <div className="flex flex-col items-center relative overflow-scroll">
               <div className="max-w-[464px] flex flex-col gap-9 pt-8 pb-3 mobile:px-5">
                 {/* Chat */}
-                <div className="flex flex-col gap-3"> 
+                {conversations.map((conv, id) => (
+                  <div className="flex flex-col gap-3" key={id}> 
+                    <MessageDetails 
+                      user_image='/assets/images/users/user-6.png'
+                      date='17 May 2024'
+                      time='17:37'
+                      sender = {conv.senderId == auth.user._id ? "me" : ""}
+                    />
+                    <MessageText text={conv.messageText} />
+                  </div>
+                ) )}
+                {/* <div className="flex flex-col gap-3"> 
                   <MessageDetails 
                     user_image='/assets/images/users/user-6.png'
                     date='17 May 2024'
@@ -365,22 +429,22 @@ const ChatPage = (parameters) => {
                     sender="me"
                   />
                   <MessageText text="Thank you for your work, Emily!" sender="me" />
-                </div> 
+                </div>  */}
               </div>
             </div>
             {/* Message Input */}
             <div className="w-full h-24 flex items-center justify-center mobile:p-2">
-              <form className="w-full py-2 max-w-[684px] mx-auto flex border rounded-2xl border-[#526872] h-14 overflow-hidden pl-4 pr-2 items-center gap-4">
+              <div className="w-full py-2 max-w-[684px] mx-auto flex border rounded-2xl border-[#526872] h-14 overflow-hidden pl-4 pr-2 items-center gap-4">
                 <IoMdAttach className='w-6 h-6 cursor-pointer hover:fill-[#dc4f14] transition' />
-                <textarea placeholder='Send message...' className='w-full h-full bg-transparent pt-2 placeholder:text-[#96B0BD] outline-none resize-none' />
-                <Button className='rounded-xl bg-[#dc4f14] p-2 hover:bg-white transition group'>
+                <textarea placeholder='Send message...' className='w-full h-full bg-transparent pt-2 placeholder:text-[#96B0BD] outline-none resize-none' value={input} onChange={(e) => setInput(e.target.value)}/>
+                <Button className='rounded-xl bg-[#dc4f14] p-2 hover:bg-white transition group' onClick={sendMessage}>
                   <GoArrowUp className='w-full h-full fill-white group-hover:fill-black' />
                 </Button>
-              </form>
+              </div>
             </div>
           </>
-        )
-      ))}
+        )}
+      {/* ))} */}
     </div>
   )
 }

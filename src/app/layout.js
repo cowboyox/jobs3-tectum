@@ -1,6 +1,7 @@
 import "./globals.scss";
 import "./globals.css"; 
 import { Toaster } from "@/components/ui/toaster"
+import { SocketProvider } from '@/context/socket';
 
 export const metadata = {
 	title: "JOBS3 - Decentralising and globalising the employment landscape",
@@ -17,7 +18,9 @@ export default function RootLayout({ children }) {
 			<body>
 				<Web3Modal>
 					<ContextProvider>
-						{children}
+						<SocketProvider>
+							{children}
+						</SocketProvider>
 					</ContextProvider>
 				</Web3Modal>
 				<Toaster />
