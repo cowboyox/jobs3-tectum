@@ -258,6 +258,7 @@ const ChatPage = (parameters) => {
     });
     return () => {
       socket?.off('newMessage');
+      socket?.off('history');
     };
   }, [auth])
 
