@@ -4,11 +4,13 @@ import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAccount, useDisconnect } from "wagmi";
 import { useCustomContext } from "@/context/use-custom";
+import { useToast } from "@/components/ui/use-toast";
 
 // Icons
 import { FaCheck } from "react-icons/fa";
 
 export function SignUpPopup({ onClose, onSwitchPopup }) {
+    const { toast } = useToast();
 	const searchParams = useSearchParams();
 	const [email, setEmail] = useState(null)
 	const [name, setName] = useState(null)
@@ -153,7 +155,13 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 			if (!verified) onSwitchPopup("Verification")
 			else router.push('/jobs')
 		} catch (err) {
-			console.log('error => ', err)
+			console.log('error => ', err);
+			return toast({
+				variant: "destructive",
+				title: <h1 className='text-center'>Error</h1>,
+                description: <h3 className='text-center'>Email already Exists!</h3>,
+                className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+			})
 		}
 	}
 
@@ -794,7 +802,7 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
 		},
 		{
 			id: 2,
-			account_name: 'Employee',
+			account_name: 'Employer',
 			account_desc: 'Companies that can post jobs on the Jobs Board',
 		},
 		{

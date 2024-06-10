@@ -6,8 +6,12 @@ import StarRatings from 'react-star-ratings';
 /*------------------| Images |------------------*/    
 import { GoChevronRight } from "react-icons/go"; 
 import { FaLink } from "react-icons/fa6";
+import { useCustomContext } from "@/context/use-custom";
 
-export default function EmployerProfile(parameters) {  
+export default function EmployerProfile(parameters) {
+    const auth = useCustomContext();
+    console.log("auth===========>: ", auth);
+    
     const [activeProfileTab, setactiveProfileTab] = useState('all_work');
     const handleTabClick = (tabName) => {
         setactiveProfileTab(tabName);
@@ -228,8 +232,8 @@ export default function EmployerProfile(parameters) {
                             </div>
                             {activeReviewTab === 'completed_jobs' &&
                                 <div className="reviews_tab_container">
-                                    {fakeReviewsData.map(review => (
-                                        <div className="single_review" key={review.id}>
+                                    {fakeReviewsData.map((review, index) => (
+                                        <div className="single_review" key={review.id + " " + index}>
                                             <h4>{review.projectName}</h4>
                                             <div className="reviews_details">
                                                 <div className="star_rating">

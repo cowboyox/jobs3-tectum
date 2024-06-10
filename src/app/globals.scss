@@ -16,13 +16,13 @@
 @import "./scss/pages/litepaper";
 @import "./scss/pages/post_job";
 
-@import "./scss/dashboard/sidebar";
 @import "./scss/dashboard/dashboard_header";
 @import "./scss/dashboard/dashboard";
 @import "./scss/dashboard/job_apply";
 @import "./scss/dashboard/client_dashboard_page";
 @import "./scss/dashboard/proposals";
 @import "./scss/popups";
+@import "./scss/dashboard/post-gig";
 
 /*-----------------------------------|
 |                Container           |
@@ -275,7 +275,7 @@ $breakpoint-small: 768px;
 		position: fixed;
 		top: 0;
 		left: 0;
-		z-index: 999;
+		z-index: 29;
 		padding: 32px;
 		transform: translateX(-100%);
 		border-right: 2px solid #dc4f14;

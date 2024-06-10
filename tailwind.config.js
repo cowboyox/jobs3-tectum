@@ -1,11 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  mode: 'jit',
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    './pages/**/*.{ts,js,tsx,jsx}',
+    './components/**/*.{ts,js,tsx,jsx}',
+    './app/**/*.{ts,js,tsx,jsx}',
+    './src/**/*.{ts,tsx,js,jsx}', 
   ],
   prefix: "",
   theme: {
@@ -71,7 +72,13 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      screens: {
+        'mobile': {'max': '768px'},
+      },
     },
+    backgroundImage: {
+      'radial-gradient': 'radial-gradient(circle at 50% 75%, #DC4F13, #151A1E)',
+    }
   },
   plugins: [require("tailwindcss-animate")],
 }
