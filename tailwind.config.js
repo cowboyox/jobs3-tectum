@@ -1,15 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  mode: 'jit',
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,js,tsx,jsx}',
-    './components/**/*.{ts,js,tsx,jsx}',
-    './app/**/*.{ts,js,tsx,jsx}',
-    './src/**/*.{ts,tsx,js,jsx}', 
+    './pages/**/*.{ts,tsx,js,jsx}',
+    './components/**/*.{ts,tsx,js,jsx}',
+    './app/**/*.{ts,tsx,js,jsx}',
+    './src/**/*.{ts,tsx,js,jsx}',
   ],
   prefix: "",
   theme: {
+
+    fontFamily: {
+      'roboto': ['Roboto', 'sans-serif'],
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -24,6 +27,11 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        deepGreen:"#10191D",
+        darkGray:"#1B272C",
+        lightGray:"#28373E",
+        medGray:"#96B0BD",
+        orange:"#DC4F13",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -72,13 +80,7 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-      screens: {
-        'mobile': {'max': '768px'},
-      },
     },
-    backgroundImage: {
-      'radial-gradient': 'radial-gradient(circle at 50% 75%, #DC4F13, #151A1E)',
-    }
   },
   plugins: [require("tailwindcss-animate")],
 }
