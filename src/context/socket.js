@@ -17,6 +17,7 @@ export const SocketProvider = ({ children }) => {
       transports: ['websocket', 'polling'],
       withCredentials: true,
     });
+    
     setSocket(newSocket);
 
     return () => {
