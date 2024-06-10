@@ -7,6 +7,7 @@ import DashboardHeader from '../../../components/layout/dashboard_header';
 
 export default function DashboardApp({ children }) {
   useDropdown();
+
   return (
     <div className="jobs3_dashboard_app"> 
       <SideBar />

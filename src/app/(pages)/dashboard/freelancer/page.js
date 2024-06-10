@@ -265,7 +265,7 @@ const Freelancer = () => {
               </div>
               <div className="flex flex-col gap-4">
                 <div className='flex items-center gap-4'>
-                  <h2 className='text-2xl md:text-3xl'>{user.name}</h2>
+                  <h2 className='text-2xl md:text-3xl'>{user?.name}</h2>
                   <img src='/assets/images/icons/checkmark.svg' className='w-5 h-5' />
                 </div>
                 <div className="flex md:flex-row flex-col gap-2 md:gap-4">
@@ -673,10 +673,10 @@ const Freelancer = () => {
                     <div className="grid-cols-3 gap-4 hidden md:grid">
                       {
                         profileData.portfolio.length > 0 && profileData.portfolio.map((imagePath, index) => (
-                          <Portfolio key={index} imagePath={imagePath} setUploadedImagePath={setUploadedImagePath} email={user.email} setProfileData={setProfileData} viewMode={"edit"} />
+                          <Portfolio key={index} imagePath={imagePath} setUploadedImagePath={setUploadedImagePath} email={user?.email} setProfileData={setProfileData} viewMode={"edit"} />
                         ))
                       }
-                      <Portfolio key={`extra-${uploadedImagePath.length}`} imagePath="" setUploadedImagePath={setUploadedImagePath} email={user.email} setProfileData={setProfileData} viewMode={"edit"} />
+                      <Portfolio key={`extra-${uploadedImagePath.length}`} imagePath="" setUploadedImagePath={setUploadedImagePath} email={user?.email} setProfileData={setProfileData} viewMode={"edit"} />
                     </div>
                     <div className="md:hidden">
                       <Swiper
@@ -716,10 +716,10 @@ const Freelancer = () => {
                     <div className="grid-cols-3 gap-4 hidden md:grid">
                       {
                         profileData.myGigs.length > 0 && profileData.myGigs.map((imagePath, index) => (
-                          <MyGigs key={index} imagePath={imagePath} setUploadedGigPath={setUploadedGigPath} email={user.email} setProfileData={setProfileData} viewMode={"edit"} />
+                          <MyGigs key={index} imagePath={imagePath} setUploadedGigPath={setUploadedGigPath} email={user?.email} setProfileData={setProfileData} viewMode={"edit"} />
                         ))
                       }
-                      <MyGigs key={`extra-${uploadedGigPath.length}`} imagePath="" setUploadedGigPath={setUploadedGigPath} email={user.email} setProfileData={setProfileData} viewMode={"edit"} />
+                      <MyGigs key={`extra-${uploadedGigPath.length}`} imagePath="" setUploadedGigPath={setUploadedGigPath} email={user?.email} setProfileData={setProfileData} viewMode={"edit"} />
                     </div>
                     <div className="md:hidden">
                       <Swiper
