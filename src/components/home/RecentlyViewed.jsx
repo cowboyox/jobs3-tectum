@@ -16,7 +16,7 @@ const RecentlyViewed = () => {
         console.log("Gigs Data", res);
         setData(res.data);
       } catch (err) {
-        console.log("Err fetching Gigs", err);
+        // console.log("Err fetching Gigs", err);
       }
     };
     fetchRecentViewGigs();
