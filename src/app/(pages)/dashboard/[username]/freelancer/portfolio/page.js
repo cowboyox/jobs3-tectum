@@ -77,7 +77,7 @@ const FreelancerPortfolio = () => {
           <p className="text-4xl text-white font-bold mobile:text-center mobile:text-3xl">240</p>
         </div>
         <div className="w-fit mobile:w-full flex justify-center items-center gap-3">
-          <Link href="#" className="px-12 py-3 rounded-xl cursor-pointer text-lg transition bg-[#DC4F13] hover:bg-white hover:text-black mobile:w-full mobile:text-center">
+          <Link href="./portfolio/create" className="px-12 py-3 rounded-xl cursor-pointer text-lg transition bg-[#DC4F13] hover:bg-white hover:text-black mobile:w-full mobile:text-center">
             Create
           </Link>
         </div>
