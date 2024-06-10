@@ -1,12 +1,38 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 import PieChart from '../../../components/elements/pie_chart';
-import DataTable from  '../../../components/elements/data_table';
+import DataTable from '../../../components/elements/data_table';
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function ClientDashboard() {
+    const { toast } = useToast();
+    const router = useRouter();
+    const [user, setUser] = useState({
+        email: "",
+        name: "",
+        role: 0,
+        verified: false
+    });
+
+    useEffect(() => {
+        let tmp = localStorage.getItem('jobs_2024_token');
+        if (tmp === null) {
+            toast({
+                variant: "destructive",
+                title: <h1 className='text-center'>Error</h1>,
+                description: <h3>Please Login First</h3>,
+                className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+            });
+            alert("Please Login First");
+            router.push('/');
+        } else {
+            setUser(JSON.parse(tmp).data.user);
+        }
+    }, [])
     const assets_data = {
         chart: {
             type: 'pie',
@@ -82,113 +108,113 @@ export default function ClientDashboard() {
     const chart_options = {
         chart: {
             type: 'spline',
-            margin: [0, 0, 0, 0], 
+            margin: [0, 0, 0, 0],
             backgroundColor: 'transparent',
             height: 100,
         },
         title: {
             text: '',
-        }, 
+        },
         xAxis: {
-            visible: false, 
+            visible: false,
         },
         yAxis: {
-            visible: false, 
+            visible: false,
         },
         plotOptions: {
             series: {
                 marker: {
-                    enabled: false,  
+                    enabled: false,
                 },
                 color: '#96B0BD',
             },
         },
         series: [
             {
-                data: [50, 42, 45, 50, 45, 50, 40, 50, 43, 50, 45, 50],  
+                data: [50, 42, 45, 50, 45, 50, 40, 50, 43, 50, 45, 50],
             },
         ],
         tooltip: {
             formatter: function () {
-                return this.y; 
+                return this.y;
             },
         },
     };
     const chart_options_1 = {
         chart: {
             type: 'spline',
-            margin: [0, 0, 0, 0], 
+            margin: [0, 0, 0, 0],
             backgroundColor: 'transparent',
             height: 100,
         },
         title: {
             text: '',
-        }, 
+        },
         xAxis: {
-            visible: false, 
+            visible: false,
         },
         yAxis: {
-            visible: false, 
+            visible: false,
         },
         plotOptions: {
             series: {
                 marker: {
-                    enabled: false,  
+                    enabled: false,
                 },
                 color: '#E36103',
             },
         },
         series: [
             {
-                data: [50, 42, 45, 50, 45, 50, 40, 50, 43, 50, 45, 50],  
+                data: [50, 42, 45, 50, 45, 50, 40, 50, 43, 50, 45, 50],
             },
         ],
         tooltip: {
             formatter: function () {
-                return this.y; 
+                return this.y;
             },
         },
     };
     const allUserDataAnalytics = [
         {
-            id: 0, 
+            id: 0,
             dataTitle: 'New Candidates to Review',
             analyticsTotal: '2,456',
             analyticsPercent: "+4.5%",
             chartData: chart_options_1,
-        }, 
+        },
         {
-            id: 1, 
+            id: 1,
             dataTitle: 'Total Application',
             analyticsTotal: '2,456',
             analyticsPercent: "+4.5%",
             chartData: chart_options,
-        }, 
+        },
         {
-            id: 2, 
+            id: 2,
             dataTitle: 'Meetings',
             analyticsTotal: '2,456',
             analyticsPercent: "+4.5%",
             chartData: chart_options,
-        }, 
+        },
         {
-            id: 3, 
+            id: 3,
             dataTitle: 'Messages received',
             analyticsTotal: '2,456',
             analyticsPercent: "+4.5%",
             chartData: chart_options,
         },
     ]
-    return ( 
+    return (
         <div className="client_dashboard_page">
             <h2>Welcome To Jobs<span>3</span></h2>
-            <p>Thomas Kyle Wilson</p>
+            <p>{user.name}</p>
             <div className="client_dashboard_dashboard">
                 <div className="client_dashboard_left_side panels_container">
                     <div className="panel dashboard_top">
                         <div className="panel_top">
                             <div className="left_side">
-                                <h3 className="panel_heading"> Application Responce </h3>
+                                <h3 className="panel_heading"> Application Response </h3>
                             </div>
                             <div className="right_side">
                                 <div className="button_dropdown">
@@ -235,7 +261,7 @@ export default function ClientDashboard() {
                                             className="chart_const"
                                             highcharts={Highcharts}
                                             options={singleDataAnalytics.chartData}
-                                        /> 
+                                        />
                                     </div>
                                 </div>
                             </div>

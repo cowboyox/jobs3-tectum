@@ -108,7 +108,7 @@ const reviews = [
   }
 ];
 
-const Freelancer = () => {
+const FreelancerProfile = () => {
   const [selectedImage, setSelectedImage] = useState([]);
   const [uploadedImagePath, setUploadedImagePath] = useState([]);
   const [uploadedGigPath, setUploadedGigPath] = useState([]);
@@ -791,4 +791,4 @@ const Freelancer = () => {
   )
 }
 
-export default Freelancer
+export default FreelancerProfile
