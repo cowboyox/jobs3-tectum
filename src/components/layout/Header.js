@@ -75,6 +75,7 @@ const Header = () => {
 					<nav>
 						<Link href={"/"}>HOME</Link>
 						<Link href={"/jobs"}>JOBS</Link>
+						<Link href={"/dashboard/inbox"}>INBOX</Link>
 					</nav>
 					<div className="right_side">
 						<div className="dropdown-link">
