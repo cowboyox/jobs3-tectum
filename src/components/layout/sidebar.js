@@ -2,18 +2,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
-/*----------- Icons -----------*/
-import { CiUser } from "react-icons/ci";
-import { AiOutlineFileSearch } from "react-icons/ai";
-import { LuCalendarSearch } from "react-icons/lu";
-import { TiDocumentText } from "react-icons/ti";
-import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
-import { TiChartPieOutline } from "react-icons/ti";
-import { RiMoneyDollarBoxLine } from "react-icons/ri";
-import { CiCircleQuestion } from "react-icons/ci";
-import { IoSettingsOutline } from "react-icons/io5";
-import { AiOutlineHome, AiOutlineMessage, AiOutlineSend } from "react-icons/ai";
-
 const SideBar = () => {
     const [user, setUser] = useState({
         email: "",
