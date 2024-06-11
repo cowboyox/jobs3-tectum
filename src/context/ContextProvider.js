@@ -109,7 +109,7 @@ const ContextProvider = ({ children }) => {
     //   alert('Please select account type');
     //   return;
     // }
-    const { data } = await api.post('/api/v1/user/login', { ...credentials, acc_type: state.acc_type });
+    const { data } = await api.post('/api/v1/user/login', { ...credentials });
     const { user, token, verified } = data;
     api.defaults.headers.common.Authorization = token
     localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
