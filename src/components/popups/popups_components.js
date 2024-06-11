@@ -146,8 +146,12 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 	const onRegisterSubmit = async (e) => {
 		if (!validateUserInfo()) {
 			console.log('validate error!')
-			window.alert('Please check your infomation')
-			return false;
+			return toast({
+				variant: "destructive",
+				title: <h1 className='text-center'>Error</h1>,
+                description: <h3 className='text-center'>Please check your infomation.</h3>,
+                className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+			})
 		}
 		console.log('clicked')
 		try {
@@ -362,15 +366,23 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 	const handleLogin = async (e) => {
 		console.log(email, password, accept)
 		if (!email || !password || password.length < 8 || !validateEmail(email)) {
-			alert("Please check your information.")
-			return false;
+			return toast({
+				variant: "destructive",
+				title: <h1 className='text-center'>Error</h1>,
+                description: <h3 className='text-center'>Please check your infomation.</h3>,
+                className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+			})
 		}
 		try {
 			await auth.login({ email, password });
 			router.push('/jobs')
 		} catch (err) {
-			alert("Please register first.")
-			console.log(err)
+			return toast({
+				variant: "destructive",
+				title: <h1 className='text-center'>Error</h1>,
+                description: <h3 className='text-center'>Please sign up first.</h3>,
+                className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+			})
 		}
 	}
 	return (
@@ -688,8 +700,12 @@ export function VerificationPopup({ onClose }) {
 
 	const handleSubmit = async (e) => {
 		if (!content || content.length < 1) {
-			alert('Please enter the code to verify')
-			return false;
+			return toast({
+				variant: "destructive",
+				title: <h1 className='text-center'>Error</h1>,
+                description: <h3 className='text-center'>Please enter the code to verify.</h3>,
+                className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+			})
 		}
 		try {
 			await auth.verifyOTP(content)
@@ -790,6 +806,7 @@ export function DashboardOptions({ onClose, onSwitchPopup }) {
 	);
 }
 export function TypeOfAccount({ onClose, onSwitchPopup }) {
+	const { toast } = useToast()
 	const account_types = [
 		{
 			id: 0,
@@ -799,12 +816,12 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
 		{
 			id: 1,
 			account_name: 'Employee',
-			account_desc: 'People looking for a long-term job and apply on the Jobs Board',
+			account_desc: 'People looking for a long-term job and apply on the jobs board',
 		},
 		{
 			id: 2,
 			account_name: 'Employer',
-			account_desc: 'Companies that can post jobs on the Jobs Board',
+			account_desc: 'Companies that can post jobs on the jobs board',
 		},
 		{
 			id: 3,
@@ -812,17 +829,33 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
 			account_desc: 'Users who hire people on the basis of a gig',
 		}
 	]
-	const [choosen_account_type, setChoosenAccountType] = useState(account_types[0].account_name)
+	const [choosen_account_types, setChoosenAccountType] = useState([])
 
 	const auth = useCustomContext()
 
 	const handleAccounType = (name, id) => {
-		auth.setRole(id)
-		setChoosenAccountType(name)
+		setChoosenAccountType((prevSelected) => {
+			if (prevSelected.includes(id)) {
+			  	return prevSelected.filter((accountID) => accountID !== id);
+			} else {
+				let arr = [...prevSelected, id];
+				arr.sort((a, b) => a - b)
+			  	return arr;
+			}
+		});
 	}
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
+		if (choosen_account_types.length == 0) {
+			return toast({
+				variant: "destructive",
+				title: <h1 className='text-center'>Error</h1>,
+                description: <h3 className='text-center'>Please select account types!</h3>,
+                className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+			})
+		}
+		auth.setRole(choosen_account_types)
 		// onClose()
 		onSwitchPopup("SignUp")
 	}
@@ -852,7 +885,7 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
 										<h4>{single_acc.account_name}</h4>
 										<p>{single_acc.account_desc}</p>
 									</label>
-									<input id={`account_type_${single_acc.id}`} type="radio" name="acc_type"
+									<input id={`account_type_${single_acc.id}`} type="checkbox" name="acc_type"
 										onChange={() => { handleAccounType(single_acc.account_name, single_acc.id) }}
 									/>
 									<label className="checkbox_simulate"
@@ -862,7 +895,7 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
 								</div>
 							))}
 						</div>
-						<button className="submit_form" type="submit">Continue as a {choosen_account_type}</button>
+						<button className="submit_form" type="submit">Continue as {choosen_account_types.length > 0 ? choosen_account_types.map(id => account_types.find(acc => acc.id === id).account_name).join(', ') : 'a selected account type'}</button>
 					</form>
 				</div>
 			</div>
