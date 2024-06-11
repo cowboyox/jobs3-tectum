@@ -118,7 +118,7 @@ const Freelancer = () => {
   const [user, setUser] = useState({
     email: "",
     name: "",
-    role: "",
+    role: [0],
     verified: false
   });
   const [isEditBio, setStatusBio] = useState(true);

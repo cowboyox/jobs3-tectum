@@ -174,7 +174,12 @@ const all_form_structure = {
 
 const GigPosting = () => {
     const { toast } = useToast();
-    const [user, setUser] = useState();
+    const [user, setUser] = useState({
+        email: "",
+        name: "",
+        role: [0],
+        verified: false
+      });
     
     useEffect(() => {
         let tmp = localStorage.getItem('jobs_2024_token');

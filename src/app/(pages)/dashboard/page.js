@@ -14,7 +14,7 @@ export default function ClientDashboard() {
     const [user, setUser] = useState({
         email: "",
         name: "",
-        role: 0,
+        role: [0],
         verified: false
     });
 

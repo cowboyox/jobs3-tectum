@@ -14,15 +14,17 @@ const Header = () => {
 	const [user, setUser] = useState({
         email: "",
         name: "no-user",
-        role: 0,
+        role: [0],
         verified: false
     });
+	const [accType, setAccType] = useState([]);
 	useEffect(() => {
         let tmp = localStorage.getItem('jobs_2024_token');
         if (tmp === null) {
             console.log("Login First!");
         } else {
             setUser(JSON.parse(tmp).data.user);
+			setAccType(JSON.parse(tmp).data.acc_type);
         }
     }, [])
 
@@ -89,10 +91,10 @@ const Header = () => {
 					</button>
 					<nav>
 						<Link href={"/"}>HOME</Link>
-						<Link href={`${auth.isAuthenticated ? `/dashboard/${user.name}/client/home` : "/"}`}>Client</Link>
-						<Link href={`${auth.isAuthenticated ? `/dashboard/${user.name}/freelancer/home` : "/"}`}>Freelancer</Link>
-						<Link href={`${auth.isAuthenticated ? `/dashboard/${user.name}/employer/home` : "/"}`}>Employer</Link>
-						<Link href={`${auth.isAuthenticated ? `/dashboard/${user.name}/employee/home` : "/"}`}>Employee</Link>
+						<Link href={`${(auth.isAuthenticated && accType?.includes(3)) ? `/dashboard/${user.name}/client/home` : "/"}`}>Client</Link>
+						<Link href={`${(auth.isAuthenticated && accType?.includes(0)) ? `/dashboard/${user.name}/freelancer/home` : "/"}`}>Freelancer</Link>
+						<Link href={`${(auth.isAuthenticated && accType?.includes(2)) ? `/dashboard/${user.name}/employer/home` : "/"}`}>Employer</Link>
+						<Link href={`${(auth.isAuthenticated && accType?.includes(1)) ? `/dashboard/${user.name}/employee/home` : "/"}`}>Employee</Link>
 					</nav>
 					<div className="right_side">
 						{
