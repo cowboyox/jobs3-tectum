@@ -105,11 +105,11 @@ const ContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const login = async (credentials) => {
-    if (state.acc_type === null) {
-      alert('Please select account type');
-      return;
-    }
-    const { data } = await api.post('/api/v1/user/login', { ...credentials, acc_type: state.acc_type });
+    // if (state.acc_type === null) {
+    //   alert('Please select account type');
+    //   return;
+    // }
+    const { data } = await api.post('/api/v1/user/login', { ...credentials });
     const { user, token, verified } = data;
     api.defaults.headers.common.Authorization = token
     localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
@@ -164,10 +164,10 @@ const ContextProvider = ({ children }) => {
   }
 
   const signInwithWallet = async (wallet) => {
-    if (state.acc_type === null) {
-      alert("Please select account type")
-      return;
-    }
+    // if (state.acc_type === null) {
+    //   alert("Please select account type")
+    //   return;
+    // }
     try {
       const { data } = await api.post('/api/v1/user/wallet/login', { wallet, acc_type: state.acc_type })
       dispatch({

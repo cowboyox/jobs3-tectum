@@ -91,6 +91,14 @@ const Header = () => {
 								Sign Out
 							</Link>
 						}
+						{
+							!auth?.isAuthenticated &&
+							<div>
+								<Link href={"#sign-out"} onClick={() => openPopup("SignIn")} className="btn_classified">
+									Launch App
+								</Link>
+							</div>
+						}
 					</div>
 				</div>
 			</header>
@@ -138,6 +146,14 @@ const Header = () => {
 					<Link href={"/jobs"} className="btn_classified" onClick={handleSignOut}>
 						Sign Out
 					</Link>
+				}
+				{
+					!auth?.isAuthenticated &&
+					<div>
+						<Link href={"#sign-out"} onClick={() => openPopup("SignIn")} className="btn_classified">
+							Launch App
+						</Link>
+					</div>
 				}
 			</div>
 		</>
