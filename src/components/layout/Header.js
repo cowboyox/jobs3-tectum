@@ -96,7 +96,7 @@ const Header = () => {
 						<Link href={`${(auth.isAuthenticated && user.role?.includes(2)) ? `/dashboard/${user.name}/employer/home` : "/"}`}>Employer</Link>
 						<Link href={`${(auth.isAuthenticated && user.role?.includes(1)) ? `/dashboard/${user.name}/employee/home` : "/"}`}>Employee</Link>
 					</nav>
-					<div className="right_side">
+					{/* <div className="right_side">
 						{
 							!auth?.isAuthenticated ?
 							<Link href={"#sign-out"} onClick={() => openPopup("TypeOfAccount")} className="btn_classified">
@@ -115,7 +115,7 @@ const Header = () => {
 								</Link>
 							</div>
 						}
-					</div>
+					</div> */}
 				</div>
 			</header>
 
@@ -153,7 +153,7 @@ const Header = () => {
 						<span>$THREE</span>
 					</Link>
 				</div>
-				{
+				{/* {
 					!auth?.isAuthenticated ?
 					<Link href={"#sign-out"} onClick={() => openPopup("TypeOfAccount")} className="btn_classified">
 						Sign Up
@@ -170,7 +170,7 @@ const Header = () => {
 							Launch App
 						</Link>
 					</div>
-				}
+				} */}
 			</div>
 		</>
 	);
