@@ -21,7 +21,7 @@ import { AiOutlineQuestion } from "react-icons/ai";
 import { FaAngleDown } from "react-icons/fa6";
 import { LuAlignLeft } from "react-icons/lu";
 
-const DashboardHeader = () => {
+const DashboardHeader = ({ title }) => {
 	const pathname = usePathname();
 	const pageTitle = pathname
 		.split("/")
@@ -39,10 +39,13 @@ const DashboardHeader = () => {
 	}
 	return (
 		<header
-			className="flex justify-end flex-wrap items-center h-20"
+			className="flex justify-between flex-wrap items-center h-20"
 			id="header_container"
 		>
 			{renderPopup()}
+			<div>
+				<p className="text-[28px] font-bold">{title}</p>
+			</div>
 			<div className="w-full md:hidden">
 				<img src="/assets/images/logo.svg" className="h-6" />
 			</div>
