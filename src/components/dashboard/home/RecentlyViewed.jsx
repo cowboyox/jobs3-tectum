@@ -63,8 +63,8 @@ const RecentlyViewed = () => {
             </div>
             <div className="flex flex-col gap-4 text-white">
               <div className="flex gap-2 flex-wrap">
-                {recent?.gigId?.requiredSkills?.map((skill, index) => (
-                  <div key={index} className="bg-darkGray py-1 px-2 text-center rounded-full border border-lightGray">
+                {recent?.gigId?.requiredSkills?.map((skill) => (
+                  <div className="bg-darkGray py-1 px-2 text-center rounded-full border border-lightGray">
                     {skill}
                   </div>
                 ))}

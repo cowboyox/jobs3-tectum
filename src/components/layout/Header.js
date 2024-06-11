@@ -91,11 +91,6 @@ const Header = () => {
 								Sign Out
 							</Link>
 						}
-						<div>
-							<Link href={"#sign-out"} onClick={() => openPopup("SignIn")} className="btn_classified">
-								Launch App
-							</Link>
-						</div>
 					</div>
 				</div>
 			</header>
@@ -144,11 +139,6 @@ const Header = () => {
 						Sign Out
 					</Link>
 				}
-				<div>
-					<Link href={"#sign-out"} onClick={() => openPopup("SignIn")} className="btn_classified">
-						Launch App
-					</Link>
-				</div>
 			</div>
 		</>
 	);

@@ -19,8 +19,9 @@ export const timeSincePublication = (timestamp) => {
 		const intervalCount = Math.floor(timeElapsed / seconds);
 
 		if (intervalCount >= 1) {
-			return `${intervalCount} ${label}${intervalCount !== 1 ? "s" : ""
-				} ago`;
+			return `${intervalCount} ${label}${
+				intervalCount !== 1 ? "s" : ""
+			} ago`;
 		}
 	}
 
@@ -107,15 +108,15 @@ export const isEnglish = (text) => {
 };
 
 export const formatMilestoneDate = (dateString) => {
-	const { date } = JSON.parse(dateString);
+  const { date } = JSON.parse(dateString);
 
-	const parsedDate = new Date(date);
+  const parsedDate = new Date(date);
 
-	const day = parsedDate.getDate();
-	const month = parsedDate.toLocaleString('default', { month: 'long' });
-	const year = parsedDate.getFullYear();
+  const day = parsedDate.getDate();
+  const month = parsedDate.toLocaleString('default', { month: 'long' });
+  const year = parsedDate.getFullYear();
 
-	return `${day} ${month} ${year}`;
+  return `${day} ${month} ${year}`;
 }
 
 export const formatMilestoneTime = (timeString) => {
@@ -131,30 +132,3 @@ export const formatMilestoneTime = (timeString) => {
 export const isEven = (number) => {
 	return number % 2 === 0;
 };
-
-export const minutesDifference = (timeString) => {
-	const now = new Date();
-	const diffInMs = now - new Date(timeString);
-	let diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-	let years = 0, months = 0, days = 0, hours = 0, mins = 0;
-
-	if (diffInDays >= 365) {
-		years = Math.floor(diffInDays / 365);
-		diffInDays -= years * 365;
-	}
-	if (diffInDays >= 30) { // Approximation for months
-		months = Math.floor(diffInDays / 30);
-		diffInDays -= months * 30;
-	}
-	days = diffInDays;
-	hours = Math.floor(diffInMs / (1000 * 60 * 60) % 24);
-	mins = Math.floor(diffInMs / (1000 * 60) % 60);
-
-	let result = "";
-	if (years > 0) result += `${years}y${years > 1 ? 's' : ''} `;
-	if (months > 0) result += `${months}m${months > 1 ? 's' : ''} `;
-	if (days > 0) result += `${days}d${days > 1 ? 's' : ''} `;
-	if (hours > 0) result += `${hours}hr${hours > 1 ? 's' : ''} `;
-	if (mins > 0) result += `${mins}min${mins > 1 ? 's' : ''} ago`;
-	return result.trim();
-}

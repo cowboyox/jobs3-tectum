@@ -13,7 +13,6 @@ import 'swiper/css';
 import { useDropzone } from "react-dropzone";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import Link from 'next/link';
-import { useRouter, useSearchParams } from "next/navigation";
 import Image from 'next/image';
 
 import CollapsibleText from "@/components/elements/collapsible_text";
@@ -148,50 +147,37 @@ const Freelancer = () => {
     zkpId: ""
   });
 
-	const router = useRouter()
-
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
-    if (tmp === null) {
-      toast({
-        variant: "destructive",
-        title: <h1 className='text-center'>Error</h1>,
-        description: <h3>Please Login First</h3>,
-        className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
-      });
-      alert("Please Login First");
-      router.push('/');
-    } else {
-      let email = JSON.parse(tmp).data.user.email;
-      setUser(JSON.parse(tmp).data.user);
-      api.get(`/api/v1/profile/get-profile/${email}`).then((data) => {
-        console.log('------getprofile: ', data.data.profile)
-        setProfileData(data.data.profile);
-        if (data.data.profile.freelancerBio) {
-          const lines = data.data.profile.freelancerBio.split(/\r\n|\r|\n/).length;
-          const letterCnt = data.data.profile.freelancerBio.length;
-          console.log(lines, letterCnt)
-          if (lines > 4) {
-            let tmp = data.data.profile.freelancerBio.split(/\r\n|\r|\n/);
-            let previewText = "";
-            let expandedText = "";
-      
-            tmp.forEach((item, index) => {
-              if (index <= 4) {
-                previewText += item + "\n"; // Add a line break for each item
-              } else {
-                expandedText += item + "\n"; // Add a line break for each item
-              }
-            });
-      
-            setPreviewBio(previewText); // Update previewBio with the formatted text
-            setExpandedBio(expandedText); // Update expandedBio with the formatted text
-          } else {
-            setPreviewBio(data.data.profile.freelancerBio); // If the text is less than or equal to 4 lines, set previewBio to the original text
-          }
+    let email = JSON.parse(tmp).data.user.email;
+    setUser(JSON.parse(tmp).data.user);
+    api.get(`/api/v1/profile/get-profile/${email}`).then((data) => {
+      console.log('------getprofile: ', data.data.profile)
+      setProfileData(data.data.profile);
+      if (data.data.profile.freelancerBio) {
+        const lines = data.data.profile.freelancerBio.split(/\r\n|\r|\n/).length;
+        const letterCnt = data.data.profile.freelancerBio.length;
+        console.log(lines, letterCnt)
+        if (lines > 4) {
+          let tmp = data.data.profile.freelancerBio.split(/\r\n|\r|\n/);
+          let previewText = "";
+          let expandedText = "";
+    
+          tmp.forEach((item, index) => {
+            if (index <= 4) {
+              previewText += item + "\n"; // Add a line break for each item
+            } else {
+              expandedText += item + "\n"; // Add a line break for each item
+            }
+          });
+    
+          setPreviewBio(previewText); // Update previewBio with the formatted text
+          setExpandedBio(expandedText); // Update expandedBio with the formatted text
+        } else {
+          setPreviewBio(data.data.profile.freelancerBio); // If the text is less than or equal to 4 lines, set previewBio to the original text
         }
-      })
-    }
+      }
+    })
   }, []);
 
   useEffect(() => {

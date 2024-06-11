@@ -112,8 +112,8 @@ const Gigs = () => {
             <p className="w-[80%] text-medGray">{gig?.gigDescription?.length > 100 ? gig.gigDescription?.substring(0, 200) + "..." : gig.gigDescription}</p>
             
             <div className="flex gap-2 flex-wrap">
-              {gig?.requiredSkills.map((skill, index) => (
-                <div key={index} className="bg-darkGray cursor-pointer py-1 px-2 text-center rounded-full border border-lightGray">
+              {gig?.requiredSkills.map((skill) => (
+                <div className="bg-darkGray cursor-pointer py-1 px-2 text-center rounded-full border border-lightGray">
                   {skill}
                 </div>
               ))}
@@ -155,7 +155,7 @@ const Gigs = () => {
           </div>
         ))}
       </div>
-      {displayedData.length < data.length && (
+      {displayedData?.length < data?.length && (
         <div
           className="py-3 border border-lightGray rounded-2xl text-center cursor-pointer"
           onClick={handleLoadMore}

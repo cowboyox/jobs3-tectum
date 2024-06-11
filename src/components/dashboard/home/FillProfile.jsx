@@ -9,7 +9,7 @@ const FillProfile = () => {
         </div>
         <div className='w-full md:w-1/5 flex flex-row md:flex-col justify-center items-center gap-2'>
             <button className='text-white border border-white w-40 h-10 rounded-xl cursor-pointer'>Edit Profile</button>
-            <button className='text-medGray w-40 h-10 rounded-xl cursor-pointer'>Don&apos;t Show again</button>
+            <button className='text-medGray w-40 h-10 rounded-xl cursor-pointer'>Don't Show again</button>
         </div>
     </div>
   )

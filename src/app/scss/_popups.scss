@@ -473,7 +473,7 @@
 						input {
 							display: none;
 						}
-						input[type=checkbox]:checked + .checkbox_simulate {
+						input[type=radio]:checked + .checkbox_simulate {
 							background: var(--main-color) !important;
 							svg { 
 								transform: scale(1);
