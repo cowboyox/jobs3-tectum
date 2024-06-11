@@ -7,7 +7,7 @@ const SideBar = () => {
     const [user, setUser] = useState({
         email: "",
         name: "",
-        role: 0,
+        role: [0],
         verified: false
     });
     useEffect(() => {
@@ -203,7 +203,7 @@ const SideBar = () => {
             </div>
             <div onClick={OpenSideBar}>
                 <div className="flex flex-col gap-3">
-                    {!user.role && freelancer_menu_data.map(item => (
+                    {user.role?.includes(0) && freelancer_menu_data.map(item => (
                         <Link
                             key={item.id}
                             href={item.href}
@@ -215,7 +215,7 @@ const SideBar = () => {
                             </span>
                         </Link>
                     ))}
-                    {user.role === 3 && client_menu_data.map(item => (
+                    {user.role?.includes(3) && client_menu_data.map(item => (
                         <Link
                             key={item.id}
                             href={item.href}
