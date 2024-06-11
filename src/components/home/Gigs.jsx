@@ -42,7 +42,7 @@ const Gigs = () => {
       const res = await getGigs(gigs);
       console.log("Gigs Data", res); 
       setData(res.data);
-      setDisplayedData(res.data.slice(0, itemsPerPage));
+      setDisplayedData(res.data?.slice(0, itemsPerPage));
     } catch (err) {
       console.log("Err fetching Gigs", err);
     }
@@ -155,7 +155,7 @@ const Gigs = () => {
           </div>
         ))}
       </div>
-      {displayedData.length < data.length && (
+      {displayedData?.length < data?.length && (
         <div
           className="py-3 border border-lightGray rounded-2xl text-center cursor-pointer"
           onClick={handleLoadMore}
