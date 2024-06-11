@@ -2,39 +2,25 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
-/*----------- Icons -----------*/
-import { CiUser } from "react-icons/ci";
-import { AiOutlineFileSearch } from "react-icons/ai";
-import { LuCalendarSearch } from "react-icons/lu";
-import { TiDocumentText } from "react-icons/ti";
-import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
-import { TiChartPieOutline } from "react-icons/ti";
-import { RiMoneyDollarBoxLine } from "react-icons/ri";
-import { CiCircleQuestion } from "react-icons/ci";
-import { IoSettingsOutline } from "react-icons/io5";
-import { AiOutlineHome, AiOutlineMessage, AiOutlineSend } from "react-icons/ai";
-
 const SideBar = () => {
+
     const [user, setUser] = useState({
         email: "",
         name: "",
-        role: 0,
+        role: [0],
         verified: false
     });
+    const [currentNav, setCurrentNav] = useState('');
+
     useEffect(() => {
         let tmp = localStorage.getItem('jobs_2024_token');
         if (tmp === null) {
-            toast({
-                variant: "destructive",
-                title: <h1 className='text-center'>Error</h1>,
-                description: <h3>Please Login First</h3>,
-                className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
-            });
-            alert("Please Login First");
-            router.push('/');
+            console.log("Please Login First");
         } else {
             setUser(JSON.parse(tmp).data.user);
         }
+        console.log("---------> ", window.location.href.split('/')[5])
+        setCurrentNav(window.location.href.split('/')[5]);
     }, [])
     const freelancer_menu_data = [
         {
@@ -221,7 +207,7 @@ const SideBar = () => {
             </div>
             <div onClick={OpenSideBar}>
                 <div className="flex flex-col gap-3">
-                    {!user.role && freelancer_menu_data.map(item => (
+                    {(user.role?.includes(0) && currentNav === 'freelancer') && freelancer_menu_data.map(item => (
                         <Link
                             key={item.id}
                             href={item.href}
@@ -233,7 +219,7 @@ const SideBar = () => {
                             </span>
                         </Link>
                     ))}
-                    {user.role === 3 && client_menu_data.map(item => (
+                    {(user.role?.includes(3) && currentNav === 'client') && client_menu_data.map(item => (
                         <Link
                             key={item.id}
                             href={item.href}

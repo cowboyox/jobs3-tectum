@@ -19,7 +19,7 @@ const ClientDashboard = () => {
   const [user, setUser] = useState({
     email: "",
     name: "",
-    role: "",
+    role: [0],
     verified: false
   });
   const [lastLogin, setLastLogin] = useState("");

@@ -299,7 +299,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 	const { address, isConnected, isDisconnected } = useAccount()
 
 	useEffect(() => {
-		if (isConnected) {
+		if (isConnected) {f
 			try {
 				auth.signInwithWallet(address)
 			} catch (err) {
@@ -375,7 +375,8 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 			})
 		}
 		try {
-			await auth.login({ email, password });
+			let acc_type = auth.acc_type;
+			await auth.login({ email, password, acc_type });
 			router.push('/jobs')
 		} catch (err) {
 			return toast({
