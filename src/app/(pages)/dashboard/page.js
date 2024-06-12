@@ -7,6 +7,30 @@ import PieChart from '../../../components/elements/pie_chart';
 import DataTable from  '../../../components/elements/data_table';
 
 export default function ClientDashboard() {
+    const { toast } = useToast();
+    const router = useRouter();
+    const [user, setUser] = useState({
+        email: "",
+        name: "",
+        role: [0],
+        verified: false
+    });
+
+    useEffect(() => {
+        let tmp = localStorage.getItem('jobs_2024_token');
+        if (tmp === null) {
+            toast({
+                variant: "destructive",
+                title: <h1 className='text-center'>Error</h1>,
+                description: <h3>Please Login First</h3>,
+                className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+            });
+            alert("Please Login First");
+            router.push('/');
+        } else {
+            setUser(JSON.parse(tmp).data.user);
+        }
+    }, [])
     const assets_data = {
         chart: {
             type: 'pie',

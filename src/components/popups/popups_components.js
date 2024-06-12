@@ -283,6 +283,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 	);
 }
 export function SignInPopup({ onClose, onSwitchPopup }) {
+	const { toast } = useToast();
 	const [email, setEmail] = useState(null)
 	const [password, setPassword] = useState(null)
 	const [accept, setAccept] = useState(null)
@@ -294,7 +295,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 	const { address, isConnected, isDisconnected } = useAccount()
 
 	useEffect(() => {
-		if (isConnected) {
+		if (isConnected) {f
 			try {
 				auth.signInwithWallet(address)
 			} catch (err) {
@@ -366,7 +367,8 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 			return false;
 		}
 		try {
-			await auth.login({ email, password });
+			let acc_type = auth.acc_type;
+			await auth.login({ email, password, acc_type });
 			router.push('/jobs')
 		} catch (err) {
 			console.log(err)
@@ -480,6 +482,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 	);
 }
 export function PasswordResetPopup({ onClose }) {
+	const { toast } = useToast();
 	const validateEmail = (email) => {
 		return String(email)
 			.toLowerCase()
@@ -563,6 +566,7 @@ export function PasswordResetPopup({ onClose }) {
 	);
 }
 export function DeleteNotePopup({ onClose }) {
+	const { toast } = useToast();
 	return (
 		<div className="popup_overlay" onClick={onClose}>
 			<div
@@ -596,6 +600,7 @@ export function DeleteNotePopup({ onClose }) {
 	);
 }
 export function DeactivateAccount({ onClose }) {
+	const { toast } = useToast();
 	return (
 		<div className="popup_overlay" onClick={onClose}>
 			<div
@@ -622,6 +627,7 @@ export function DeactivateAccount({ onClose }) {
 	);
 }
 export function ApprovedPopup({ onClose }) {
+	const { toast } = useToast();
 	return (
 		<div className="popup_overlay" onClick={onClose}>
 			<div
@@ -650,6 +656,7 @@ export function ApprovedPopup({ onClose }) {
 	);
 }
 export function SubscibePopup({ onClose }) {
+	const { toast } = useToast();
 	return (
 		<div className="popup_overlay" onClick={onClose}>
 			<div
@@ -677,6 +684,7 @@ export function SubscibePopup({ onClose }) {
 	);
 }
 export function VerificationPopup({ onClose }) {
+	const { toast } = useToast();
 	let content = "";
 	const auth = useCustomContext()
 	const router = useRouter()
@@ -724,6 +732,7 @@ export function VerificationPopup({ onClose }) {
 	);
 }
 export function CodePopup({ onClose }) {
+	const { toast } = useToast();
 	return (
 		<div className="popup_overlay" onClick={onClose}>
 			<div
@@ -754,6 +763,7 @@ export function CodePopup({ onClose }) {
 	);
 }
 export function DashboardOptions({ onClose, onSwitchPopup }) {
+	const { toast } = useToast();
 	return (
 		<div className="popup_overlay" onClick={onClose}>
 			<div

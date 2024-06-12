@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ClientDashboard = () => {
+const GigsPage = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const ClientDashboard = () => {
   )
 }
 
-export default ClientDashboard
+export default GigsPage

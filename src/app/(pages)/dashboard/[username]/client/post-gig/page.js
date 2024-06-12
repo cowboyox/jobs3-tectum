@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Components
 import { cn } from "@/lib/utils"
@@ -173,14 +173,14 @@ const all_form_structure = {
 }
 
 const GigPosting = () => {
-
     const { toast } = useToast();
     const [user, setUser] = useState({
         email: "",
         name: "",
         role: [0],
         verified: false
-    });
+      });
+    
     useEffect(() => {
         let tmp = localStorage.getItem('jobs_2024_token');
         if (tmp === null) {
@@ -430,7 +430,7 @@ const GigPosting = () => {
                                 </FormControl>
                             </FormItem>
                         )}
-                    /> 
+                    />
                     <FormField
                         name="gig_scope"
                         render={({ field }) => (
