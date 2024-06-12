@@ -12,10 +12,6 @@ import { IoLogoUsd } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
 import { IoIosMore } from "react-icons/io";
 
-
-
-
-
 const gigOptions = [
   "Figma",
   "WebDesign",
@@ -210,24 +206,26 @@ const Recent = () => {
             <div className="pb-5 border-b border-lightGray flex flex-col gap-3">
               <div className="flex gap-4 items-center justify-between">
                 <div className="flex gap-4 items-center">
-                <Image
-                  src={"/assets/icons/ActiveOrder.png"}
-                  width={45}
-                  height={45}
-                />
-                <h3 className="text-white hidden md:block text-xl font-semibold whitespace-nowrap">
-                  {gig.title}
-                </h3>
+                  <Image
+                    src={"/assets/icons/ActiveOrder.png"}
+                    width={45}
+                    height={45}
+                  />
+                  <h3 className="text-white hidden md:block text-xl font-semibold whitespace-nowrap">
+                    {gig.title}
+                  </h3>
                 </div>
                 <div className="flex gap-6 items-center">
-            <p className="border border-green-600 text-green-600 font-[500] rounded-[6px] p-[1px] px-2 cursor-pointer">Applied</p>
-            <FaRegHeart className="text-medGray text-xl"/>
-            <IoIosMore className="text-medGray text-xl"/>
+                  <p className="border border-green-600 text-green-600 font-[500] rounded-[6px] p-[1px] px-2 cursor-pointer">
+                    Applied
+                  </p>
+                  <FaRegHeart className="text-medGray text-xl" />
+                  <IoIosMore className="text-medGray text-xl" />
                 </div>
               </div>
               <h3 className="text-white md:hidden text-xl font-semibold whitespace-nowrap">
-                  {gig.title}
-                </h3>
+                {gig.title}
+              </h3>
               <div className="flex  gap-4 flex-wrap">
                 <div className="flex gap-1 items-center">
                   <MdAccessTime className="text-medGray text-xl" />
@@ -238,7 +236,7 @@ const Recent = () => {
                   <span>{gig.location}</span>
                 </div>
                 <div className="flex gap-2 items-center">
-                  <FaRegUser className="text-medGray text-xl"  />
+                  <FaRegUser className="text-medGray text-xl" />
                   <span>{gig.rated}</span>
                 </div>
                 <div className="flex gap-2 items-center">
@@ -250,8 +248,11 @@ const Recent = () => {
             <p className="text-medGray">{gig.about}</p>
             <p className="text-white">Show more</p>
             <div className="flex gap-2 flex-wrap">
-              {gig.skills.map((skill) => (
-                <div className="bg-darkGray cursor-pointer py-1 px-2 text-center rounded-full border border-lightGray">
+              {gig.skills.map((skill, skillIndex) => (
+                <div
+                  key={skillIndex}
+                  className="bg-darkGray cursor-pointer py-1 px-2 text-center rounded-full border border-lightGray"
+                >
                   {skill}
                 </div>
               ))}
