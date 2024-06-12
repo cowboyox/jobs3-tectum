@@ -1,5 +1,5 @@
 import React from 'react';
-import { StepProvider, StepNumber, NextStep, PrevStep } from './StepContext';
+import { StepProvider, StepNumber, NextStep, PrevStep } from '@/components/layout/StepContext';
 
 /*
  * Selmani: i abandoned this page in it's beggining of the progress lol
