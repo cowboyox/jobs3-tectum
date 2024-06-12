@@ -429,7 +429,7 @@ const GigPosting = () => {
                                 </FormControl>
                             </FormItem>
                         )}
-                    />
+                    /> 
                     <FormField
                         name="gig_scope"
                         render={({ field }) => (
