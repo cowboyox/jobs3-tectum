@@ -11,6 +11,23 @@ import { usePopupFunctions } from "../popups/popups";
 import { useDisconnect } from "wagmi";
 
 const Header = () => {
+	const [user, setUser] = useState({
+        email: "",
+        name: "no-user",
+        role: [0],
+        verified: false
+    });
+	const [accType, setAccType] = useState([]);
+	useEffect(() => {
+        let tmp = localStorage.getItem('jobs_2024_token');
+        if (tmp === null) {
+            console.log("Login First!");
+        } else {
+            setUser(JSON.parse(tmp).data.user);
+			setAccType(JSON.parse(tmp).data.acc_type);
+        }
+    }, [])
+
 	const { openPopup, renderPopup } = usePopupFunctions();
 
 	const mobileMenu = useRef();
@@ -19,12 +36,12 @@ const Header = () => {
 	const auth = useCustomContext()
 	const { disconnect } = useDisconnect()
 
-	// useEffect(() => {
-	// 	if(!auth.isAuthenticated){
-	// 		router.replace('/')
-	// 	}
-	// }, [auth])
-
+	useEffect(() => {
+		// if(!auth.isAuthenticated){
+		// 	router.replace('/')
+		// }
+		console.log("=======> ", auth)
+	}, [auth])
 	const handleMenuClick = (status) => {
 		if (status == true) {
 			gsap.to(mobileMenu.current, {
@@ -74,12 +91,12 @@ const Header = () => {
 					</button>
 					<nav>
 						<Link href={"/"}>HOME</Link>
-						<Link href={"/jobs"}>JOBS</Link>
+						<Link href={`${(auth.isAuthenticated && user.role?.includes(3)) ? `/dashboard/${user.name}/client/home` : "/"}`}>Client</Link>
+						<Link href={`${(auth.isAuthenticated && user.role?.includes(0)) ? `/dashboard/${user.name}/freelancer/home` : "/"}`}>Freelancer</Link>
+						<Link href={`${(auth.isAuthenticated && user.role?.includes(2)) ? `/dashboard/${user.name}/employer/home` : "/"}`}>Employer</Link>
+						<Link href={`${(auth.isAuthenticated && user.role?.includes(1)) ? `/dashboard/${user.name}/employee/home` : "/"}`}>Employee</Link>
 					</nav>
 					<div className="right_side">
-						<div className="dropdown-link">
-							<Link href={"https://threeprotocol.ai"} target="_blank">$THREE</Link>
-						</div>
 						{
 							!auth?.isAuthenticated ?
 							<Link href={"#sign-out"} onClick={() => openPopup("TypeOfAccount")} className="btn_classified">
@@ -89,6 +106,14 @@ const Header = () => {
 							<Link href={"/jobs"} className="btn_classified" onClick={handleSignOut}>
 								Sign Out
 							</Link>
+						}
+						{
+							!auth?.isAuthenticated &&
+							<div>
+								<Link href={"#sign-out"} onClick={() => openPopup("SignIn")} className="btn_classified">
+									Launch App
+								</Link>
+							</div>
 						}
 					</div>
 				</div>
@@ -137,6 +162,14 @@ const Header = () => {
 					<Link href={"/jobs"} className="btn_classified" onClick={handleSignOut}>
 						Sign Out
 					</Link>
+				}
+				{
+					!auth?.isAuthenticated &&
+					<div>
+						<Link href={"#sign-out"} onClick={() => openPopup("SignIn")} className="btn_classified">
+							Launch App
+						</Link>
+					</div>
 				}
 			</div>
 		</>

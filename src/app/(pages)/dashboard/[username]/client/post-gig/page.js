@@ -179,7 +179,8 @@ const GigPosting = () => {
         name: "",
         role: [0],
         verified: false
-    });
+      });
+    
     useEffect(() => {
         let tmp = localStorage.getItem('jobs_2024_token');
         if (tmp === null) {
@@ -429,7 +430,7 @@ const GigPosting = () => {
                                 </FormControl>
                             </FormItem>
                         )}
-                    /> 
+                    />
                     <FormField
                         name="gig_scope"
                         render={({ field }) => (
