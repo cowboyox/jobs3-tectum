@@ -110,8 +110,6 @@ const Header = () => {
 								Sign Out
 							</Link>
 						}
-<<<<<<< HEAD
-=======
 						{
 							!auth?.isAuthenticated &&
 							<div>
@@ -120,7 +118,6 @@ const Header = () => {
 								</Link>
 							</div>
 						}
->>>>>>> 93f5b2b679a125edeb74a1fc74ebc9c994f46ea7
 					</div>
 				</div>
 			</header>
@@ -169,8 +166,6 @@ const Header = () => {
 						Sign Out
 					</Link>
 				}
-<<<<<<< HEAD
-=======
 				{
 					!auth?.isAuthenticated &&
 					<div>
@@ -179,7 +174,6 @@ const Header = () => {
 						</Link>
 					</div>
 				}
->>>>>>> 93f5b2b679a125edeb74a1fc74ebc9c994f46ea7
 			</div>
 		</>
 	);

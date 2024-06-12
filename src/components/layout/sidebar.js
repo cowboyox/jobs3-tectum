@@ -1,79 +1,7 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
-<<<<<<< HEAD
-/*----------- Icons -----------*/ 
-import { CiUser } from "react-icons/ci";
-import { AiOutlineFileSearch } from "react-icons/ai";
-import { LuCalendarSearch } from "react-icons/lu";
-import { TiDocumentText } from "react-icons/ti";
-import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
-import { TiChartPieOutline } from "react-icons/ti";
-import { RiMoneyDollarBoxLine } from "react-icons/ri";
-import { CiCircleQuestion } from "react-icons/ci";
-import { IoSettingsOutline } from "react-icons/io5"; 
-
-const menu_data = [
-    {
-        id: 0,
-        icon: <CiUser className='w-7 h-7' />,
-        name: 'Profile',
-        href: '/profile',
-    },
-    {
-        id: 1,
-        icon: <AiOutlineFileSearch className='w-7 h-7' />,
-        name: 'My Projects',
-        href: '/dashboard/proposals',
-    },
-    {
-        id: 2,
-        icon: <LuCalendarSearch className='w-7 h-7' />,
-        name: 'My Schedule',
-        href: '/dashboard/proposals',
-    },
-    {
-        id: 3,
-        icon: <TiDocumentText className='w-7 h-7' />,
-        name: 'Job Listing',
-        href: '/jobs',
-    },
-    {
-        id: 4,
-        icon: <HiOutlineClipboardDocumentList className='w-7 h-7' />,
-        name: 'All Contracts',
-        href: '/dashboard/proposals',
-    },
-    {
-        id: 5,
-        icon: <TiChartPieOutline className='w-7 h-7' />,
-        name: 'Statistics',
-        href: '/dashboard',
-    },
-    {
-        id: 6,
-        icon: <RiMoneyDollarBoxLine className='w-7 h-7' />,
-        name: 'Balance',
-        href: '/dashboard',
-    },
-    {
-        id: 7,
-        icon: <CiCircleQuestion className='w-7 h-7' />,
-        name: 'Help',
-        href: '/dashboard',
-    },
-    {
-        id: 8,
-        icon: <IoSettingsOutline className='w-7 h-7' />,
-        name: 'Settings',
-        href: '/dashboard/settings',
-    }
-];
-
-const SideBar = ()=> {
-    const sideBarRef = useRef(null); 
-=======
 const SideBar = () => {
 
     const [user, setUser] = useState({
@@ -283,7 +211,6 @@ const SideBar = () => {
         }
     ];
     const sideBarRef = useRef(null);
->>>>>>> 93f5b2b679a125edeb74a1fc74ebc9c994f46ea7
     function OpenSideBar() {
         if (window.innerWidth <= 768) { 
             sideBarRef.current.classList.toggle('-translate-x-full');
@@ -296,13 +223,8 @@ const SideBar = () => {
             </div> 
             <div onClick={OpenSideBar}>
                 <div className="flex flex-col gap-3">
-<<<<<<< HEAD
-                    {menu_data.map(item => (
-                        <Link 
-=======
                     {(user.role?.includes(0) && currentNav === 'freelancer') && freelancer_menu_data.map(item => (
                         <Link
->>>>>>> 93f5b2b679a125edeb74a1fc74ebc9c994f46ea7
                             key={item.id}
                             href={item.href}
                             className="flex gap-4 py-1 w-full transition-all hover:pl-1"
@@ -313,9 +235,6 @@ const SideBar = () => {
                             </span>
                         </Link> 
                     ))}
-<<<<<<< HEAD
-                </div> 
-=======
                     {(user.role?.includes(3) && currentNav === 'client') && client_menu_data.map(item => (
                         <Link
                             key={item.id}
@@ -329,7 +248,6 @@ const SideBar = () => {
                         </Link>
                     ))}
                 </div>
->>>>>>> 93f5b2b679a125edeb74a1fc74ebc9c994f46ea7
             </div>
         </div>
     )
