@@ -155,7 +155,7 @@ const Gigs = () => {
           </div>
         ))}
       </div>
-      {displayedData.length < data.length && (
+      {displayedData?.length < data?.length && (
         <div
           className="py-3 border border-lightGray rounded-2xl text-center cursor-pointer"
           onClick={handleLoadMore}

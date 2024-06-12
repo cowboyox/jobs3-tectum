@@ -13,11 +13,7 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io(backend_url, {
-      transports: ['websocket', 'polling'],
-      withCredentials: true,
-    });
-    
+    const newSocket = io(backend_url); // Your server URL here
     setSocket(newSocket);
 
     return () => {

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
 // Components
 import { cn } from "@/lib/utils"
@@ -173,6 +173,7 @@ const all_form_structure = {
 }
 
 const GigPosting = () => {
+
     const { toast } = useToast();
     const [user, setUser] = useState({
         email: "",
