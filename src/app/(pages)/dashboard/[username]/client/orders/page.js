@@ -24,8 +24,11 @@ import {
 import { Button } from "@/components/ui/button"
 import { FaX, FaEllipsis, FaBan } from "react-icons/fa6";
 import { Separator } from "@/components/ui/seperator";
+import api from '@/utils/api';
+import { useCustomContext } from "@/context/use-custom";
 
 const Orders = () => {
+    const auth = useCustomContext();
     const router = useRouter();
     const [search, setSearch] = useState();
     const [filterCategory, setFilterCategories] = useState([
@@ -34,7 +37,7 @@ const Orders = () => {
         "Completed",
         "Cancelled"
     ])
-    const [orders, setOrders] = useState([1, 2, 3]);
+    const [orders, setOrders] = useState([1,2]);
 
     const [placeholderText, setPlaceholderText] = useState('Search by Order title...');
     const [isSmallScreen, setIsSmallScree] = useState(false);
@@ -57,6 +60,21 @@ const Orders = () => {
             window.removeEventListener('resize', handleResize);
           };
     }, [])
+
+    useEffect(() => {
+        if(auth.user){
+            api.get(`/api/v1/profile/get-profile/${auth.user.email}/3`).then((data)=>{
+                console.log("profile: ", data)
+                if(data.data.profile){
+                    api.get(`/api/v1/client_gig/find_all_gigs_by_client_profile_id/${data.data.profile._id}`).then((data) => {
+                        console.log("gigs:", data.data)
+                        // setOrders(data.data)
+                    })
+                }
+            })
+        }
+    })
+
     return (
         <div className="p-0 sm:p-0 xl:mt-8 lg:mt-8">
             <div className="flex flex-row justify-between items-center bg-[#10191D] p-3 rounded-xl gap-5">
