@@ -89,14 +89,14 @@ const Header = () => {
 							alt=""
 						/>
 					</button>
-					<nav>
+					{/* <nav>
 						<Link href={"/"}>HOME</Link>
 						<Link href={`${(auth.isAuthenticated && user.role?.includes(3)) ? `/dashboard/${user.name}/client/home` : "/"}`}>Client</Link>
 						<Link href={`${(auth.isAuthenticated && user.role?.includes(0)) ? `/dashboard/${user.name}/freelancer/home` : "/"}`}>Freelancer</Link>
 						<Link href={`${(auth.isAuthenticated && user.role?.includes(2)) ? `/dashboard/${user.name}/employer/home` : "/"}`}>Employer</Link>
 						<Link href={`${(auth.isAuthenticated && user.role?.includes(1)) ? `/dashboard/${user.name}/employee/home` : "/"}`}>Employee</Link>
-					</nav>
-					{/* <div className="right_side">
+					</nav> */}
+					<div className="right_side">
 						{
 							!auth?.isAuthenticated ?
 							<Link href={"#sign-out"} onClick={() => openPopup("TypeOfAccount")} className="btn_classified">
@@ -115,7 +115,7 @@ const Header = () => {
 								</Link>
 							</div>
 						}
-					</div> */}
+					</div>
 				</div>
 			</header>
 
