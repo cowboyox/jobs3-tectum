@@ -62,17 +62,11 @@ const Orders = () => {
     }, [])
 
     useEffect(() => {
-        if(auth.user){
-            api.get(`/api/v1/profile/get-profile/${auth.user.email}/3`).then((data)=>{
-                console.log("profile: ", data)
-                if(data.data.profile){
-                    api.get(`/api/v1/client_gig/find_all_gigs_by_client_profile_id/${data.data.profile._id}`).then((data) => {
-                        console.log("gigs:", data.data)
-                        // setOrders(data.data)
-                    })
-                }
-            })
-        }
+        // if(auth.user){
+        //     api.get(`/api/v1/profile/get-all-freelancers`).then((data)=>{
+        //         console.log(data.data.data[49])
+        //     })
+        // }
     })
 
     return (

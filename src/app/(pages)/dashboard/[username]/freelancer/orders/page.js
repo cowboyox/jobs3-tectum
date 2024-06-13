@@ -24,8 +24,11 @@ import {
 import { Button } from "@/components/ui/button"
 import { FaX, FaEllipsis, FaBan } from "react-icons/fa6";
 import { Separator } from "@/components/ui/seperator";
+import { useCustomContext } from "@/context/use-custom";
+import api from '@/utils/api';
 
 const Orders = () => {
+    const auth = useCustomContext();
     const router = useRouter();
     const [search, setSearch] = useState();
     const [filterCategory, setFilterCategories] = useState([
@@ -34,11 +37,12 @@ const Orders = () => {
         "Completed",
         "Cancelled"
     ])
-    const [orders, setOrders] = useState([1, 2, 3]);
+    const [orders, setOrders] = useState([]);
 
-    const [placeholderText, setPlaceholderText] = useState('Search by Order title...');
+    const [filteredOrders, setfilteredOrders] = useState([]);
     const [isSmallScreen, setIsSmallScree] = useState(false);
     useEffect(() => {
+
         const handleResize = () => {
             if (window.innerWidth < 768) {
               setIsSmallScree(true);
@@ -57,6 +61,45 @@ const Orders = () => {
             window.removeEventListener('resize', handleResize);
           };
     }, [])
+    useEffect(() => {
+        if(auth.user){
+            api.get(`/api/v1/client_gig/find_all_gigs_proposed/${auth.user._id}`).then((data)=>{
+                console.log(data.data.data)
+                setOrders(data.data.data)
+                setfilteredOrders(data.data.data)
+            })
+        }
+    }, [auth])
+
+    const handleSearch = (event) => {
+        const value = event.target.value.toLowerCase();
+        setSearch(value);
+
+        const filtered = orders.filter(order => 
+            order.clientName.toLowerCase().includes(value) || 
+            order.email.toLowerCase().includes(value) ||
+            order.location.toLowerCase().includes(value) ||
+            order.gigTitle.toLowerCase().includes(value) ||
+            order.gigDescription.toLowerCase().includes(value)
+        );
+        setfilteredOrders(filtered);
+    }
+
+    const handleMessage = (order) => {
+        if(auth.user)
+            window.location.href =`/dashboard/${auth.user.name}/freelancer/inbox/${order.clientID}`
+    }
+
+    const getFormattedDate = (dateStr) => {
+        // Convert the string to a Date object
+        const date = new Date(dateStr);
+
+        // Format the date to "June 12"
+        const options = { month: 'long', day: 'numeric' };
+        const formattedDate = date.toLocaleDateString('en-US', options);
+        return formattedDate
+    }
+
     return (
         <div className="p-0 sm:p-0 xl:mt-8 lg:mt-8">
             <div className="flex flex-row justify-between items-center bg-[#10191D] p-3 rounded-xl gap-5">
@@ -77,7 +120,7 @@ const Orders = () => {
                             />
                         </svg>
                     </button>
-                    <input type="text" placeholder={isSmallScreen ? '' : 'Search by Order title...'} className=" bg-transparent outline-none w-full" />
+                    <input type="text" placeholder={isSmallScreen ? '' : 'Search by Order title...'} className=" bg-transparent outline-none w-full" onChange={e => handleSearch(e)}/>
                     {
                         isSmallScreen &&
                         <button>
@@ -136,7 +179,7 @@ const Orders = () => {
                     </div>
                 </div>
             </div>
-            <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl">You have <span className="text-[#DC4F13] font-bold">49</span> Orders😊</div>
+            <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl">You have <span className="text-[#DC4F13] font-bold">{orders.length}</span> Orders😊</div>
             <div className="flex flex-row gap-3 mt-4 items-center text-[#F5F5F5] overflow-x-auto touch-pan-x overscroll-x-contain">
                 {
                     filterCategory.map((item, index) => {
@@ -150,10 +193,10 @@ const Orders = () => {
                 </span>
             </div>
             {
-                orders.map((order, index) => {
+                filteredOrders.map((order, index) => {
                     return <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl" key={index}>
                         <div className="flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start">
-                            <div className="flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3">Digital Interface for finance project</div>
+                            <div className="flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3">{order.gigTitle}</div>
                             <div className="flex-none flex flex-row gap-2 items-center">
                                 <div className="border border-[#F7AE20] text-[#F7AE20] p-1 rounded-xl px-3">15 H: 30 S</div>
                                 <div className="border border-[#1BBF36] text-[#1BBF36] p-1 rounded-xl px-3">Active</div>
@@ -223,7 +266,7 @@ const Orders = () => {
                                     <path d="M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                     <path d="M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
-                                May 15 - Present</div>
+                                {`${getFormattedDate(order.gigPostDate)} - Present`}</div>
                             <div className="flex flex-row items-center gap-2">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M22 6V8.42C22 10 21 11 19.42 11H16V4.01C16 2.9 16.91 2 18.02 2C19.11 2.01 20.11 2.45 20.83 3.17C21.55 3.9 22 4.9 22 6Z" stroke="#96B0BD" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
@@ -233,14 +276,14 @@ const Orders = () => {
                                     <path d="M5.99609 13H6.00508" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                     <path d="M5.99609 9H6.00508" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
-                                $400
+                                {order.gigPaymentType ? `Hourly $${order.minBudget} - $${order.maxBudget}` : `Fixed $${order.gigPrice}`}
                             </div>
                         </div>
                         <Separator className="my-4" />
                         {
                             isSmallScreen && 
                             <div className="text-left text-[#96B0BD]">
-                                Creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring that every user interaction is as enjoyable as it is efficient.
+                                {order.gigDescription}
                             </div>
                         }
                         <div className="mt-3 flex md:flex-row flex-col justify-between md:items-center items-start">
@@ -250,7 +293,7 @@ const Orders = () => {
                                 </div>
                                 <div className="flex flex-col gap-1 text-left">
                                     <div className="flex flex-row gap-1 font-bold items-center">
-                                        Emily Rosenberg
+                                        {order.clientName}
                                         <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M14.1422 6.03555C14.1585 5.9123 14.167 5.78905 14.167 5.6665C14.167 3.98138 12.649 2.62917 10.9646 2.85796C10.4737 1.98459 9.53874 1.4165 8.50033 1.4165C7.46191 1.4165 6.52691 1.98459 6.03603 2.85796C4.34808 2.62917 2.83366 3.98138 2.83366 5.6665C2.83366 5.78905 2.84216 5.9123 2.85845 6.03555C1.98508 6.52713 1.41699 7.46213 1.41699 8.49984C1.41699 9.53755 1.98508 10.4725 2.85845 10.9641C2.84211 11.0865 2.83383 11.2097 2.83366 11.3332C2.83366 13.0183 4.34808 14.367 6.03603 14.1417C6.52691 15.0151 7.46191 15.5832 8.50033 15.5832C9.53874 15.5832 10.4737 15.0151 10.9646 14.1417C12.649 14.367 14.167 13.0183 14.167 11.3332C14.167 11.2106 14.1585 11.0874 14.1422 10.9641C15.0156 10.4725 15.5837 9.53755 15.5837 8.49984C15.5837 7.46213 15.0156 6.52713 14.1422 6.03555ZM7.76012 11.6278L5.16266 8.99709L6.17133 8.00259L7.77003 9.62184L10.835 6.58025L11.8323 7.58609L7.76012 11.6278Z" fill="#0A75C2" />
                                         </svg>
@@ -259,14 +302,14 @@ const Orders = () => {
                                 </div>
                             </div>
                             <div className="bg-[#1B272C] p-1 rounded-xl flex-none md:mt-0 mt-2">
-                                <button className="md:p-5 px-10 p-4">Message</button>
+                                <button onClick={(e) => handleMessage(order)}className="md:p-5 px-10 p-4">Message</button>
                                 <button className="bg-[#DC4F13] md:p-5 px-10 p-4">Deliver</button>
                             </div>
                         </div>
                     </div>
                 })
             }
-            <button className="p-3 mt-6 text-center border border-[#28373E] w-full">Load more + </button>
+            {/* <button className="p-3 mt-6 text-center border border-[#28373E] w-full">Load more + </button> */}
         </div>
     );
 };
