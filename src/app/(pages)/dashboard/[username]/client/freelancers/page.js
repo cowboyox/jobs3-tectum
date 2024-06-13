@@ -68,7 +68,7 @@ const Freelancers = () => {
       // Handle the Enter key press event
       // handleSearch(searchQuery);
       console.log("AI search")
-      api.get(`/api/v1/profile/ai-search-profile/${searchKeyWords}`,).then((data)=>{
+      api.get(`/api/v1/profile/ai-search-profile/${searchKeyWords}`).then((data)=>{
         let ai_ids = []
         if(data.data.profileIDs) 
           ai_ids = data.data.profileIDs
