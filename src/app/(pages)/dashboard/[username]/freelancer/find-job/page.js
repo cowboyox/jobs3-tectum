@@ -24,6 +24,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { FaX, FaEllipsis, FaBan } from "react-icons/fa6";
 import { Separator } from "@/components/ui/seperator";
+import api from "@/utils/api";
+import { minutesDifference } from "@/utils/Helpers";
 
 const FindJob = () => {
     const router = useRouter();
@@ -43,17 +45,28 @@ const FindJob = () => {
         'DesignSystem'
     ])
     const [orders, setOrders] = useState([1, 2, 3]);
+    const [gigList, setGigList] = useState([]);
+    const [loaded, setLoaded] = useState(false);
 
     const [placeholderText, setPlaceholderText] = useState('Search by Order title...');
     const [isSmallScreen, setIsSmallScree] = useState(false);
     useEffect(() => {
+        api.get(`/api/v1/client_gig/find_all_gigs`).then((data) => {
+            console.log("getAllGigs: ", data.data)
+            setGigList(data.data.data);
+        }).catch(err => {
+            console.log("Error corrupted while getting all gigs: ", err);
+        });
         const handleResize = () => {
             if (window.innerWidth < 768) {
                 setIsSmallScree(true);
+                setLoaded(true);
             } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
                 setIsSmallScree(false);
+                setLoaded(true);
             } else {
                 setIsSmallScree(false);
+                setLoaded(true);
             }
         };
 
@@ -66,7 +79,7 @@ const FindJob = () => {
         };
     }, [])
     return (
-        <div className="p-0 sm:p-0 xl:mt-8 lg:mt-8">
+        loaded ? <div className="p-0 sm:p-0 xl:mt-8 lg:mt-8">
             <div className="flex flex-row justify-between items-center bg-[#10191D] p-3 rounded-xl gap-5">
                 <div className="flex flex-1 items-center ml-3 gap-3">
                     <button>
@@ -144,7 +157,7 @@ const FindJob = () => {
                     </div>
                 </div>
             </div>
-            <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl">You have <span className="text-[#DC4F13] font-bold">1496</span> Jobs😊</div>
+            <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl">You have <span className="text-[#DC4F13] font-bold">{gigList.length}</span> Jobs😊</div>
             <div className="flex flex-row gap-3 mt-4 items-center text-[#F5F5F5] overflow-x-auto touch-pan-x overscroll-x-contain">
                 {
                     filterCategory.map((item, index) => {
@@ -158,7 +171,7 @@ const FindJob = () => {
                 </span>
             </div>
             {
-                orders.map((order, index) => {
+                gigList.map((gig, index) => {
                     return <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl" key={index}>
                         <div className="flex flex-row items-center gap-4 justify-between">
                             <div className="flex items-center">
@@ -234,7 +247,7 @@ const FindJob = () => {
                                 !isSmallScreen &&
                                 <div className="flex flex-col justify-between w-full">
                                     <div className="flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start">
-                                        <div className="flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3">Figma and Flow bite mentor needed</div>
+                                        <div className="flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3">{gig.gigTitle}</div>
                                         <div className="flex-none flex flex-row gap-2 items-center">
                                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M10.4138 5.33525L11.0143 6.13794L11.6149 5.33525C12.4058 4.27806 13.6725 3.5918 15.0843 3.5918C17.4808 3.5918 19.431 5.54417 19.431 7.96596C19.431 8.97523 19.2701 9.90575 18.9907 10.7693L18.9892 10.7741C18.3187 12.8959 16.941 14.616 15.44 15.9061C13.9356 17.199 12.3503 18.0225 11.3411 18.3659L11.3411 18.3659L11.333 18.3687C11.2824 18.3866 11.167 18.4085 11.0143 18.4085C10.8617 18.4085 10.7462 18.3866 10.6956 18.3687L10.6956 18.3687L10.6876 18.3659C9.6783 18.0225 8.09307 17.199 6.58869 15.9061C5.0876 14.616 3.70993 12.8959 3.03947 10.7741L3.03948 10.7741L3.03791 10.7693C2.75853 9.90575 2.59766 8.97523 2.59766 7.96596C2.59766 5.54417 4.54787 3.5918 6.94432 3.5918C8.35613 3.5918 9.62285 4.27806 10.4138 5.33525Z" stroke="#96B0BD" stroke-width="1.5" />
@@ -305,20 +318,20 @@ const FindJob = () => {
                                                 <path d="M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                                 <path d="M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                             </svg>
-                                            Posted 15 minutes ago</div>
+                                            Posted {minutesDifference(gig.gigPostDate)}</div>
                                         <div className="flex flex-row items-center gap-2">
                                             <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M12.75 13.4299C14.4731 13.4299 15.87 12.0331 15.87 10.3099C15.87 8.58681 14.4731 7.18994 12.75 7.18994C11.0269 7.18994 9.63 8.58681 9.63 10.3099C9.63 12.0331 11.0269 13.4299 12.75 13.4299Z" stroke="#96B0BD" stroke-width="1.5" />
                                                 <path d="M4.37001 8.49C6.34001 -0.169998 19.17 -0.159997 21.13 8.5C22.28 13.58 19.12 17.88 16.35 20.54C14.34 22.48 11.16 22.48 9.14001 20.54C6.38001 17.88 3.22001 13.57 4.37001 8.49Z" stroke="#96B0BD" stroke-width="1.5" />
                                             </svg>
-                                            Remote
+                                            {gig.location}
                                         </div>
                                         <div className="flex flex-row items-center gap-2">
                                             <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M12.9099 10.87C12.8099 10.86 12.6899 10.86 12.5799 10.87C10.1999 10.79 8.30994 8.84 8.30994 6.44C8.30994 3.99 10.2899 2 12.7499 2C15.1999 2 17.1899 3.99 17.1899 6.44C17.1799 8.84 15.2899 10.79 12.9099 10.87Z" stroke="#96B0BD" stroke-width="1.49854" stroke-linecap="round" stroke-linejoin="round" />
                                                 <path d="M7.91009 14.56C5.49009 16.18 5.49009 18.82 7.91009 20.43C10.6601 22.27 15.1701 22.27 17.9201 20.43C20.3401 18.81 20.3401 16.17 17.9201 14.56C15.1801 12.73 10.6701 12.73 7.91009 14.56Z" stroke="#96B0BD" stroke-width="1.49854" stroke-linecap="round" stroke-linejoin="round" />
                                             </svg>
-                                            5 Applicants
+                                            {gig.proposalUsers.length} Applicants
                                         </div>
                                         <div className="flex flex-row items-center gap-2">
                                             <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -326,7 +339,7 @@ const FindJob = () => {
                                                 <path d="M12.75 6V18" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                                 <path d="M12.75 22C18.2728 22 22.75 17.5228 22.75 12C22.75 6.47715 18.2728 2 12.75 2C7.22715 2 2.75 6.47715 2.75 12C2.75 17.5228 7.22715 22 12.75 22Z" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                             </svg>
-                                            Hourly: $40-$60
+                                            {gig.gigPaymentType ? "Hourly" : "Fixed"}: {gig.gigPaymentType ? `$${gig.minBudget} ~ $${gig.maxBudget}` : `${gig.gigPrice}`}
                                         </div>
                                     </div>
                                 </div>
@@ -336,7 +349,7 @@ const FindJob = () => {
                             isSmallScreen &&
                             <div className="flex flex-col justify-between w-full">
                                 <div className="flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start">
-                                    <div className="flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3">Figma and Flow bite mentor needed</div>
+                                    <div className="flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3">{gig.gigTitle}</div>
                                 </div>
                                 <div className="flex md:flex-row flex-row-reverse gap-6 mt-3 items-start md:justify-start justify-between">
                                     <div className="flex flex-row items-center gap-2">
@@ -344,13 +357,13 @@ const FindJob = () => {
                                             <path d="M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                             <path d="M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
-                                        Posted 15 minutes ago</div>
+                                        Posted {minutesDifference(gig.gigPostDate)}</div>
                                     <div className="flex flex-row items-center gap-2">
                                         <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M12.75 13.4299C14.4731 13.4299 15.87 12.0331 15.87 10.3099C15.87 8.58681 14.4731 7.18994 12.75 7.18994C11.0269 7.18994 9.63 8.58681 9.63 10.3099C9.63 12.0331 11.0269 13.4299 12.75 13.4299Z" stroke="#96B0BD" stroke-width="1.5" />
                                             <path d="M4.37001 8.49C6.34001 -0.169998 19.17 -0.159997 21.13 8.5C22.28 13.58 19.12 17.88 16.35 20.54C14.34 22.48 11.16 22.48 9.14001 20.54C6.38001 17.88 3.22001 13.57 4.37001 8.49Z" stroke="#96B0BD" stroke-width="1.5" />
                                         </svg>
-                                        Remote
+                                        {gig.location}
                                     </div>
                                 </div>
                                 <div className="flex md:flex-row gap-6 mt-3 items-start md:justify-start justify-between">
@@ -359,7 +372,7 @@ const FindJob = () => {
                                             <path d="M12.9099 10.87C12.8099 10.86 12.6899 10.86 12.5799 10.87C10.1999 10.79 8.30994 8.84 8.30994 6.44C8.30994 3.99 10.2899 2 12.7499 2C15.1999 2 17.1899 3.99 17.1899 6.44C17.1799 8.84 15.2899 10.79 12.9099 10.87Z" stroke="#96B0BD" stroke-width="1.49854" stroke-linecap="round" stroke-linejoin="round" />
                                             <path d="M7.91009 14.56C5.49009 16.18 5.49009 18.82 7.91009 20.43C10.6601 22.27 15.1701 22.27 17.9201 20.43C20.3401 18.81 20.3401 16.17 17.9201 14.56C15.1801 12.73 10.6701 12.73 7.91009 14.56Z" stroke="#96B0BD" stroke-width="1.49854" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
-                                        5 Applicants
+                                        {gig.proposalUsers.length} Applicants
                                     </div>
                                     <div className="flex flex-row items-center gap-2">
                                         <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -367,23 +380,22 @@ const FindJob = () => {
                                             <path d="M12.75 6V18" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                             <path d="M12.75 22C18.2728 22 22.75 17.5228 22.75 12C22.75 6.47715 18.2728 2 12.75 2C7.22715 2 2.75 6.47715 2.75 12C2.75 17.5228 7.22715 22 12.75 22Z" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
-                                        Hourly: $40-$60
+                                        {gig.gigPaymentType ? "Hourly" : "Fixed"}: {gig.gigPaymentType ? `$${gig.minBudget} ~ $${gig.maxBudget}` : `${gig.gigPrice}`}
                                     </div>
                                 </div>
                             </div>
                         }
                         <Separator className="my-4" />
                         <div className="text-left text-[#96B0BD]">
-                            We are looking for a highly skilled designer who works with Figma and Flow bite https://flowbite.com/ design system to come into our company as a trainer. We need you to teach our designers how to use a design system (flow bite) in figma including how to set up a new website, how to use the components from the design system and how to make them fit the brand of our clients. All of our designers come from a graphic design background so they need to be educated on how to design for web. If you are interested please send a message with years of experience with Figma and if you have trained others before.
+                            {gig.gigDescription}                        
                         </div>
                         <div className="mt-3 text-left">
                             <button>Show more</button>
                         </div>
-                        {/* <div className="mt-3 flex md:flex-row flex-col justify-between md:items-center items-start"> */}
                         <div className="flex md:flex-row flex-col justify-between md:items-center">
                             <div className="flex flex-row gap-3 mt-4 items-center text-[#F5F5F5] overflow-x-auto touch-pan-x overscroll-x-contain">
                                 {
-                                    skillSet.map((item, index) => {
+                                    gig.requiredSkills.map((item, index) => {
                                         return <span key={index} className="bg-[#28373E] pl-2 pr-2 p-1 rounded-full border border-[#3E525B] gap-1 flex flex-row items-center">
                                             {item}
                                         </span>
@@ -397,6 +409,8 @@ const FindJob = () => {
             }
             <button className="p-3 mt-6 text-center border border-[#28373E] w-full">Load more + </button>
         </div>
+        :
+        <></>
     );
 };
 

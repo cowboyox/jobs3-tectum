@@ -179,23 +179,8 @@ const GigPosting = () => {
         name: "",
         role: [0],
         verified: false
-    });
-
-    const [postData, setPostData] = useState({
-        email: "",
-        gigTitle: "",
-        gigCategory: [],
-        requiredSkills: [],
-        experienceLevel: 0,
-        location: '',
-        gigPaymentType: false, // fixed budget gig
-        minBudget: 0,
-        maxBudget: 0,
-        gigPrice: 0,
-        gigDescription: "",
-        attachment: [],
-        gigDeadline: 3
-    });
+      });
+    
     useEffect(() => {
         let tmp = localStorage.getItem('jobs_2024_token');
         if (tmp === null) {
@@ -209,10 +194,6 @@ const GigPosting = () => {
             router.push('/');
         } else {
             setUser(JSON.parse(tmp).data.user);
-            setPostData((prev) => ({
-                ...prev,
-                email: JSON.parse(tmp).data.user.email
-            }))
         }
     }, [])
     const router = useRouter();
@@ -222,7 +203,20 @@ const GigPosting = () => {
     const [budgetMode, setBudgetMode] = useState("hourly");
     const [files, setFiles] = useState([]);
     const [files2, setFiles2] = useState([]);
-
+    const [postData, setPostData] = useState({
+        gigTitle: "",
+        gigCategory: [],
+        requiredSkills: [],
+        experienceLevel: 0,
+        location: '',
+        gigPaymentType: false, // fixed budget gig
+        minBudget: 0,
+        maxBudget: 0,
+        gigPrice: 0,
+        gigDescription: "",
+        attachment: [],
+        gigDeadline: 3
+    });
 
     const FileChanged = (file) => {
         let tmp = [];

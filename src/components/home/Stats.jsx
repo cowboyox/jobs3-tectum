@@ -114,7 +114,7 @@ const Stats = () => {
                         </div>
                         <div className='flex flex-col justify-between gap-2 flex-1'>
                             {
-                                recentHires.map((spend, index) => (
+                                recentHires.map((spend,index) => (
                                     <div key={index} className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
 
                                         <div className='flex-1 flex justify-center items-center'>
@@ -141,7 +141,7 @@ const Stats = () => {
                         </div>
                         <div className='flex flex-col justify-between gap-2 flex-1'>
                             {
-                                recentHires.map((spend, index) => (
+                                recentHires.map((spend,index) => (
                                     <div key={index} className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
 
                                         <div className='flex-1 flex justify-center items-center'>

@@ -164,10 +164,10 @@ const ContextProvider = ({ children }) => {
   }
 
   const signInwithWallet = async (wallet) => {
-    if (state.acc_type === null) {
-      alert("Please select account type")
-      return;
-    }
+    // if (state.acc_type === null) {
+    //   alert("Please select account type")
+    //   return;
+    // }
     try {
       const { data } = await api.post('/api/v1/user/wallet/login', { wallet, acc_type: state.acc_type })
       dispatch({
