@@ -4,6 +4,7 @@ import Link from 'next/link';
 /*--------- Hooks ---------*/
 import { usePopupFunctions } from '../../components/popups/popups';
 import { useCustomContext } from "@/context/use-custom";
+import { useRouter } from 'next/navigation';
 
 import {
     DropdownMenu,
@@ -30,7 +31,7 @@ const DashboardHeader = () => {
         document.querySelector('.main_sidebar').classList.toggle('-translate-x-full')
     }
     const auth = useCustomContext()
-    
+
     useEffect(() => {
         console.log("auth===== ", auth)
     }, [auth])
@@ -54,6 +55,17 @@ const DashboardHeader = () => {
         }
     }, [])
 
+
+    const [currentNav, setCurrentNav] = useState('');
+    const [currentUser, setCurrentUser] = useState('');
+    useEffect(() => {
+        // if(!auth.isAuthenticated){
+        // 	router.replace('/')
+        // }
+        setCurrentNav(window.location.href.split('/')[5]);
+        setCurrentUser(window.location.href.split('/')[4]);
+    }, [])
+
     const handleTap = (item) => {
         if (!item) {
             return "Freelancer";
@@ -66,6 +78,14 @@ const DashboardHeader = () => {
         }
         return "Freelancer";
     }
+
+    const router = useRouter();
+
+    const handleNavigation = (nav) => {
+        setCurrentNav(nav);
+        return router.push(`/dashboard/${currentUser}/${nav}/home`)
+    }
+
     return (
         <header className='flex justify-end flex-wrap items-center md:h-20 h-28 mobile:flex-col mobile:gap-3 mobile:justify-center' id='header_container'>
             {renderPopup()}
@@ -77,11 +97,11 @@ const DashboardHeader = () => {
                 <DropdownMenu>
                     <DropdownMenuTrigger className='hidden md:flex'>
                         <div className='flex items-center gap-2'>
-                            <span className='uppercase text-lg'>Client</span> <FaAngleDown />
+                            <span className='uppercase text-lg'>{currentNav.toUpperCase()}</span> <FaAngleDown />
                         </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent sideOffset={10} className="w-52">
-                        <DropdownMenuLabel>{handleTap(accType[0])}</DropdownMenuLabel>
+                        <DropdownMenuLabel>{currentNav.toUpperCase()}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className='text-base'>Profile</DropdownMenuItem>
                         <DropdownMenuItem className='text-base'>Wallet</DropdownMenuItem>
@@ -89,9 +109,11 @@ const DashboardHeader = () => {
                         <DropdownMenuItem className='text-base'>Settings</DropdownMenuItem>
                         {
                             accType?.map((item, index) => {
-                                return <DropdownMenuItem className="hover:bg-white" key={index}>
-                                    <Button className='rounded w-full'>{handleTap(item)}</Button>
-                                </DropdownMenuItem>
+                                if (currentNav !== handleTap(item).toLowerCase()) {
+                                    return <DropdownMenuItem className="hover:bg-white" key={index}>
+                                        <Button className='rounded w-full' onClick={() => handleNavigation(handleTap(item).toLowerCase())}>{handleTap(item)}</Button>
+                                    </DropdownMenuItem>
+                                }
                             })
                         }
 
