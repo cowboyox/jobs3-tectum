@@ -10,7 +10,7 @@ import { backend_url } from "@/utils/variables";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
-import InfoPanel from '../infoPanel';
+import InfoPanel from './infoPanel';
 
 const ClientDashboard = () => {
   const { toast } = useToast();
