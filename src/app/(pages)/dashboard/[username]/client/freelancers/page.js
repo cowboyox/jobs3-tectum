@@ -43,11 +43,46 @@ const Freelancers = () => {
     "WebDesign",
     "FullTime",
   ]);
-  const [freelancers, setFreelancers] = useState([1, 2, 3]);
+  const [freelancers, setFreelancers] = useState([]);
+  const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const [isSmallScreen, setIsSmallScree] = useState(false);
+  const [searchKeyWords, setSearchKeyWords] = useState(false);
 
   const handleSearchTypeChange = (v) => setSearchType(v);
+
+  const setKey = (e) => {
+    setSearchKeyWords(e.target.value)
+    if(searchType == searchOptions[0]){
+      const filtered = freelancers.filter(freelancer => 
+        freelancer.email.toLowerCase().includes(e.target.value.toLowerCase()) || 
+        freelancer.freelancerBio.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        freelancer.fullName.toLowerCase().includes(e.target.value.toLowerCase()) || 
+        freelancer.location.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      setFilteredFreelancers(filtered);
+    }
+  }
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && searchType == searchOptions[1]) {
+      // Handle the Enter key press event
+      // handleSearch(searchQuery);
+      console.log("AI search")
+      api.get(`/api/v1/profile/ai-search-profile/${searchKeyWords}`).then((data)=>{
+        let ai_ids = []
+        if(data.data.profileIDs) 
+          ai_ids = data.data.profileIDs
+          console.log(ai_ids)
+          console.log(freelancers[0])
+          const ai_filtered = freelancers.filter(freelancer =>
+            ai_ids.includes(freelancer._id.toString())
+          );
+          console.log(ai_filtered)
+          setFilteredFreelancers(ai_filtered)
+      })
+    }
+  }
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -64,7 +99,15 @@ const Freelancers = () => {
     window.addEventListener("resize", handleResize);
 
     api.get(`/api/v1/profile/get-all-freelancers`).then((data) => {
-      setFreelancers(data.data.data);
+      if(data.data.data){
+        console.log(data.data.data[0])
+        setFreelancers(data.data.data);
+        setFilteredFreelancers(data.data.data);
+      }
+      else {
+        setFreelancers([]);
+        setFilteredFreelancers([]);
+      }
     });
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -85,6 +128,8 @@ const Freelancers = () => {
             type="text"
             placeholder={isSmallScreen ? "" : "Search for keywords"}
             className=" bg-transparent outline-none w-full"
+            onChange={setKey}
+            onKeyDown={handleKeyDown}
           />
           {isSmallScreen && (
             <button>
@@ -268,8 +313,8 @@ const Freelancers = () => {
         })}
         <span>Clear&nbsp;All</span>
       </div>
-      {freelancers &&
-        freelancers.map((freelancer, index) => {
+      {filteredFreelancers &&
+        filteredFreelancers.map((freelancer, index) => {
           return (
             <div
               className="bg-[#10191D] mt-4 text-center p-5 rounded-xl"
@@ -422,9 +467,9 @@ const Freelancers = () => {
             </div>
           );
         })}
-      <button className="p-3 mt-6 text-center border border-[#28373E] w-full">
+      {/* <button className="p-3 mt-6 text-center border border-[#28373E] w-full">
         Load more +{" "}
-      </button>
+      </button> */}
     </div>
   );
 };
