@@ -8,13 +8,11 @@ import api from '@/utils/api';
 import { Input } from '@/components/ui/input';
 import { backend_url } from "@/utils/variables";
 import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
 
 import InfoPanel from './infoPanel';
 
 const ClientDashboard = () => {
   const { toast } = useToast();
-	const router = useRouter()
 
   const [user, setUser] = useState({
     email: "",
@@ -58,30 +56,19 @@ const ClientDashboard = () => {
   const [fetchBanner, setFetchBanner] = useState("");
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
-    if (tmp === null) {
-      toast({
-        variant: "destructive",
-        title: <h1 className='text-center'>Error</h1>,
-        description: <h3>Please Login First</h3>,
-        className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
-      });
-      alert("Please Login First");
-      router.push('/');
-    } else {
-      let email = JSON.parse(tmp).data.user.email;
-      setUser(JSON.parse(tmp).data.user);
-      api.get(`/api/v1/profile/get-profile/${email}`).then((data) => {
-        console.log('------getprofile: ', data.data.profile, JSON.parse(tmp).data.user)
-        setProfileData(data.data.profile);
-        let fetchBannerUrl = backend_url + '/' + data.data.profile.clientBanner;
-        setFetchBanner(fetchBannerUrl);
-        setPreviewBanner(false);
-        setLoading(false);
-      })
-      api.get(`/api/v1/user/get-last-login/${email}`).then(data => {
-        setLastLogin(data.data.data);
-      })
-    }
+    let email = JSON.parse(tmp).data.user.email;
+    setUser(JSON.parse(tmp).data.user);
+    api.get(`/api/v1/profile/get-profile/${email}`).then((data) => {
+      console.log('------getprofile: ', data.data.profile, JSON.parse(tmp).data.user)
+      setProfileData(data.data.profile);
+      let fetchBannerUrl = backend_url + '/' + data.data.profile.clientBanner;
+      setFetchBanner(fetchBannerUrl);
+      setPreviewBanner(false);
+      setLoading(false);
+    })
+    api.get(`/api/v1/user/get-last-login/${email}`).then(data => {
+      setLastLogin(data.data.data);
+    })
   }, []);
 
   const onDrop = useCallback(async (acceptedFiles) => {
