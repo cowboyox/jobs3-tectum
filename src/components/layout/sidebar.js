@@ -31,7 +31,7 @@ const SideBar = () => {
                 <path d="M7.5 14H16.5" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>,
             name: 'Home',
-            href: '/dashboard',
+            href: `/dashboard/${user.name}/freelancer/home`,
         },
         {
             id: 1,
@@ -115,7 +115,7 @@ const SideBar = () => {
                 <path d="M7.5 14H16.5" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>,
             name: 'Home',
-            href: '/dashboard',
+            href: `/dashboard/${user.name}/client/home`,
         },
         {
             id: 1,
