@@ -26,7 +26,7 @@ import { FaX, FaEllipsis, FaBan } from "react-icons/fa6";
 import { Separator } from "@/components/ui/seperator";
 import api from "@/utils/api";
 import searchOptions from "./searchOptions";
-import CustomIconDropdown from "@/components/UI/dropdown";
+import CustomIconDropdown from "@/components/ui/dropdown";
 
 const Freelancers = () => {
   const router = useRouter();

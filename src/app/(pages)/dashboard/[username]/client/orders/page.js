@@ -27,7 +27,7 @@ import { Separator } from "@/components/ui/seperator";
 import api from "@/utils/api";
 import { useCustomContext } from "@/context/use-custom";
 import searchOptions from "../freelancers/searchOptions";
-import CustomIconDropdown from "@/components/UI/dropdown";
+import CustomIconDropdown from "@/components/ui/dropdown";
 
 const Orders = () => {
   const auth = useCustomContext();
