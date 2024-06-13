@@ -51,7 +51,7 @@ const ClientDashboard = () => {
     }],
     firstName: "",
     lastName: "",
-    clientBanner: "/images/clientBanner.jpeg"
+    clientBanner: null
   });
   const [previewBanner, setPreviewBanner] = useState(false);
   const [isLoading, setLoading] = useState(true);
@@ -73,8 +73,17 @@ const ClientDashboard = () => {
       api.get(`/api/v1/profile/get-profile/${email}`).then((data) => {
         console.log('------getprofile: ', data.data.profile, JSON.parse(tmp).data.user)
         setProfileData(data.data.profile);
-        let fetchBannerUrl = backend_url + '/' + data.data.profile.clientBanner;
-        setFetchBanner(fetchBannerUrl);
+        // let fetchBannerUrl = backend_url + '/' + data.data.profile.clientBanner;
+        if (data.data.profile.clientBanner) {
+          // Convert the data to a Blob
+          const binaryData = new Uint8Array(data.data.profile.clientBanner.data);
+          const blob = new Blob([binaryData], { type: 'image/png' });
+
+          // Create a URL for the Blob
+          const fetchBannerUrl = URL.createObjectURL(blob);
+
+          setFetchBanner(fetchBannerUrl);
+        }
         setPreviewBanner(false);
         setLoading(false);
       })
