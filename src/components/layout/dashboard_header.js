@@ -50,7 +50,7 @@ const DashboardHeader = () => {
             console.log("Login First!");
         } else {
             setUser(JSON.parse(tmp).data.user);
-            setAccType(JSON.parse(tmp).data.acc_type);
+            setAccType(JSON.parse(tmp).data.user.role);
         }
     }, [])
 

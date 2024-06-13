@@ -153,7 +153,7 @@ const Header = () => {
 						<span>$THREE</span>
 					</Link>
 				</div>
-				{/* {
+				{
 					!auth?.isAuthenticated ?
 					<Link href={"#sign-out"} onClick={() => openPopup("TypeOfAccount")} className="btn_classified">
 						Sign Up
@@ -170,7 +170,7 @@ const Header = () => {
 							Launch App
 						</Link>
 					</div>
-				} */}
+				}
 			</div>
 		</>
 	);
