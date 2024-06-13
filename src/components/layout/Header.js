@@ -89,16 +89,13 @@ const Header = () => {
 							alt=""
 						/>
 					</button>
-					{
-						auth.isAuthenticated &&
-						<nav>
-							<Link href={"/"}>HOME</Link>
-							<Link href={`${(auth.isAuthenticated && user.role?.includes(3)) ? `/dashboard/${user.name}/client/home` : "/"}`}>Client</Link>
-							<Link href={`${(auth.isAuthenticated && user.role?.includes(0)) ? `/dashboard/${user.name}/freelancer/home` : "/"}`}>Freelancer</Link>
-							<Link href={`${(auth.isAuthenticated && user.role?.includes(2)) ? `/dashboard/${user.name}/employer/home` : "/"}`}>Employer</Link>
-							<Link href={`${(auth.isAuthenticated && user.role?.includes(1)) ? `/dashboard/${user.name}/employee/home` : "/"}`}>Employee</Link>
-						</nav>
-					}
+					<nav>
+						<Link href={"/"}>HOME</Link>
+						<Link href={`${(auth.isAuthenticated && user.role?.includes(3)) ? `/dashboard/${user.name}/client/home` : "/"}`}>Client</Link>
+						<Link href={`${(auth.isAuthenticated && user.role?.includes(0)) ? `/dashboard/${user.name}/freelancer/home` : "/"}`}>Freelancer</Link>
+						<Link href={`${(auth.isAuthenticated && user.role?.includes(2)) ? `/dashboard/${user.name}/employer/home` : "/"}`}>Employer</Link>
+						<Link href={`${(auth.isAuthenticated && user.role?.includes(1)) ? `/dashboard/${user.name}/employee/home` : "/"}`}>Employee</Link>
+					</nav>
 					<div className="right_side">
 						{
 							!auth?.isAuthenticated ?
