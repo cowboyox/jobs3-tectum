@@ -36,12 +36,6 @@ const Header = () => {
 	const auth = useCustomContext()
 	const { disconnect } = useDisconnect()
 
-	useEffect(() => {
-		// if(!auth.isAuthenticated){
-		// 	router.replace('/')
-		// }
-		console.log("=======> ", auth)
-	}, [auth])
 	const handleMenuClick = (status) => {
 		if (status == true) {
 			gsap.to(mobileMenu.current, {
