@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { useRouter } from "next/navigation";
 
 const SideBar = () => {
+    const [currentNav, setCurrentNav] = useState("");
+
     const [user, setUser] = useState({
         email: "",
         name: "",
         role: [0],
         verified: false
     });
-    const [currentNav, setCurrentNav] = useState('');
 
     useEffect(() => {
         // console.log("_______currentNav: ", window.location.href.split('/')[5])
@@ -252,7 +253,7 @@ const SideBar = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default SideBar;
