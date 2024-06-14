@@ -222,7 +222,7 @@ const SideBar = () => {
                 <img src='/assets/images/logo.svg' className='w-100' />
             </div>
             <div onClick={OpenSideBar}>
-                <div className="flex flex-col gap-3">
+                {/* <div className="flex flex-col gap-3">
                     {(user.role?.includes(0) && currentNav === 'freelancer') && freelancer_menu_data.map(item => (
                         <Link
                             key={item.id}
@@ -247,7 +247,7 @@ const SideBar = () => {
                             </span>
                         </Link>
                     ))}
-                </div>
+                </div> */}
             </div>
         </div>
     )

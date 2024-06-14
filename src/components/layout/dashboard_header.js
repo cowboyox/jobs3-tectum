@@ -87,13 +87,13 @@ const DashboardHeader = () => {
                         <DropdownMenuItem className='text-base'>Wallet</DropdownMenuItem>
                         <DropdownMenuItem className='text-base'>Refer a friend</DropdownMenuItem>
                         <DropdownMenuItem className='text-base'>Settings</DropdownMenuItem>
-                        {
+                        {/* {
                             accType?.map((item, index) => {
                                 return <DropdownMenuItem className="hover:bg-white" key={index}>
                                     <Button className='rounded w-full'>{handleTap(item)}</Button>
                                 </DropdownMenuItem>
                             })
-                        }
+                        } */}
 
                     </DropdownMenuContent>
                 </DropdownMenu>
