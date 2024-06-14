@@ -158,23 +158,24 @@ const CreateGig = () => {
   const [documentFiles, setDocumentFiles] = useState([]);
 
   const handleVideoUpload = (file) => {
-    console.log(file[0])
-    setVideoFile(file[0]);  // Assuming single file for video
+    console.log(file)
+    setVideoFile(file);  // Assuming single file for video
   };
 
   const handleImageUpload = (files, index) => {
     const newImageFiles = [...imageFiles];
-    newImageFiles[index] = files[0];  // Assuming single file for each image slot
-    console.log(files[0])
+    newImageFiles[index] = files;  // Assuming single file for each image slot
+    console.log(files)
     setImageFiles(newImageFiles);
   };
 
   const handleDocumentUpload = (files, index) => {
     const newDocumentFiles = [...documentFiles];
-    newDocumentFiles[index] = files[0];  // Assuming single file for each document slot
+    newDocumentFiles[index] = files;  // Assuming single file for each document slot
     console.log(newDocumentFiles)
     setDocumentFiles(newDocumentFiles);
   };
+  
   async function onSubmit(values) {
     /* Selmani: I didn't check if all the values are being passed here
       * And i'm sure not all, so please make sure all necessary inputs are being passed
@@ -198,21 +199,22 @@ const CreateGig = () => {
       });
     }
 
-    const formData = new FormData();
-    if (videoFile) {
-      console.log("video")
-      formData.append('file', videoFile);
-    }
-
+    let allFiles = []
+    if (videoFile) allFiles.push(...videoFile) 
+    
     imageFiles.forEach((file, index) => {
-      if (file) {
-        formData.append('file', file);
-        console.log("image:", file)
-      }
+      if (file) allFiles.push(...file) 
     });
     documentFiles.forEach((file, index) => {
-      if (file) formData.append('file', file);
+      if (file) allFiles.push(...file)
     });
+
+    console.log("all: ", allFiles)
+    const formData = new FormData();
+
+    allFiles.forEach((file, index) => {
+      formData.append('file', file);
+  });
 
     const config = {
       headers: {
