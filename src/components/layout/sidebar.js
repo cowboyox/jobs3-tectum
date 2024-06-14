@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 const SideBar = () => {
     const [currentNav, setCurrentNav] = useState("");
-
     const [user, setUser] = useState({
         email: "",
         name: "",
