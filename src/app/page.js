@@ -12,15 +12,16 @@ import Companies from "@/components/pages/home/Companies";
 import BlogPosts from "@/components/pages/home/BlogPosts";
 
 export default function Home() {
-  return (
-    <Layout pageClass="home_page">
-      <GetPaid />
-      <FeaturedJobs />
-      <ByCategories />
-      <PostAJob />
-      <ForEmployers />
-      <Companies />
-      <BlogPosts />
-    </Layout>
-  );
+	return (
+		<Layout pageClass="home_page"> 
+			<Hero />
+			<GetPaid />
+			<FeaturedJobs />
+			<ByCategories />
+			<PostAJob />
+			<ForEmployers />
+			<Companies />
+			<BlogPosts />
+		</Layout>
+	);
 }
