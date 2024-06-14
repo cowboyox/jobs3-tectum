@@ -38,13 +38,14 @@ const InfoPanel = (props) => {
       </div>
       <form> {/* After the form is submitted the user data should be saved in the backend */}
         <div className="grid grid-cols-2 gap-3">
-          {props.information_data.map((singleInfo, cntNum) => (
-            <div className="flex flex-col gap-1" key={cntNum}>
+          {props.information_data.map((singleInfo, cntNum) => {
+            return <div className="flex flex-col gap-1" key={cntNum}>
               <p className="text-base text-[#96B0BD]">{singleInfo.label}</p>
               {editMode ? (
                 <input
-                  className="text-white text-sm md:text-[18px] md:font-medium outline-none font-medium bg-transparent pb-2 border-b focus:border-white"
+                  className="text-white text-sm md:text-[18px] md:font-medium outline-none font-medium bg-transparent pb-2 border-b focus:border-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   value={singleInfo.value}
+                  type={singleInfo.idName === "phoneNumber"? "number" : "text"}
                   onChange={e => {
                     props.index !== -1 ?
                     props.setProfileData((prev) => ({
@@ -65,7 +66,7 @@ const InfoPanel = (props) => {
                 <p className="text-white text-sm md:text-[18px] md:font-medium font-medium">{singleInfo.value}</p>
               )}
             </div>
-          ))}
+          })}
         </div>
         {editMode && (
           <Button className='w-1/4 rounded-xl mt-9' onClick={() => {setEditMode(false); saveProfile()}}>Save</Button>
