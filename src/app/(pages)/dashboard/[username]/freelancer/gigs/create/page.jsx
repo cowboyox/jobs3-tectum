@@ -227,7 +227,7 @@ const CreateGig = () => {
         description: <h3>Successfully posted gig titled {values.gigTitle}</h3>,
         className: "bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
       });
-      router.push()
+      router.push('../')
     }).catch(err => {
       console.log("Error corrupted during posting gig", err);
       toast({
