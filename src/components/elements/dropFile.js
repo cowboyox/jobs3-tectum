@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from "@/components/ui/use-toast"
 import { FormControl, FormField, FormItem, FormMessage, } from "@/components/ui/form";
 
-const DropFile = ({ className, inputName, placeHolderPlusIconSize, acceptOnly }) => {
+const DropFile = ({ className, inputName, placeHolderPlusIconSize, acceptOnly, onFileUpload }) => {
     const { toast } = useToast();
 
     const [filePreview, setFilePreview] = useState({
@@ -15,6 +15,7 @@ const DropFile = ({ className, inputName, placeHolderPlusIconSize, acceptOnly })
     });
 
     const previewPhoto = (file) => {
+        onFileUpload(file.files)
         const fileType = file.files[0].type.split('/')[0];
         const fileUrl = URL.createObjectURL(file.files[0]);
         const fileName = file.files[0].name;
