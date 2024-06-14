@@ -212,9 +212,7 @@ const CreateGig = () => {
     console.log("all: ", allFiles)
     const formData = new FormData();
 
-    allFiles.forEach((file, index) => {
-      formData.append('file', file);
-  });
+    formData.append('file', allFiles);
 
     const config = {
       headers: {
