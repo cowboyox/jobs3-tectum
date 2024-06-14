@@ -8,6 +8,7 @@ const InfoPanel = (props) => {
   const { toast } = useToast();
 
   const saveToDB = (data) => {
+    console.log("-----> ", data)
     api.put(`/api/v1/profile/update-profileinfo/${props.email}`, data).then(data => {
       return toast({
         variant: "default",
@@ -27,7 +28,7 @@ const InfoPanel = (props) => {
   const saveProfile = (title) => {
     if (title === "Personal Information") {
       const tmp = {
-        fullName: props.profileData.firstName + props.profileData.lastName,
+        fullName: props.profileData.firstName + " " + props.profileData.lastName,
         firstName: props.profileData.firstName,
         lastName: props.profileData.lastName,
         email: props.profileData.email,
@@ -37,10 +38,7 @@ const InfoPanel = (props) => {
       saveToDB(tmp);
     } else if (title === "Company Details") {
       const tmp = {
-        country: props.profileData.country,
-        postalCode: props.profileData.postalCode,
-        timeZone: props.profileData.timeZone,
-        vatID: props.profileData.vatID
+        companyDetails: props.profileData.companyDetails
       }
       saveToDB(tmp);
     }
