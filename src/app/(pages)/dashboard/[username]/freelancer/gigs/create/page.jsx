@@ -201,14 +201,14 @@ const CreateGig = () => {
     const formData = new FormData();
     if (videoFile) {
       console.log("video")
-      formData.append('video', videoFile);
+      formData.append('file', videoFile);
     }
 
     imageFiles.forEach((file, index) => {
-      if (file) formData.append('image', file);
+      if (file) formData.append('file', file);
     });
     documentFiles.forEach((file, index) => {
-      if (file) formData.append('document', file);
+      if (file) formData.append('file', file);
     });
 
     const config = {
@@ -218,8 +218,7 @@ const CreateGig = () => {
     };
     await api.post('/api/v1/freelancer_gig/post_gig', values).then(async (data) => {
       console.log(data)
-      await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, new FormData(), config).then(data => {
-        // await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
+      await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
         console.log("Successfully uploaded");
       })
       toast({
