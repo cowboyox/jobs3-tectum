@@ -17,7 +17,7 @@ const SideBar = () => {
       console.log("Please Login First");
     } else {
         setUser(JSON.parse(tmp).data.user);
-        console.log(user.role?.includes(3),user.role,"this is user state in the sideBar")
+        // console.log(user.role?.includes(3),user.role,"this is user state in the sideBar")
     }
     setCurrentNav(window.location.href.split("/")[5]);
   }, []);
