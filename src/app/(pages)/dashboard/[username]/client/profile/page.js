@@ -81,6 +81,13 @@ const ClientDashboard = () => {
 
           console.log('------getprofile: ', data.data.profile, JSON.parse(tmp).data.user)
           setProfileData(data.data.profile);
+          if (data.data.profile.firstName === undefined) {
+            setProfileData((prev) => ({
+              ...prev,
+              firstName: data.data.profile.fullName.split(" ")[0],
+              lastName: data.data.profile.fullName.split(" ")[1]
+            }))
+          }
           // let fetchBannerUrl = backend_url + '/' + data.data.profile.clientBanner;
           if (data.data.profile.clientBanner) {
             // Convert the data to a Blob
@@ -339,9 +346,9 @@ const ClientDashboard = () => {
                 title="Personal Information"
                 editAction='editPersonalInfo'
                 information_data={[
-                  { id: 0, label: 'First Name', value: `${profileData.firstName === undefined ? profileData.fullName.split(" ")[0] : ""}`, idName: 'firstName' },
+                  { id: 0, label: 'First Name', value: `${profileData.firstName === undefined ? profileData.fullName.split(" ")[0] : profileData.firstName}`, idName: 'firstName' },
                   { id: 1, label: 'Email Address', value: `${profileData.email}`, idName: 'email' },
-                  { id: 2, label: 'Last Name', value: `${profileData.lastName === undefined ? profileData.fullName.split(" ")[1] : ""}`, idName: 'lastName' },
+                  { id: 2, label: 'Last Name', value: `${profileData.lastName === undefined ? profileData.fullName.split(" ")[1] : profileData.lastName}`, idName: 'lastName' },
                   { id: 3, label: 'Phone', value: `${profileData.phoneNumber}`, idName: 'phoneNumber' },
                 ]}
                 setProfileData={setProfileData}
