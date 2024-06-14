@@ -379,6 +379,7 @@ const FreelancerProfile = () => {
     console.log("fileupload for avatar: ", event.target.files)
     if (event.target.files?.length) {
       const image = event.target.files[0];
+      console.log("image: ", image)
       const formData = new FormData();
       formData.append("file", image);
       const config = {

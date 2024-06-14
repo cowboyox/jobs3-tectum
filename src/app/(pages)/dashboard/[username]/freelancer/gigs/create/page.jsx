@@ -199,17 +199,20 @@ const CreateGig = () => {
     }
 
     const formData = new FormData();
-    // if (videoFile) {
-    //   console.log("video")
-    //   formData.append('file', videoFile);
-    // }
+    if (videoFile) {
+      console.log("video")
+      formData.append('file', videoFile);
+    }
 
-    // imageFiles.forEach((file, index) => {
-    //   if (file) formData.append('file', file);
-    // });
-    // documentFiles.forEach((file, index) => {
-    //   if (file) formData.append('file', file);
-    // });
+    imageFiles.forEach((file, index) => {
+      if (file) {
+        formData.append('file', file);
+        console.log("image:", file)
+      }
+    });
+    documentFiles.forEach((file, index) => {
+      if (file) formData.append('file', file);
+    });
 
     const config = {
       headers: {
