@@ -218,7 +218,8 @@ const CreateGig = () => {
     };
     await api.post('/api/v1/freelancer_gig/post_gig', values).then(async (data) => {
       console.log(data)
-      await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
+      await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, new FormData(), config).then(data => {
+        // await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
         console.log("Successfully uploaded");
       })
       toast({
