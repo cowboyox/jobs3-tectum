@@ -83,6 +83,7 @@ const DashboardHeader = () => {
 
     const handleNavigation = (nav) => {
         setCurrentNav(nav);
+        window.localStorage.setItem("currentRole", nav);
         return router.push(`/dashboard/${currentUser}/${nav}/home`)
     }
 
