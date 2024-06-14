@@ -41,7 +41,7 @@ const ClientDashboard = () => {
     timeZone: "",
     userId: "",
     zkpId: "",
-    phoneNumber: "",
+    phoneNumber: 442071234567,
     companyDetails: [{
       country: "",
       postalCode: "",
