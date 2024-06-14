@@ -1,8 +1,10 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import { CiSearch } from "react-icons/ci";
 import { CgOptions } from "react-icons/cg";
 import { MdVerified } from "react-icons/md";
 import Image from 'next/image';
+import api from '@/utils/api';
 
 const spendings = [
     {
@@ -55,6 +57,22 @@ const recentHires = [
 ]
 
 const Stats = () => {
+    const [spendings, setSpending] = useState([
+        {
+            title: "Front-End Development",
+            hiredFreelancer: [],
+            daysAgo: "2d",
+            price: "$1000"
+
+        }
+    ]);
+
+    useEffect(() => {
+        api.get(`/api/v1/client_gig/get-gigs-bystatus/ended`).then(data => {
+            console.log("++++getEndedGigs: ", data.data);
+            setSpending(data.data.data);
+        })
+    }, [])
     return (
         <div className='w-full min-h-96 flex flex-col -mt-10 font-roboto md:mt-10'>
             <div className='h-16 rounded-2xl bg-deepGreen flex items-center justify-between gap-6 px-4'>
