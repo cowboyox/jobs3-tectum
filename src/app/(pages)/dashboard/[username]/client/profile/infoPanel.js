@@ -7,8 +7,8 @@ import { useToast } from "@/components/ui/use-toast";
 const InfoPanel = (props) => {
   const { toast } = useToast();
 
-  const saveProfile = () => {
-    api.put(`/api/v1/profile/update-profileinfo/${props.email}`, props.profileData).then(data => {
+  const saveToDB = (data) => {
+    api.put(`/api/v1/profile/update-profileinfo/${props.email}`, data).then(data => {
       return toast({
         variant: "default",
         title: <h1 className='text-center'>Success</h1>,
@@ -23,6 +23,27 @@ const InfoPanel = (props) => {
         className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
       });
     })
+  }
+  const saveProfile = (title) => {
+    if (title === "Personal Information") {
+      const tmp = {
+        fullName: props.profileData.firstName + props.profileData.lastName,
+        firstName: props.profileData.firstName,
+        lastName: props.profileData.lastName,
+        email: props.profileData.email,
+        phoneNumber: props.profileData.phoneNumber,
+      }
+
+      saveToDB(tmp);
+    } else if (title === "Company Details") {
+      const tmp = {
+        country: props.profileData.country,
+        postalCode: props.profileData.postalCode,
+        timeZone: props.profileData.timeZone,
+        vatID: props.profileData.vatID
+      }
+      saveToDB(tmp);
+    }
   }
   const [editMode, setEditMode] = useState(false);
   return (
@@ -45,21 +66,21 @@ const InfoPanel = (props) => {
                 <input
                   className="text-white text-sm md:text-[18px] md:font-medium outline-none font-medium bg-transparent pb-2 border-b focus:border-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   value={singleInfo.value}
-                  type={singleInfo.idName === "phoneNumber"? "number" : "text"}
+                  type={singleInfo.idName === "phoneNumber" ? "number" : "text"}
                   onChange={e => {
                     props.index !== -1 ?
-                    props.setProfileData((prev) => ({
-                      ...prev,
-                      companyDetails: prev.companyDetails.map((item, index) => (
-                        index === props.index ? 
-                        { ...item, [singleInfo.idName]: e.target.value } :
-                        item
-                      ))
-                    })) :
-                    props.setProfileData((prev) => ({
-                      ...prev,
-                      [singleInfo.idName]: e.target.value
-                    }));
+                      props.setProfileData((prev) => ({
+                        ...prev,
+                        companyDetails: prev.companyDetails.map((item, index) => (
+                          index === props.index ?
+                            { ...item, [singleInfo.idName]: e.target.value } :
+                            item
+                        ))
+                      })) :
+                      props.setProfileData((prev) => ({
+                        ...prev,
+                        [singleInfo.idName]: e.target.value
+                      }));
                   }}
                 />
               ) : (
@@ -69,7 +90,7 @@ const InfoPanel = (props) => {
           })}
         </div>
         {editMode && (
-          <Button className='w-1/4 rounded-xl mt-9' onClick={() => {setEditMode(false); saveProfile()}}>Save</Button>
+          <Button className='w-1/4 rounded-xl mt-9' onClick={() => { setEditMode(false); saveProfile(props.title) }}>Save</Button>
         )}
       </form>
     </div>
