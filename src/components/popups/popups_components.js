@@ -396,7 +396,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
             <div className="right_side">
               <button
                 onClick={() => {
-                  onSwitchPopup("SignUp");
+                  onSwitchPopup("TypeOfAccount");
                 }}
               >
                 Sign up

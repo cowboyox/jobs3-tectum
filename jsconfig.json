@@ -2,25 +2,14 @@
   "compilerOptions": {
     "jsx": "react",
     "paths": {
-      "@/components/*": [
-        "src/components/*"
-      ],
-      "@/utils/*": [
-        "./src/utils/*"
-      ],
-      "@/lib/*": [
-        "./src/lib/*"
-      ],
-      "@/context/*": [
-        "./src/context/*"
-      ],
-      "@/pages/*": [
-        "src/pages/*"
-      ],
-      "@/styles/*": [
-        "src/styles/*"
-      ]
+      "@/components/*": ["src/components/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/context/*": ["./src/context/*"],
+      "@/pages/*": ["src/pages/*"],
+      "@/styles/*": ["src/styles/*"],
+      "@/assets/*": ["src/assets/*"]
       // Add more paths as needed
-    },
+    }
   }
 }
