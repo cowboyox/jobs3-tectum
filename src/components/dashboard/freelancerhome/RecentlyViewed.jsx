@@ -25,20 +25,20 @@ const recentViewed = [
 ];
 
 const RecentlyViewed = () => {
-  // const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchRecentViewGigs = async () => {
-  //     try {
-  //       const res = await getRecentViewedGigs();
-  //       console.log("Gigs Data", res);
-  //       setData(res.data);
-  //     } catch (err) {
-  //       console.log("Err fetching Gigs", err);
-  //     }
-  //   };
-  //   fetchRecentViewGigs();
-  // }, []);
+  useEffect(() => {
+    const fetchRecentViewGigs = async () => {
+      try {
+        const res = await getRecentViewedGigs();
+        console.log("Gigs Data", res);
+        setData(res.data);
+      } catch (err) {
+        console.log("Err fetching Gigs", err);
+      }
+    };
+    fetchRecentViewGigs();
+  }, []);
   return (
     <div className="mt-10 flex flex-col gap-4">
       <div className="flex justify-between">
