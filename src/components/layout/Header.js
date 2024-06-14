@@ -25,7 +25,7 @@ const Header = () => {
         } else {
             setUser(JSON.parse(tmp).data.user);
 			setAccType(JSON.parse(tmp).data.acc_type);
-        }
+		}
     }, [])
 
 	const { openPopup, renderPopup } = usePopupFunctions();
@@ -51,7 +51,6 @@ const Header = () => {
 			});
 		}
 	};
-
 	const handleSignOut = () => {
 		disconnect()
 		auth.signOut()
