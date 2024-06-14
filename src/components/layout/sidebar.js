@@ -166,7 +166,7 @@ const SideBar = () => {
                 <path d="M14 2.5H9C4 2.5 2 4.5 2 9.5V15.5C2 20.5 4 22.5 9 22.5H15C20 22.5 22 20.5 22 15.5V10.5" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>,
             name: 'Gig Search',
-            href: `/dashboard/${user.name}/client/freelancers`,
+            href: `/dashboard/${user.name}/client/gig-search`,
         },
         {
             id: 6,
