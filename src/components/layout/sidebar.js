@@ -1,8 +1,15 @@
-'use client';
-import React, { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
+"use client";
+import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 const SideBar = () => {
+  const [user, setUser] = useState({
+    email: "",
+    name: "",
+    role: [0],
+    verified: false,
+  });
+  const [currentNav, setCurrentNav] = useState("");
 
     const [user, setUser] = useState({
         email: "",
@@ -216,41 +223,49 @@ const SideBar = () => {
             sideBarRef.current.classList.toggle('-translate-x-full');
         }
     }
-    return (
-        <div ref={sideBarRef} className="main_sidebar md:w-60 p-10 w-10/12 fixed left-0 bg-black z-40 min-h-screen transition md:sticky top-0 -translate-x-full md:translate-x-0">
-            <div onClick={OpenSideBar} className="w-10/12 mx-auto mb-10">
-                <img src='/assets/images/logo.svg' className='w-100' />
-            </div>
-            <div onClick={OpenSideBar}>
-                <div className="flex flex-col gap-3">
-                    {(user.role?.includes(0) && currentNav === 'freelancer') && freelancer_menu_data.map(item => (
-                        <Link
-                            key={item.id}
-                            href={item.href}
-                            className="flex gap-4 py-1 w-full transition-all hover:pl-1"
-                        >
-                            {item.icon}
-                            <span className='text-base uppercase text-slate-500 font-medium'>
-                                {item.name.toUpperCase()}
-                            </span>
-                        </Link>
-                    ))}
-                    {(user.role?.includes(3) && currentNav === 'client') && client_menu_data.map(item => (
-                        <Link
-                            key={item.id}
-                            href={item.href}
-                            className="flex gap-4 py-1 w-full transition-all hover:pl-1"
-                        >
-                            {item.icon}
-                            <span className='text-base uppercase text-slate-500 font-medium'>
-                                {item.name.toUpperCase()}
-                            </span>
-                        </Link>
-                    ))}
-                </div>
-            </div>
+  }
+  return (
+    <div
+      ref={sideBarRef}
+      className="main_sidebar md:w-60 p-10 w-10/12 fixed left-0 bg-black z-40 min-h-screen transition md:sticky top-0 -translate-x-full md:translate-x-0"
+    >
+      <div onClick={OpenSideBar} className="w-10/12 mx-auto mb-10">
+        <img src="/assets/images/logo.svg" className="w-100" />
+      </div>
+      <div onClick={OpenSideBar}>
+        <div className="flex flex-col gap-3">
+          {user.role?.includes(0) &&
+            currentNav === "freelancer" &&
+            freelancer_menu_data.map((item) => (
+              <Link
+                key={item.id}
+                href={item.href}
+                className="flex gap-4 py-1 w-full transition-all hover:pl-1"
+              >
+                {item.icon}
+                <span className="text-base uppercase text-slate-500 font-medium">
+                  {item.name.toUpperCase()}
+                </span>
+              </Link>
+            ))}
+          {user.role?.includes(3) &&
+            currentNav === "client" &&
+            client_menu_data.map((item) => (
+              <Link
+                key={item.id}
+                href={item.href}
+                className="flex gap-4 py-1 w-full transition-all hover:pl-1"
+              >
+                {item.icon}
+                <span className="text-base uppercase text-slate-500 font-medium">
+                  {item.name.toUpperCase()}
+                </span>
+              </Link>
+            ))}
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
 export default SideBar;
