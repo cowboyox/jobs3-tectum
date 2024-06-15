@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-const SideBar = ({userRole}) => {
+const SideBar = ({ userRole }) => {
   const [user, setUser] = useState({
     email: "",
     name: "",
@@ -11,15 +11,15 @@ const SideBar = ({userRole}) => {
   });
   const [currentNav, setCurrentNav] = useState("");
   console.log("🚀 ~ SideBar ~ currentNav:", currentNav)
-  
+
 
   useEffect(() => {
     let tmp = localStorage.getItem("jobs_2024_token");
     if (tmp === null) {
       console.log("Please Login First");
     } else {
-        setUser(JSON.parse(tmp).data.user);
-        // console.log(user.role?.includes(3),user.role,"this is user state in the sideBar")
+      setUser(JSON.parse(tmp).data.user);
+      // console.log(user.role?.includes(3),user.role,"this is user state in the sideBar")
     }
     setCurrentNav(window.location.href.split("/")[5]);
   }, [userRole]);
