@@ -6,29 +6,6 @@ import { MdVerified } from "react-icons/md";
 import Image from 'next/image';
 import api from '@/utils/api';
 
-const recentHires = [
-    {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
-    },
-    {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
-    },
-    {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
-    },
-    {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
-    },
-]
-
 const Stats = () => {
     const [spendings, setSpending] = useState([
         {
