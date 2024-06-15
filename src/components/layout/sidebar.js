@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 const SideBar = () => {
     const [currentNav, setCurrentNav] = useState("");
-
     const [user, setUser] = useState({
         email: "",
         name: "",
@@ -226,30 +225,31 @@ const SideBar = () => {
             </div>
             <div onClick={OpenSideBar}>
                 <div className="flex flex-col gap-3">
-                    {(user.role?.includes(0) && currentNav === 'freelancer') && freelancer_menu_data.map(item => (
-                        <Link
-                            key={item.id}
-                            href={item.href}
-                            className="flex gap-4 py-1 w-full transition-all hover:pl-1"
-                        >
-                            {item.icon}
-                            <span className='text-base uppercase text-slate-500 font-medium'>
-                                {item.name.toUpperCase()}
-                            </span>
-                        </Link>
-                    ))}
-                    {(user.role?.includes(3) && currentNav === 'client') && client_menu_data.map(item => (
-                        <Link
-                            key={item.id}
-                            href={item.href}
-                            className="flex gap-4 py-1 w-full transition-all hover:pl-1"
-                        >
-                            {item.icon}
-                            <span className='text-base uppercase text-slate-500 font-medium'>
-                                {item.name.toUpperCase()}
-                            </span>
-                        </Link>
-                    ))}
+                {(Array.isArray(user?.role) && user.role.includes(0) && currentNav === 'freelancer') && freelancer_menu_data.map(item => (
+    <Link
+        key={item.id}
+        href={item.href}
+        className="flex gap-4 py-1 w-full transition-all hover:pl-1"
+    >
+        {item.icon}
+        <span className='text-base uppercase text-slate-500 font-medium'>
+            {item.name.toUpperCase()}
+        </span>
+    </Link>
+))}
+{(Array.isArray(user?.role) && user.role.includes(3) && currentNav === 'client') && client_menu_data.map(item => (
+    <Link
+        key={item.id}
+        href={item.href}
+        className="flex gap-4 py-1 w-full transition-all hover:pl-1"
+    >
+        {item.icon}
+        <span className='text-base uppercase text-slate-500 font-medium'>
+            {item.name.toUpperCase()}
+        </span>
+    </Link>
+))}
+
                 </div>
             </div>
         </div>

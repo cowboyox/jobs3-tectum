@@ -57,6 +57,26 @@ const Header = () => {
 		location.href = "/"
 	}
 
+	// Authenticated user details
+	const isAuthenticated = auth.isAuthenticated;
+	const userRole = Array.isArray(user?.role) ? user.role : [];
+	
+	const clientUrl = isAuthenticated && userRole.includes(3) 
+		? `/dashboard/${user.name}/client/home` 
+		: "/"
+	;
+	const freelancerUrl = isAuthenticated && userRole.includes(0) 
+		? `/dashboard/${user.name}/freelancer/home` 
+		: "/"
+	;
+	const employerUrl = isAuthenticated && userRole.includes(2) 
+		? `/dashboard/${user.name}/employer/home` 
+		: "/"
+	;
+	const employeeUrl = isAuthenticated && userRole.includes(1) 
+		? `/dashboard/${user.name}/employee/home` 
+		: "/"
+	;
 	return (
 		<>
 			{renderPopup()}
@@ -83,11 +103,11 @@ const Header = () => {
 						/>
 					</button>
 					<nav>
-						<Link href={"/"}>HOME</Link>
-						<Link href={`${(auth.isAuthenticated && user.role?.includes(3)) ? `/dashboard/${user.name}/client/home` : "/"}`}>Client</Link>
-						<Link href={`${(auth.isAuthenticated && user.role?.includes(0)) ? `/dashboard/${user.name}/freelancer/home` : "/"}`}>Freelancer</Link>
-						{/* <Link href={`${(auth.isAuthenticated && user.role?.includes(2)) ? `/dashboard/${user.name}/employer/home` : "/"}`}>Employer</Link>
-						<Link href={`${(auth.isAuthenticated && user.role?.includes(1)) ? `/dashboard/${user.name}/employee/home` : "/"}`}>Employee</Link> */}
+						<Link href="/">HOME</Link>
+						<Link href={clientUrl}>Client</Link>
+						<Link href={freelancerUrl}>Freelancer</Link>
+						<Link href={employerUrl}>Employer</Link>
+						<Link href={employeeUrl}>Employee</Link>
 					</nav>
 					<div className="right_side">
 						{
