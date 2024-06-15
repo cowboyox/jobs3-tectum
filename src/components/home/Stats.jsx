@@ -6,33 +6,6 @@ import { MdVerified } from "react-icons/md";
 import Image from 'next/image';
 import api from '@/utils/api';
 
-const spendings = [
-    {
-        title: "Front-End Development",
-        desc: "Deven Miles",
-        daysAgo: "2d",
-        price: "$250"
-    },
-    {
-        title: "Front-End Development",
-        desc: "Deven Miles",
-        daysAgo: "2d",
-        price: "$250"
-    },
-    {
-        title: "Front-End Development",
-        desc: "Deven Miles",
-        daysAgo: "2d",
-        price: "$250"
-    },
-    {
-        title: "Front-End Development",
-        desc: "Deven Miles",
-        daysAgo: "2d",
-        price: "$250"
-    },
-]
-
 const recentHires = [
     {
         pic: "/assets/dashboard-media/profilePic.png",
@@ -59,18 +32,26 @@ const recentHires = [
 const Stats = () => {
     const [spendings, setSpending] = useState([
         {
-            title: "Front-End Development",
+            title: "",
             hiredFreelancer: [],
-            daysAgo: "2d",
-            price: "$1000"
+            daysAgo: "",
+            price: ""
 
         }
     ]);
+    const [recentHires, setRecentHires] = useState([{
+        pic: "",
+        name: "",
+        desg: ""
+    }])
 
     useEffect(() => {
         api.get(`/api/v1/client_gig/get-gigs-bystatus/ended`).then(data => {
-            console.log("++++getEndedGigs: ", data.data);
             setSpending(data.data.data);
+        })
+
+        api.get(`/api/v1/client_gig/recent-hired-freelancers`).then(data => {
+            setRecentHires(data.data.data);
         })
     }, [])
     return (
@@ -107,7 +88,7 @@ const Stats = () => {
                         </div>
                         <div className='flex flex-col justify-between gap-2 flex-1'>
                             {
-                                spendings.map((spend,index) => (
+                                spendings.length ? spendings.map((spend,index) => (
                                     <div key={index} className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
                                         <div className='w-[70%]'>
                                             <h3 className='text-white text-lg truncate'>{spend.title}</h3>
@@ -121,7 +102,8 @@ const Stats = () => {
                                             <div className='bg-lightGray w-[90%] h-8 outline-none border-none flex justify-center items-center rounded-[8px] gap-2'><span>-</span> {spend.price}</div>
                                         </div>
                                     </div>
-                                ))
+                                )) :
+                                <div className='text-center mt-[50%]'>No spendings</div>
                             }
                         </div>
                     </div>
@@ -132,7 +114,7 @@ const Stats = () => {
                         </div>
                         <div className='flex flex-col justify-between gap-2 flex-1'>
                             {
-                                recentHires.map((spend,index) => (
+                                recentHires.length ? recentHires.map((spend,index) => (
                                     <div key={index} className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
 
                                         <div className='flex-1 flex justify-center items-center'>
@@ -148,7 +130,8 @@ const Stats = () => {
                                             </div>
                                         </div>
                                     </div>
-                                ))
+                                )) : 
+                                <div className='text-center mt-[50%]'>No Hires yet</div>
                             }
                         </div>
                     </div>
