@@ -162,8 +162,25 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         referralUser,
         referrer,
       });
-      if (!verified) onSwitchPopup("Verification");
-      else router.push("/jobs");
+      if (!verified) {
+        onSwitchPopup("Verification");
+      }
+      else {
+        let accountType = auth.acc_type; 
+        let accountTypeName;
+        switch (accountType) {
+          case 0:
+            accountTypeName = 'freelancer';
+            break;
+          case 3:
+            accountTypeName = 'client';
+            break; 
+          default:
+            accountTypeName = 'client'; 
+            break;
+        } 
+        router.push(`/dashboard/${auth.user.name}/${accountTypeName}/`);
+      }
     } catch (err) {
       console.log("error => ", err);
       return toast({
@@ -373,7 +390,21 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
     try {
       let acc_type = auth.acc_type;
       await auth.login({ email, password, acc_type });
-      router.push("/jobs");
+      // Dynamic redirect
+      let accountType = auth.acc_type; 
+      let accountTypeName;
+      switch (accountType) {
+        case 0:
+          accountTypeName = 'freelancer';
+          break;
+        case 3:
+          accountTypeName = 'client';
+          break; 
+        default:
+          accountTypeName = 'client'; 
+          break;
+      } 
+      router.push(`/dashboard/${auth.user.name}/${accountTypeName}/`);
     } catch (err) {
       return toast({
         variant: "destructive",
@@ -686,7 +717,20 @@ export function VerificationPopup({ onClose }) {
     }
     try {
       const res = await auth.verifyOTP(content);
-      router.push("/jobs");
+      let accountType = auth.acc_type; 
+      let accountTypeName;
+      switch (accountType) {
+        case 0:
+          accountTypeName = 'freelancer';
+          break;
+        case 3:
+          accountTypeName = 'client';
+          break; 
+        default:
+          accountTypeName = 'client'; 
+          break;
+      } 
+      router.push(`/dashboard/${auth.user.name}/${accountTypeName}/`);
     } catch (err) {
       const errMsg = err?.response?.data?.message;
       return toast({
