@@ -568,7 +568,7 @@ const SideBar = ({ userRole }) => {
         </svg>
       ),
       name: "Gig Search",
-      href: `/dashboard/${user.name}/client/freelancers`,
+      href: `/dashboard/${user.name}/client/gig-search`,
     },
     {
       id: 6,
