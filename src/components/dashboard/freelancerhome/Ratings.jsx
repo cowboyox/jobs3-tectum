@@ -1,10 +1,7 @@
-"use client";
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { MdVerified } from "react-icons/md";
-import { RiPoliceBadgeLine } from "react-icons/ri";
-import { GiLaurelCrown } from "react-icons/gi";
-import { getRecentViewedGigs } from "@/utils/http";
+'use client';
+
+import Image from 'next/image';
+import React from 'react';
 
 const ratings = [
   // {
@@ -31,57 +28,50 @@ const ratings = [
 ];
 
 const Ratings = () => {
-
   return (
-    <div className="mt-10 flex flex-col gap-4">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-semibold">Ratings</h1>
-        <p className="cursor-pointer">Show more</p>
+    <div className='mt-10 flex flex-col gap-4'>
+      <div className='flex justify-between'>
+        <h1 className='text-2xl font-semibold'>Ratings</h1>
+        <p className='cursor-pointer'>Show more</p>
       </div>
-      <div className="grid lg:grid-cols-3 gap-4 mt-2">
-        {ratings.length ? ratings.map((rating, index) => (
-          <div
-            key={index}
-            className="flex px-6 py-8 gap-1  flex-1 flex-col bg-darkGray rounded-2xl"
-          >
-            <div className="flex gap-4 flex-1 items-center">
+      <div className='mt-2 grid gap-4 lg:grid-cols-3'>
+        {ratings.length ? (
+          ratings.map((rating, index) => (
+            <div
+              className='flex flex-1 flex-col gap-1 rounded-2xl bg-darkGray px-6 py-8'
+              key={index}
+            >
+              <div className='flex flex-1 items-center gap-4'>
+                <Image height={45} src={'/assets/icons/Freelancer.png'} width={45} />
+                <h3 className='whitespace-nowrap text-xl font-[500] text-white'>{rating.name}</h3>
                 <Image
-                  src={"/assets/icons/Freelancer.png"}
-                  width={45}
-                  height={45}
-                />
-                <h3 className="text-white text-xl font-[500] whitespace-nowrap">
-                  {rating.name}
-                </h3>
-                <Image
-                  src={"/assets/icons/artwork.png"}
-                  width={22}
+                  className='object-contain'
                   height={16}
-                  className="object-contain"
+                  src={'/assets/icons/artwork.png'}
+                  width={22}
                 />
-            </div>
-            <p className="text-medGray mt-4">{rating.time}</p>
+              </div>
+              <p className='mt-4 text-medGray'>{rating.time}</p>
 
-            <div className="flex gap-3 mt-2">
-                <Image src={"/assets/icons/Vector.png"} height={16} width={16} />
-                <Image src={"/assets/icons/Vector.png"} height={16} width={16} />
-                <Image src={"/assets/icons/Vector.png"} height={16} width={16} />
-                <Image src={"/assets/icons/Vector.png"} height={16} width={16} />
-                <Image src={"/assets/icons/Vector.png"} height={16} width={16} />
-            </div>
-            <p className="mt-4">
-                {rating.description}
-            </p>
+              <div className='mt-2 flex gap-3'>
+                <Image height={16} src={'/assets/icons/Vector.png'} width={16} />
+                <Image height={16} src={'/assets/icons/Vector.png'} width={16} />
+                <Image height={16} src={'/assets/icons/Vector.png'} width={16} />
+                <Image height={16} src={'/assets/icons/Vector.png'} width={16} />
+                <Image height={16} src={'/assets/icons/Vector.png'} width={16} />
+              </div>
+              <p className='mt-4'>{rating.description}</p>
               {/* <div className="flex items-center justify-between gap-4">
                 <p className="text-medGray font-[400] text-lg">{rating.time}</p>
                 <div className="flex gap-1 items-center text-white border-2 border-white rounded-[6px] px-3">
                   <p className="p-[1px]">{rating.description}</p>
                 </div>
               </div> */}
-          </div>
-        )): 
-        <div className="text-center">Not yet</div>
-      }
+            </div>
+          ))
+        ) : (
+          <div className='text-center'>Not yet</div>
+        )}
       </div>
     </div>
   );

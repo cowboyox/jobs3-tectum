@@ -8,34 +8,16 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "@/components/*": [
-        "src/components/*"
-      ],
-      "@/utils/*": [
-        "./src/utils/*"
-      ],
-      "@/lib/*": [
-        "./src/lib/*"
-      ],
-      "@/idl/*": [
-        "./src/idl/*"
-      ],
-      "@/context/*": [
-        "./src/context/*"
-      ],
-      "@/pages/*": [
-        "src/pages/*"
-      ],
-      "@/styles/*": [
-        "src/styles/*"
-      ]
+      "@/components/*": ["src/components/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/idl/*": ["./src/idl/*"],
+      "@/context/*": ["./src/context/*"],
+      "@/pages/*": ["src/pages/*"],
+      "@/styles/*": ["src/styles/*"]
       // Add more paths as needed
     },
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "noEmit": true,
@@ -48,13 +30,6 @@
       }
     ]
   },
-  "include": [
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

@@ -1,16 +1,16 @@
 'use client';
 import React from 'react';
-import useDropdown from '../../../hooks/useDropdown';
 
-import SideBar from '../../../components/layout/sidebar';
 import DashboardHeader from '../../../components/layout/dashboard_header';
+import SideBar from '../../../components/layout/sidebar';
+import useDropdown from '../../../hooks/useDropdown';
 
 export default function WalletApp({ children }) {
   useDropdown();
   return (
-    <div className="min-h-screen bg-[var(--page_background)] flex items-start gap-0 max-w-[2600px] mx-auto"> 
+    <div className='mx-auto flex min-h-screen max-w-[2600px] items-start gap-0 bg-[var(--page_background)]'>
       <SideBar />
-      <div className="w-full p-4 pb-24">
+      <div className='w-full p-4 pb-24'>
         <DashboardHeader />
         {children}
       </div>

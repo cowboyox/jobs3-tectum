@@ -2,7 +2,8 @@
 'use client';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { backend_url } from "@/utils/variables";
+
+import { backend_url } from '@/utils/variables';
 
 // Create a context for the socket
 const SocketContext = createContext();
@@ -17,7 +18,7 @@ export const SocketProvider = ({ children }) => {
       transports: ['websocket', 'polling'],
       withCredentials: true,
     });
-    
+
     setSocket(newSocket);
 
     return () => {
@@ -25,9 +26,5 @@ export const SocketProvider = ({ children }) => {
     };
   }, []);
 
-  return (
-    <SocketContext.Provider value={socket}>
-      {children}
-    </SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 };

@@ -1,0 +1,22 @@
+.site_container {
+  padding: 0 !important;
+}
+header {
+  padding: 0 1rem;
+}
+body {
+  height: 100vh;
+  /* overflow: hidden !important; */
+}
+.inbox-container {
+  height: calc(100vh - 5rem);
+}
+.inbox-container > div {
+  height: inherit;
+}
+@media (max-width: 768px) {
+  .inbox-container {
+    position: unset !important;
+    height: calc(100vh - 7rem);
+  }
+}
