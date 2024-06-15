@@ -1,3 +1,4 @@
+"use client"
 import FillProfile from '@/components/dashboard/home/FillProfile'
 import Gigs from '@/components/dashboard/home/Gigs'
 import RecentlyViewed from '@/components/dashboard/home/RecentlyViewed'
