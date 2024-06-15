@@ -24,7 +24,8 @@ import { AiOutlineQuestion } from "react-icons/ai";
 import { FaAngleDown } from "react-icons/fa6";
 import { LuAlignLeft } from "react-icons/lu";
 
-const DashboardHeader = () => {
+const DashboardHeader = ({userRole, setUserRole}) => {
+    console.log("🚀 ~ DashboardHeader ~ userRole:", userRole)
     const { openPopup, renderPopup } = usePopupFunctions();
 
     function OpenSideBar() {
@@ -63,6 +64,12 @@ const DashboardHeader = () => {
         // 	router.replace('/')
         // }
         setCurrentNav(window.location.href.split('/')[5]);
+        console.log("NAV", window.location.href.split('/')[5]);
+        if(window.location.href.split('/')[5].toLowerCase() === "freelancer") {
+            setUserRole(0)
+        } else {
+            setUserRole(3);
+        }
         setCurrentUser(window.location.href.split('/')[4]);
     }, [])
 
@@ -82,8 +89,13 @@ const DashboardHeader = () => {
     const router = useRouter();
 
     const handleNavigation = (nav) => {
+        console.log("🚀 ~ handleNavigation ~ nav:", nav)
+        if(nav.toLowerCase() === "freelancer") {
+            setUserRole(0)
+        } else {
+            setUserRole(3);
+        }
         setCurrentNav(nav);
-        window.localStorage.setItem("currentRole", nav);
         return router.push(`/dashboard/${currentUser}/${nav}/home`)
     }
 

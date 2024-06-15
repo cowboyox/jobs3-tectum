@@ -396,7 +396,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
             <div className="right_side">
               <button
                 onClick={() => {
-                  onSwitchPopup("TypeOfAccount");
+                  onSwitchPopup("SignUp");
                 }}
               >
                 Sign up
@@ -685,17 +685,10 @@ export function VerificationPopup({ onClose }) {
       });
     }
     try {
-      const res = await auth.verifyOTP(content);
+      await auth.verifyOTP(content);
       router.push("/jobs");
     } catch (err) {
-      const errMsg = err?.response?.data?.message;
-      return toast({
-        variant: "destructive",
-        title: <h1 className="text-center">Error</h1>,
-        description: <h3 className="text-center">{errMsg}</h3>,
-        className:
-          "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center",
-      });
+      console.log("error", err);
     }
   };
   return (
@@ -712,7 +705,6 @@ export function VerificationPopup({ onClose }) {
           </div>
           <h2>Verification</h2>
           <p>Enter your code to confirm your account </p>
-
           <div className="email_form">
             <input
               type="text"

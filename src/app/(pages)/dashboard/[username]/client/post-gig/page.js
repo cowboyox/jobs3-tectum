@@ -26,7 +26,7 @@ import { useRouter } from 'next/navigation';
 function FileUploadBody() {
     return <div className="h-52 w-full border border-dashed border-slate-500 p-3 flex items-center justify-center rounded-xl">
         <p className='text-center'>
-            <span className='text-lg text-slate-500'>Drag and drop or &nbsp; </span> browse files
+            <span className='text-lg text-slate-500'>Drag and drop or &nbsp; </span> borwse files
         </p>
     </div>
 }
@@ -196,6 +196,7 @@ const GigPosting = () => {
             setUser(JSON.parse(tmp).data.user);
         }
     }, [])
+
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [jobCategory, setCategoryValue] = useState("");
@@ -256,12 +257,15 @@ const GigPosting = () => {
         files2.map(file => {
             formData.append('files', file)
         })
+        let tmp = localStorage.getItem('jobs_2024_token');
         const config = {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${JSON.parse(tmp).data.token}`   
             },
         };
-        await api.post('/api/v1/client_gig/post_gig', postData).then(async (data) => {
+
+        await api.post('/api/v1/client_gig/post_gig', postData, config).then(async (data) => {
             await api.post(`/api/v1/client_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
                 console.log("Successfully uploaded");
             })
@@ -298,7 +302,7 @@ const GigPosting = () => {
                                 <FormControl>
                                     <Input
                                         placeholder={all_form_structure.title_placeholder}
-                                        className='border-slate-500 rounded-full text-base px-6 py-6'
+                                        className='border-slate-500 rounded-full bg-black text-base px-6 py-6'
                                         value={postData.gigTitle}
                                         onChange={(e) => handleSetGigTitle(e)}
                                     />
@@ -521,7 +525,7 @@ const GigPosting = () => {
                                 <FormControl>
                                     <Input
                                         placeholder={all_form_structure.location_placeholder}
-                                        className='border-slate-500 rounded-full text-base px-6 py-6'
+                                        className='border-slate-500 rounded-full bg-black text-base text-base px-6 py-6'
                                         value={postData.location}
                                         onChange={e => {
                                             setPostData(prev => ({
@@ -592,7 +596,7 @@ const GigPosting = () => {
                                             <div className='relative pr-7 w-full'>
                                                 <Input
                                                     placeholder={all_form_structure.gig_from_to.from_placeholder}
-                                                    className='border-slate-400 rounded-full text-base px-6 py-6 text-end [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+                                                    className='border-slate-400 rounded-full bg-black  text-base px-6 py-6 text-end [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
                                                     value={postData.minBudget}
                                                     onChange={e => setPostData(prev => ({
                                                         ...prev,
@@ -623,7 +627,7 @@ const GigPosting = () => {
                                             <div className='relative pr-7 w-full'>
                                                 <Input
                                                     placeholder={all_form_structure.gig_from_to.to_placeholder}
-                                                    className='border-slate-400 rounded-full text-base px-6 py-6 text-end [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+                                                    className='border-slate-400 rounded-full bg-black  text-base px-6 py-6 text-end [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
                                                     value={postData.maxBudget}
                                                     onChange={e => {
                                                         setPostData(prev => ({
@@ -660,7 +664,7 @@ const GigPosting = () => {
                                         <div className='relative w-full'>
                                             <Input
                                                 placeholder={all_form_structure.gig_fixed_price}
-                                                className='border-slate-400 rounded-full text-base px-6 py-6 text-end [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+                                                className='border-slate-400 rounded-full bg-black text-base px-6 py-6 text-end [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
                                                 value={postData.gigPrice}
                                                 onChange={e => {
                                                     setPostData(prev => ({

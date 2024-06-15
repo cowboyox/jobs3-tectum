@@ -187,7 +187,44 @@ $breakpoint-small: 768px;
 	display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 950px) {
+	.main_header {
+	.right_side {
+		margin-left: auto;
+		display: flex;
+		align-items: center;
+		gap: 40px;
+		.btn_sign_up {
+			color: white;
+			font-size: 20px;
+			transition: 0.3s;
+			background-color: transparent;
+			border: none;
+			cursor: pointer;
+			&:hover {
+				color: var(--main-color);
+			}
+		}
+		.btn_classified {
+			position: relative;
+			border-radius: 50px;
+			font-size: 18px;
+			color: #dfdfdf;
+			border: 2px solid #dc4f14;
+			background-color: transparent;
+			padding: 15px 25px;
+			letter-spacing: 1px;
+			transition: border 0.3s;
+			transition: background 0.3s;
+			&:hover {
+				background-color: #dc4f14;
+				border: 2px solid #dc4f14;
+			}
+		}
+	}
+}
+}
+@media (max-width: 800px) {
 	.main_header {
 		padding: 15px 0;
 		justify-content: space-between;
@@ -327,7 +364,7 @@ $breakpoint-small: 768px;
 			color: #dfdfdf;
 			border: 1px solid #dc4f14;
 			background-color: transparent;
-			padding: 15px 50px;
+			padding: 8px 20px;
 			letter-spacing: 1px;
 			transition: border 0.3s;
 			transition: background 0.3s;
