@@ -162,8 +162,25 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         referralUser,
         referrer,
       });
-      if (!verified) onSwitchPopup("Verification");
-      else router.push("/jobs");
+      if (!verified) {
+        onSwitchPopup("Verification");
+      }
+      else {
+        let accountType = auth.acc_type;
+        let accountTypeName;
+        switch (accountType) {
+          case 0:
+            accountTypeName = 'freelancer';
+            break;
+          case 3:
+            accountTypeName = 'client';
+            break;
+          default:
+            accountTypeName = 'client';
+            break;
+        }
+        router.push(`/dashboard/${auth.user.name}/${accountTypeName}/`);
+      }
     } catch (err) {
       console.log("error => ", err);
       return toast({
@@ -370,10 +387,25 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
           "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center",
       });
     }
+
     try {
-      let acc_type = auth.acc_type;
-      await auth.login({ email, password, acc_type });
-      router.push("/jobs");
+      await auth.login({ email, password }).then(data => {
+        let accountType = data.role;
+        let accountTypeName;
+        switch (accountType) {
+          case 0:
+            accountTypeName = 'freelancer';
+            break;
+          case 3:
+            accountTypeName = 'client';
+            break;
+          default:
+            accountTypeName = 'client';
+            break;
+        }
+        router.push(`/dashboard/${data.name}/${accountTypeName}/`);
+      });
+      // Dynamic redirect
     } catch (err) {
       return toast({
         variant: "destructive",
@@ -685,8 +717,21 @@ export function VerificationPopup({ onClose }) {
       });
     }
     try {
-      await auth.verifyOTP(content);
-      router.push("/jobs");
+      const res = await auth.verifyOTP(content);
+      let accountType = auth.acc_type;
+      let accountTypeName;
+      switch (accountType) {
+        case 0:
+          accountTypeName = 'freelancer';
+          break;
+        case 3:
+          accountTypeName = 'client';
+          break;
+        default:
+          accountTypeName = 'client';
+          break;
+      }
+      router.push(`/dashboard/${auth.user.name}/${accountTypeName}/`);
     } catch (err) {
       console.log("error", err);
     }
@@ -885,11 +930,11 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
               Continue as{" "}
               {choosen_account_types.length > 0
                 ? choosen_account_types
-                    .map(
-                      (id) =>
-                        account_types.find((acc) => acc.id === id).account_name
-                    )
-                    .join(", ")
+                  .map(
+                    (id) =>
+                      account_types.find((acc) => acc.id === id).account_name
+                  )
+                  .join(", ")
                 : "a selected account type"}
             </button>
           </form>

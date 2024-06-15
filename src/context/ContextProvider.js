@@ -8,6 +8,8 @@ const { useState } = React;
 // Context API
 // import AuthContext from "./Context";
 import api from "@/utils/api";
+import { backend_url } from "@/utils/variables";
+import axios from "axios";
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -109,14 +111,16 @@ const ContextProvider = ({ children }) => {
     //   alert('Please select account type');
     //   return;
     // }
-    const { data } = await api.post('/api/v1/user/login', { ...credentials });
-    const { user, token, verified } = data;
+    const { data } = await axios.post(`${backend_url}/api/v1/user/login`, credentials);
+
+    const { user, token } = data;
     api.defaults.headers.common.Authorization = token
     localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
     dispatch({
       type: HANDLERS.SIGN_IN,
       payload: user
     })
+    return user;
   }
 
   const register = async (credentials) => {

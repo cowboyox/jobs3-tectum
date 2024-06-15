@@ -31,29 +31,6 @@ const spendings = [
     },
 ]
 
-const recentHires = [
-    {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
-    },
-    {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
-    },
-    {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
-    },
-    {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
-    },
-]
-
 const Stats = () => {
     return (
         <div className='w-full min-h-96 flex flex-col -mt-10 font-roboto md:mt-10'>
