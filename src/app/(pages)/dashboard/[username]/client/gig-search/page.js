@@ -1,23 +1,13 @@
-'use client';
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Image from 'next/image';
 import {
   Select,
   SelectContent,
   SelectGroup,
-  SelectItem,
-  SelectLabel,
+  SelectItem, 
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/select" 
 import {
   Popover,
   PopoverContent,
@@ -33,7 +23,6 @@ import { FaStar, FaClock, FaDollarSign, FaCheckCircle } from 'react-icons/fa';
 import { CiReceipt } from "react-icons/ci";
 import { PiShootingStarLight } from "react-icons/pi";
 import { BsPatchCheckFill } from "react-icons/bs";
-import api from "@/utils/api";
 
 
 const DropdownItem = (props)=> {
@@ -59,7 +48,7 @@ const DropDownTrigger = (props)=> {
   </PopoverTrigger>
   )
 }
-const GigCard = (props) => {
+const GigCard = () => {
   return (
     <div className="bg-[#10191d] text-white p-4 rounded-xl flex gap-4 w-full items-center mobile:flex-col">
       <div className="relative w-[400px] max-w-full">
@@ -84,16 +73,16 @@ const GigCard = (props) => {
       </div>
       <div className="flex flex-col gap-2 flex-grow">
         <h3 className="text-2xl font-semibold text-[#F5F5F5]">
-          {props.info.gigTitle}
+          Title of the searching Gig can be very long
         </h3>
         <div className="flex items-center gap-5 mt-2 text-gray-400">
           <div className="flex items-center gap-2">
             <FaClock size={24} />
-            <span className='text-base'>{props.info.gigPrice}</span>
+            <span className='text-base'>3 days</span>
           </div>
           <div className="flex items-center gap-2">
             <CiReceipt size={28} />
-            <span className='text-base'>${props.info.gigPrice}</span>
+            <span className='text-base'>$400</span>
           </div>
         </div>
         <hr className="my-3 border-[#1B272C]" />
@@ -107,10 +96,10 @@ const GigCard = (props) => {
           /> 
           <div className="ml-2">
             <div className="flex items-center gap-2">
-              <p className="font-semibold text-2xl mobile:text-xl">{props.info.creator?.fullName}</p>
+              <p className="font-semibold text-2xl mobile:text-xl">Devon Miles</p>
               <BsPatchCheckFill fill="#0b75c2" />
             </div>
-            <p className="text-gray-400 text-base mobile:text-sm">{props.info.creator?.location}</p>
+            <p className="text-gray-400 text-base mobile:text-sm">Yogyakarta, Indonesia</p>
           </div>
         </div>
       </div>
@@ -125,7 +114,7 @@ const GigSearch = () => {
   const [filteredGigList, setFilteredGigList] = useState([])
   useEffect(() => {
     api.get(`/api/v1/freelancer_gig/find_all_gigs`).then((data) => {
-        console.log("getAllGigs: ", data.data.data)
+        console.log("getAllGigs: ", data.data.data[0])
         if(data.data.data){
           setGigList(data.data.data);
           setFilteredGigList(data.data.data)
@@ -174,7 +163,7 @@ const GigSearch = () => {
   return (
     <div className='flex flex-col gap-4'>
       <div className="flex gap-2 p-3 mobile:p-1 bg-[#10191d] rounded-xl">
-        <Select defaultValue='normal' onValueChange={e => onChangeType(e)}>
+        <Select defaultValue='normal'>
           <SelectTrigger className='bg-[#1B272C] w-20 mobile:w-14 mobile:p-2 rounded-xl' >
             <SelectValue/>
           </SelectTrigger>
@@ -192,8 +181,6 @@ const GigSearch = () => {
         <input 
           className='w-full bg-transparent text-white outline-none mobile:text-sm'
           placeholder='Search by job title, company, keywords' 
-          onChange={e => setKey(e)}
-          onKeyDown={handleKeyDown}
         />
         <div className="px-3 flex items-center gap-3 cursor-pointer hover:bg-[#1B272C] rounded-xl transition mobile:hidden">
           <IoLocationOutline stroke="#96B0BD" size={20} />
@@ -327,14 +314,10 @@ const GigSearch = () => {
       {/* 
         * These should be dynamic, you can pass all the data you need through attributes and retrieve it on the component 
       */}
-      {filteredGigList.map((gig, index) => {
-          return (
-            <GigCard info = {gig} key={index}/>
-          );
-      })}
-      {/* <GigCard />
       <GigCard />
-      <GigCard /> */}
+      <GigCard />
+      <GigCard />
+      <GigCard />
       <div className="py-5 md:text-xl hover:bg-white transition hover:text-black px-10 w-full max-w-full rounded-xl mobile:px-5 border border-[#aaaaaaaa] text-center mx-auto cursor-pointer mt-4">Load more +</div>
     </div>
   )

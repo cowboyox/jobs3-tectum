@@ -5,6 +5,7 @@ import Job from '@/components/dashboard/jobapplication/Job';
 import api from '@/utils/api';
 import { useParams, useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
+import { useCustomContext } from "@/context/use-custom";
 
 const Page = () => {
   const { gigId } = useParams();
@@ -12,6 +13,7 @@ const Page = () => {
   const { toast } = useToast();
   const [gigInfo, setGigInfo] = useState();
   const [coverLetter, setCoverLetter] = useState();
+  const auth = useCustomContext();
 
   useEffect(() => {
     const func = async () => {
@@ -29,8 +31,9 @@ const Page = () => {
   const onApply = async () => {
     let values = {};
 
-    values.freelancerId = gigInfo.userId;
-    values.fullName = gigInfo.fullName;
+    values.freelancerId = auth.user._id;
+    values.fullName = auth.user.name;
+    values.email = auth.user.email;
     values.proposal = coverLetter;
     values.connects = gigInfo.connects;
 
