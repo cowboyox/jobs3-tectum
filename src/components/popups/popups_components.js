@@ -403,7 +403,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
             accountTypeName = 'client';
             break;
         }
-        router.push(`/dashboard/${data.name}/${accountTypeName}/`);
+        router.push(`/dashboard/${data.name}/${accountTypeName}/home`);
       });
       // Dynamic redirect
     } catch (err) {
