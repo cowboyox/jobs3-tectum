@@ -6,7 +6,7 @@ import { RiPoliceBadgeLine } from "react-icons/ri";
 import { GiLaurelCrown } from "react-icons/gi";
 import { getRecentViewedGigs } from "@/utils/http";
 
-const RecentlyViewed = () => {
+const RecentlyViewed = ({search, setSearch}) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -21,6 +21,30 @@ const RecentlyViewed = () => {
     };
     fetchRecentViewGigs();
   }, []);
+  const handleFilter = () => {
+    let filteredGigs = data;
+
+    if (search) {
+      filteredGigs = filteredGigs.filter((gig) =>
+        gig?.gigId?.clientProfileId?.chosen_visible_name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    // if (sortOrder === "dateAsc") {
+    //   filteredGigs.sort(
+    //     (a, b) => new Date(a.gigPostDate) - new Date(b.gigPostDate)
+    //   );
+    // } else if (sortOrder === "dateDesc") {
+    //   filteredGigs.sort(
+    //     (a, b) => new Date(b.gigPostDate) - new Date(a.gigPostDate)
+    //   );
+    // }
+
+    return filteredGigs;
+  };
+
+  const filteredGigs = handleFilter();
+
   return (
     <div className="mt-10 flex flex-col gap-4">
       <div className="flex justify-between">
@@ -28,7 +52,7 @@ const RecentlyViewed = () => {
       <p className="cursor-pointer">Show more</p>
       </div>
       <div className="grid lg:grid-cols-3 gap-4">
-        {data?.map((recent, index) => (
+        {filteredGigs?.map((recent, index) => (
           <div
             className="bg-deepGreen p-5 flex flex-col gap-4 rounded-2xl"
             key={index}

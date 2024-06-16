@@ -5,7 +5,7 @@ export async function getGigs(selectedGigs) {
     const skills = selectedGigs.join(',');
     console.log("🚀 ~ getGigs ~ skills:", skills)
     const response = await api.get(
-      `/client_gig/fetch_gigs_by_required_skills?skills=${skills}`
+      `/api/v1/client_gig/fetch_gigs_by_required_skills?skills=${skills}`
     );
     return response.data;
   } catch (error) {
@@ -15,7 +15,7 @@ export async function getGigs(selectedGigs) {
 
 export async function getRecentViewedGigs() {
   try {
-    const response = await api.get("/recentView/get_recent_view");
+    const response = await api.get("/api/v1/recentView/get_recent_view");
     return response.data;
   } catch (error) {
     console.error("Error fetching recent view gigs:", error.message);

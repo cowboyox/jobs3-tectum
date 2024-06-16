@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { CiSearch } from "react-icons/ci";
 import { CgOptions } from "react-icons/cg";
@@ -42,18 +43,20 @@ const earnings = [
   },
 ];
 
-const Stats = () => {
+const Stats = ({search,setSearch}) => {
   return (
     <div className="w-full min-h-96 flex flex-col -mt-10 font-roboto md:mt-10">
       <div className="h-16 rounded-2xl bg-deepGreen flex items-center justify-between gap-6 px-4">
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4 items-center min-w-[400px]">
           <CiSearch className="text-2xl text-medGray" />
           <input
             type="text"
             name="search"
             id="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by job title, co..."
-            className="bg-transparent outline-none border-none h-full text-medGray"
+            className="bg-transparent outline-none border-none h-full text-medGray w-full flex-1"
           />
         </div>
         <div className="flex gap-4 min-w-28 justify-center items-center h-16">

@@ -38,8 +38,7 @@ export const NextStep = ({ max, className }) => {
             { stepNumber == max && (
                 <button 
                     className={className} 
-                    // onClick={() => setStepNumber(prev => prev)}
-                    type='submit'
+                    onClick={() => setStepNumber(prev => prev + 1)}
                 >
                     Publish
                 </button>
