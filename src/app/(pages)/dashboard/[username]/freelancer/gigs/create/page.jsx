@@ -47,6 +47,8 @@ import { GoTrash } from "react-icons/go";
 /*----- Custom Components -----*/
 import DropFile from "@/components/elements/dropFile";
 import api from "@/utils/api";
+import { useCustomContext } from "@/context/ContextProvider";
+import { useToast } from "@/components/ui/use-toast";
 
 
 const Question = (props) => {
@@ -91,6 +93,9 @@ const categories_list = [
 
 const CreateGig = () => {
   const form = useForm();
+  const auth = useCustomContext();
+  const { toast } = useToast();
+
   const [tags, setTags] = useState([]);
   const [requirementQuestions, setRequirementQuestions] = useState([
     {
@@ -211,9 +216,9 @@ const CreateGig = () => {
     };
     api.post('/api/v1/freelancer_gig/post_gig', values).then(async (data) => {
       console.log(data)
-      await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
-        console.log("Successfully uploaded");
-      })
+      // await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
+      //   console.log("Successfully uploaded");
+      // })
       toast({
         variant: "default",
         title: <h1 className='text-center'>Success</h1>,
@@ -521,6 +526,7 @@ const CreateGig = () => {
                   placeHolderPlusIconSize={60}
                   acceptOnly='video'
                   inputName='video' 
+                  onFileUpload={handleVideoUpload}
                 />
               </div>
               <div className="flex flex-col gap-4">
@@ -538,6 +544,7 @@ const CreateGig = () => {
                       placeHolderPlusIconSize={40}
                       acceptOnly='image'
                       inputName={`gig_image_${indx}`} 
+                      onFileUpload={(files) => handleImageUpload(files, indx)}
                     />
                   ))}
                 </div>
@@ -557,6 +564,7 @@ const CreateGig = () => {
                       placeHolderPlusIconSize={40}
                       acceptOnly='other'
                       inputName={`gig_document_${indx}`} 
+                      onFileUpload={(files) => handleDocumentUpload(files, indx)}
                     />
                   ))}
                 </div>
