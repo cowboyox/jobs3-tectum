@@ -390,7 +390,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
 
     try {
       await auth.login({ email, password }).then(data => {
-        let accountType = data.role;
+        let accountType = data.role[0];
         let accountTypeName;
         switch (accountType) {
           case 0:
@@ -718,7 +718,7 @@ export function VerificationPopup({ onClose }) {
     }
     try {
       const res = await auth.verifyOTP(content);
-      let accountType = auth.acc_type;
+      let accountType = auth.acc_type[0];
       let accountTypeName;
       switch (accountType) {
         case 0:
@@ -731,7 +731,8 @@ export function VerificationPopup({ onClose }) {
           accountTypeName = 'client';
           break;
       }
-      router.push(`/dashboard/${auth.user.name}/${accountTypeName}/`);
+      const info = JSON.parse(localStorage.getItem('jobs_2024_token'))
+      router.push(`/dashboard/${info.data.user.name}/${accountTypeName}/`);
     } catch (err) {
       console.log("error", err);
     }
