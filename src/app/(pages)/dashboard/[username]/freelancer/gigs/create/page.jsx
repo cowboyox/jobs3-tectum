@@ -46,6 +46,7 @@ import { GoTrash } from "react-icons/go";
 
 /*----- Custom Components -----*/
 import DropFile from "@/components/elements/dropFile";
+import api from "@/utils/api";
 
 
 const Question = (props) => {
@@ -186,7 +187,7 @@ const CreateGig = () => {
         'Content-Type': 'multipart/form-data',
       },
     };
-    await api.post('/api/v1/freelancer_gig/post_gig', values).then(async (data) => {
+    api.post('/api/v1/freelancer_gig/post_gig', values).then(async (data) => {
       console.log(data)
       await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
         console.log("Successfully uploaded");
