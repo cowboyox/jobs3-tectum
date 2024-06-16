@@ -41,7 +41,7 @@ const ClientDashboard = () => {
     timeZone: "",
     userId: "",
     zkpId: "",
-    phoneNumber: 442071234567,
+    phoneNumber: "",
     companyDetails: [{
       country: "",
       postalCode: "",
@@ -51,15 +51,18 @@ const ClientDashboard = () => {
     }],
     firstName: "",
     lastName: "",
-    clientBanner: null,
-    avatar: null,
+    clientBanner: null
   });
   const [previewBanner, setPreviewBanner] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const [fetchBanner, setFetchBanner] = useState("");
-  const [fetchAvatar, setFetchAvatar] = useState("");
+
+  let tmp = typeof localStorage !== 'undefined' &&  localStorage.getItem('jobs_2024_token');
+  let userIs = JSON.parse(localStorage.getItem('jobs_2024_token'));
+  console.log("🚀 ~ ClientDashboard ~ tmp:", tmp)
+  
   useEffect(() => {
-    let tmp = localStorage.getItem('jobs_2024_token');
+    console.log("🚀 ~ useEffect ~ tmp:", tmp)
     if (tmp === null) {
       toast({
         variant: "destructive",
@@ -70,83 +73,48 @@ const ClientDashboard = () => {
       alert("Please Login First");
       router.push('/');
     } else {
-      (async () => {
-        try {
-          setLoading(true);
+      let email = JSON.parse(tmp).data.user.email;
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${userIs.data.token}`
+        },
+      };
+      setUser(JSON.parse(tmp).data.user);
+      api.get(`/api/v1/profile/get-profile/${email}`, config).then((data) => {
+        console.log('------getprofile: ', data.data.profile, JSON.parse(tmp).data.user)
+        setProfileData(data.data.profile);
+        // let fetchBannerUrl = backend_url + '/' + data.data.profile.clientBanner;
+        if (data.data.profile.clientBanner) {
+          // Convert the data to a Blob
+          const binaryData = new Uint8Array(data.data.profile.clientBanner.data);
+          const blob = new Blob([binaryData], { type: 'image/png' });
 
-          let email = JSON.parse(tmp).data.user.email;
-          setUser(JSON.parse(tmp).data.user);
+          // Create a URL for the Blob
+          const fetchBannerUrl = URL.createObjectURL(blob);
 
-          const data = await api.get(`/api/v1/profile/get-profile/${email}`);
-
-          console.log('------getprofile: ', data.data.profile, JSON.parse(tmp).data.user)
-          setProfileData(data.data.profile);
-          if (data.data.profile.firstName === undefined) {
-            setProfileData((prev) => ({
-              ...prev,
-              firstName: data.data.profile.fullName.split(" ")[0],
-              lastName: data.data.profile.fullName.split(" ")[1]
-            }))
-          }
-          // let fetchBannerUrl = backend_url + '/' + data.data.profile.clientBanner;
-          if (data.data.profile.clientBanner) {
-            // Convert the data to a Blob
-            const binaryData = new Uint8Array(data.data.profile.clientBanner.data);
-            const blob = new Blob([binaryData], { type: 'image/png' });
-  
-            // Create a URL for the Blob
-            const fetchBannerUrl = URL.createObjectURL(blob);
-  
-            setFetchBanner(fetchBannerUrl);
-          }
-
-          if (data.data.profile?.avatar) {
-            // Convert the data to a Blob
-            const binaryData = new Uint8Array(data.data.profile?.avatar?.data);
-            const blob = new Blob([binaryData], { type: 'image/png' });
-    
-            // Create a URL for the Blob
-            const fetchAvatarUrl = URL.createObjectURL(blob);
-    
-            setFetchAvatar(fetchAvatarUrl);
-          }
-     
-          const loginData = await api.get(`/api/v1/user/get-last-login/${email}`);
-
-          setLastLogin(loginData.data.data);
-        } catch(error) {
-          console.log("Error while fetching user profile data:", error);
-        } finally {
-          setLoading(false);
+          setFetchBanner(fetchBannerUrl);
         }
-      })()
+        setPreviewBanner(false);
+        setLoading(false);
+      })
+      api.get(`/api/v1/user/get-last-login/${email}`).then(data => {
+        setLastLogin(data.data.data);
+      })
     }
   }, []);
 
-
-  const onDropHandleBannerUpload = useCallback(async (acceptedFiles) => {
+  const onDrop = useCallback(async (acceptedFiles) => {
     if (acceptedFiles.length > 0) {
       const image = acceptedFiles[0];
+      // setSelectedImage(image);
       handleBannerUpload(image);
     }
   }, []);
 
-  const onDropHandleAvatarUpload = useCallback(async (acceptedFiles) => {
-    if (acceptedFiles.length > 0) {
-      const image = acceptedFiles[0];
-      handleAvatarUpload(image);
-    }
-  }, []);
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  
-  const { getRootProps: getBannerRootProps, getInputProps: getBannerInputProps } = useDropzone({
-    onDrop: onDropHandleBannerUpload,
-  });
-
-  const { getRootProps: getAvatarRootProps, getInputProps: getAvatarInputProps } = useDropzone({
-    onDrop: onDropHandleAvatarUpload,
-  });
-
+  console.log("tmp.data.token", tmp.data)
   const handleBannerUpload = async (event) => {
     console.log("fileupload: ", event.target.files)
     if (event.target.files?.length) {
@@ -156,6 +124,7 @@ const ClientDashboard = () => {
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${userIs.data.token}`
         },
       };
       let imageName = 'clientBanner' +  image.type.split("/")[1];
@@ -164,9 +133,10 @@ const ClientDashboard = () => {
         // const res = await uploadImageToCloudinary(formData, onUploadProgress);
         const res = await api.post(`/api/v1/profile/upload-client-banner/${user.email}`, formData, config);
 
+        console.log("🚀 ~ handleBannerUpload ~ res:", res)
         if (res.status === 200) {
           // setUploadedImagePath(URL.createObjectURL(image));
-          setFetchBanner(URL.createObjectURL(image));
+          setUploadedBanner(URL.createObjectURL(image));
           setPreviewBanner(true);
           let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
           console.log('tmp: ', tmp)
@@ -193,66 +163,18 @@ const ClientDashboard = () => {
       }
     }
   }
-
-  const handleAvatarUpload = async (event) => {
-    console.log("fileupload for avatar: ", event.target.files)
-    if (event.target.files?.length) {
-      const image = event.target.files[0];
-      const formData = new FormData();
-      formData.append("file", image);
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-      let imageName = 'clientAvatar' +  image.type.split("/")[1];
-
-      try {
-        // const res = await uploadImageToCloudinary(formData, onUploadProgress);
-        const res = await api.post(`/api/v1/profile/upload-client-avatar/${user.email}`, formData, config);
-
-        if (res.status === 200) {
-          // setUploadedImagePath(URL.createObjectURL(image));
-          setFetchAvatar(URL.createObjectURL(image));
-          setPreviewBanner(true);
-          let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
-          console.log('tmp: ', tmp)
-          setProfileData((prev) => ({
-            ...prev,
-            avatar: tmp
-          }));
-          toast({
-            variant: "default",
-            title: <h1 className='text-center'>Success</h1>,
-            description: <h3>Successfully updated Client Profile</h3>,
-            className: "bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
-          });
-        }
-      } catch (error) {
-        setLoading(false);
-        console.error("Error uploading image:", error);
-        toast({
-          variant: "destructive",
-          title: <h1 className='text-center'>Error</h1>,
-          description: <h3>Internal Server Error</h3>,
-          className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
-        });
-      }
-    }
-  }
-
   return (
     !isLoading ?
       <div className='p-0'>
-        <div className='group relative cursor-pointer' {...getBannerRootProps()}>
+        <div className='group relative cursor-pointer' {...getRootProps()}>
           <label htmlFor='dropzone-banner' onClick={e => e.stopPropagation()} className='w-full hover:cursor-pointer'>
-            <img src={`${fetchBanner ? fetchBanner : "/assets/images/freelancer-image.jpeg"}`} className='rounded-b-2xl h-64 w-full object-cover transition group-hover:opacity-75' alt='banner' />
+            <img src={`${previewBanner ? uploadedBanner : fetchBanner}`} className='rounded-b-2xl h-64 w-full object-cover transition group-hover:opacity-75' alt='banner' />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 rounded-full flex items-center justify-center bg-[#1a272c] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
               <IoCameraOutline className='w-6 h-6' />
             </div>
           </label>
           <Input
-            {...getBannerInputProps()}
+            {...getInputProps()}
             id="dropzone-banner"
             accept="image/png, image/jpeg"
             type="file"
@@ -263,22 +185,7 @@ const ClientDashboard = () => {
         <div className=" max-w-7xl mx-auto flex flex-col gap-3 px-0 md:px-8 -translate-y-8">
           <div className="bg-[#10191D] md:p-8 px-3 py-4 md:rounded-xl rounded-t-xl flex md:gap-7 gap-4 md:items-center items-start">
             <div className="w-20 md:w-24 md:h-24 relative">
-              <div className='group relative cursor-pointer rounded-full w-full h-full aspect-square' {...getAvatarRootProps()}>
-                <label htmlFor='dropzone-avatar' onClick={e => e.stopPropagation()} className='w-full hover:cursor-pointer'>
-                  <img src={`${fetchAvatar ? fetchAvatar : "/assets/images/users/user-5.png"}`} className='rounded-full w-full h-full aspect-square group-hover:opacity-75' alt='banner' />
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 rounded-full flex items-center justify-center bg-[#1a272c] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <IoCameraOutline className='w-6 h-6' />
-                  </div>
-                </label>
-                <Input
-                  {...getAvatarInputProps()}
-                  id="dropzone-avatar"
-                  accept="image/png, image/jpeg"
-                  type="file"
-                  className="hidden"
-                  onChange={e => handleAvatarUpload(e)}
-                />
-              </div>
+              <img src='/assets/images/users/user-5.png' className='rounded-full w-full h-full aspect-square' />
               {/* Change background color depending on user online status */}
               <div className="rounded-full h-4 w-4 absolute right-1 bottom-1 bg-green-500"></div>
             </div>
@@ -346,9 +253,9 @@ const ClientDashboard = () => {
                 title="Personal Information"
                 editAction='editPersonalInfo'
                 information_data={[
-                  { id: 0, label: 'First Name', value: `${profileData.firstName === undefined ? profileData.fullName.split(" ")[0] : profileData.firstName}`, idName: 'firstName' },
+                  { id: 0, label: 'First Name', value: `${profileData.firstName === undefined ? profileData.fullName.split(" ")[0] : ""}`, idName: 'firstName' },
                   { id: 1, label: 'Email Address', value: `${profileData.email}`, idName: 'email' },
-                  { id: 2, label: 'Last Name', value: `${profileData.lastName === undefined ? profileData.fullName.split(" ")[1] : profileData.lastName}`, idName: 'lastName' },
+                  { id: 2, label: 'Last Name', value: `${profileData.lastName === undefined ? profileData.fullName.split(" ")[1] : ""}`, idName: 'lastName' },
                   { id: 3, label: 'Phone', value: `${profileData.phoneNumber}`, idName: 'phoneNumber' },
                 ]}
                 setProfileData={setProfileData}
@@ -380,7 +287,7 @@ const ClientDashboard = () => {
           </div>
         </div>
       </div> :
-      <><div className='flex items-center justify-center h-full'><h1 className='mt-20'>Loading...</h1></div></>
+      <></>
   )
 }
 

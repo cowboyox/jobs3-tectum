@@ -166,7 +166,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         onSwitchPopup("Verification");
       }
       else {
-        let accountType = auth.acc_type; 
+        let accountType = auth.acc_type;
         let accountTypeName;
         switch (accountType) {
           case 0:
@@ -174,11 +174,11 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
             break;
           case 3:
             accountTypeName = 'client';
-            break; 
-          default:
-            accountTypeName = 'client'; 
             break;
-        } 
+          default:
+            accountTypeName = 'client';
+            break;
+        }
         router.push(`/dashboard/${auth.user.name}/${accountTypeName}/`);
       }
     } catch (err) {
@@ -387,24 +387,25 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
           "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center",
       });
     }
+
     try {
-      let acc_type = auth.acc_type;
-      await auth.login({ email, password, acc_type });
+      await auth.login({ email, password }).then(data => {
+        let accountType = data.role;
+        let accountTypeName;
+        switch (accountType) {
+          case 0:
+            accountTypeName = 'freelancer';
+            break;
+          case 3:
+            accountTypeName = 'client';
+            break;
+          default:
+            accountTypeName = 'client';
+            break;
+        }
+        router.push(`/dashboard/${data.name}/${accountTypeName}/`);
+      });
       // Dynamic redirect
-      let accountType = auth.acc_type; 
-      let accountTypeName;
-      switch (accountType) {
-        case 0:
-          accountTypeName = 'freelancer';
-          break;
-        case 3:
-          accountTypeName = 'client';
-          break; 
-        default:
-          accountTypeName = 'client'; 
-          break;
-      } 
-      router.push(`/dashboard/${auth.user.name}/${accountTypeName}/`);
     } catch (err) {
       return toast({
         variant: "destructive",
@@ -427,7 +428,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
             <div className="right_side">
               <button
                 onClick={() => {
-                  onSwitchPopup("TypeOfAccount");
+                  onSwitchPopup("SignUp");
                 }}
               >
                 Sign up
@@ -717,7 +718,7 @@ export function VerificationPopup({ onClose }) {
     }
     try {
       const res = await auth.verifyOTP(content);
-      let accountType = auth.acc_type; 
+      let accountType = auth.acc_type;
       let accountTypeName;
       switch (accountType) {
         case 0:
@@ -725,21 +726,14 @@ export function VerificationPopup({ onClose }) {
           break;
         case 3:
           accountTypeName = 'client';
-          break; 
-        default:
-          accountTypeName = 'client'; 
           break;
-      } 
+        default:
+          accountTypeName = 'client';
+          break;
+      }
       router.push(`/dashboard/${auth.user.name}/${accountTypeName}/`);
     } catch (err) {
-      const errMsg = err?.response?.data?.message;
-      return toast({
-        variant: "destructive",
-        title: <h1 className="text-center">Error</h1>,
-        description: <h3 className="text-center">{errMsg}</h3>,
-        className:
-          "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center",
-      });
+      console.log("error", err);
     }
   };
   return (
@@ -756,7 +750,6 @@ export function VerificationPopup({ onClose }) {
           </div>
           <h2>Verification</h2>
           <p>Enter your code to confirm your account </p>
-
           <div className="email_form">
             <input
               type="text"
@@ -937,11 +930,11 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
               Continue as{" "}
               {choosen_account_types.length > 0
                 ? choosen_account_types
-                    .map(
-                      (id) =>
-                        account_types.find((acc) => acc.id === id).account_name
-                    )
-                    .join(", ")
+                  .map(
+                    (id) =>
+                      account_types.find((acc) => acc.id === id).account_name
+                  )
+                  .join(", ")
                 : "a selected account type"}
             </button>
           </form>

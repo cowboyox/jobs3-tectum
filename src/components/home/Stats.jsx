@@ -1,59 +1,37 @@
-'use client'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { CiSearch } from "react-icons/ci";
 import { CgOptions } from "react-icons/cg";
 import { MdVerified } from "react-icons/md";
 import Image from 'next/image';
-import api from '@/utils/api';
 
-const recentHires = [
+const spendings = [
     {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
+        title: "Front-End Development",
+        desc: "Deven Miles",
+        daysAgo: "2d",
+        price: "$250"
     },
     {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
+        title: "Front-End Development",
+        desc: "Deven Miles",
+        daysAgo: "2d",
+        price: "$250"
     },
     {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
+        title: "Front-End Development",
+        desc: "Deven Miles",
+        daysAgo: "2d",
+        price: "$250"
     },
     {
-        pic: "/assets/dashboard-media/profilePic.png",
-        name: "Deven Miles",
-        desg: "Freelancer",
+        title: "Front-End Development",
+        desc: "Deven Miles",
+        daysAgo: "2d",
+        price: "$250"
     },
 ]
 
 const Stats = () => {
-    const [spendings, setSpending] = useState([
-        {
-            title: "",
-            hiredFreelancer: [],
-            daysAgo: "",
-            price: ""
-
-        }
-    ]);
-    const [recentHires, setRecentHires] = useState([{
-        pic: "",
-        name: "",
-        desg: ""
-    }])
-
-    useEffect(() => {
-        api.get(`/api/v1/client_gig/get-gigs-bystatus/ended`).then(data => {
-            setSpending(data.data.data);
-        })
-
-        api.get(`/api/v1/client_gig/recent-hired-freelancers`).then(data => {
-            setRecentHires(data.data.data);
-        })
-    }, [])
     return (
         <div className='w-full min-h-96 flex flex-col -mt-10 font-roboto md:mt-10'>
             <div className='h-16 rounded-2xl bg-deepGreen flex items-center justify-between gap-6 px-4'>
@@ -88,7 +66,7 @@ const Stats = () => {
                         </div>
                         <div className='flex flex-col justify-between gap-2 flex-1'>
                             {
-                                spendings.length ? spendings.map((spend,index) => (
+                                spendings.map((spend,index) => (
                                     <div key={index} className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
                                         <div className='w-[70%]'>
                                             <h3 className='text-white text-lg truncate'>{spend.title}</h3>
@@ -102,8 +80,7 @@ const Stats = () => {
                                             <div className='bg-lightGray w-[90%] h-8 outline-none border-none flex justify-center items-center rounded-[8px] gap-2'><span>-</span> {spend.price}</div>
                                         </div>
                                     </div>
-                                )) :
-                                <div className='text-center mt-[50%]'>No spendings</div>
+                                ))
                             }
                         </div>
                     </div>
@@ -114,7 +91,7 @@ const Stats = () => {
                         </div>
                         <div className='flex flex-col justify-between gap-2 flex-1'>
                             {
-                                recentHires.length ? recentHires.map((spend,index) => (
+                                recentHires.map((spend,index) => (
                                     <div key={index} className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
 
                                         <div className='flex-1 flex justify-center items-center'>
@@ -130,8 +107,7 @@ const Stats = () => {
                                             </div>
                                         </div>
                                     </div>
-                                )) : 
-                                <div className='text-center mt-[50%]'>No Hires yet</div>
+                                ))
                             }
                         </div>
                     </div>
@@ -142,7 +118,7 @@ const Stats = () => {
                         </div>
                         <div className='flex flex-col justify-between gap-2 flex-1'>
                             {
-                                recentHires.length ? recentHires.map((spend,index) => (
+                                recentHires.map((spend,index) => (
                                     <div key={index} className='flex px-3 gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
 
                                         <div className='flex-1 flex justify-center items-center'>
@@ -158,8 +134,7 @@ const Stats = () => {
                                             </div>
                                         </div>
                                     </div>
-                                )) : 
-                                <div className='text-center mt-[50%]'>Nothing yet</div>
+                                ))
                             }
                         </div>
                     </div>

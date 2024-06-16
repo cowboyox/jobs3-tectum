@@ -76,7 +76,7 @@ const Orders = () => {
   });
 
   return (
-    <div className="p-0 sm:p-0 xl:mt-8 lg:mt-8 max-w-6xl">
+    <div className="p-0 sm:p-0 xl:mt-8 lg:mt-8">
       <div className="flex flex-row justify-between items-center bg-[#10191D] p-3 rounded-xl gap-5">
         <div className="flex flex-1 items-center ml-3 gap-3">
           <CustomIconDropdown

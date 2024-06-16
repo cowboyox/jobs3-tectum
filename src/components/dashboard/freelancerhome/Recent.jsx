@@ -142,12 +142,14 @@ const gigs = [
   },
 ];
 
-const Recent = () => {
+const Recent = ({search, setSearch}) => {
+
   const [selectedGigs, setSelectedGigs] = useState(["Figma"]);
   const [data, setData] = useState([]);
   const [displayedData, setDisplayedData] = useState([]);
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
+
 
   const fetchGigs = async (gigs) => {
     try {
@@ -174,6 +176,31 @@ const Recent = () => {
     });
   };
 
+  
+  const handleFilter = () => {
+    let filteredGigs = gigs;
+
+    if (search) {
+      filteredGigs = filteredGigs.filter((gig) =>
+        gig.title.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    // if (sortOrder === "dateAsc") {
+    //   filteredGigs.sort(
+    //     (a, b) => new Date(a.gigPostDate) - new Date(b.gigPostDate)
+    //   );
+    // } else if (sortOrder === "dateDesc") {
+    //   filteredGigs.sort(
+    //     (a, b) => new Date(b.gigPostDate) - new Date(a.gigPostDate)
+    //   );
+    // }
+
+    return filteredGigs;
+  };
+
+  const filteredRecentJob = handleFilter();
+
   const handleLoadMore = () => {
     const nextPage = page + 1;
     const newDisplayedData = data.slice(0, nextPage * itemsPerPage);
@@ -198,7 +225,7 @@ const Recent = () => {
         ))}
       </div>
       <div className="flex flex-col gap-4">
-        {gigs.map((gig, index) => (
+        {filteredRecentJob.map((gig, index) => (
           <div
             key={index}
             className="bg-deepGreen px-6 py-6 flex flex-col gap-4 text-white rounded-2xl"

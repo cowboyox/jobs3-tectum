@@ -20,23 +20,23 @@ import FormNavigation from "@/components/elements/formSteps/StepNavigation";
 
 /*----- UI Components -----*/
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -47,10 +47,6 @@ import { GoTrash } from "react-icons/go";
 /*----- Custom Components -----*/
 import DropFile from "@/components/elements/dropFile";
 
-import { useToast } from "@/components/ui/use-toast";
-import api from "@/utils/api";
-import { useCustomContext } from "@/context/use-custom";
-import { useRouter } from 'next/navigation';
 
 const Question = (props) => {
   return (
@@ -63,8 +59,8 @@ const Question = (props) => {
         <p className='bg-transparent p-0 border-0 text-base text-[#96B0BD] w-full shadow-none outline-none shadow-transparent'>
           {props.answer_placeholder}
         </p>
-      </div>
-      <GoTrash onClick={() => props.onDelete(props.id)} className='cursor-pointer' />
+      </div> 
+      <GoTrash onClick={() => props.onDelete(props.id)} className='cursor-pointer'  />
     </div>
   )
 }
@@ -93,10 +89,6 @@ const categories_list = [
 ];
 
 const CreateGig = () => {
-  const { toast } = useToast();
-  const auth = useCustomContext();
-  const router = useRouter();
-
   const form = useForm();
   const [tags, setTags] = useState([]);
   const [requirementQuestions, setRequirementQuestions] = useState([
@@ -111,14 +103,14 @@ const CreateGig = () => {
       answer_placeholder: 'Building a mobile app, creating an animation, developing a game, etc'
     },
   ]);
-
+  
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
 
   const addNewQuestion = () => {
     const newQuestion = newQuestionRef.current.value.trim();
     const newAnswerPlaceholder = newAnswerPlaceholderRef.current.value.trim();
-
+    
     if (newQuestion && newAnswerPlaceholder) {
       const newQuestionObject = {
         id: requirementQuestions.length + 1,
@@ -153,29 +145,7 @@ const CreateGig = () => {
     setTags(tags.filter((_, index) => index !== indexToRemove));
   };
 
-  const [videoFile, setVideoFile] = useState(null);
-  const [imageFiles, setImageFiles] = useState([]);
-  const [documentFiles, setDocumentFiles] = useState([]);
-
-  const handleVideoUpload = (file) => {
-    console.log(file[0])
-    setVideoFile(file[0]);  // Assuming single file for video
-  };
-
-  const handleImageUpload = (files, index) => {
-    const newImageFiles = [...imageFiles];
-    newImageFiles[index] = files[0];  // Assuming single file for each image slot
-    console.log(files[0])
-    setImageFiles(newImageFiles);
-  };
-
-  const handleDocumentUpload = (files, index) => {
-    const newDocumentFiles = [...documentFiles];
-    newDocumentFiles[index] = files[0];  // Assuming single file for each document slot
-    console.log(newDocumentFiles)
-    setDocumentFiles(newDocumentFiles);
-  };
-  async function onSubmit(values) {
+  function onSubmit(values) {
     /* Selmani: I didn't check if all the values are being passed here
       * And i'm sure not all, so please make sure all necessary inputs are being passed
       * NOTE: Make sure to check the ShadCN documentation
@@ -238,7 +208,6 @@ const CreateGig = () => {
       });
     });
 
-
   }
   return (
     <StepProvider>
@@ -255,7 +224,7 @@ const CreateGig = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className='p-7 mobile:px-3 bg-[#10191d] max-w-3xl w-full mx-auto mt-10 rounded-xl flex flex-col gap-6'>
             <FormStep stepOrder={1}>
               <FormField
-                name="gigTitle"
+                name="gig_title"
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-2'>
                     <FormLabel className='text-2xl text-[#F5F5F5]'>
@@ -284,11 +253,11 @@ const CreateGig = () => {
                 </p>
                 <div className="flex gap-3 mobile:flex-col">
                   <FormField
-                    name="gigCategory"
+                    name="gig_category"
                     render={({ field }) => (
                       <FormItem className='flex flex-col gap-2 w-full'>
                         <FormControl>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select>
                             <SelectTrigger className='bg-[#1B272C] py-7 px-5 rounded-xl text-base text-[#96B0BD]'>
                               <SelectValue placeholder="Select a Category" />
                             </SelectTrigger>
@@ -308,11 +277,11 @@ const CreateGig = () => {
                     )}
                   />
                   <FormField
-                    name="subCategory"
+                    name="gig_category"
                     render={({ field }) => (
                       <FormItem className='flex flex-col gap-2 w-full'>
                         <FormControl>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select>
                             <SelectTrigger className='bg-[#1B272C] py-7 px-5 rounded-xl text-base text-[#96B0BD]'>
                               <SelectValue placeholder="Select a Sub Category" />
                             </SelectTrigger>
@@ -375,7 +344,7 @@ const CreateGig = () => {
             </FormStep>
             <FormStep stepOrder={2}>
               <FormField
-                name="gigPrice"
+                name="gig_price"
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-2'>
                     <FormLabel className='text-2xl text-[#F5F5F5]'>
@@ -394,14 +363,14 @@ const CreateGig = () => {
                 )}
               />
               <FormField
-                name="revision"
+                name="revisions_number"
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-2 w-full'>
                     <FormLabel className='text-2xl text-[#F5F5F5]'>
                       Revisions
                     </FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select>
                         <SelectTrigger className='bg-[#1B272C] py-7 px-5 rounded-xl text-base text-[#96B0BD]'>
                           <SelectValue placeholder="Revisions" />
                         </SelectTrigger>
@@ -421,14 +390,14 @@ const CreateGig = () => {
                 )}
               />
               <FormField
-                name="deliveryTime"
+                name="delivery_time"
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-2 w-full'>
                     <FormLabel className='text-2xl text-[#F5F5F5]'>
                       Delivery time
                     </FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select>
                         <SelectTrigger className='bg-[#1B272C] py-7 px-5 rounded-xl text-base text-[#96B0BD]'>
                           <SelectValue placeholder="Delivery time" />
                         </SelectTrigger>
@@ -451,7 +420,7 @@ const CreateGig = () => {
             </FormStep>
             <FormStep stepOrder={3}>
               <FormField
-                name="gigDescription"
+                name="description"
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-2'>
                     <FormLabel className='text-2xl text-[#F5F5F5]'>
@@ -516,7 +485,7 @@ const CreateGig = () => {
               </div>
               <div className='text-base text-[#96B0BD]'>
                 Encourage buyers to choose your Gig by featuring a variety of your work. Format: JPEG, JPG, PNG, GIF, MP4, AVI. Max size per image/video: 50MB
-              </div>
+              </div> 
               <div className="flex flex-col gap-4">
                 <p className='text-2xl text-[#F5F5F5]'>
                   Video (1 only)
@@ -524,12 +493,11 @@ const CreateGig = () => {
                 <p className='text-base text-[#96B0BD]'>
                   Capture buyers attention with a video that showcases your services
                 </p>
-                <DropFile
-                  className="aspect-video max-h-80"
+                <DropFile 
+                  className="aspect-video max-h-80" 
                   placeHolderPlusIconSize={60}
                   acceptOnly='video'
-                  inputName='video'
-                  onFileUpload={handleVideoUpload}
+                  inputName='video' 
                 />
               </div>
               <div className="flex flex-col gap-4">
@@ -541,13 +509,12 @@ const CreateGig = () => {
                 </p>
                 <div className="grid md:grid-cols-2 gap-5">
                   {Array.from({ length: 4 }, (_, indx) => (
-                    <DropFile
+                    <DropFile 
                       key={indx}
-                      className="aspect-video"
+                      className="aspect-video" 
                       placeHolderPlusIconSize={40}
                       acceptOnly='image'
-                      inputName={`gig_image_${indx}`}
-                      onFileUpload={(files) => handleImageUpload(files, indx)}
+                      inputName={`gig_image_${indx}`} 
                     />
                   ))}
                 </div>
@@ -561,13 +528,12 @@ const CreateGig = () => {
                 </p>
                 <div className="grid md:grid-cols-2 gap-5">
                   {Array.from({ length: 2 }, (_, indx) => (
-                    <DropFile
+                    <DropFile 
                       key={indx}
-                      className="h-12"
+                      className="h-12" 
                       placeHolderPlusIconSize={40}
                       acceptOnly='other'
-                      inputName={`gig_document_${indx}`}
-                      onFileUpload={(files) => handleDocumentUpload(files, indx)}
+                      inputName={`gig_document_${indx}`} 
                     />
                   ))}
                 </div>
@@ -583,7 +549,7 @@ const CreateGig = () => {
               </div>
             </FormStep>
             <FormStep stepOrder={6}>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2"> 
                 <div className='text-3xl text-[#F5F5F5] text-center'>
                   You’re almost done!
                 </div>

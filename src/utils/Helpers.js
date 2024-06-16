@@ -158,18 +158,3 @@ export const minutesDifference = (timeString) => {
 	if (mins > 0) result += `${mins}min${mins > 1 ? 's' : ''} ago`;
 	return result.trim();
 }
-
-function isValidPhoneNumber(phoneNumber) {
-	
-    const pattern = /^[+]{1}(?:[0-9\-\\(\\)\\/.]\s?){6,15}[0-9]{1}$/;
-
-    if (!phoneNumber) {
-        return "false";
-    }
-
-    if (pattern.test(phoneNumber)) {
-        return "true";
-    } else {
-        return "false";
-    }
-}
