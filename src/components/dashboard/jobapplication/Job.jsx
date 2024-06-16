@@ -2,9 +2,9 @@ import Image from "next/image";
 import React from "react";
 import { FaRegHeart, FaRegUser } from "react-icons/fa";
 import { IoIosMore } from "react-icons/io";
-import { IoLogoUsd } from "react-icons/io5";
+// import { IoLogoUsd } from "react-icons/io5";
 import { MdAccessTime } from "react-icons/md";
-import { TiLocationOutline } from "react-icons/ti";
+// import { TiLocationOutline } from "react-icons/ti";
 
 const Job = () => {
     return (
