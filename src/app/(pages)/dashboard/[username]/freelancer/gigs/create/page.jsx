@@ -152,7 +152,62 @@ const CreateGig = () => {
       * https://ui.shadcn.com/docs/components
       * I know you know but just wanted to mention :D
     */
-    console.log(values)
+    console.log("tag: ", tags)
+    console.log("qa: ", requirementQuestions)
+    values.question = requirementQuestions
+    values.searchKeywords = tags
+    values.email = auth.user.email
+    values.creator = auth.user.id
+
+    if (!values.gigTitle) {
+      return toast({
+        variant: "default",
+        title: <h1 className='text-center'>Warning</h1>,
+        description: <h3 className='text-center'>Input Gig Title</h3>,
+        className: "bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+      });
+    }
+
+    const formData = new FormData();
+    if (videoFile) {
+      console.log("video")
+      formData.append('video', videoFile);
+    }
+
+    imageFiles.forEach((file, index) => {
+      if (file) formData.append('image', file);
+    });
+    documentFiles.forEach((file, index) => {
+      if (file) formData.append('document', file);
+    });
+
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    await api.post('/api/v1/freelancer_gig/post_gig', values).then(async (data) => {
+      console.log(data)
+      await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
+        console.log("Successfully uploaded");
+      })
+      toast({
+        variant: "default",
+        title: <h1 className='text-center'>Success</h1>,
+        description: <h3>Successfully posted gig titled {values.gigTitle}</h3>,
+        className: "bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+      });
+      router.push('../')
+    }).catch(err => {
+      console.log("Error corrupted during posting gig", err);
+      toast({
+        variant: "destructive",
+        title: <h1 className='text-center'>Error</h1>,
+        description: <h3>Internal Server Error</h3>,
+        className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+      });
+    });
+
   }
   return (
     <StepProvider>

@@ -1,4 +1,5 @@
-import React from 'react'
+'use client';
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import {
   Select,
@@ -32,6 +33,7 @@ import { FaStar, FaClock, FaDollarSign, FaCheckCircle } from 'react-icons/fa';
 import { CiReceipt } from "react-icons/ci";
 import { PiShootingStarLight } from "react-icons/pi";
 import { BsPatchCheckFill } from "react-icons/bs";
+import api from "@/utils/api";
 
 
 const DropdownItem = (props)=> {
@@ -117,6 +119,16 @@ const GigCard = () => {
 };
 
 const GigSearch = () => {
+  const [gigList, setGigList] = useState();
+  useEffect(() => {
+    api.get(`/api/v1/freelancer_gig/find_all_gigs`).then((data) => {
+        console.log("getAllGigs: ", data.data)
+        setGigList(data.data.data);
+    }).catch(err => {
+        console.log("Error corrupted while getting all gigs: ", err);
+    });
+  }, [])
+
   return (
     <div className='flex flex-col gap-4'>
       <div className="flex gap-2 p-3 mobile:p-1 bg-[#10191d] rounded-xl">
