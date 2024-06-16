@@ -47,6 +47,8 @@ import { GoTrash } from "react-icons/go";
 /*----- Custom Components -----*/
 import DropFile from "@/components/elements/dropFile";
 import api from "@/utils/api";
+import { useCustomContext } from "@/context/ContextProvider";
+import { useToast } from "@/components/ui/use-toast";
 
 
 const Question = (props) => {
@@ -91,6 +93,9 @@ const categories_list = [
 
 const CreateGig = () => {
   const form = useForm();
+  const auth = useCustomContext();
+  const { toast } = useToast();
+
   const [tags, setTags] = useState([]);
   const [requirementQuestions, setRequirementQuestions] = useState([
     {
@@ -146,7 +151,30 @@ const CreateGig = () => {
     setTags(tags.filter((_, index) => index !== indexToRemove));
   };
 
-  function onSubmit(values) {
+  const [videoFile, setVideoFile] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [documentFiles, setDocumentFiles] = useState([]);
+
+  const handleVideoUpload = (file) => {
+    console.log(file)
+    setVideoFile(file);  // Assuming single file for video
+  };
+
+  const handleImageUpload = (files, index) => {
+    const newImageFiles = [...imageFiles];
+    newImageFiles[index] = files;  // Assuming single file for each image slot
+    console.log(files)
+    setImageFiles(newImageFiles);
+  };
+
+  const handleDocumentUpload = (files, index) => {
+    const newDocumentFiles = [...documentFiles];
+    newDocumentFiles[index] = files;  // Assuming single file for each document slot
+    console.log(newDocumentFiles)
+    setDocumentFiles(newDocumentFiles);
+  };
+  
+  async function onSubmit(values) {
     /* Selmani: I didn't check if all the values are being passed here
       * And i'm sure not all, so please make sure all necessary inputs are being passed
       * NOTE: Make sure to check the ShadCN documentation
@@ -170,16 +198,15 @@ const CreateGig = () => {
     }
 
     const formData = new FormData();
-    if (videoFile) {
-      console.log("video")
-      formData.append('video', videoFile);
-    }
 
+    let allFiles = []
+    if (videoFile) formData.append('file', videoFile) 
+    
     imageFiles.forEach((file, index) => {
-      if (file) formData.append('image', file);
+      if (file) formData.append('file', file)
     });
     documentFiles.forEach((file, index) => {
-      if (file) formData.append('document', file);
+      if (file) formData.append('file', file)
     });
 
     const config = {
@@ -189,9 +216,9 @@ const CreateGig = () => {
     };
     api.post('/api/v1/freelancer_gig/post_gig', values).then(async (data) => {
       console.log(data)
-      await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
-        console.log("Successfully uploaded");
-      })
+      // await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
+      //   console.log("Successfully uploaded");
+      // })
       toast({
         variant: "default",
         title: <h1 className='text-center'>Success</h1>,
@@ -499,6 +526,7 @@ const CreateGig = () => {
                   placeHolderPlusIconSize={60}
                   acceptOnly='video'
                   inputName='video' 
+                  onFileUpload={handleVideoUpload}
                 />
               </div>
               <div className="flex flex-col gap-4">
@@ -516,6 +544,7 @@ const CreateGig = () => {
                       placeHolderPlusIconSize={40}
                       acceptOnly='image'
                       inputName={`gig_image_${indx}`} 
+                      onFileUpload={(files) => handleImageUpload(files, indx)}
                     />
                   ))}
                 </div>
@@ -535,6 +564,7 @@ const CreateGig = () => {
                       placeHolderPlusIconSize={40}
                       acceptOnly='other'
                       inputName={`gig_document_${indx}`} 
+                      onFileUpload={(files) => handleDocumentUpload(files, indx)}
                     />
                   ))}
                 </div>
