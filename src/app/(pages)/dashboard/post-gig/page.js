@@ -26,7 +26,7 @@ import { useRouter } from 'next/navigation';
 function FileUploadBody() {
     return <div className="h-52 w-full border border-dashed border-slate-500 p-3 flex items-center justify-center rounded-xl">
         <p className='text-center'>
-            <span className='text-lg text-slate-500'>Drag and drop or &nbsp; </span> browse files
+            <span className='text-lg text-slate-500'>Drag and drop or &nbsp; </span> borwse files
         </p>
     </div>
 }

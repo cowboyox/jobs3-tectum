@@ -259,7 +259,7 @@ const InboxPage = ({ children }) => {
   };
 
   return (
-    <div className='inbox-page border-t border-[#28373E] max-w-6xl'>
+    <div className='inbox-page border-t border-[#28373E]'>
     {/* 
       * Selmani NOTE:
       * I used this basic method to toggle chat on mobile which works just fine
