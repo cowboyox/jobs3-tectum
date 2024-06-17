@@ -746,8 +746,10 @@ const GigPosting = () => {
                         )}
                     />
                 </form>
-                <Button className='mt-8 w-1/5 text-white rounded-full bg-[#DC4F13]' onClick={e => { handlePublish() }}>Publish Gig</Button>
             </Form>
+            <div className='md:w-1/5 w-[130px]'>
+                <Button className='mt-8 md:w-1/4 w-[130px] text-white rounded-full bg-[#DC4F13]' onClick={e => { handlePublish() }}>Publish Gig</Button>
+            </div>
         </div>
     )
 }
