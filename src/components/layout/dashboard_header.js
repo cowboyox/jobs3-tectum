@@ -110,18 +110,18 @@ const DashboardHeader = ({userRole, setUserRole}) => {
                 <DropdownMenu>
                     <DropdownMenuTrigger className='hidden md:flex'>
                         <div className='flex items-center gap-2'>
-                            <span className='uppercase text-lg'>{currentNav.toUpperCase()}</span> <FaAngleDown />
+                            <span className='uppercase text-lg'>{currentNav}</span> <FaAngleDown />
                         </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent sideOffset={10} className="w-52">
-                        <DropdownMenuLabel>{currentNav.toUpperCase()}</DropdownMenuLabel>
+                        <DropdownMenuLabel className='uppercase'>{currentNav}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className='text-base'>Profile</DropdownMenuItem>
                         <DropdownMenuItem className='text-base'>Wallet</DropdownMenuItem>
                         <DropdownMenuItem className='text-base'>Refer a friend</DropdownMenuItem>
                         <DropdownMenuItem className='text-base'>Settings</DropdownMenuItem>
                         {
-                            accType?.map((item, index) => {
+                            Array.isArray(accType) && accType?.map((item, index) => {
                                 if (currentNav !== handleTap(item).toLowerCase()) {
                                     return <DropdownMenuItem className="hover:bg-white" key={index}>
                                         <Button className='rounded w-full' onClick={() => handleNavigation(handleTap(item).toLowerCase())}>{handleTap(item)}</Button>

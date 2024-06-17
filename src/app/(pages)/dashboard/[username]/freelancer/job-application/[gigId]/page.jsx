@@ -1,13 +1,14 @@
 import React from "react";
-import Job from "../../../../../../components/dashboard/jobapplication/Job";
-import { VscLock } from "react-icons/vsc";
+import Job from "@/components/dashboard/jobapplication/Job";
+import api from "@/utils/api";
+const Page = async ({ params }) => {
+  const resData = await getGigById(params.gigId);
 
-const Page = () => {
   return (
     <div className="flex gap-8 md:flex-row flex-col items-center md:justify-center md:items-start
      ">
       <div className="w-full md:w-[65%] md:max-w-[690px]">
-        <Job />
+        <Job gigData={resData}/>
         <div className="bg-deepGreen mt-4  px-6 py-6 flex flex-col gap-4 text-white rounded-2xl">
           <h3 className="text-white hidden md:block text-xl font-semibold whitespace-nowrap">
             Cover letter
@@ -80,5 +81,10 @@ const Page = () => {
     </div>
   );
 };
-
 export default Page;
+
+const getGigById = async (gigId) => {
+  const resData = await api.get(`/api/v1/client_gig/get_gig_by_id/${gigId}`);
+  console.log("-----resData ", resData.data.data)
+  return resData;
+}

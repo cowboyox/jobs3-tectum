@@ -1,12 +1,11 @@
+import { minutesDifference } from "@/utils/Helpers";
 import Image from "next/image";
 import React from "react";
 import { FaRegHeart, FaRegUser } from "react-icons/fa";
 import { IoIosMore } from "react-icons/io";
-// import { IoLogoUsd } from "react-icons/io5";
 import { MdAccessTime } from "react-icons/md";
-// import { TiLocationOutline } from "react-icons/ti";
 
-const Job = () => {
+const Job = ({ gigData }) => {
     return (
         <div className="bg-deepGreen px-6 py-6 flex flex-col gap-4 text-white rounded-2xl">
             <div className="pb-5 border-b border-lightGray flex flex-col gap-3">
@@ -18,7 +17,7 @@ const Job = () => {
                             height={45}
                         />
                         <h3 className="text-white hidden md:block text-xl font-semibold whitespace-nowrap">
-                            Figma and Flow bite mentor needed
+                            {gigData.data.data.gigTitle}
                         </h3>
                     </div>
                     <div className="flex gap-6 items-center">
@@ -32,7 +31,9 @@ const Job = () => {
                 <div className="flex  gap-4 flex-wrap justify-end">
                     <div className="flex gap-1 items-center">
                         <MdAccessTime className="text-medGray text-xl" />
-                        <span>Posted 15 minutes ago</span>
+                        <span>
+                        {minutesDifference(gigData.data.data.gigPostDate)}
+                        </span>
                     </div>
                     <div className="flex gap-1 items-center">
                         <svg
@@ -53,11 +54,11 @@ const Job = () => {
                                 stroke-width="1.5"
                             />
                         </svg>
-                        <span>Remote</span>
+                        <span>{gigData.data.data.location}</span>
                     </div>
                     <div className="flex gap-2 items-center">
                         <FaRegUser className="text-medGray text-xl" />
-                        <span>5 Applicants</span>
+                        <span>{gigData.data.data.proposalUsers.length} Applicants</span>
                     </div>
                     <div className="flex gap-2 items-center">
                         <svg
@@ -90,32 +91,22 @@ const Job = () => {
                             />
                         </svg>
 
-                        <span>Hourly: $40–$60</span>
+                        <span>
+                            {gigData.data.data.gigPaymentType
+                                ? `Hourly: $${gigData.data.data.minBudget}–$${gigData.data.data.maxBudget}`
+                                : `Fixed: $${gigData.data.data.gigPrice}`}
+                        </span>
                     </div>
                 </div>
             </div>
             <p className="text-medGray text-sm">
-                We are looking for a highly skilled designer who works with Figma and
-                Flow bite https: //flowbite.com/ design system to come into our company
-                as a trainer. We need you to teach our designers how to use a design
-                system (flow bite) in figma including how to set up a new website, how
-                to use the components from the design system and how to make them fit
-                the brand of our clients. All of our designers come from a graphic
-                design background so they need to be educated on how to design for web.
-                If you are interested please send a message with years of experience
-                with Figma and if you have trained others before.
+                {gigData.data.data.gigDescription}
             </p>
             <h3 className="text-white hidden md:block text-xl font-semibold whitespace-nowrap">
                 Skills
             </h3>
             <div className="flex gap-2 flex-wrap">
-                {[
-                    "Intermediate Level",
-                    "Website",
-                    "Custom Web Design",
-                    "Figma",
-                    "Flowbite",
-                ].map((skill, skillIndex) => (
+                {gigData.data.data.requiredSkills.map((skill, skillIndex) => (
                     <div
                         key={skillIndex}
                         className="bg-darkGray cursor-pointer py-1 px-2 text-center rounded-full border border-lightGray"
