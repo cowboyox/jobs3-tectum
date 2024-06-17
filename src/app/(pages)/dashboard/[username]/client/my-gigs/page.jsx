@@ -22,7 +22,7 @@ import { minutesDifference } from "@/utils/Helpers";
 const Status = ({ status }) => {
   const getStatusStyles = () => {
     switch (status) {
-      case 'published':
+      case 0:
         return 'border-green-500 text-green-500';
       case 'declined':
         return 'border-red-500 text-red-500';
@@ -31,9 +31,17 @@ const Status = ({ status }) => {
     }
   };
 
+  const getStatusContent = () => {
+    switch (status) {
+      case 0: return 'Alive';
+      case 1: return 'Hired';
+      case 2: return "Ended"
+    }
+  }
+
   return (
     <div className={`border text-sm rounded py-1 px-2 capitalize ${getStatusStyles()}`}>
-      {status}
+      {getStatusContent(status)}
     </div>
   );
 };
@@ -56,7 +64,7 @@ const GigCard = ({ gig }) => {
         </div>
       </div>
       <div className="flex gap-3 items-start mobile:justify-between">
-        <Status status={gig.status} />
+        <Status status={gig.gigStatus} />
         <BsThreeDots className="h-8 w-8 p-2 flex items-center justify-center rounded-full hover:bg-slate-700 transition cursor-pointer" />
       </div>
     </div>
