@@ -151,10 +151,10 @@ export const minutesDifference = (timeString) => {
 	mins = Math.floor(diffInMs / (1000 * 60) % 60);
 
 	let result = "";
-	if (years > 0) result += `${years}y${years > 1 ? 's' : ''} `;
-	if (months > 0) result += `${months}m${months > 1 ? 's' : ''} `;
-	if (days > 0) result += `${days}d${days > 1 ? 's' : ''} `;
-	if (hours > 0) result += `${hours}hr${hours > 1 ? 's' : ''} `;
-	if (mins > 0) result += `${mins}min${mins > 1 ? 's' : ''} ago`;
+	if (years > 0) result += `${years}Y${years > 1 ? 's' : ''} `;
+	if (months > 0) result += `${months}M${months > 1 ? 's' : ''} `;
+	if (days > 0) result += `${days}D${days > 1 ? 's' : ''} `;
+	if (hours > 0) result += `${hours}Hr${hours > 1 ? 's' : ''} `;
+	if (mins > 0) result += `${mins}Min${mins > 1 ? 's' : ''} ago`;
 	return result.trim();
 }

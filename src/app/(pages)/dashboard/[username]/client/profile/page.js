@@ -246,7 +246,7 @@ const ClientDashboard = () => {
       <div className='p-0'>
         <div className='group relative cursor-pointer' {...getBannerRootProps()}>
           <label htmlFor='dropzone-banner' onClick={e => e.stopPropagation()} className='w-full hover:cursor-pointer'>
-            <img src={`${fetchBanner ? fetchBanner : "/assets/images/freelancer-image.jpeg"}`} className='rounded-b-2xl h-64 w-full object-cover transition group-hover:opacity-75' alt='banner' />
+            <img src={`${fetchBanner ? fetchBanner : "/assets/images/placeholder.jpeg"}`} className='rounded-b-2xl h-64 w-full object-cover transition group-hover:opacity-75' alt='banner' />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 rounded-full flex items-center justify-center bg-[#1a272c] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
               <IoCameraOutline className='w-6 h-6' />
             </div>

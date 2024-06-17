@@ -976,6 +976,7 @@ const FindJob = () => {
                     className={`bg-[#DC4F13] pl-[5vw] px-[5vw] p-4 rounded-xl md:flex-none md:mt-0 mt-2 ${
                       isSmallScreen ? "w-full" : ""
                     }`}
+                    onClick={() => router.push(`/dashboard/username/freelancer/job-application/${gig._id}`)}
                   >
                     Apply
                   </button>
