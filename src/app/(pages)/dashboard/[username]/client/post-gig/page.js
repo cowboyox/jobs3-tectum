@@ -265,7 +265,7 @@ const GigPosting = () => {
             },
         };
 
-        await api.post('/api/v1/client_gig/post_gig', postData, config).then(async (data) => {
+        await api.post('/api/v1/client_gig/post_gig', postData).then(async (data) => {
             await api.post(`/api/v1/client_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
                 console.log("Successfully uploaded");
             })
