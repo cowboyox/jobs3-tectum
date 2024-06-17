@@ -83,7 +83,7 @@ const Page = async ({ params }) => {
 };
 export default Page;
 
-export const getGigById = async (gigId) => {
+const getGigById = async (gigId) => {
   const resData = await api.get(`/api/v1/client_gig/get_gig_by_id/${gigId}`);
   console.log("-----resData ", resData.data.data)
   return resData;
