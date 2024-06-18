@@ -286,7 +286,7 @@ const GigSearch = () => {
       */}
       {gigList.map((gig, index) => {
           return (
-            <GigCard info = {gig}/>
+            <GigCard info = {gig} key={index}/>
           );
       })}
       {/* <GigCard />
