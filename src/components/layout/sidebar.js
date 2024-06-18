@@ -12,7 +12,6 @@ const SideBar = ({ userRole }) => {
   const [currentNav, setCurrentNav] = useState("");
   console.log("🚀 ~ SideBar ~ currentNav:", currentNav)
 
-
   useEffect(() => {
     let tmp = localStorage.getItem("jobs_2024_token");
     if (tmp === null) {
