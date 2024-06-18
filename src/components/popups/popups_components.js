@@ -747,7 +747,7 @@ export function VerificationPopup({ onClose }) {
           break;
       }
       const info = JSON.parse(localStorage.getItem('jobs_2024_token'))
-      router.push(`/dashboard/${info.data.user.name}/${accountTypeName}/`);
+      router.push(`/dashboard/${info.data.user.name}/${accountTypeName}/profile`);
     } catch (err) {
       console.log("error", err);
     }

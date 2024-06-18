@@ -26,7 +26,7 @@ import { useRouter } from 'next/navigation';
 function FileUploadBody() {
     return <div className="h-52 w-full border border-dashed border-slate-500 p-3 flex items-center justify-center rounded-xl">
         <p className='text-center'>
-            <span className='text-lg text-slate-500'>Drag and drop or &nbsp; </span> borwse files
+            <span className='text-lg text-slate-500'>Drag and drop or &nbsp; </span> browse files
         </p>
     </div>
 }
@@ -746,8 +746,10 @@ const GigPosting = () => {
                         )}
                     />
                 </form>
-                <Button className='mt-8 w-1/5 text-white rounded-full bg-[#DC4F13]' onClick={e => { handlePublish() }}>Publish Gig</Button>
             </Form>
+            <div className='md:w-1/5 w-[130px]'>
+                <Button className='mt-8 md:w-1/4 w-[130px] text-white rounded-full bg-[#DC4F13]' onClick={e => { handlePublish() }}>Publish Gig</Button>
+            </div>
         </div>
     )
 }
