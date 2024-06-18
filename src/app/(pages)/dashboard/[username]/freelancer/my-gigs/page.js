@@ -11,14 +11,14 @@ const GigsPage = () => {
   }
 
   return (
-    <div className='flex items-center justify-center flex-col gap-3 h-full mt-10'>
+    <div className='flex items-center justify-center flex-col gap-3 h-screen -mt-24'>
       <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
       <p className='text-[18px] text-slate-600'>Create your first Gig</p>
       <div
-        className='cursor-pointer bg-[#DC4F13] py-2 px-20 rounded-xl transition hover:bg-white hover:text-black'
+        className='cursor-pointer bg-[#DC4F13] flex items-center justify-center w-[260px] h-[60px] py-2 rounded-xl transition hover:bg-white hover:text-black'
         onClick={onCreate}
       >
-        Create
+        <p>Create</p>
       </div>
     </div>
   );
