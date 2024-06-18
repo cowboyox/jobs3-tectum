@@ -147,6 +147,7 @@ const Freelancer = () => {
     userId: "",
     zkpId: ""
   });
+  const [fetchAvatar, setFetchAvatar] = useState("");
 
 	const router = useRouter()
 
@@ -189,6 +190,16 @@ const Freelancer = () => {
           } else {
             setPreviewBio(data.data.profile.freelancerBio); // If the text is less than or equal to 4 lines, set previewBio to the original text
           }
+        }
+        if (data.data.profile?.avatar) {
+          // Convert the data to a Blob
+          const binaryData = new Uint8Array(data.data.profile?.avatar?.data);
+          const blob = new Blob([binaryData], { type: 'image/png' });
+  
+          // Create a URL for the Blob
+          const fetchAvatarUrl = URL.createObjectURL(blob);
+  
+          setFetchAvatar(fetchAvatarUrl);
         }
       })
     }
@@ -275,7 +286,7 @@ const Freelancer = () => {
           <div className="bg-[#10191D] md:p-8 px-3 py-4 rounded-xl flex md:flex-row flex-col md:gap-0 gap-4">
             <div className='w-full md:w-3/4 flex md:gap-7 gap-4 items-center'>
               <div className="w-16 md:w-24 md:h-24 relative">
-                <img src='/assets/images/users/user-5.png' className='rounded-full w-full h-full aspect-square' />
+                <img src={`${fetchAvatar ? fetchAvatar : "/assets/images/users/user-5.png"}`} className='rounded-full w-full h-full aspect-square' />
                 {/* Change background color depending on user online status */}
                 <div className="rounded-full h-4 w-4 absolute right-1 bottom-1 bg-green-500"></div>
               </div>

@@ -161,7 +161,22 @@ const ContextProvider = ({ children }) => {
         payload: wallet
       })
       localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
-      router.push('/jobs')
+      let accountType = data.user.role[0];
+      console.log("type: ", accountType)
+      let accountTypeName;
+      switch (accountType) {
+        case 0:
+          accountTypeName = 'freelancer';
+          break;
+        case 3:
+          accountTypeName = 'client';
+          break;
+        default:
+          accountTypeName = 'client';
+          break;
+      }
+      router.push(`/dashboard/${data.user.name}/${accountTypeName}/`);
+      // router.push('/jobs')
     } catch (err) {
       console.log(err)
     }
@@ -173,13 +188,28 @@ const ContextProvider = ({ children }) => {
     //   return;
     // }
     try {
-      const { data } = await api.post('/api/v1/user/wallet/login', { wallet, acc_type: state.acc_type })
+      const { data } = await api.post('/api/v1/user/wallet/login', { wallet })
       dispatch({
         type: HANDLERS.SIGN_IN_WALLET,
         payload: wallet
       })
       localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
-      router.replace('/jobs')
+      let accountType = data.user.role[0];
+      console.log("type: ", accountType)
+      let accountTypeName;
+      switch (accountType) {
+        case 0:
+          accountTypeName = 'freelancer';
+          break;
+        case 3:
+          accountTypeName = 'client';
+          break;
+        default:
+          accountTypeName = 'client';
+          break;
+      }
+      console.log()
+      router.push(`/dashboard/${data.user.name}/${accountTypeName}/`);
     } catch (err) {
       console.log(err)
     }

@@ -36,6 +36,21 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
       try {
         auth.signUpwithWallet(address);
         onClose();
+        let accountType = auth.acc_type[0];
+        let accountTypeName;
+        switch (accountType) {
+          case 0:
+            accountTypeName = 'freelancer';
+            break;
+          case 3:
+            accountTypeName = 'client';
+            break;
+          default:
+            accountTypeName = 'client';
+            break;
+        }
+        const info = JSON.parse(localStorage.getItem('jobs_2024_token'))
+        router.push(`/dashboard/${info.data.user.name}/${accountTypeName}/`);
       } catch (err) {
         console.log(err);
         // router.replace('/')
@@ -166,7 +181,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         onSwitchPopup("Verification");
       }
       else {
-        let accountType = auth.acc_type;
+        let accountType = auth.acc_type[0];
         let accountTypeName;
         switch (accountType) {
           case 0:
@@ -329,7 +344,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
         // router.replace('/')
       }
     }
-  }, [isConnected, isDisconnected, address, auth]);
+  }, [isConnected, isDisconnected, address]);
 
   const validateEmail = (email) => {
     return String(email)
@@ -732,7 +747,7 @@ export function VerificationPopup({ onClose }) {
           break;
       }
       const info = JSON.parse(localStorage.getItem('jobs_2024_token'))
-      router.push(`/dashboard/${info.data.user.name}/${accountTypeName}/`);
+      router.push(`/dashboard/${info.data.user.name}/${accountTypeName}/profile`);
     } catch (err) {
       console.log("error", err);
     }

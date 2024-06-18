@@ -59,7 +59,7 @@ const DropDownTrigger = (props)=> {
   </PopoverTrigger>
   )
 }
-const GigCard = () => {
+const GigCard = (props) => {
   return (
     <div className="bg-[#10191d] text-white p-4 rounded-xl flex gap-4 w-full items-center mobile:flex-col">
       <div className="relative w-[400px] max-w-full">
@@ -119,11 +119,12 @@ const GigCard = () => {
 };
 
 const GigSearch = () => {
-  const [gigList, setGigList] = useState();
+  const [gigList, setGigList] = useState([]);
   useEffect(() => {
     api.get(`/api/v1/freelancer_gig/find_all_gigs`).then((data) => {
         console.log("getAllGigs: ", data.data)
-        setGigList(data.data.data);
+        if(data.data.data)
+          setGigList(data.data.data);
     }).catch(err => {
         console.log("Error corrupted while getting all gigs: ", err);
     });
@@ -283,10 +284,14 @@ const GigSearch = () => {
       {/* 
         * These should be dynamic, you can pass all the data you need through attributes and retrieve it on the component 
       */}
+      {gigList.map((gig, index) => {
+          return (
+            <GigCard info = {gig} key={index}/>
+          );
+      })}
+      {/* <GigCard />
       <GigCard />
-      <GigCard />
-      <GigCard />
-      <GigCard />
+      <GigCard /> */}
       <div className="py-5 md:text-xl hover:bg-white transition hover:text-black px-10 w-full max-w-full rounded-xl mobile:px-5 border border-[#aaaaaaaa] text-center mx-auto cursor-pointer mt-4">Load more +</div>
     </div>
   )
