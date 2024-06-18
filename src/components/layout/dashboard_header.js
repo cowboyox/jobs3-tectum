@@ -120,11 +120,17 @@ const DashboardHeader = ({ userRole, setUserRole }) => {
             OpenSideBar();
           }}
         />
+        <div className='flex items-center gap-2'>
+          <span className='uppercase text-lg'>{currentNav}</span>
+        </div>
+        <AiOutlineQuestion className='w-6 h-6 cursor-pointer' />
+        <CiBellOn className='w-6 h-6 cursor-pointer' />
         <DropdownMenu>
           <DropdownMenuTrigger className='hidden md:flex'>
-            <div className='flex items-center gap-2'>
-              <span className='uppercase text-lg'>{currentNav}</span> <FaAngleDown />
-            </div>
+            <img
+              src='/assets/images/user_img.png'
+              className='rounded-full h-10 w-10 object-cover aspect-square object-center cursor-pointer'
+            />
           </DropdownMenuTrigger>
           <DropdownMenuContent sideOffset={10} className='w-52'>
             <DropdownMenuLabel className='uppercase'>{currentNav}</DropdownMenuLabel>
@@ -154,12 +160,6 @@ const DashboardHeader = ({ userRole, setUserRole }) => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <AiOutlineQuestion className='w-6 h-6 cursor-pointer' />
-        <CiBellOn className='w-6 h-6 cursor-pointer' />
-        <img
-          src='/assets/images/user_img.png'
-          className='rounded-full h-10 w-10 object-cover aspect-square object-center cursor-pointer'
-        />
       </div>
     </header>
   );
