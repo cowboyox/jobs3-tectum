@@ -23,123 +23,123 @@ const gigOptions = [
 ];
 
 const gigs = [
-  {
-    title: "Figma and Flow bite mentor needed",
-    time: "Posted 15 minutes ago",
-    location: "Remote",
-    rated: "5 Applicants",
-    jobSuccess: "Hourly: $40–$60",
-    about:
-      "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    desg: "Freelancer",
-  },
-  {
-    title: "Figma and Flow bite mentor needed",
-    time: "Posted 15 minutes ago",
-    location: "Remote",
-    rated: "5 Applicants",
-    jobSuccess: "Hourly: $40–$60",
-    about:
-      "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    desg: "Freelancer",
-  },
-  {
-    title: "Figma and Flow bite mentor needed",
-    time: "Posted 15 minutes ago",
-    location: "Remote",
-    rated: "5 Applicants",
-    jobSuccess: "Hourly: $40–$60",
-    about:
-      "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    desg: "Freelancer",
-  },
-  {
-    title: "Figma and Flow bite mentor needed",
-    time: "Posted 15 minutes ago",
-    location: "Remote",
-    rated: "5 Applicants",
-    jobSuccess: "Hourly: $40–$60",
-    about:
-      "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    desg: "Freelancer",
-  },
-  {
-    title: "Figma and Flow bite mentor needed",
-    time: "Posted 15 minutes ago",
-    location: "Remote",
-    rated: "5 Applicants",
-    jobSuccess: "Hourly: $40–$60",
-    about:
-      "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    desg: "Freelancer",
-  },
-  {
-    title: "Figma and Flow bite mentor needed",
-    time: "Posted 15 minutes ago",
-    location: "Remote",
-    rated: "5 Applicants",
-    jobSuccess: "Hourly: $40–$60",
-    about:
-      "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    desg: "Freelancer",
-  },
-  {
-    title: "Figma and Flow bite mentor needed",
-    time: "Posted 15 minutes ago",
-    location: "Remote",
-    rated: "5 Applicants",
-    jobSuccess: "Hourly: $40–$60",
-    about:
-      "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    desg: "Freelancer",
-  },
-  {
-    title: "Figma and Flow bite mentor needed",
-    time: "Posted 15 minutes ago",
-    location: "Remote",
-    rated: "5 Applicants",
-    jobSuccess: "Hourly: $40–$60",
-    about:
-      "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    desg: "Freelancer",
-  },
-  {
-    title: "Figma and Flow bite mentor needed",
-    time: "Posted 15 minutes ago",
-    location: "Remote",
-    rated: "5 Applicants",
-    jobSuccess: "Hourly: $40–$60",
-    about:
-      "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    desg: "Freelancer",
-  },
+  // {
+  //   title: "Figma and Flow bite mentor needed",
+  //   time: "Posted 15 minutes ago",
+  //   location: "Remote",
+  //   rated: "5 Applicants",
+  //   jobSuccess: "Hourly: $40–$60",
+  //   about:
+  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
+  //   skills: ["UI/UX", "Design", "Webdesign"],
+  //   pic: "/assets/dashboard-media/profilePic.png",
+  //   name: "Deven Miles",
+  //   desg: "Freelancer",
+  // },
+  // {
+  //   title: "Figma and Flow bite mentor needed",
+  //   time: "Posted 15 minutes ago",
+  //   location: "Remote",
+  //   rated: "5 Applicants",
+  //   jobSuccess: "Hourly: $40–$60",
+  //   about:
+  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
+  //   skills: ["UI/UX", "Design", "Webdesign"],
+  //   pic: "/assets/dashboard-media/profilePic.png",
+  //   name: "Deven Miles",
+  //   desg: "Freelancer",
+  // },
+  // {
+  //   title: "Figma and Flow bite mentor needed",
+  //   time: "Posted 15 minutes ago",
+  //   location: "Remote",
+  //   rated: "5 Applicants",
+  //   jobSuccess: "Hourly: $40–$60",
+  //   about:
+  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
+  //   skills: ["UI/UX", "Design", "Webdesign"],
+  //   pic: "/assets/dashboard-media/profilePic.png",
+  //   name: "Deven Miles",
+  //   desg: "Freelancer",
+  // },
+  // {
+  //   title: "Figma and Flow bite mentor needed",
+  //   time: "Posted 15 minutes ago",
+  //   location: "Remote",
+  //   rated: "5 Applicants",
+  //   jobSuccess: "Hourly: $40–$60",
+  //   about:
+  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
+  //   skills: ["UI/UX", "Design", "Webdesign"],
+  //   pic: "/assets/dashboard-media/profilePic.png",
+  //   name: "Deven Miles",
+  //   desg: "Freelancer",
+  // },
+  // {
+  //   title: "Figma and Flow bite mentor needed",
+  //   time: "Posted 15 minutes ago",
+  //   location: "Remote",
+  //   rated: "5 Applicants",
+  //   jobSuccess: "Hourly: $40–$60",
+  //   about:
+  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
+  //   skills: ["UI/UX", "Design", "Webdesign"],
+  //   pic: "/assets/dashboard-media/profilePic.png",
+  //   name: "Deven Miles",
+  //   desg: "Freelancer",
+  // },
+  // {
+  //   title: "Figma and Flow bite mentor needed",
+  //   time: "Posted 15 minutes ago",
+  //   location: "Remote",
+  //   rated: "5 Applicants",
+  //   jobSuccess: "Hourly: $40–$60",
+  //   about:
+  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
+  //   skills: ["UI/UX", "Design", "Webdesign"],
+  //   pic: "/assets/dashboard-media/profilePic.png",
+  //   name: "Deven Miles",
+  //   desg: "Freelancer",
+  // },
+  // {
+  //   title: "Figma and Flow bite mentor needed",
+  //   time: "Posted 15 minutes ago",
+  //   location: "Remote",
+  //   rated: "5 Applicants",
+  //   jobSuccess: "Hourly: $40–$60",
+  //   about:
+  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
+  //   skills: ["UI/UX", "Design", "Webdesign"],
+  //   pic: "/assets/dashboard-media/profilePic.png",
+  //   name: "Deven Miles",
+  //   desg: "Freelancer",
+  // },
+  // {
+  //   title: "Figma and Flow bite mentor needed",
+  //   time: "Posted 15 minutes ago",
+  //   location: "Remote",
+  //   rated: "5 Applicants",
+  //   jobSuccess: "Hourly: $40–$60",
+  //   about:
+  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
+  //   skills: ["UI/UX", "Design", "Webdesign"],
+  //   pic: "/assets/dashboard-media/profilePic.png",
+  //   name: "Deven Miles",
+  //   desg: "Freelancer",
+  // },
+  // {
+  //   title: "Figma and Flow bite mentor needed",
+  //   time: "Posted 15 minutes ago",
+  //   location: "Remote",
+  //   rated: "5 Applicants",
+  //   jobSuccess: "Hourly: $40–$60",
+  //   about:
+  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
+  //   skills: ["UI/UX", "Design", "Webdesign"],
+  //   pic: "/assets/dashboard-media/profilePic.png",
+  //   name: "Deven Miles",
+  //   desg: "Freelancer",
+  // },
 ];
 
 const Recent = ({search, setSearch}) => {
@@ -225,7 +225,7 @@ const Recent = ({search, setSearch}) => {
         ))}
       </div>
       <div className="flex flex-col gap-4">
-        {filteredRecentJob.map((gig, index) => (
+        {filteredRecentJob.length ? filteredRecentJob.map((gig, index) => (
           <div
             key={index}
             className="bg-deepGreen px-6 py-6 flex flex-col gap-4 text-white rounded-2xl"
@@ -285,7 +285,9 @@ const Recent = ({search, setSearch}) => {
               ))}
             </div>
           </div>
-        ))}
+        )): 
+        <div className="text-center">Not yet</div>  
+      }
       </div>
       <div className="py-3 border border-lightGray rounded-2xl text-center cursor-pointer">
         Load More +

@@ -7,27 +7,27 @@ import { GiLaurelCrown } from "react-icons/gi";
 import { getRecentViewedGigs } from "@/utils/http";
 
 const ratings = [
-  {
-    name: "Hannibal Smith",
-    time: "1 month ago",
-    description: "But I must explain to you how all this mistaken idea of denouncing pleasure an...",
-    star: 5,
-    price: "$360",
-  },
-  {
-    name: "Hannibal Smith",
-    time: "1 month ago",
-    description: "But I must explain to you how all this mistaken idea of denouncing pleasure an...",
-    star: 5,
-    price: "$400",
-  },
-  {
-    name: "Hannibal Smith",
-    time: "1 month ago",
-    description: "But I must explain to you how all this mistaken idea of denouncing pleasure an...",
-    star: 5,
-    price: "$450",
-  },
+  // {
+  //   name: "Hannibal Smith",
+  //   time: "1 month ago",
+  //   description: "But I must explain to you how all this mistaken idea of denouncing pleasure an...",
+  //   star: 5,
+  //   price: "$360",
+  // },
+  // {
+  //   name: "Hannibal Smith",
+  //   time: "1 month ago",
+  //   description: "But I must explain to you how all this mistaken idea of denouncing pleasure an...",
+  //   star: 5,
+  //   price: "$400",
+  // },
+  // {
+  //   name: "Hannibal Smith",
+  //   time: "1 month ago",
+  //   description: "But I must explain to you how all this mistaken idea of denouncing pleasure an...",
+  //   star: 5,
+  //   price: "$450",
+  // },
 ];
 
 const Ratings = () => {
@@ -35,11 +35,11 @@ const Ratings = () => {
   return (
     <div className="mt-10 flex flex-col gap-4">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-semibold">Recently Viewed</h1>
+        <h1 className="text-2xl font-semibold">Ratings</h1>
         <p className="cursor-pointer">Show more</p>
       </div>
       <div className="grid lg:grid-cols-3 gap-4 mt-2">
-        {ratings.map((rating, index) => (
+        {ratings.length ? ratings.map((rating, index) => (
           <div
             key={index}
             className="flex px-6 py-8 gap-1  flex-1 flex-col bg-darkGray rounded-2xl"
@@ -79,7 +79,9 @@ const Ratings = () => {
                 </div>
               </div> */}
           </div>
-        ))}
+        )): 
+        <div className="text-center">Not yet</div>
+      }
       </div>
     </div>
   );

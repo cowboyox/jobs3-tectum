@@ -7,21 +7,21 @@ import { GiLaurelCrown } from "react-icons/gi";
 import { getRecentViewedGigs } from "@/utils/http";
 
 const recentViewed = [
-  {
-    title: "Figma and Flow Bite Mentor Needed",
-    location: "Remote",
-    price: "$360",
-  },
-  {
-    title: "Figma and Flow Bite Mentor Needed",
-    location: "Remote",
-    price: "$400",
-  },
-  {
-    title: "Figma and Flow Bite Mentor Needed",
-    location: "Remote",
-    price: "$450",
-  },
+  // {
+  //   title: "Figma and Flow Bite Mentor Needed",
+  //   location: "Remote",
+  //   price: "$360",
+  // },
+  // {
+  //   title: "Figma and Flow Bite Mentor Needed",
+  //   location: "Remote",
+  //   price: "$400",
+  // },
+  // {
+  //   title: "Figma and Flow Bite Mentor Needed",
+  //   location: "Remote",
+  //   price: "$450",
+  // },
 ];
 
 const RecentlyViewed = () => {
@@ -46,7 +46,7 @@ const RecentlyViewed = () => {
         <p className="cursor-pointer">Show more</p>
       </div>
       <div className="grid lg:grid-cols-3 gap-4 mt-2">
-        {recentViewed.map((spend, index) => (
+        {recentViewed.length ? recentViewed.map((spend, index) => (
           <div
             key={index}
             className="flex px-4 py-8 gap-1 items-center flex-col bg-darkGray rounded-2xl"
@@ -71,7 +71,9 @@ const RecentlyViewed = () => {
               </div>
             </div>
           </div>
-        ))}
+        )): 
+        <div className="text-center mt-[10%]">Not yet</div>  
+      }
       </div>
     </div>
   );
@@ -79,29 +81,29 @@ const RecentlyViewed = () => {
 
 export default RecentlyViewed;
 
-const recentlyViewed = [
-  {
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    locatin: "Yogyakarta, Indonesia",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    rated: "Top Rated",
-    jobSuccess: "96% Job Success",
-  },
-  {
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    locatin: "Yogyakarta, Indonesia",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    rated: "Top Rated",
-    jobSuccess: "96% Job Success",
-  },
-  {
-    pic: "/assets/dashboard-media/profilePic.png",
-    name: "Deven Miles",
-    locatin: "Yogyakarta, Indonesia",
-    skills: ["UI/UX", "Design", "Webdesign"],
-    rated: "Top Rated",
-    jobSuccess: "96% Job Success",
-  },
-];
+// const recentlyViewed = [
+//   {
+//     pic: "/assets/dashboard-media/profilePic.png",
+//     name: "Deven Miles",
+//     locatin: "Yogyakarta, Indonesia",
+//     skills: ["UI/UX", "Design", "Webdesign"],
+//     rated: "Top Rated",
+//     jobSuccess: "96% Job Success",
+//   },
+//   {
+//     pic: "/assets/dashboard-media/profilePic.png",
+//     name: "Deven Miles",
+//     locatin: "Yogyakarta, Indonesia",
+//     skills: ["UI/UX", "Design", "Webdesign"],
+//     rated: "Top Rated",
+//     jobSuccess: "96% Job Success",
+//   },
+//   {
+//     pic: "/assets/dashboard-media/profilePic.png",
+//     name: "Deven Miles",
+//     locatin: "Yogyakarta, Indonesia",
+//     skills: ["UI/UX", "Design", "Webdesign"],
+//     rated: "Top Rated",
+//     jobSuccess: "96% Job Success",
+//   },
+// ];
