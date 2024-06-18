@@ -67,16 +67,15 @@ const Freelancers = () => {
     if (e.key === 'Enter' && searchType == searchOptions[1]) {
       // Handle the Enter key press event
       // handleSearch(searchQuery);
-      console.log("AI search")
+      console.log("AI search", searchKeyWords)
       api.get(`/api/v1/profile/ai-search-profile/${searchKeyWords}`).then((data)=>{
         let ai_ids = []
         if(data.data.profileIDs) 
           ai_ids = data.data.profileIDs
           console.log(ai_ids)
           console.log(freelancers[0])
-          const ai_filtered = freelancers.filter(freelancer =>
-            ai_ids.includes(freelancer._id.toString())
-          );
+          const ai_filtered = ai_ids.map(id =>
+            freelancers.find(freelancer => freelancer._id.toString() === id)).filter(freelancer => freelancer != undefined);
           console.log(ai_filtered)
           setFilteredFreelancers(ai_filtered)
       })
@@ -303,7 +302,7 @@ const Freelancers = () => {
         {filterCategory.map((item, index) => {
           return (
             <span
-              key={index}
+              key={`filterCategory_${index}`}
               className="bg-[#28373E] pl-2 pr-2 p-1 rounded-full border border-[#3E525B] gap-1 flex flex-row items-center"
             >
               <FaX className="p-[2px] bg-[#3E525B] rounded-full" />
@@ -318,7 +317,7 @@ const Freelancers = () => {
           return (
             <div
               className="bg-[#10191D] mt-4 text-center p-5 rounded-xl"
-              key={index}
+              key={`freelancers_${index}`}
             >
               <div className="flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start">
                 <div className="flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3">
@@ -418,7 +417,7 @@ const Freelancers = () => {
                   freelancer.skills.map((item, index) => {
                     return (
                       <span
-                        key={index}
+                        key={`skills_${index}`}
                         className="bg-[#28373E] pl-2 pr-2 p-1 rounded-full border border-[#3E525B] gap-1 flex flex-row items-center"
                       >
                         <FaX className="p-[2px] bg-[#3E525B] rounded-full" />

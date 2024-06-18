@@ -84,16 +84,16 @@ const GigCard = (props) => {
       </div>
       <div className="flex flex-col gap-2 flex-grow">
         <h3 className="text-2xl font-semibold text-[#F5F5F5]">
-          Title of the searching Gig can be very long
+          {props.info.gigTitle}
         </h3>
         <div className="flex items-center gap-5 mt-2 text-gray-400">
           <div className="flex items-center gap-2">
             <FaClock size={24} />
-            <span className='text-base'>3 days</span>
+            <span className='text-base'>{props.info.gigPrice}</span>
           </div>
           <div className="flex items-center gap-2">
             <CiReceipt size={28} />
-            <span className='text-base'>$400</span>
+            <span className='text-base'>${props.info.gigPrice}</span>
           </div>
         </div>
         <hr className="my-3 border-[#1B272C]" />
@@ -107,10 +107,10 @@ const GigCard = (props) => {
           /> 
           <div className="ml-2">
             <div className="flex items-center gap-2">
-              <p className="font-semibold text-2xl mobile:text-xl">Devon Miles</p>
+              <p className="font-semibold text-2xl mobile:text-xl">{props.info.creator?.fullName}</p>
               <BsPatchCheckFill fill="#0b75c2" />
             </div>
-            <p className="text-gray-400 text-base mobile:text-sm">Yogyakarta, Indonesia</p>
+            <p className="text-gray-400 text-base mobile:text-sm">{props.info.creator?.location}</p>
           </div>
         </div>
       </div>
@@ -120,20 +120,61 @@ const GigCard = (props) => {
 
 const GigSearch = () => {
   const [gigList, setGigList] = useState([]);
+  const [searchType, setSearchType] = useState("normal")
+  const [searchKeywords, setSearchKeyWords] = useState("")
+  const [filteredGigList, setFilteredGigList] = useState([])
   useEffect(() => {
     api.get(`/api/v1/freelancer_gig/find_all_gigs`).then((data) => {
-        console.log("getAllGigs: ", data.data)
-        if(data.data.data)
+        console.log("getAllGigs: ", data.data.data[0])
+        if(data.data.data){
           setGigList(data.data.data);
+          setFilteredGigList(data.data.data)
+        }
     }).catch(err => {
         console.log("Error corrupted while getting all gigs: ", err);
     });
   }, [])
 
+  const onChangeType = e => {
+    setSearchType(e)
+  }
+
+  const setKey = (e) => {
+    setSearchKeyWords(e.target.value)
+    if(searchType == 'normal'){
+      const filtered = gigList.filter(gig => 
+        gig.deliveryTime.toLowerCase().includes(e.target.value.toLowerCase()) || 
+        gig.email.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        gig.gigDescription.toLowerCase().includes(e.target.value.toLowerCase()) || 
+        gig.gigPostDate.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        gig.gigPrice.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
+        gig.gigTitle.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      setFilteredGigList(filtered);
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && searchType === 'ai') {
+      console.log("AI search", searchKeywords)
+      api.get(`/api/v1/freelancer_gig/ai-search/${searchKeywords}`).then((data)=>{
+        let ai_ids = []
+        if(data.data.profileIDs) 
+          ai_ids = data.data.profileIDs
+          console.log(ai_ids)
+          console.log(gigList[0])
+          const ai_filtered = ai_ids.map(id =>
+            gigList.find(gig => gig._id.toString() === id)).filter(gig => gig != undefined);
+          console.log(ai_filtered)
+          setFilteredGigList(ai_filtered)
+      })
+    }
+  }
+
   return (
     <div className='flex flex-col gap-4'>
       <div className="flex gap-2 p-3 mobile:p-1 bg-[#10191d] rounded-xl">
-        <Select defaultValue='normal'>
+        <Select defaultValue='normal' onValueChange={e => onChangeType(e)}>
           <SelectTrigger className='bg-[#1B272C] w-20 mobile:w-14 mobile:p-2 rounded-xl' >
             <SelectValue/>
           </SelectTrigger>
@@ -151,6 +192,8 @@ const GigSearch = () => {
         <input 
           className='w-full bg-transparent text-white outline-none mobile:text-sm'
           placeholder='Search by job title, company, keywords' 
+          onChange={e => setKey(e)}
+          onKeyDown={handleKeyDown}
         />
         <div className="px-3 flex items-center gap-3 cursor-pointer hover:bg-[#1B272C] rounded-xl transition mobile:hidden">
           <IoLocationOutline stroke="#96B0BD" size={20} />
@@ -284,7 +327,7 @@ const GigSearch = () => {
       {/* 
         * These should be dynamic, you can pass all the data you need through attributes and retrieve it on the component 
       */}
-      {gigList.map((gig, index) => {
+      {filteredGigList.map((gig, index) => {
           return (
             <GigCard info = {gig} key={index}/>
           );
