@@ -125,7 +125,7 @@ const GigSearch = () => {
   const [filteredGigList, setFilteredGigList] = useState([])
   useEffect(() => {
     api.get(`/api/v1/freelancer_gig/find_all_gigs`).then((data) => {
-        console.log("getAllGigs: ", data.data.data[0])
+        console.log("getAllGigs: ", data.data.data)
         if(data.data.data){
           setGigList(data.data.data);
           setFilteredGigList(data.data.data)
@@ -322,7 +322,7 @@ const GigSearch = () => {
         </Popover>
       </div>
       <div className="flex items-center justify-center py-6 px-3 bg-[#10191d] rounded-xl text-lg">
-        Wow! <span className='main_color px-2'>49</span> projects available 😀
+        Wow! <span className='main_color px-2'>{filteredGigList.length}</span> projects available 😀
       </div>
       {/* 
         * These should be dynamic, you can pass all the data you need through attributes and retrieve it on the component 
