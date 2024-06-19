@@ -40,7 +40,7 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
 
   const [filteredOrders, setfilteredOrders] = useState([]);
-  const [profile, setProfile] = useState(null)
+  const [profile, setProfile] = useState(null);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   useEffect(() => {
     const handleResize = () => {
@@ -129,7 +129,7 @@ const Orders = () => {
           </button>
           <input
             type='text'
-            placeholder={isSmallScreen ? '' : 'Search by Order title...'}
+            placeholder={isSmallScreen ? 'Search' : 'Search by Order title...'}
             className=' bg-transparent outline-none w-full'
             onChange={e => handleSearch(e)}
           />
@@ -284,22 +284,24 @@ const Orders = () => {
             </div>
           )}
         </div>
-        <div className='flex flex-row items-center gap-2 justify-center'>
-          <div>Sort by</div>
-          <div>
-            <Select>
-              <SelectTrigger className='bg-transparent border-none text-[#96B0BD] flex justify-center focus:outline-none focus:border-none'>
-                <SelectValue placeholder='Sort By' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Sort By</SelectLabel>
-                  <SelectItem value='date'>Date</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+        {!isSmallScreen && (
+          <div className='flex flex-row items-center gap-2 justify-center'>
+            <div>Sort by</div>
+            <div>
+              <Select>
+                <SelectTrigger className='bg-transparent border-none text-[#96B0BD] flex justify-center focus:outline-none focus:border-none'>
+                  <SelectValue placeholder='Sort By' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Sort By</SelectLabel>
+                    <SelectItem value='date'>Date</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className='bg-[#10191D] mt-4 text-center p-5 rounded-xl'>
         You have <span className='text-[#DC4F13] font-bold'>{filteredOrders.length}</span> Orders😊
