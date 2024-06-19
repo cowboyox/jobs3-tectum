@@ -12,12 +12,14 @@ const SideBar = ({ userRole }) => {
   const [currentNav, setCurrentNav] = useState("");
   console.log("🚀 ~ SideBar ~ currentNav:", currentNav)
 
+
   useEffect(() => {
     let tmp = localStorage.getItem("jobs_2024_token");
     if (tmp === null) {
       console.log("Please Login First");
     } else {
       setUser(JSON.parse(tmp).data.user);
+      // console.log(user.role?.includes(3),user.role,"this is user state in the sideBar")
     }
     setCurrentNav(window.location.href.split("/")[5]);
   }, [userRole]);
@@ -566,7 +568,7 @@ const SideBar = ({ userRole }) => {
         </svg>
       ),
       name: "Gig Search",
-      href: `/dashboard/${user.name}/client/gig-search`,
+      href: `/dashboard/${user.name}/client/freelancers`,
     },
     {
       id: 6,

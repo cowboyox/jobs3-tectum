@@ -40,14 +40,12 @@ const Orders = () => {
     "Completed",
     "Cancelled",
   ]);
-  const [orders, setOrders] = useState([]);
-  const [filteredOrders, setfilteredOrders] = useState([]);
+  const [orders, setOrders] = useState([1, 2]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const handleSearchTypeChange = (v) => setSearchType(v);
   const [placeholderText, setPlaceholderText] = useState(
     "Search by Order title..."
   );
-  const [profile, setProfile] = useState(null)
   const [isSmallScreen, setIsSmallScree] = useState(false);
   useEffect(() => {
     const handleResize = () => {
@@ -70,43 +68,12 @@ const Orders = () => {
   }, []);
 
   useEffect(() => {
-    if (auth.user) {
-      api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then(data => {
-        setProfile(data.data.profile);
-        console.log(data.data.profile)
-      })
-    }
-  }, [auth])
-
-  useEffect(() => {
-    if (profile) {
-      api.get(`/api/v1/freelancer_gig/find_all_gigs_proposed/${profile._id}`).then((data) => {
-        console.log(data.data.data)
-        if (data.data.data) {
-          setOrders(data.data.data)
-          setfilteredOrders(data.data.data)
-        } else {
-          setOrders([])
-          setfilteredOrders([])
-        }
-      })
-    }
-  }, [profile])
-
-  const formattedDate = (dateString) => {
-    const date = new Date(dateString);
-
-    // Get abbreviated month name
-    const monthAbbreviation = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(date);
-
-    // Get day with leading zero if needed
-    const day = date.getUTCDate().toString().padStart(2, '0');
-
-    // Formatted date string
-    const formattedDate = `${monthAbbreviation} ${day}`;
-    console.log(formattedDate); // Output: "Apr 18"
-    return formattedDate
-  }
+    // if(auth.user){
+    //     api.get(`/api/v1/profile/get-all-freelancers`).then((data)=>{
+    //         console.log(data.data.data[49])
+    //     })
+    // }
+  });
 
   return (
     <div className="p-0 sm:p-0 xl:mt-8 lg:mt-8">
@@ -292,7 +259,7 @@ const Orders = () => {
         </div>
       </div>
       <div className="bg-[#10191D] mt-4 text-center p-5 rounded-xl">
-        You have <span className="text-[#DC4F13] font-bold">{orders.length}</span> Orders😊
+        You have <span className="text-[#DC4F13] font-bold">49</span> Orders😊
       </div>
       <div className="flex flex-row gap-3 mt-4 items-center text-[#F5F5F5] overflow-x-auto touch-pan-x overscroll-x-contain">
         {filterCategory.map((item, index) => {
@@ -316,7 +283,7 @@ const Orders = () => {
           >
             <div className="flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start">
               <div className="flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3">
-                {order.gigTitle}
+                Digital Interface for finance project
               </div>
               <div className="flex-none flex flex-row gap-2 items-center">
                 <div className="border border-[#F7AE20] text-[#F7AE20] p-1 rounded-xl px-3">
@@ -525,7 +492,7 @@ const Orders = () => {
                     stroke-linejoin="round"
                   />
                 </svg>
-                {formattedDate(order.gigPostDate)} - Present
+                May 15 - Present
               </div>
               <div className="flex flex-row items-center gap-2">
                 <svg
@@ -580,13 +547,16 @@ const Orders = () => {
                     stroke-linejoin="round"
                   />
                 </svg>
-                ${order.gigPrice}
+                $400
               </div>
             </div>
             <Separator className="my-4" />
             {isSmallScreen && (
               <div className="text-left text-[#96B0BD]">
-                {order.gigDescription}
+                Creating intuitive and visually compelling digital interfaces.
+                My mission is to bridge the gap between functionality and
+                aesthetics, ensuring that every user interaction is as enjoyable
+                as it is efficient.
               </div>
             )}
             <div className="mt-3 flex md:flex-row flex-col justify-between md:items-center items-start">
@@ -600,7 +570,7 @@ const Orders = () => {
                 </div>
                 <div className="flex flex-col gap-1 text-left">
                   <div className="flex flex-row gap-1 font-bold items-center">
-                    {order.creator?.fullName}
+                    Emily Rosenberg
                     <svg
                       width="17"
                       height="17"
