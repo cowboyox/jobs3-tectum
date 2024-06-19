@@ -1,8 +1,40 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import {
+    useAnchorWallet,
+    useConnection,
+    useWallet,
+} from "@solana/wallet-adapter-react";
+import axios from "axios";
+import {
+    Program,
+    AnchorProvider,
+    setProvider,
+    getProvider,
+    Idl,
+    utils,
+    BN,
+    Provider,
+} from "@project-serum/anchor";
+import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
+  
+import {
+    TOKEN_PROGRAM_ID,
+    ASSOCIATED_TOKEN_PROGRAM_ID,
+    getAssociatedTokenAddressSync,
+} from "@solana/spl-token";
+import { v4 as uuid } from "uuid";
+import {
+    PROGRAM_ID,
+    ADMIN_ADDRESS,
+    CONTRACT_SEED,
+    PAYTOKEN_MINT,
+    DECIMALS,
+} from "@/utils/constants";
+import IDL from "@/idl/gig_basic_contract.json";
 import {
   Select,
   SelectContent,
@@ -28,16 +60,21 @@ import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 
 const Orders = () => {
-  const auth = useCustomContext();
-  const router = useRouter();
-  const [search, setSearch] = useState();
-  const [filterCategory, setFilterCategories] = useState([
-    'Active',
-    'Paused',
-    'Completed',
-    'Cancelled',
-  ]);
-  const [orders, setOrders] = useState([]);
+    const auth = useCustomContext();
+    const router = useRouter();
+    const wallet = useAnchorWallet();
+    const { sendTransaction } = useWallet();
+    const { connection } = useConnection();
+  
+    const [program, setProgram] = useState();
+    const [search, setSearch] = useState();
+    const [filterCategory, setFilterCategories] = useState([
+        "Active",
+        "Paused",
+        "Completed",
+        "Cancelled"
+    ])
+    const [orders, setOrders] = useState([]);
 
   const [filteredOrders, setfilteredOrders] = useState([]);
   const [profile, setProfile] = useState(null);
