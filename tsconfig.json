@@ -17,6 +17,9 @@
       "@/lib/*": [
         "./src/lib/*"
       ],
+      "@/idl/*": [
+        "./src/idl/*"
+      ],
       "@/context/*": [
         "./src/context/*"
       ],
