@@ -143,12 +143,12 @@ const GigSearch = () => {
     setSearchKeyWords(e.target.value)
     if(searchType == 'normal'){
       const filtered = gigList.filter(gig => 
-        gig.deliveryTime.toLowerCase().includes(e.target.value.toLowerCase()) || 
-        gig.email.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        gig.gigDescription.toLowerCase().includes(e.target.value.toLowerCase()) || 
-        gig.gigPostDate.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        gig.gigPrice.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
-        gig.gigTitle.toLowerCase().includes(e.target.value.toLowerCase())
+        gig.deliveryTime?.toLowerCase().includes(e.target.value.toLowerCase()) || 
+        gig.email?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) || 
+        gig.gigPostDate?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        gig.gigPrice?.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
+        gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase())
       );
       setFilteredGigList(filtered);
     }
