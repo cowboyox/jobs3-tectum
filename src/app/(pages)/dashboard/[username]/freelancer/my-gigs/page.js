@@ -1,24 +1,44 @@
 'use client';
 
-import React from 'react';
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from 'react';
+import BlankView from './Blank';
+import CreateRow from './CreateRow';
+import TabView from './TabView';
+import { useCustomContext } from '@/context/use-custom';
+import api from '@/utils/api';
 
 const GigsPage = () => {
-  const router = useRouter();
+  const auth = useCustomContext();
+  const [allGigs, setAllGigs] = useState([]);
 
-  const onCreate = () => {
-    router.push('./my-gigs/create');
-  }
+  useEffect(() => {
+    const func = async () => {
+      if (auth.user) {
+        const res = await api.get(
+          `/api/v1/freelancer_gig/find_all_gigs_by_email/${auth.user.email}`
+        );
+
+        if (res.data) {
+          setAllGigs(res.data.data);
+        }
+      }
+    };
+
+    func();
+  }, [auth]);
 
   return (
-    <div className='flex items-center justify-center flex-col gap-3 h-screen -mt-24'>
-      <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
-      <p className='text-[18px] text-slate-600'>Create your first Gig</p>
-      <div
-        className='cursor-pointer bg-[#DC4F13] flex items-center justify-center w-[260px] h-[60px] py-2 rounded-xl transition hover:bg-white hover:text-black'
-        onClick={onCreate}
-      >
-        <p>Create</p>
+    <div className='p-8 mobile:p-0'>
+      {allGigs.length ? (
+        <>
+          <CreateRow />
+          <TabView allGigs={allGigs} />
+        </>
+      ) : (
+        <BlankView />
+      )}
+      <div className='py-5 md:text-xl hover:bg-[#28373E] transition px-10 w-full max-w-full rounded-xl mobile:px-5 border border-[#28373E] text-center mx-auto cursor-pointer mt-8'>
+        Load more +
       </div>
     </div>
   );
