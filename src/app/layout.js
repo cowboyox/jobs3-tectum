@@ -2,6 +2,7 @@ import "./globals.scss";
 import "./globals.css"; 
 import { Toaster } from "@/components/ui/toaster"
 import { SocketProvider } from '@/context/socket';
+import { ParentWalletContextProvider } from '@/context/WalletContextProvider';
 
 export const metadata = {
 	title: "JOBS3 - Decentralising and globalising the employment landscape",
@@ -17,11 +18,13 @@ export default function RootLayout({ children }) {
 		<html lang="en">
 			<body>
 				<Web3Modal>
-					<ContextProvider>
-						<SocketProvider>
-							{children}
-						</SocketProvider>
-					</ContextProvider>
+					<ParentWalletContextProvider>
+						<ContextProvider>
+							<SocketProvider>
+								{children}
+							</SocketProvider>
+						</ContextProvider>
+					</ParentWalletContextProvider>
 				</Web3Modal>
 				<Toaster />
 			</body>
