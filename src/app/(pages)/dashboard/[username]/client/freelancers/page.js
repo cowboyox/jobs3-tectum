@@ -55,10 +55,10 @@ const Freelancers = () => {
     setSearchKeyWords(e.target.value)
     if(searchType == searchOptions[0]){
       const filtered = freelancers.filter(freelancer => 
-        freelancer.email.toLowerCase().includes(e.target.value.toLowerCase()) || 
-        freelancer.freelancerBio.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        freelancer.fullName.toLowerCase().includes(e.target.value.toLowerCase()) || 
-        freelancer.location.toLowerCase().includes(e.target.value.toLowerCase())
+        freelancer.email?.toLowerCase().includes(e.target.value.toLowerCase()) || 
+        freelancer.freelancerBio?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        freelancer.fullName?.toLowerCase().includes(e.target.value.toLowerCase()) || 
+        freelancer.location?.toLowerCase().includes(e.target.value.toLowerCase())
       );
       setFilteredFreelancers(filtered);
     }

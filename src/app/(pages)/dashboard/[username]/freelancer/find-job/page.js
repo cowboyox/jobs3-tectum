@@ -79,10 +79,14 @@ const FindJob = () => {
 
   const handleFilter = () => {
     let filteredGigs = gigList;
-
+    console.log("Search: ", search)
+    console.log("Filtered: ", filteredGigs)
     if (search) {
-      filteredGigs = filteredGigs.filter((gig) =>
-        gig.gigTitle.toLowerCase().includes(search.toLowerCase())
+      filteredGigs = filteredGigs.filter((gig) => 
+        gig.gigTitle?.toLowerCase().includes(search.toLowerCase()) ||
+        gig.gigDescription?.toLowerCase().includes(search.toLowerCase()) ||
+        gig.location?.toLowerCase().includes(search.toLowerCase()) ||
+        gig.requiredSkills?.map(item => item.toLowerCase()).includes(search.toLowerCase())
       );
     }
 
