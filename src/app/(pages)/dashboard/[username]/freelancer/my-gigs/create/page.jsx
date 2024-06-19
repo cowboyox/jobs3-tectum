@@ -7,7 +7,7 @@
 */
 
 /*----- React and related hooks -----*/
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 /*----- Context Providers -----*/
@@ -112,6 +112,17 @@ const CreateGig = () => {
     },
   ]);
 
+  const [profile, setProfileData] = useState(null)
+  useEffect(() => {
+    if(auth.user){
+      api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then(res =>{
+        console.log(res.data.profile)
+        setProfileData(res.data.profile);
+      })
+    }
+  }, [auth])
+  
+
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
 
@@ -187,7 +198,10 @@ const CreateGig = () => {
     values.question = requirementQuestions
     values.searchKeywords = tags
     values.email = auth.user.email
-    values.creator = auth.user.id
+    if(profile){
+      console.log(profile._id)
+      values.creator = profile._id
+    }
 
     if (!values.gigTitle) {
       return toast({
@@ -218,9 +232,9 @@ const CreateGig = () => {
     };
     await api.post('/api/v1/freelancer_gig/post_gig', values).then(async (data) => {
       console.log(data)
-      await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
-        console.log("Successfully uploaded");
-      })
+      // await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
+      //   console.log("Successfully uploaded");
+      // })
       toast({
         variant: "default",
         title: <h1 className='text-center'>Success</h1>,
