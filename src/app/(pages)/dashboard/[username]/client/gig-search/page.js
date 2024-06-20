@@ -32,6 +32,7 @@ import { PiShootingStarLight } from 'react-icons/pi';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import api from '@/utils/api';
 import searchOptions from '../freelancers/searchOptions';
+import { useRouter } from 'next/navigation';
 
 const DropdownItem = props => {
   return (
@@ -54,6 +55,8 @@ const DropDownTrigger = props => {
   );
 };
 const GigCard = props => {
+  const router = useRouter();
+
   return (
     <div className='bg-[#10191d] text-white p-4 rounded-xl flex gap-4 w-full items-center mobile:flex-col'>
       <div className='relative w-[400px] max-w-full'>
@@ -89,22 +92,37 @@ const GigCard = props => {
           </div>
         </div>
         <hr className='my-3 border-[#1B272C]' />
-        <div className='flex items-center'>
-          <Image
-            src='/assets/images/users/user-6.png'
-            alt='Devon Miles'
-            width={50}
-            height={50}
-            className='rounded-full'
-          />
-          <div className='ml-2'>
-            <div className='flex items-center gap-2'>
-              <p className='font-semibold text-2xl mobile:text-xl'>
-                {props.info.creator?.fullName}
+        <div className='flex justify-between'>
+          <div className='flex items-center'>
+            <Image
+              src='/assets/images/users/user-6.png'
+              alt='Devon Miles'
+              width={50}
+              height={50}
+              className='rounded-full'
+            />
+            <div className='ml-2'>
+              <div className='flex items-center gap-2'>
+                <p className='font-semibold text-2xl mobile:text-xl'>
+                  {props.info.creator?.fullName}
+                </p>
+                <BsPatchCheckFill fill='#0b75c2' />
+              </div>
+              <p className='text-gray-400 text-base mobile:text-sm'>
+                {props.info.creator?.location}
               </p>
-              <BsPatchCheckFill fill='#0b75c2' />
             </div>
-            <p className='text-gray-400 text-base mobile:text-sm'>{props.info.creator?.location}</p>
+          </div>
+          <div className='bg-[#1B272C] p-1 rounded-xl flex-none md:mt-0 mt-2'>
+            <button className='md:p-5 px-10 p-4'>Message</button>
+            <button
+              className='bg-[#DC4F13] md:px-10 md:py-4 px-10 '
+              onClick={() =>
+                router.push(`../client/job-application/${props.info._id}`)
+              }
+            >
+              Order
+            </button>
           </div>
         </div>
       </div>
