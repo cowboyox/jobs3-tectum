@@ -71,7 +71,7 @@ const Orders = () => {
 
   useEffect(() => {
     if (auth.user) {
-      api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then(data => {
+      api.get(`/api/v1/profile/get-profile/${auth.user.email}/3`).then(data => {
         setProfile(data.data.profile);
         console.log(data.data.profile)
       })
