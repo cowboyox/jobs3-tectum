@@ -69,30 +69,359 @@ const Question = (props) => {
   )
 }
 
-const categories_list = [
-  {
-    value: "category_1",
-    label: "Accounting & Consulting",
-  },
-  {
-    value: "category_2",
-    label: "Admin Support",
-  },
-  {
-    value: "category_3",
-    label: "Customer Service",
-  },
-  {
-    value: "category_4",
-    label: "Category 4",
-  },
-  {
-    value: "category_5",
-    label: "Category 5",
-  },
-];
+
 
 const CreateGig = () => {
+  const categories_list = [
+    {
+      value: "category_1",
+      label: "Accounting & Consulting",
+    },
+    {
+      value: "category_2",
+      label: "Admin Support",
+    },
+    {
+      value: "category_3",
+      label: "Customer Service",
+    },
+    {
+      value: "category_4",
+      label: "Crypto & Web3",
+    },
+    {
+      value: "category_5",
+      label: "Data Science & Analytics",
+    },
+    {
+      value: "category_6",
+      label: "Design & Creative"
+    },
+    {
+      value: "category_7",
+      label: "Engineering & Architecture"
+    },
+    {
+      value: "category_8",
+      label: "IT & Networking"
+    },
+    {
+      value: "category_9",
+      label: "Legal"
+    },
+    {
+      value: "category_10",
+      label: "Sales & Marketing"
+    },
+    {
+      value: "category_11",
+      label: "Translation"
+    },
+    {
+      value: "category_12",
+      label: "Web, Mobile & Software Development"
+    },
+    {
+      value: "category_13",
+      label: "Writing"
+    }
+  ];
+
+  const subcategory_list = [
+    {
+      parent: "Accounting & Consulting",
+      value: [
+        'Personal Coaching',
+        'Career Coaching',
+        'Business Analysis',
+        'Management Consulting',
+        'Instructional Design',
+        'HR Administration',
+        'Recruiting & Talent Sourcing',
+        'Training & Development',
+        'Tax Preparation',
+        'Bookkeeping',
+        'Accounting',
+        'Financial Management/CFO',
+        'Financial Analysis & Modeling'
+      ],
+    },
+    {
+      parent: "Admin Support",
+      value: [
+        'Personal Virtual Assistance',
+        'Executive Virtual Assistance',
+        'Legal Virtual Assistance',
+        'Ecommerce Mangement',
+        'Medical Virtual Assistance',
+        'General Virtual Assistance',
+        'Data Entry',
+        'Manual Transcription',
+        'Supply Chain & Logistics Project Management',
+        'Business Project Management',
+        'Digital Project Mangement',
+        'Construction & Engineering Project Mangement',
+        'Development & IT Project Management',
+        'Healthcare Project Mangement',
+        'Quantitative Research',
+        'Market Research',
+        'General Research Services',
+        'Qualitative Research',
+        'Product Reviews',
+        'Web & Software Product Research'
+      ],
+    },
+    {
+      parent: "Customer Service",
+      value: [
+        'Customer Onboarding',
+        'IT Support',
+        'Tech Support',
+        'Email, Phone & Chat Support',
+        'Visual Tagging & Processing',
+        'Community Management',
+        'Content Moderation'
+      ],
+    },
+    {
+      parent: "Crypto & Web3",
+      value: [
+        'NFT Art',
+        'Coins Design & Tokenisation',
+        'Blockchain & NFT Development',
+        'Wallet Development',
+        'DEX/CEX Listing',
+        'Trading Bots Development',
+        'Smart Contracts Development',
+        'DAPPs Development',
+        'Security & Audit',
+        'KOLs Marketing',
+        'Consulting',
+        'Web3 PR',
+        'Shilling',
+        'Market Making',
+        'Trending',
+        'Buy Bots',
+        'CryptoBanner Ads',
+        'Reddit',
+        'Telegram Promotion',
+        'Token Launch'
+      ],
+    },
+    {
+      parent: "Data Science & Analytics",
+      value: [
+        'Data Mining',
+        'Data Engineering',
+        'Data Extraction',
+        'Data Processing',
+        'Deep Learning',
+        'Knowledge Representation',
+        'AI Data Annotation & Labeling',
+        'Machine Learning',
+        'Generative AI Modeling',
+        'Data Visualization',
+        'Data Analytics',
+        'Experimentation & Testing'
+      ],
+    },
+    {
+      parent: "Design & Creative",
+      value: [
+        'Brand Identity Design',
+        'Logo Design',
+        'Singing',
+        'Acting',
+        'Voice Talent',
+        'Music Performance',
+        'Visual Effects',
+        '2D Animation',
+        'Video Editing',
+        'Video Production',
+        'AI Video Generation & Editing',
+        'Motion Graphics',
+        'Videography',
+        '3D Animation',
+        'Packaging Design',
+        'Art Direction',
+        'Graphic Design',
+        'Image Editing',
+        'Presentation Design',
+        'Creative Direction',
+        'Editorial Design',
+        'AI Image Generation & Editing',
+        'Cartoons & Comics',
+        'Pattern Design',
+        'Fine Art',
+        'Portraits & Caricatures',
+        'Illustration',
+        'Songwriting & Music Composition',
+        'Music Production',
+        'Audio Editing',
+        'AI Speech & Audio Generation',
+        'Audio Production',
+        'Product & Industrial Design',
+        'Jewelry Design',
+        'Fashion Design',
+        'AR/VR Design',
+        'Game Art',
+        'Production Photography',
+        'Local Photography',
+        'Animated Explainers'
+      ],
+    },
+    {
+      parent: "Engineering & Architecture",
+      value: [
+        'Structural Engineering',
+        'Building Information Modeling',
+        'Civil Engineering',
+        '3D Modeling & Rendering',
+        'CAD',
+        'Landscape Architecture',
+        'Architectural Design',
+        'Interior Design',
+        'Trade Show Design',
+        'Energy Engineering',
+        'Mechanical Engineering',
+        'Chemical & Process Engineering',
+        'Electronic Engineering',
+        'Electrical Engineering',
+        'STEM Tutoring',
+        'Physics',
+        'Mathematics',
+        'Biology',
+        'Chemistry',
+        'Logistics & Supply Chain Management',
+        'Sourcing & Procurement'
+      ],
+    },
+    {
+      parent: "IT & Networking",
+      value: [
+        'Network Security',
+        'IT Compliance',
+        'Information Security',
+        'Database Administration',
+        'Cloud Engineering',
+        'Solution Architecture',
+        'DevOps Engineering',
+        'Business Applications Development',
+        'Systems Engineering',
+        'Network Administration'
+      ],
+    },
+    {
+      parent: "Legal",
+      value: [
+        'Business & Corporate Law',
+        'Intellectual Property Law',
+        'Paralegal Services',
+        'Tax Law',
+        'Securities & Finance Law',
+        'Labor & Employment Law',
+        'Regulatory Law',
+        'International Law',
+        'Immigration Law'
+      ],
+    },
+    {
+      value: [
+        'Public Relations',
+        'Social Media Strategy',
+        'Marketing Strategy',
+        'Content Strategy',
+        'Brand Strategy',
+        'Email Marketing',
+        'SEO',
+        'Social Media Marketing',
+        'Display Advertising',
+        'Campaign Management',
+        'Marketing Automation',
+        'Search Engine Marketing',
+        'Telemarketing',
+        'Lead Generation',
+        'Sales & Business Development',
+        'Book and Ebook Marketing',
+        'Podcast Marketing',
+        'Video Marketing',
+        'Influencer Marketing',
+        'Mobile App Marketing',
+        'Affiliate Marketing'
+      ],
+      parent: "Sales & Marketing"
+    },
+    {
+      value: [
+        'Sign Language Interpretation',
+        'Live Interpretation',
+        'Language Tutoring',
+        'Technical Document Translation',
+        'Legal Document Translation',
+        'Medical Document Translation',
+        'General Translation Services',
+        'Language Localization'
+      ],
+      parent: "Translation"
+    },
+    {
+      value: [
+        'Ecommerce Website Development',
+        'Desktop Software Development',
+        'Scripting & Automation',
+        'Manual Testing',
+        'Automation Testing',
+        'AI Chatbot Development',
+        'AI Integration',
+        'Prototyping',
+        'Mobile Design',
+        'Web Design',
+        'UX/UI Design',
+        'Mobile App Development',
+        'Mobile Game Development',
+        'Scrum Leadership',
+        'Product Management',
+        'Firmware Development',
+        'Emerging Tech',
+        'AR/VR Development',
+        'Coding Tutoring',
+        'Database Development',
+        'Back-End Development',
+        'Front-End Development',
+        'Full Stack Development',
+        'CMS Development',
+        'Video Game Development'
+      ],
+      parent: "Web, Mobile & Software Development"
+    },
+    {
+      value: [
+        'Sales Copywriting',
+        'Marketing Copywriting',
+        'Ad & Email Copywriting',
+        'Proofreading',
+        'Copy Editing',
+        'Grant Writing',
+        'Business & Proposal Writing',
+        'Resume & Cover Letter Writing',
+        'Medical Writing',
+        'Legal Writing',
+        'Academic & Research Writing',
+        'Technical Writing',
+        'Writing Tutoring',
+        'Scriptwriting',
+        'Ghostwriting',
+        'Creative Writing',
+        'Article & Blog Writing',
+        'Web & UX Writing',
+        'AI Content Writing'
+      ],
+      parent: "Writing"
+    }
+  ];
+  const [currentCategory, setCurrentCategory] = useState("Accounting & Consulting");
+  const [currentSub, setCurrentSub] = useState("Personal Coaching")
+
   const { toast } = useToast();
   const auth = useCustomContext();
   const router = useRouter();
@@ -114,14 +443,14 @@ const CreateGig = () => {
 
   const [profile, setProfileData] = useState(null)
   useEffect(() => {
-    if(auth.user){
-      api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then(res =>{
+    if (auth.user) {
+      api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then(res => {
         console.log(res.data.profile)
         setProfileData(res.data.profile);
       })
     }
   }, [auth])
-  
+
 
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
@@ -193,12 +522,16 @@ const CreateGig = () => {
       * https://ui.shadcn.com/docs/components
       * I know you know but just wanted to mention :D
     */
+   let postData = values;
+   postData.gigCategory = currentCategory;
+   postData.subCategory = currentSub;
+   console.log("--------- ", postData)
     console.log("tag: ", tags)
     console.log("qa: ", requirementQuestions)
     values.question = requirementQuestions
     values.searchKeywords = tags
     values.email = auth.user.email
-    if(profile){
+    if (profile) {
       console.log(profile._id)
       values.creator = profile._id
     }
@@ -251,9 +584,9 @@ const CreateGig = () => {
         className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
       });
     });
-
-
   }
+
+
   return (
     <StepProvider>
       <div className='flex w-full flex-col'>
@@ -302,14 +635,16 @@ const CreateGig = () => {
                     render={({ field }) => (
                       <FormItem className='flex flex-col gap-2 w-full'>
                         <FormControl>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select
+                            onValueChange={e => { setCurrentCategory(e) }}
+                          >
                             <SelectTrigger className='bg-[#1B272C] py-7 px-5 rounded-xl text-base text-[#96B0BD]'>
                               <SelectValue placeholder="Select a Category" />
                             </SelectTrigger>
                             <SelectContent className='bg-[#1B272C] rounded-xl text-base text-[#96B0BD]'>
                               <SelectGroup>
                                 {categories_list.map((job_category) => (
-                                  <SelectItem key={job_category.value} value={job_category.value}>
+                                  <SelectItem key={job_category.value} value={job_category.label}>
                                     {job_category.label}
                                   </SelectItem>
                                 ))}
@@ -326,17 +661,26 @@ const CreateGig = () => {
                     render={({ field }) => (
                       <FormItem className='flex flex-col gap-2 w-full'>
                         <FormControl>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select
+                            onValueChange={(e) => {
+                              setCurrentSub(e);
+                            }}
+                          >
                             <SelectTrigger className='bg-[#1B272C] py-7 px-5 rounded-xl text-base text-[#96B0BD]'>
                               <SelectValue placeholder="Select a Sub Category" />
                             </SelectTrigger>
                             <SelectContent className='bg-[#1B272C] rounded-xl text-base text-[#96B0BD]'>
                               <SelectGroup>
-                                {categories_list.map((job_category) => (
-                                  <SelectItem key={job_category.value} value={job_category.value}>
-                                    {job_category.label}
-                                  </SelectItem>
-                                ))}
+                                {subcategory_list.map((subcat, index) => {
+                                  if (subcat.parent === currentCategory) {
+                                    return subcat.value.map((item, index) => (
+                                      <SelectItem key={index} value={item}>
+                                        {item} {/* Displaying the item instead of index */}
+                                      </SelectItem>
+                                    ));
+                                  }
+                                  return null; // Return null if condition is not met
+                                })}
                               </SelectGroup>
                             </SelectContent>
                           </Select>
