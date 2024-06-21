@@ -74,38 +74,7 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
   );
 };
 
-const reviews = [
-  {
-    flagSrc: '/assets/images/flag.png',
-    id: 1,
-    imgSrc: '/assets/images/users/user-1.png',
-    name: 'Hannibal Smith',
-    rating: 5,
-    reviewText:
-      'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.',
-    timeAgo: '1 month ago',
-  },
-  {
-    flagSrc: '/assets/images/flag.png',
-    id: 2,
-    imgSrc: '/assets/images/users/user-2.png',
-    name: 'John Doe',
-    rating: 4,
-    reviewText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.',
-    timeAgo: '2 weeks ago',
-  },
-  {
-    flagSrc: '/assets/images/flag.png',
-    id: 3,
-    imgSrc: '/assets/images/users/user-3.png',
-    name: 'Jane Doe',
-    rating: 5,
-    reviewText:
-      'Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.',
-    timeAgo: '3 days ago',
-  },
-];
+const reviews = [];
 
 const FreelancerProfile = () => {
   const [uploadedImagePath, setUploadedImagePath] = useState([]);
@@ -1137,37 +1106,48 @@ const FreelancerProfile = () => {
                   <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
                     <p className='text-2xl text-[#96B0BD]'>Reviews</p>
                     <div className='mt-4 flex flex-col gap-6'>
-                      {reviews.map((review) => (
-                        <div className='flex w-full gap-6' key={review.id}>
-                          <div className='flex w-full flex-col gap-2 border-b border-[#28373e] pb-6'>
-                            <div className='flex flex-wrap items-center gap-4 md:flex-nowrap'>
-                              <img
-                                alt='user'
-                                className='aspect-square h-10 w-10 rounded-full object-cover'
-                                src={review.imgSrc}
-                              />
-                              <div className='flex w-auto items-center gap-2'>
-                                <p className='text-xl'>{review.name}</p>
-                                <img
-                                  alt='flag'
-                                  className='h-fit w-6 bg-white'
-                                  src={review.flagSrc}
-                                />
-                              </div>
-                              <div className='ml-auto flex w-full items-center justify-between gap-3 md:w-auto md:justify-normal'>
-                                <p className='text-base text-[#526872]'>{review.timeAgo}</p>
-                                <StarRating rating={review.rating} />
+                      {reviews.length > 0 ? (
+                        <>
+                          {reviews.map((review) => (
+                            <div className='flex w-full gap-6' key={review.id}>
+                              <div className='flex w-full flex-col gap-2 border-b border-[#28373e] pb-6'>
+                                <div className='flex flex-wrap items-center gap-4 md:flex-nowrap'>
+                                  <img
+                                    alt='user'
+                                    className='aspect-square h-10 w-10 rounded-full object-cover'
+                                    src={review.imgSrc}
+                                  />
+                                  <div className='flex w-auto items-center gap-2'>
+                                    <p className='text-xl'>{review.name}</p>
+                                    <img
+                                      alt='flag'
+                                      className='h-fit w-6 bg-white'
+                                      src={review.flagSrc}
+                                    />
+                                  </div>
+                                  <div className='ml-auto flex w-full items-center justify-between gap-3 md:w-auto md:justify-normal'>
+                                    <p className='text-base text-[#526872]'>{review.timeAgo}</p>
+                                    <StarRating rating={review.rating} />
+                                  </div>
+                                </div>
+                                <div className='mt-2 md:mt-0 md:pl-14'>
+                                  <p className='text-base text-white'>{review.reviewText}</p>
+                                </div>
                               </div>
                             </div>
-                            <div className='mt-2 md:mt-0 md:pl-14'>
-                              <p className='text-base text-white'>{review.reviewText}</p>
-                            </div>
-                          </div>
+                          ))}
+                          <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                            Show more <GoChevronDown />
+                          </span>
+                        </>
+                      ) : (
+                        <div className='flex h-full flex-col items-center justify-center gap-3'>
+                          <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
+                          <p className='text-[18px] text-slate-600'>
+                            Reviews will appear here soon
+                          </p>
                         </div>
-                      ))}
-                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                        Show more <GoChevronDown />
-                      </span>
+                      )}
                     </div>
                   </div>
                 </div>
