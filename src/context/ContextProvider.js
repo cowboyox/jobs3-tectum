@@ -1,7 +1,7 @@
 'use client';
 
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 
@@ -100,6 +100,7 @@ const ContextProvider = ({ children }) => {
   const [verify_id, setVerify] = useState(null);
 
   const router = useRouter();
+  const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const login = async (credentials) => {
@@ -251,18 +252,50 @@ const ContextProvider = ({ children }) => {
     try {
       const data = JSON.parse(storedData);
       if (data && typeof data === 'object') {
-        const { user, token } = data.data;
+        const { user, token, currentRole } = data.data;
+        setCurrentRole(currentRole);
         api.defaults.headers.common.Authorization = token;
         dispatch({
           payload: user,
           type: HANDLERS.SIGN_IN,
         });
+
         // router.push('/jobs')
       }
     } catch (err) {
       console.error('Error getting data!');
     }
   }, []);
+
+  useEffect(() => {
+    if (router) {
+      const storedData = localStorage.getItem('jobs_2024_token');
+      try {
+        const data = JSON.parse(storedData);
+        if (pathname.includes('dashboard/freelancer')) {
+          setCurrentRole(USER_ROLE.FREELANCER);
+
+          if (data && typeof data === 'object') {
+            localStorage.setItem(
+              'jobs_2024_token',
+              JSON.stringify({ data: { ...data.data, currentRole: USER_ROLE.FREELANCER } })
+            );
+          }
+        } else if (pathname.includes('dashboard/client')) {
+          setCurrentRole(USER_ROLE.CLIENT);
+
+          if (data && typeof data === 'object') {
+            localStorage.setItem(
+              'jobs_2024_token',
+              JSON.stringify({ data: { ...data.data, currentRole: USER_ROLE.CLIENT } })
+            );
+          }
+        }
+      } catch (err) {
+        console.error('Error getting data!');
+      }
+    }
+  }, [router, pathname]);
 
   return (
     <CustomContext.Provider
