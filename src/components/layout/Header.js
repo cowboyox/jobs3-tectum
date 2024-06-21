@@ -20,7 +20,8 @@ const Header = () => {
   });
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
-    if (tmp) {
+    if (tmp === null) {
+    } else {
       setUser(JSON.parse(tmp).data.user);
     }
   }, []);
