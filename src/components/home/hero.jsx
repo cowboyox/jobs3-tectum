@@ -1,33 +1,32 @@
-import Image from 'next/image'
-import React from 'react'
+import Image from 'next/image';
+import React from 'react';
 
 const Hero = () => {
   return (
     <div className='w-full'>
-        <Image
+      <Image
+        alt='hero'
+        className='h-full w-full object-cover md:hidden'
+        height={10000}
         src={'/assets/dashboard-media/homeHeroSm.png'}
-        alt='hero'
         width={10000}
+      />
+      <Image
+        alt='hero'
+        className='hidden h-full w-full object-cover md:block 2xl:hidden'
         height={10000}
-        className='w-full h-full object-cover md:hidden'
-        />
-        <Image
         src={'/assets/dashboard-media/homeHeroMed.png'}
-        alt='hero'
         width={10000}
+      />
+      <Image
+        alt='hero'
+        className='hidden h-full w-full object-cover 2xl:block'
         height={10000}
-        className='w-full h-full object-cover hidden md:block 2xl:hidden'
-        />
-        <Image
         src={'/assets/dashboard-media/homeHeroXl.png'}
-        alt='hero'
         width={10000}
-        height={10000}
-        className='w-full h-full object-cover hidden 2xl:block'
-        />
-
+      />
     </div>
-  )
-}
+  );
+};
 
-export default Hero
+export default Hero;

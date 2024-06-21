@@ -1,232 +1,195 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+import { CircleAlert, CreditCardIcon } from 'lucide-react';
+import React, { useState } from 'react';
 
-import { Button } from "@/components/ui/button";
-import { CircleAlert, CreditCardIcon } from "lucide-react";
-import { IoWarning } from "react-icons/io5";
+import { Button } from '@/components/ui/button';
 
 const BillingView = () => {
   const [addBilling, setBilling] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState('');
 
   return (
-    <div className="max-w-[700px] mx-auto flex flex-col gap-4">
-      <div className="bg-[#10191D] rounded-[12px] p-8">
+    <div className='mx-auto flex max-w-[700px] flex-col gap-4'>
+      <div className='rounded-[12px] bg-[#10191D] p-8'>
         {addBilling ? (
-          <div className="flex flex-col gap-4">
-            <label htmlFor="billin" className="text-lg font-[500] text-primary">
+          <div className='flex flex-col gap-4'>
+            <label className='text-lg font-[500] text-primary' htmlFor='billin'>
               Add a Billing Method
             </label>
 
-            <div className="bg-[#1B272C] rounded-[12px] p-6 flex flex-col gap-4 ">
-              <div className="flex items-start gap-6">
-                {" "}
+            <div className='flex flex-col gap-4 rounded-[12px] bg-[#1B272C] p-6'>
+              <div className='flex items-start gap-6'>
+                {' '}
                 <input
-                  type="radio"
-                  name="billingMethod"
-                  value="card"
-                  onClick={() => setPaymentMethod("card")}
-                  className="mt-1 h-6 w-6 accent-[#DC4F13] cursor-pointer"
+                  className='mt-1 h-6 w-6 cursor-pointer accent-[#DC4F13]'
+                  name='billingMethod'
+                  onClick={() => setPaymentMethod('card')}
+                  type='radio'
+                  value='card'
                 />
                 <div>
-                  <label
-                    htmlFor="status"
-                    className="text-lg font-[500] text-primary "
-                  >
+                  <label className='text-lg font-[500] text-primary' htmlFor='status'>
                     Payment Card
                   </label>
-                  <p className="text-[#96B0BD]">
+                  <p className='text-[#96B0BD]'>
                     Visa, Mastercard, American Express, Discover, Diners
                   </p>
                 </div>
               </div>
 
-              {paymentMethod === "card" && (
-                <div className="flex flex-col gap-6">
-                  <div className="flex flex-col gap-3">
-                    <label
-                      htmlFor="cardNumber"
-                      className="text-md font-[500] text-primary"
-                    >
+              {paymentMethod === 'card' && (
+                <div className='flex flex-col gap-6'>
+                  <div className='flex flex-col gap-3'>
+                    <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                       Card Number
                     </label>
-                    <div className="border border-[#96B0BD] p-4 rounded-[12px] bg-[#1B272C] text-[#96B0BD] flex gap-4">
-                      <CreditCardIcon className="text-white h-6 w-6" />
+                    <div className='flex gap-4 rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'>
+                      <CreditCardIcon className='h-6 w-6 text-white' />
                       <input
-                        type="text"
-                        placeholder="Card Number"
-                        className="flex-1  bg-[#1B272C] text-white outline-none"
+                        className='flex-1 bg-[#1B272C] text-white outline-none'
+                        placeholder='Card Number'
+                        type='text'
                       />
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
-                    <div className="flex flex-col gap-3 flex-1">
-                      <label
-                        htmlFor="cardNumber"
-                        className="text-md font-[500] text-primary"
-                      >
+                  <div className='flex gap-4'>
+                    <div className='flex flex-1 flex-col gap-3'>
+                      <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         First Name
                       </label>
                       <input
-                        type="text"
-                        placeholder="First Name"
-                        className="border border-[#96B0BD] p-4 rounded-[12px] bg-[#1B272C] text-[#96B0BD]"
+                        className='rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'
+                        placeholder='First Name'
+                        type='text'
                       />
                     </div>
-                    <div className="flex flex-col gap-3 flex-1">
-                      <label
-                        htmlFor="cardNumber"
-                        className="text-md font-[500] text-primary"
-                      >
+                    <div className='flex flex-1 flex-col gap-3'>
+                      <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Last Name
                       </label>
                       <input
-                        type="text"
-                        placeholder="Last Name"
-                        className="border border-[#96B0BD] p-4 rounded-[12px] bg-[#1B272C] text-[#96B0BD]"
+                        className='rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'
+                        placeholder='Last Name'
+                        type='text'
                       />
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
-                    <div className="flex flex-col gap-3 w-[31.5%]">
-                      <label
-                        htmlFor="cardNumber"
-                        className="text-md font-[500] text-primary"
-                      >
+                  <div className='flex gap-4'>
+                    <div className='flex w-[31.5%] flex-col gap-3'>
+                      <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Expiration Month
                       </label>
                       <input
-                        type="text"
-                        placeholder="mm"
-                        className="border border-[#96B0BD] p-4 rounded-[12px] bg-[#1B272C] text-[#96B0BD]"
+                        className='rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'
+                        placeholder='mm'
+                        type='text'
                       />
                     </div>
-                    <div className="flex flex-col gap-3 w-[31.5%]">
-                      <label
-                        htmlFor="cardNumber"
-                        className="text-md font-[500] text-primary"
-                      >
+                    <div className='flex w-[31.5%] flex-col gap-3'>
+                      <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Expiration Year
                       </label>
                       <input
-                        type="text"
-                        placeholder="yy"
-                        className="border border-[#96B0BD] p-4 rounded-[12px] bg-[#1B272C] text-[#96B0BD]"
+                        className='rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'
+                        placeholder='yy'
+                        type='text'
                       />
                     </div>
-                    <div className="flex flex-col gap-3 w-[31.5%]">
+                    <div className='flex w-[31.5%] flex-col gap-3'>
                       <label
-                        htmlFor="cardNumber"
-                        className="text-md font-[500] text-primary flex items-start gap-2"
+                        className='text-md flex items-start gap-2 font-[500] text-primary'
+                        htmlFor='cardNumber'
                       >
-                        Security Code <CircleAlert className="h-4 w-4" />
+                        Security Code <CircleAlert className='h-4 w-4' />
                       </label>
                       <input
-                        type="text"
-                        placeholder="3 digits"
-                        className="border border-[#96B0BD] p-4 rounded-[12px] bg-[#1B272C] text-[#96B0BD]"
+                        className='rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'
+                        placeholder='3 digits'
+                        type='text'
                       />
                     </div>
                   </div>
-                  <div className="flex gap-4">
-                    <div className="flex flex-col gap-3 flex-1">
-                      <label
-                        htmlFor="cardNumber"
-                        className="text-md font-[500] text-primary"
-                      >
+                  <div className='flex gap-4'>
+                    <div className='flex flex-1 flex-col gap-3'>
+                      <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Billing Address
                       </label>
                       <input
-                        type="text"
-                        placeholder="United Kingdom"
-                        className="border border-[#96B0BD] p-4 rounded-[12px] bg-[#1B272C] text-[#96B0BD]"
+                        className='rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'
+                        placeholder='United Kingdom'
+                        type='text'
                       />
                     </div>
                   </div>
-                  <div className="flex gap-4">
-                    <div className="flex flex-col gap-3 flex-1">
-                      <label
-                        htmlFor="cardNumber"
-                        className="text-md font-[500] text-primary"
-                      >
+                  <div className='flex gap-4'>
+                    <div className='flex flex-1 flex-col gap-3'>
+                      <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Address Line 1
                       </label>
                       <input
-                        type="text"
-                        placeholder=""
-                        className="border border-[#96B0BD] p-4 rounded-[12px] bg-[#1B272C] text-[#96B0BD]"
+                        className='rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'
+                        placeholder=''
+                        type='text'
                       />
                     </div>
-                    <div className="flex flex-col gap-3 flex-1">
-                      <label
-                        htmlFor="cardNumber"
-                        className="text-md font-[500] text-primary"
-                      >
+                    <div className='flex flex-1 flex-col gap-3'>
+                      <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Address Line 2
                       </label>
                       <input
-                        type="text"
-                        placeholder="Optional"
-                        className="border border-[#96B0BD] p-4 rounded-[12px] bg-[#1B272C] text-[#96B0BD]"
+                        className='rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'
+                        placeholder='Optional'
+                        type='text'
                       />
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
-                    <div className="flex flex-col gap-3 flex-1">
-                      <label
-                        htmlFor="cardNumber"
-                        className="text-md font-[500] text-primary"
-                      >
+                  <div className='flex gap-4'>
+                    <div className='flex flex-1 flex-col gap-3'>
+                      <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         City
                       </label>
-                      <select className="border border-[#96B0BD] p-4 rounded-[12px] bg-[#1B272C] text-[#96B0BD] pr-4">
-                        <option className="text-[#96B0BD]" value="London">
+                      <select className='rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 pr-4 text-[#96B0BD]'>
+                        <option className='text-[#96B0BD]' value='London'>
                           London
                         </option>
                       </select>
                     </div>
-                    <div className="flex flex-col gap-3 flex-1">
-                      <label
-                        htmlFor="cardNumber"
-                        className="text-md font-[500] text-primary"
-                      >
+                    <div className='flex flex-1 flex-col gap-3'>
+                      <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Postal code
                       </label>
                       <input
-                        type="text"
-                        placeholder="100001"
-                        className="border border-[#96B0BD] p-4 rounded-[12px] bg-[#1B272C] text-[#96B0BD]"
+                        className='rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'
+                        placeholder='100001'
+                        type='text'
                       />
                     </div>
                   </div>
                 </div>
               )}
             </div>
-            <div className="bg-[#1B272C] rounded-[12px] p-6 flex mt-4 items-start gap-6">
+            <div className='mt-4 flex items-start gap-6 rounded-[12px] bg-[#1B272C] p-6'>
               <input
-                type="radio"
-                name="billingMethod"
-                value="paypal"
-                onClick={() => setPaymentMethod("paypal")}
-                className="mt-1 h-6 w-6 accent-[#DC4F13] cursor-pointer"
+                className='mt-1 h-6 w-6 cursor-pointer accent-[#DC4F13]'
+                name='billingMethod'
+                onClick={() => setPaymentMethod('paypal')}
+                type='radio'
+                value='paypal'
               />
               <div>
-                <label
-                  htmlFor="status"
-                  className="text-lg font-[500] text-primary"
-                >
+                <label className='text-lg font-[500] text-primary' htmlFor='status'>
                   Paypal
                 </label>
               </div>
             </div>
-            <div className="flex justify-end">
-              {" "}
+            <div className='flex justify-end'>
+              {' '}
               <Button
+                className={`mt-6 w-[200px] rounded-xl bg-[#DC4F13] px-10 py-8 text-white hover:bg-[#DC4F13]`}
                 onClick={() => setBilling(false)}
-                className={`bg-[#DC4F13] hover:bg-[#DC4F13] text-white px-10 py-8 mt-6 rounded-xl w-[200px]`}
               >
                 Cancel
               </Button>
@@ -234,22 +197,22 @@ const BillingView = () => {
           </div>
         ) : (
           <>
-            <label htmlFor="billin" className="text-lg font-[500] text-primary">
+            <label className='text-lg font-[500] text-primary' htmlFor='billin'>
               Billing Methods
             </label>
-            <p className="text-[#96B0BD] text-md">
-              You haven&apos;t set up any billing methods yet. Your billing
-              method will be charged only when your available balance from JOBS3
-              earnings is not sufficient to pay for your monthly membership
+            <p className='text-md text-[#96B0BD]'>
+              You haven&apos;t set up any billing methods yet. Your billing method will be charged
+              only when your available balance from JOBS3 earnings is not sufficient to pay for your
+              monthly membership
             </p>
-            
-            <div className="flex justify-end">
-            <Button
-              onClick={() => setBilling(true)}
-              className={`bg-[#DC4F13] hover:bg-[#DC4F13] text-white px-10 py-8 mt-6 rounded-xl w-[200px]`}
-            >
-              Add Billing Method
-            </Button>
+
+            <div className='flex justify-end'>
+              <Button
+                className={`mt-6 w-[200px] rounded-xl bg-[#DC4F13] px-10 py-8 text-white hover:bg-[#DC4F13]`}
+                onClick={() => setBilling(true)}
+              >
+                Add Billing Method
+              </Button>
             </div>
           </>
         )}

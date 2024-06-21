@@ -29,7 +29,7 @@ const Payment = ({ coverLetter }) => {
   const onApply = async () => {
     await api
       .post(`/api/v1/bidding/${gigId}/confirm_and_pay`, { clientProfileId: profileData._id })
-      .then(async data => {
+      .then(async (data) => {
         console.log(data);
 
         toast({
@@ -40,7 +40,7 @@ const Payment = ({ coverLetter }) => {
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Error corrupted during applying gig', err);
         toast({
           variant: 'destructive',
@@ -53,9 +53,9 @@ const Payment = ({ coverLetter }) => {
   };
 
   return (
-    <div className='bg-deepGreen px-6 py-6 flex flex-col gap-4 text-white rounded-2xl'>
+    <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
       <div className='flex flex-col gap-3'>
-        <div className='bg-[#1B272C] p-3 rounded-xl flex items-center justify-center gap-2'>
+        <div className='flex items-center justify-center gap-2 rounded-xl bg-[#1B272C] p-3'>
           <svg
             width='24'
             height='24'
@@ -105,9 +105,9 @@ const Payment = ({ coverLetter }) => {
             <p className='text-xl font-bold'>$ 240.10</p>
           </div>
         </div>
-        <div className='bg-[#1B272C] p-1 rounded-xl flex md:mt-0 mt-2 '>
-          <button className='md:p-3 md:px-8 px-8 p-2'>Back</button>
-          <button className='bg-[#DC4F13] md:p-3 px-8 p-2 w-full' onClick={onApply}>
+        <div className='mt-2 flex rounded-xl bg-[#1B272C] p-1 md:mt-0'>
+          <button className='p-2 px-8 md:p-3 md:px-8'>Back</button>
+          <button className='w-full bg-[#DC4F13] p-2 px-8 md:p-3' onClick={onApply}>
             Confirm and Pay
           </button>
         </div>

@@ -18,7 +18,7 @@ const Page = async ({ params }) => {
 };
 export default Page;
 
-const getGigById = async gigId => {
+const getGigById = async (gigId) => {
   const resData = await api.get(`/api/v1/freelancer_gig/get_gig_by_id/${gigId}`);
   console.log('-----resData ', resData.data.data);
   return resData;

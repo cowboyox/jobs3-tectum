@@ -53,12 +53,12 @@ const FindJob = () => {
   useEffect(() => {
     api
       .get(`/api/v1/client_gig/find_all_gigs`)
-      .then(data => {
+      .then((data) => {
         setGigList(data.data.data);
         setFilteredGigList(data.data.data);
         console.log(data.data.data);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Error corrupted while getting all gigs: ', err);
       });
     const handleResize = () => {
@@ -83,25 +83,27 @@ const FindJob = () => {
     };
   }, []);
 
-  const onChangeType = e => {
+  const onChangeType = (e) => {
     setSearchType(e);
   };
 
-  const setKey = e => {
+  const setKey = (e) => {
     setSearchKeyWords(e.target.value);
     if (searchType == 'normal') {
       const filtered = gigList.filter(
-        gig =>
+        (gig) =>
           gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase()) ||
           gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
           gig.location?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.requiredSkills?.map(item => item.toLowerCase()).includes(e.target.value.toLowerCase())
+          gig.requiredSkills
+            ?.map((item) => item.toLowerCase())
+            .includes(e.target.value.toLowerCase())
       );
       setFilteredGigList(filtered);
     }
   };
 
-  const setOrder = value => {
+  const setOrder = (value) => {
     setSortOrder(value);
     let sorted = filteredGigList;
     if (sortOrder === 'dateAsc') {
@@ -114,34 +116,34 @@ const FindJob = () => {
 
   const aiSearch = () => {
     console.log('AI search', searchKeyWords);
-    api.get(`/api/v1/client_gig/ai-search/${searchKeyWords}`).then(data => {
+    api.get(`/api/v1/client_gig/ai-search/${searchKeyWords}`).then((data) => {
       let ai_ids = [];
       if (data.data.profileIDs) ai_ids = data.data.profileIDs;
       console.log(ai_ids);
       console.log(gigList[0]);
       const ai_filtered = ai_ids
-        .map(id => gigList.find(gig => gig._id.toString() === id))
-        .filter(gig => gig != undefined);
+        .map((id) => gigList.find((gig) => gig._id.toString() === id))
+        .filter((gig) => gig != undefined);
       console.log(ai_filtered);
       setFilteredGigList(ai_filtered);
     });
   };
 
-  const handleKeyDown = e => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter' && searchType === 'ai') {
       aiSearch();
     }
   };
 
   return loaded ? (
-    <div className='p-0 sm:p-0 xl:mt-8 lg:mt-8'>
-      <div className='flex  bg-[#10191D] rounded-xl gap-4 mobile:gap-0'>
-        <div className='flex flex-1 items-center m-3 gap-3'>
-          <Select defaultValue='normal' onValueChange={e => onChangeType(e)}>
-            <SelectTrigger className='bg-[#1B272C] w-20 mobile:w-14 mobile:p-2 rounded-xl'>
+    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
+      <div className='flex gap-4 rounded-xl bg-[#10191D] mobile:gap-0'>
+        <div className='m-3 flex flex-1 items-center gap-3'>
+          <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
+            <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className='bg-[#1B272C] rounded-xl'>
+            <SelectContent className='rounded-xl bg-[#1B272C]'>
               <SelectGroup>
                 <SelectItem value='normal'>{searchOptions[0].icon}</SelectItem>
                 <SelectItem value='ai'>{searchOptions[1].icon}</SelectItem>
@@ -152,8 +154,8 @@ const FindJob = () => {
             type='text'
             placeholder={isSmallScreen ? 'Search' : 'Search by Order title...'}
             // value={search}
-            onChange={e => setKey(e)}
-            className=' bg-transparent outline-none w-full'
+            onChange={(e) => setKey(e)}
+            className='w-full bg-transparent outline-none'
             onKeyDown={handleKeyDown}
           />
 
@@ -181,8 +183,8 @@ const FindJob = () => {
           )}
         </div>
         {(!isSmallScreen || (isSmallScreen && searchType === 'normal')) && (
-          <div className='flex flex-row items-center flex-none gap-2 m-3'>
-            <button className='flex flex-row justify-center items-center gap-3'>
+          <div className='m-3 flex flex-none flex-row items-center gap-2'>
+            <button className='flex flex-row items-center justify-center gap-3'>
               {!isSmallScreen ? (
                 <>
                   <svg
@@ -304,18 +306,18 @@ const FindJob = () => {
               )}
             </button>
             {!isSmallScreen && (
-              <div className='rounded-full w-[23px] h-[23px] bg-[#DC4F13] text-center flex items-center justify-center align-middle'>
+              <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
                 4
               </div>
             )}
           </div>
         )}
         {!isSmallScreen && (
-          <div className='flex flex-row items-center gap-2 justify-center m-3'>
+          <div className='m-3 flex flex-row items-center justify-center gap-2'>
             <div>Sort by</div>
             <div>
-              <Select onValueChange={value => setOrder(value)}>
-                <SelectTrigger className='bg-transparent border-none text-[#96B0BD] flex justify-center focus:outline-none focus:border-none'>
+              <Select onValueChange={(value) => setOrder(value)}>
+                <SelectTrigger className='flex justify-center border-none bg-transparent text-[#96B0BD] focus:border-none focus:outline-none'>
                   <SelectValue placeholder='Sort By' />
                 </SelectTrigger>
                 <SelectContent>
@@ -332,7 +334,7 @@ const FindJob = () => {
         {searchType === 'ai' && (
           <div className='flex'>
             <button
-              class='hidden w-12 bg-orange text-white rounded-s-[0px] rounded-e-[15px] mobile:flex items-center justify-center text-lg self-stretch'
+              class='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
               onClick={aiSearch}
             >
               <FaArrowRight />
@@ -340,17 +342,17 @@ const FindJob = () => {
           </div>
         )}
       </div>
-      <div className='bg-[#10191D] mt-4 text-center p-5 rounded-xl'>
-        You have <span className='text-[#DC4F13] font-bold'>{filteredGigList.length}</span> Jobs😊
+      <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
+        You have <span className='font-bold text-[#DC4F13]'>{filteredGigList.length}</span> Jobs😊
       </div>
-      <div className='flex flex-row gap-3 mt-4 items-center text-[#F5F5F5] overflow-x-auto touch-pan-x overscroll-x-contain'>
+      <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
         {filterCategory.map((item, index) => {
           return (
             <span
               key={index}
-              className='bg-[#28373E] pl-2 pr-2 p-1 rounded-full border border-[#3E525B] gap-1 flex flex-row items-center'
+              className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
             >
-              <FaX className='p-[2px] bg-[#3E525B] rounded-full' />
+              <FaX className='rounded-full bg-[#3E525B] p-[2px]' />
               {item}
             </span>
           );
@@ -361,13 +363,13 @@ const FindJob = () => {
         <>
           {filteredGigList.map((gig, index) => {
             return (
-              <div className='bg-[#10191D] mt-4 text-center p-5 rounded-xl' key={index}>
-                <div className='flex flex-row items-center gap-4 justify-between'>
+              <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
+                <div className='flex flex-row items-center justify-between gap-4'>
                   <div className='flex items-center'>
                     <img src='/assets/images/figma.png' width={65} height={65}></img>
                   </div>
                   {isSmallScreen && (
-                    <div className='flex flex-row gap-2 items-center'>
+                    <div className='flex flex-row items-center gap-2'>
                       <svg
                         width='22'
                         height='22'
@@ -385,16 +387,16 @@ const FindJob = () => {
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant='outline'
-                            className='bg-transparent border-none hover:bg-transparent'
+                            className='border-none bg-transparent hover:bg-transparent'
                           >
                             <FaEllipsis />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className='bg-[#28373E] border-[#3E525B] rounded-xl'>
+                        <DropdownMenuContent className='rounded-xl border-[#3E525B] bg-[#28373E]'>
                           <DropdownMenuCheckboxItem
                             // checked={showStatusBar}
                             // onCheckedChange={setShowStatusBar}
-                            className='gap-2 hover:bg-white rounded-xl'
+                            className='gap-2 rounded-xl hover:bg-white'
                           >
                             <svg
                               width='24'
@@ -430,7 +432,7 @@ const FindJob = () => {
                           <DropdownMenuCheckboxItem
                             // checked={showActivityBar}
                             // onCheckedChange={setShowActivityBar}
-                            className='mt-1 gap-2 hover:bg-white rounded-xl'
+                            className='mt-1 gap-2 rounded-xl hover:bg-white'
                           >
                             <svg
                               width='24'
@@ -489,7 +491,7 @@ const FindJob = () => {
                           <DropdownMenuCheckboxItem
                             // checked={showPanel}
                             // onCheckedChange={setShowPanel}
-                            className='mt-1 gap-2 hover:bg-white rounded-xl'
+                            className='mt-1 gap-2 rounded-xl hover:bg-white'
                           >
                             <svg
                               width='24'
@@ -525,7 +527,7 @@ const FindJob = () => {
                           <DropdownMenuCheckboxItem
                             // checked={showPanel}
                             // onCheckedChange={setShowPanel}
-                            className='mt-1 gap-2 hover:bg-white rounded-xl'
+                            className='mt-1 gap-2 rounded-xl hover:bg-white'
                           >
                             <svg
                               width='24'
@@ -558,12 +560,12 @@ const FindJob = () => {
                     </div>
                   )}
                   {!isSmallScreen && (
-                    <div className='flex flex-col justify-between w-full'>
-                      <div className='flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start'>
-                        <div className='flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3'>
+                    <div className='flex w-full flex-col justify-between'>
+                      <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                        <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                           {gig.gigTitle}
                         </div>
-                        <div className='flex-none flex flex-row gap-2 items-center'>
+                        <div className='flex flex-none flex-row items-center gap-2'>
                           <svg
                             width='22'
                             height='22'
@@ -581,16 +583,16 @@ const FindJob = () => {
                             <DropdownMenuTrigger asChild>
                               <Button
                                 variant='outline'
-                                className='bg-transparent border-none hover:bg-transparent'
+                                className='border-none bg-transparent hover:bg-transparent'
                               >
                                 <FaEllipsis />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className='bg-[#28373E] border-[#3E525B] rounded-xl'>
+                            <DropdownMenuContent className='rounded-xl border-[#3E525B] bg-[#28373E]'>
                               <DropdownMenuCheckboxItem
                                 // checked={showStatusBar}
                                 // onCheckedChange={setShowStatusBar}
-                                className='gap-2 hover:bg-white rounded-xl'
+                                className='gap-2 rounded-xl hover:bg-white'
                               >
                                 <svg
                                   width='24'
@@ -626,7 +628,7 @@ const FindJob = () => {
                               <DropdownMenuCheckboxItem
                                 // checked={showActivityBar}
                                 // onCheckedChange={setShowActivityBar}
-                                className='mt-1 gap-2 hover:bg-white rounded-xl'
+                                className='mt-1 gap-2 rounded-xl hover:bg-white'
                               >
                                 <svg
                                   width='24'
@@ -685,7 +687,7 @@ const FindJob = () => {
                               <DropdownMenuCheckboxItem
                                 // checked={showPanel}
                                 // onCheckedChange={setShowPanel}
-                                className='mt-1 gap-2 hover:bg-white rounded-xl'
+                                className='mt-1 gap-2 rounded-xl hover:bg-white'
                               >
                                 <svg
                                   width='24'
@@ -721,7 +723,7 @@ const FindJob = () => {
                               <DropdownMenuCheckboxItem
                                 // checked={showPanel}
                                 // onCheckedChange={setShowPanel}
-                                className='mt-1 gap-2 hover:bg-white rounded-xl'
+                                className='mt-1 gap-2 rounded-xl hover:bg-white'
                               >
                                 <svg
                                   width='24'
@@ -753,7 +755,7 @@ const FindJob = () => {
                           </DropdownMenu>
                         </div>
                       </div>
-                      <div className='flex md:flex-row flex-row-reverse gap-6 mt-3 items-start md:justify-start justify-between'>
+                      <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
                         <div className='flex flex-row items-center gap-2'>
                           <svg
                             width='24'
@@ -865,13 +867,13 @@ const FindJob = () => {
                   )}
                 </div>
                 {isSmallScreen && (
-                  <div className='flex flex-col justify-between w-full'>
-                    <div className='flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start'>
-                      <div className='flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3'>
+                  <div className='flex w-full flex-col justify-between'>
+                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                      <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {gig.gigTitle}
                       </div>
                     </div>
-                    <div className='flex md:flex-row flex-row-reverse gap-6 mt-3 items-start md:justify-start justify-between'>
+                    <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           width='24'
@@ -919,7 +921,7 @@ const FindJob = () => {
                         {gig.location}
                       </div>
                     </div>
-                    <div className='flex md:flex-row gap-6 mt-3 items-start md:justify-start justify-between'>
+                    <div className='mt-3 flex items-start justify-between gap-6 md:flex-row md:justify-start'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           width='25'
@@ -988,13 +990,13 @@ const FindJob = () => {
                 <div className='mt-3 text-left'>
                   <button>Show more</button>
                 </div>
-                <div className='flex md:flex-row flex-col justify-between md:items-center'>
-                  <div className='flex flex-row gap-3 mt-4 items-center text-[#F5F5F5] overflow-x-auto touch-pan-x overscroll-x-contain'>
+                <div className='flex flex-col justify-between md:flex-row md:items-center'>
+                  <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
                     {gig.requiredSkills.map((item, index) => {
                       return (
                         <span
                           key={index}
-                          className='bg-[#28373E] pl-2 pr-2 p-1 rounded-full border border-[#3E525B] gap-1 flex flex-row items-center'
+                          className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
                         >
                           {item}
                         </span>
@@ -1002,7 +1004,7 @@ const FindJob = () => {
                     })}
                   </div>
                   <button
-                    className={`bg-[#DC4F13] pl-[5vw] px-[5vw] p-4 rounded-xl md:flex-none md:mt-0 mt-2 ${
+                    className={`mt-2 rounded-xl bg-[#DC4F13] p-4 px-[5vw] pl-[5vw] md:mt-0 md:flex-none ${
                       isSmallScreen ? 'w-full' : ''
                     }`}
                     onClick={() =>
@@ -1015,13 +1017,13 @@ const FindJob = () => {
               </div>
             );
           })}
-          <button className='p-3 mt-6 text-center border border-[#28373E] w-full'>
+          <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
             Load more +{' '}
           </button>
         </>
       )}
       {filteredGigList.length === 0 && (
-        <div className='p-3 mt-6 text-center border border-[#28373E] w-full'>No data found</div>
+        <div className='mt-6 w-full border border-[#28373E] p-3 text-center'>No data found</div>
       )}
     </div>
   ) : (
