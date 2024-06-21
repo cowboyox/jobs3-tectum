@@ -6,6 +6,7 @@ import { GoPlus } from 'react-icons/go';
 import { Input } from '@/components/ui/input';
 import RadialProgress from '@/components/ui/progress';
 import api from '@/utils/api';
+import { backend_url } from '@/utils/variables';
 
 const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode }) => {
   const [loading, setLoading] = useState(false);
@@ -114,7 +115,7 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode
                 className='w-full rounded-xl object-contain opacity-70'
                 height={1000}
                 key={imagePath}
-                src={`${process.env.NEXT_PUBLIC_JOBS3_BACKEND}/${imagePath}`}
+                src={`${backend_url}/${imagePath}`}
                 width={1000}
               />
             </div>

@@ -7,6 +7,7 @@ import React, { createContext, useContext, useEffect, useReducer, useState } fro
 
 import api from '@/utils/api';
 import { USER_ROLE } from '@/utils/constants';
+import { backend_url } from '@/utils/variables';
 
 const HANDLERS = {
   ACCOUNT_TYPE: 'ACCOUNT_TYPE',
@@ -106,10 +107,7 @@ const ContextProvider = ({ children }) => {
     //   alert('Please select account type');
     //   return;
     // }
-    const { data } = await axios.post(
-      `${process.env.NEXT_PUBLIC_JOBS3_BACKEND}/api/v1/user/login`,
-      credentials
-    );
+    const { data } = await axios.post(`${backend_url}/api/v1/user/login`, credentials);
 
     const { user, token } = data;
     api.defaults.headers.common.Authorization = token;

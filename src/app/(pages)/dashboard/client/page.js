@@ -10,6 +10,7 @@ import InfoPanel from './infoPanel';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import api from '@/utils/api';
+import { backend_url } from '@/utils/variables';
 
 import '/src/app/css/remove_horizontal_padding.css';
 
@@ -76,8 +77,7 @@ const ClientDashboard = () => {
       setUser(JSON.parse(tmp).data.user);
       api.get(`/api/v1/profile/get-profile/${email}`).then((data) => {
         setProfileData(data.data.profile);
-        let fetchBannerUrl =
-          process.env.NEXT_PUBLIC_JOBS3_BACKEND + '/' + data.data.profile.clientBanner;
+        let fetchBannerUrl = backend_url + '/' + data.data.profile.clientBanner;
         setFetchBanner(fetchBannerUrl);
         setPreviewBanner(false);
         setLoading(false);

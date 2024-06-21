@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+import { backend_url } from './variables';
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_JOBS3_BACKEND,
+  baseURL: backend_url,
   headers: {
     'Content-Type': 'application/json',
   },
