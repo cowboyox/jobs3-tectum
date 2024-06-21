@@ -208,7 +208,7 @@ const GigPosting = () => {
         requiredSkills: [],
         experienceLevel: 0,
         location: '',
-        gigPaymentType: false,
+        gigPaymentType: false, // fixed budget gig
         minBudget: 0,
         maxBudget: 0,
         gigPrice: 0,
