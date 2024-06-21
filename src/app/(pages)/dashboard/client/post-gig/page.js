@@ -190,22 +190,6 @@ const all_form_structure = {
 const GigPosting = () => {
   const { toast } = useToast();
 
-  useEffect(() => {
-    let tmp = localStorage.getItem('jobs_2024_token');
-    if (tmp === null) {
-      toast({
-        className:
-          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Please login first!</h3>,
-        title: <h1 className='text-center'>Error</h1>,
-        variant: 'destructive',
-      });
-      alert('Login First!');
-      router.push('/');
-    } else {
-    }
-  }, [router, toast]);
-
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [jobCategory, setCategoryValue] = useState('');
@@ -227,6 +211,22 @@ const GigPosting = () => {
     minBudget: 0,
     requiredSkills: [],
   });
+
+  useEffect(() => {
+    let tmp = localStorage.getItem('jobs_2024_token');
+    if (tmp === null) {
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Please login first!</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+      alert('Login First!');
+      router.push('/');
+    } else {
+    }
+  }, [router, toast]);
 
   const FileChanged = (file) => {
     let tmp = [];
@@ -288,7 +288,7 @@ const GigPosting = () => {
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
-        router.push('/jobs');
+        router.push('./home');
       })
       .catch((err) => {
         console.error('Error corrupted during posting gig', err);

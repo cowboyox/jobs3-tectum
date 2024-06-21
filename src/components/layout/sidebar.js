@@ -1,14 +1,12 @@
 'use client';
 import Link from 'next/link';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 
-const SideBar = ({ userRole }) => {
-  useEffect(() => {
-    let tmp = localStorage.getItem('jobs_2024_token');
-    if (tmp === null) {
-    } else {
-    }
-  }, [userRole]);
+import { useCustomContext } from '@/context/use-custom';
+import { USER_ROLE } from '@/utils/constants';
+
+const SideBar = () => {
+  const auth = useCustomContext();
 
   const freelancer_menu_data = [
     {
@@ -731,7 +729,7 @@ const SideBar = ({ userRole }) => {
       </div>
       <div onClick={OpenSideBar}>
         <div className='flex flex-col gap-3'>
-          {userRole === 0 &&
+          {auth?.currentRole === USER_ROLE.FREELANCER &&
             freelancer_menu_data.map((item, index) => (
               <Link
                 className='flex w-full gap-4 py-1 transition-all hover:pl-1'
@@ -744,7 +742,7 @@ const SideBar = ({ userRole }) => {
                 </span>
               </Link>
             ))}
-          {userRole === 3 &&
+          {auth?.currentRole === USER_ROLE.CLIENT &&
             client_menu_data.map((item, index) => (
               <Link
                 className='flex w-full gap-4 py-1 transition-all hover:pl-1'

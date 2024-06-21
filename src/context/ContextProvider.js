@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 
 import api from '@/utils/api';
+import { USER_ROLE } from '@/utils/constants';
 
 const HANDLERS = {
   ACCOUNT_TYPE: 'ACCOUNT_TYPE',
@@ -85,6 +86,7 @@ const reducer = (state, action) =>
 export const CustomContext = createContext({ undefined });
 
 const ContextProvider = ({ children }) => {
+  const [currentRole, setCurrentRole] = useState(USER_ROLE.FREELANCER);
   // Context API States
   const [loading, setLoading] = useState(true);
   const [loadCompleted, setLoadCompleted] = useState(true);
@@ -111,7 +113,11 @@ const ContextProvider = ({ children }) => {
 
     const { user, token } = data;
     api.defaults.headers.common.Authorization = token;
-    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }));
+    setCurrentRole(user.role[0]);
+    localStorage.setItem(
+      'jobs_2024_token',
+      JSON.stringify({ data: { ...data, currentRole: user.role[0] } })
+    );
     dispatch({
       payload: user,
       type: HANDLERS.SIGN_IN,
@@ -145,7 +151,11 @@ const ContextProvider = ({ children }) => {
     });
     const { user, token } = data;
     api.defaults.headers.common.Authorization = token;
-    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }));
+    setCurrentRole(user.role[0]);
+    localStorage.setItem(
+      'jobs_2024_token',
+      JSON.stringify({ data: { ...data, currentRole: user.role[0] } })
+    );
     dispatch({
       payload: user,
       type: HANDLERS.SIGN_IN,
@@ -166,7 +176,10 @@ const ContextProvider = ({ children }) => {
         payload: wallet,
         type: HANDLERS.SIGN_IN_WALLET,
       });
-      localStorage.setItem('jobs_2024_token', JSON.stringify({ data }));
+      localStorage.setItem(
+        'jobs_2024_token',
+        JSON.stringify({ data: { ...data, currentRole: data.user.role[0] } })
+      );
       let accountType = data.user.role[0];
       let accountTypeName;
       switch (accountType) {
@@ -198,7 +211,10 @@ const ContextProvider = ({ children }) => {
         payload: wallet,
         type: HANDLERS.SIGN_IN_WALLET,
       });
-      localStorage.setItem('jobs_2024_token', JSON.stringify({ data }));
+      localStorage.setItem(
+        'jobs_2024_token',
+        JSON.stringify({ data: { ...data, currentRole: data.user.role[0] } })
+      );
       let accountType = data.user.role[0];
       let accountTypeName;
       switch (accountType) {
@@ -255,6 +271,7 @@ const ContextProvider = ({ children }) => {
       value={{
         ...state,
         contextValue,
+        currentRole,
         dispatch,
         loader: [loadCompleted, setLoadCompleted],
         loading3D: [load3D, setLoad3D],
@@ -262,6 +279,7 @@ const ContextProvider = ({ children }) => {
         preloader: [loading, setLoading],
         register,
         scroll: [scrollPause, setScrollPause],
+        setCurrentRole,
         setRole,
         signInwithWallet,
         signOut,

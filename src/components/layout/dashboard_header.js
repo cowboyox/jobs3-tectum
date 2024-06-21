@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useCustomContext } from '@/context/use-custom';
 
-const DashboardHeader = ({ setUserRole }) => {
+const DashboardHeader = () => {
   const { renderPopup } = usePopupFunctions();
 
   function OpenSideBar() {
@@ -37,20 +37,6 @@ const DashboardHeader = ({ setUserRole }) => {
     }
   }, []);
 
-  const [currentNav, setCurrentNav] = useState('');
-  useEffect(() => {
-    // if(!auth.isAuthenticated){
-    // 	router.replace('/')
-    // }
-    setCurrentNav(window.location.href.split('/')[5]);
-
-    if (window.location.href.split('/')[5].toLowerCase() === 'freelancer') {
-      setUserRole(0);
-    } else {
-      setUserRole(3);
-    }
-  }, [setUserRole]);
-
   const handleTap = (item) => {
     if (!item) {
       return 'Freelancer';
@@ -67,14 +53,16 @@ const DashboardHeader = ({ setUserRole }) => {
   const router = useRouter();
   const { disconnect } = useDisconnect();
 
-  const handleNavigation = (nav) => {
-    if (nav.toLowerCase() === 'freelancer') {
-      setUserRole(0);
-    } else {
-      setUserRole(3);
+  const handleNavigation = (roleNumber) => {
+    let tmp = localStorage.getItem('jobs_2024_token');
+    if (tmp) {
+      let { data } = JSON.parse(tmp);
+      let obj = { ...data, currentRole: roleNumber };
+      auth.setCurrentRole(roleNumber);
+      localStorage.setItem('jobs_2024_token', JSON.stringify({ data: obj }));
     }
-    setCurrentNav(nav);
-    return router.push(`/dashboard/${nav}/home`);
+
+    return router.push(`/dashboard/${handleTap(roleNumber).toLowerCase()}/home`);
   };
 
   const handleSignOut = () => {
@@ -100,7 +88,7 @@ const DashboardHeader = ({ setUserRole }) => {
           }}
         />
         <div className='flex items-center gap-2'>
-          <span className='text-lg uppercase'>{currentNav}</span>
+          <span className='text-lg uppercase'>{handleTap(auth?.currentRole)}</span>
         </div>
         <AiOutlineQuestion className='h-6 w-6 cursor-pointer' />
         <CiBellOn className='h-6 w-6 cursor-pointer' />
@@ -112,7 +100,9 @@ const DashboardHeader = ({ setUserRole }) => {
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent className='w-52' sideOffset={10}>
-            <DropdownMenuLabel className='uppercase'>{currentNav}</DropdownMenuLabel>
+            <DropdownMenuLabel className='uppercase'>
+              {handleTap(auth?.currentRole)}
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem className='text-base'>Profile</DropdownMenuItem>
             <DropdownMenuItem className='text-base'>Wallet</DropdownMenuItem>
@@ -120,13 +110,10 @@ const DashboardHeader = ({ setUserRole }) => {
             <DropdownMenuItem className='text-base'>Settings</DropdownMenuItem>
             {Array.isArray(accType) &&
               accType?.map((item, index) => {
-                if (currentNav !== handleTap(item).toLowerCase()) {
+                if (auth?.currentRole !== item) {
                   return (
                     <DropdownMenuItem className='hover:bg-white' key={index}>
-                      <Button
-                        className='w-full rounded'
-                        onClick={() => handleNavigation(handleTap(item).toLowerCase())}
-                      >
+                      <Button className='w-full rounded' onClick={() => handleNavigation(item)}>
                         {handleTap(item)}
                       </Button>
                     </DropdownMenuItem>

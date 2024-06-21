@@ -29,3 +29,10 @@ export {
   PAYTOKEN_MINT,
   ADMIN_ADDRESS,
 };
+
+export const USER_ROLE = {
+  CLIENT: 3,
+  EMPLOYEE: 1,
+  EMPLOYER: 2,
+  FREELANCER: 0,
+};

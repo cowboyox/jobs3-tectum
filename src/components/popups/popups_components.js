@@ -7,6 +7,7 @@ import { useAccount } from 'wagmi';
 
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
+import { USER_ROLE } from '@/utils/constants';
 
 // Icons
 
@@ -670,13 +671,14 @@ export function VerificationPopup({ onClose }) {
       });
     }
     try {
+      await auth.verifyOTP(content);
       let accountType = auth.acc_type[0];
       let accountTypeName;
       switch (accountType) {
-        case 0:
+        case USER_ROLE.FREELANCER:
           accountTypeName = 'freelancer';
           break;
-        case 3:
+        case USER_ROLE.CLIENT:
           accountTypeName = 'client';
           break;
         default:
