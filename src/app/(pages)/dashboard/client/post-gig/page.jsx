@@ -193,8 +193,8 @@ const all_form_structure = {
 
   upload_files_label: "Upload Files",
 };
-
-const GigPosting = ({ id }) => {
+// @ts-ignore
+const GigPosting = (props) => {
   const { toast } = useToast();
   const [user, setUser] = useState({
     email: "",
@@ -273,7 +273,7 @@ const GigPosting = ({ id }) => {
   useEffect(() => {
     const fetcGigData = () => {
       api
-        .get(`/api/v1/client_gig/get_gig_by_id/${id}`)
+        .get(`/api/v1/client_gig/get_gig_by_id/${props.id}`)
         .then((res) => {
           setPostData({
             ...postData,
@@ -287,10 +287,10 @@ const GigPosting = ({ id }) => {
         });
     };
 
-    if (id) {
+    if (props.id) {
       fetcGigData();
     }
-  }, [id]);
+  }, [props.id]);
 
   const handlePublish = async () => {
     if (!postData.gigTitle) {
@@ -316,7 +316,7 @@ const GigPosting = ({ id }) => {
       },
     };
 
-    if (id) {
+    if (props.id) {
       await api
         .put(`/api/v1/client_gig/edit_gig/${id}`, postData)
         .then(async (data) => {
@@ -390,7 +390,7 @@ const GigPosting = ({ id }) => {
 
   return (
     <div className="gig_posting">
-      {id ? (
+      {props.id ? (
         <h1 className="text-3xl	md:text-4xl">
           Edit <span className="main_color">Gig</span> Post
         </h1>
@@ -919,7 +919,7 @@ const GigPosting = ({ id }) => {
             handlePublish();
           }}
         >
-          {id ? "Edit" : "Publish"} Gig
+          {props.id ? "Edit" : "Publish"} Gig
         </Button>
       </Form>
     </div>
