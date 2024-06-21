@@ -3,7 +3,7 @@ import React from 'react'
 import GigPosting from "../../post-gig/page"
 import { useParams } from 'next/navigation'
 
-const Page = () => {
+const Page = () => {  
     const params = useParams();
 
     return (

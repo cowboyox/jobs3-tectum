@@ -9,7 +9,7 @@ import React from "react";
 const Page = () => {
   return (
     <div className="py-10 w-full min-h-screen flex flex-col items-center">
-      <div className="2xl:max-w-[1000px]">
+      <div style={{width: '100%'}} className="2xl:max-w-[1000px] w-[100%] flex-1">
         <Stats />
         <FillProfile />
         <RecentlyViewed />
