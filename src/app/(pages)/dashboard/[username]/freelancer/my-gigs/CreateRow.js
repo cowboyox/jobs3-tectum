@@ -11,9 +11,9 @@ const CreateRow = () => {
   };
 
   return (
-    <div className='flex w-full items-center justify-end gap-4 rounded-xl bg-[#10191d] p-8 mobile:flex-col'>
+    <div className='bg-[#10191d] p-8 rounded-xl flex gap-4 w-full items-center mobile:flex-col justify-end'>
       <div
-        className='flex h-[60px] w-[200px] cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] py-2 transition hover:bg-white hover:text-black mobile:w-full'
+        className='cursor-pointer bg-[#DC4F13] flex items-center justify-center w-[200px] mobile:w-full h-[60px] py-2 rounded-xl transition hover:bg-white hover:text-black'
         onClick={onCreate}
       >
         <p>Create a New Gig</p>

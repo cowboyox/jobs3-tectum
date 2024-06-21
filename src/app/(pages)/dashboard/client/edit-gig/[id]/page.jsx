@@ -1,16 +1,16 @@
-'use client';
-import React from 'react';
-import GigPosting from '../../post-gig/page';
-import { useParams } from 'next/navigation';
+'use client'
+import React from 'react'
+import GigPosting from "../../post-gig/page"
+import { useParams } from 'next/navigation'
 
 const Page = () => {
-  const params = useParams();
+    const params = useParams();
 
-  return (
+    return (
     <div>
-      <GigPosting id={params.id} />
+        <GigPosting id={params.id} />
     </div>
-  );
-};
+  )
+}
 
-export default Page;
+export default Page

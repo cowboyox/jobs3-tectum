@@ -10,13 +10,13 @@ const TabView = ({ allGigs }) => {
 
   return (
     <>
-      <div className='mx-auto flex w-full rounded-tl-[12px] rounded-tr-[12px]'>
+      <div className='flex w-full mx-auto rounded-tl-[12px] rounded-tr-[12px]'>
         {buttonTexts.map((item, index) => (
           <div
-            className={`flex-1 cursor-pointer border-b-4 py-6 text-center text-white ${
-              selectedTab === item ? 'border-[#DC4F13]' : 'border-[#516170]'
-            }`}
             key={index}
+            className={`flex-1 py-6 text-center text-white cursor-pointer border-b-4 ${
+              selectedTab === item ? ' border-[#DC4F13]' : 'border-[#516170]'
+            }`}
             onClick={() => setSelectedTab(item)}
           >
             {item}

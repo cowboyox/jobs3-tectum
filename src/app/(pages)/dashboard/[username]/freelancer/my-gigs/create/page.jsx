@@ -7,16 +7,16 @@
 */
 
 /*----- React and related hooks -----*/
-import React, { useState, useRef, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState, useRef, useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 /*----- Context Providers -----*/
-import { StepProvider } from '@/components/elements/formSteps/StepContext';
+import { StepProvider } from "@/components/elements/formSteps/StepContext";
 
 /*----- Form Steps Components -----*/
-import FormStep from '@/components/elements/formSteps/Step';
-import StepNavItem from '@/components/elements/formSteps/StepNavItem';
-import FormNavigation from '@/components/elements/formSteps/StepNavigation';
+import FormStep from "@/components/elements/formSteps/Step";
+import StepNavItem from "@/components/elements/formSteps/StepNavItem";
+import FormNavigation from "@/components/elements/formSteps/StepNavigation";
 
 /*----- UI Components -----*/
 import {
@@ -26,105 +26,110 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Checkbox } from '@/components/ui/checkbox';
+  FormMessage
+} from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
+  SelectValue
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 
 /*----- Icons -----*/
-import { GoTrash } from 'react-icons/go';
+import { GoTrash } from "react-icons/go";
 
 /*----- Custom Components -----*/
-import DropFile from '@/components/elements/dropFile';
+import DropFile from "@/components/elements/dropFile";
 
-import { useToast } from '@/components/ui/use-toast';
-import api from '@/utils/api';
-import { useCustomContext } from '@/context/use-custom';
+import { useToast } from "@/components/ui/use-toast";
+import api from "@/utils/api";
+import { useCustomContext } from "@/context/use-custom";
 import { useRouter } from 'next/navigation';
 
 const Question = (props) => {
   return (
-    <div className='flex gap-2 rounded-xl border border-[#526872] p-4'>
-      <p className='text-base text-white'>{props.question_num}.</p>
-      <div className='flex w-full flex-col gap-1'>
-        <p className='text-base text-white'>{props.question}</p>
-        <p className='w-full border-0 bg-transparent p-0 text-base text-[#96B0BD] shadow-none shadow-transparent outline-none'>
+    <div className='flex p-4 border rounded-xl border-[#526872] gap-2'>
+      <p className="text-white text-base">{props.question_num}.</p>
+      <div className="flex flex-col gap-1 w-full">
+        <p className="text-white text-base">
+          {props.question}
+        </p>
+        <p className='bg-transparent p-0 border-0 text-base text-[#96B0BD] w-full shadow-none outline-none shadow-transparent'>
           {props.answer_placeholder}
         </p>
       </div>
-      <GoTrash className='cursor-pointer' onClick={() => props.onDelete(props.id)} />
+      <GoTrash onClick={() => props.onDelete(props.id)} className='cursor-pointer' />
     </div>
-  );
-};
+  )
+}
+
+
 
 const CreateGig = () => {
   const categories_list = [
     {
-      value: 'category_1',
-      label: 'Accounting & Consulting',
+      value: "category_1",
+      label: "Accounting & Consulting",
     },
     {
-      value: 'category_2',
-      label: 'Admin Support',
+      value: "category_2",
+      label: "Admin Support",
     },
     {
-      value: 'category_3',
-      label: 'Customer Service',
+      value: "category_3",
+      label: "Customer Service",
     },
     {
-      value: 'category_4',
-      label: 'Crypto & Web3',
+      value: "category_4",
+      label: "Crypto & Web3",
     },
     {
-      value: 'category_5',
-      label: 'Data Science & Analytics',
+      value: "category_5",
+      label: "Data Science & Analytics",
     },
     {
-      value: 'category_6',
-      label: 'Design & Creative',
+      value: "category_6",
+      label: "Design & Creative"
     },
     {
-      value: 'category_7',
-      label: 'Engineering & Architecture',
+      value: "category_7",
+      label: "Engineering & Architecture"
     },
     {
-      value: 'category_8',
-      label: 'IT & Networking',
+      value: "category_8",
+      label: "IT & Networking"
     },
     {
-      value: 'category_9',
-      label: 'Legal',
+      value: "category_9",
+      label: "Legal"
     },
     {
-      value: 'category_10',
-      label: 'Sales & Marketing',
+      value: "category_10",
+      label: "Sales & Marketing"
     },
     {
-      value: 'category_11',
-      label: 'Translation',
+      value: "category_11",
+      label: "Translation"
     },
     {
-      value: 'category_12',
-      label: 'Web, Mobile & Software Development',
+      value: "category_12",
+      label: "Web, Mobile & Software Development"
     },
     {
-      value: 'category_13',
-      label: 'Writing',
-    },
+      value: "category_13",
+      label: "Writing"
+    }
   ];
 
   const subcategory_list = [
     {
-      parent: 'Accounting & Consulting',
+      parent: "Accounting & Consulting",
       value: [
         'Personal Coaching',
         'Career Coaching',
@@ -138,11 +143,11 @@ const CreateGig = () => {
         'Bookkeeping',
         'Accounting',
         'Financial Management/CFO',
-        'Financial Analysis & Modeling',
+        'Financial Analysis & Modeling'
       ],
     },
     {
-      parent: 'Admin Support',
+      parent: "Admin Support",
       value: [
         'Personal Virtual Assistance',
         'Executive Virtual Assistance',
@@ -163,11 +168,11 @@ const CreateGig = () => {
         'General Research Services',
         'Qualitative Research',
         'Product Reviews',
-        'Web & Software Product Research',
+        'Web & Software Product Research'
       ],
     },
     {
-      parent: 'Customer Service',
+      parent: "Customer Service",
       value: [
         'Customer Onboarding',
         'IT Support',
@@ -175,11 +180,11 @@ const CreateGig = () => {
         'Email, Phone & Chat Support',
         'Visual Tagging & Processing',
         'Community Management',
-        'Content Moderation',
+        'Content Moderation'
       ],
     },
     {
-      parent: 'Crypto & Web3',
+      parent: "Crypto & Web3",
       value: [
         'NFT Art',
         'Coins Design & Tokenisation',
@@ -200,11 +205,11 @@ const CreateGig = () => {
         'CryptoBanner Ads',
         'Reddit',
         'Telegram Promotion',
-        'Token Launch',
+        'Token Launch'
       ],
     },
     {
-      parent: 'Data Science & Analytics',
+      parent: "Data Science & Analytics",
       value: [
         'Data Mining',
         'Data Engineering',
@@ -217,11 +222,11 @@ const CreateGig = () => {
         'Generative AI Modeling',
         'Data Visualization',
         'Data Analytics',
-        'Experimentation & Testing',
+        'Experimentation & Testing'
       ],
     },
     {
-      parent: 'Design & Creative',
+      parent: "Design & Creative",
       value: [
         'Brand Identity Design',
         'Logo Design',
@@ -262,11 +267,11 @@ const CreateGig = () => {
         'Game Art',
         'Production Photography',
         'Local Photography',
-        'Animated Explainers',
+        'Animated Explainers'
       ],
     },
     {
-      parent: 'Engineering & Architecture',
+      parent: "Engineering & Architecture",
       value: [
         'Structural Engineering',
         'Building Information Modeling',
@@ -288,11 +293,11 @@ const CreateGig = () => {
         'Biology',
         'Chemistry',
         'Logistics & Supply Chain Management',
-        'Sourcing & Procurement',
+        'Sourcing & Procurement'
       ],
     },
     {
-      parent: 'IT & Networking',
+      parent: "IT & Networking",
       value: [
         'Network Security',
         'IT Compliance',
@@ -303,11 +308,11 @@ const CreateGig = () => {
         'DevOps Engineering',
         'Business Applications Development',
         'Systems Engineering',
-        'Network Administration',
+        'Network Administration'
       ],
     },
     {
-      parent: 'Legal',
+      parent: "Legal",
       value: [
         'Business & Corporate Law',
         'Intellectual Property Law',
@@ -317,7 +322,7 @@ const CreateGig = () => {
         'Labor & Employment Law',
         'Regulatory Law',
         'International Law',
-        'Immigration Law',
+        'Immigration Law'
       ],
     },
     {
@@ -342,9 +347,9 @@ const CreateGig = () => {
         'Video Marketing',
         'Influencer Marketing',
         'Mobile App Marketing',
-        'Affiliate Marketing',
+        'Affiliate Marketing'
       ],
-      parent: 'Sales & Marketing',
+      parent: "Sales & Marketing"
     },
     {
       value: [
@@ -355,9 +360,9 @@ const CreateGig = () => {
         'Legal Document Translation',
         'Medical Document Translation',
         'General Translation Services',
-        'Language Localization',
+        'Language Localization'
       ],
-      parent: 'Translation',
+      parent: "Translation"
     },
     {
       value: [
@@ -385,9 +390,9 @@ const CreateGig = () => {
         'Front-End Development',
         'Full Stack Development',
         'CMS Development',
-        'Video Game Development',
+        'Video Game Development'
       ],
-      parent: 'Web, Mobile & Software Development',
+      parent: "Web, Mobile & Software Development"
     },
     {
       value: [
@@ -409,13 +414,13 @@ const CreateGig = () => {
         'Creative Writing',
         'Article & Blog Writing',
         'Web & UX Writing',
-        'AI Content Writing',
+        'AI Content Writing'
       ],
-      parent: 'Writing',
-    },
+      parent: "Writing"
+    }
   ];
-  const [currentCategory, setCurrentCategory] = useState('Accounting & Consulting');
-  const [currentSub, setCurrentSub] = useState('Personal Coaching');
+  const [currentCategory, setCurrentCategory] = useState("Accounting & Consulting");
+  const [currentSub, setCurrentSub] = useState("Personal Coaching")
 
   const { toast } = useToast();
   const auth = useCustomContext();
@@ -427,24 +432,25 @@ const CreateGig = () => {
     {
       id: 0,
       question: 'If you are ordering for a business, what’s your industry?',
-      answer_placeholder: '3D design, e-commerce, accounting, marketing, etc',
+      answer_placeholder: '3D design, e-commerce, accounting, marketing, etc'
     },
     {
       id: 1,
       question: 'Is this order part of a bigger project you’re working on?',
-      answer_placeholder: 'Building a mobile app, creating an animation, developing a game, etc',
+      answer_placeholder: 'Building a mobile app, creating an animation, developing a game, etc'
     },
   ]);
 
-  const [profile, setProfileData] = useState(null);
+  const [profile, setProfileData] = useState(null)
   useEffect(() => {
     if (auth.user) {
-      api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then((res) => {
-        console.log(res.data.profile);
+      api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then(res => {
+        console.log(res.data.profile)
         setProfileData(res.data.profile);
-      });
+      })
     }
-  }, [auth]);
+  }, [auth])
+
 
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
@@ -459,7 +465,7 @@ const CreateGig = () => {
         question: newQuestion,
         answer_placeholder: newAnswerPlaceholder,
       };
-      setRequirementQuestions((prevState) => [...prevState, newQuestionObject]);
+      setRequirementQuestions(prevState => [...prevState, newQuestionObject]);
 
       // Clear input fields
       newQuestionRef.current.value = '';
@@ -468,7 +474,7 @@ const CreateGig = () => {
   };
 
   const deleteQuestion = (id) => {
-    setRequirementQuestions((prevState) => prevState.filter((question) => question.id !== id));
+    setRequirementQuestions(prevState => prevState.filter(question => question.id !== id));
   };
 
   const [tagInputValue, setTagInputValue] = useState('');
@@ -492,57 +498,56 @@ const CreateGig = () => {
   const [documentFiles, setDocumentFiles] = useState([]);
 
   const handleVideoUpload = (file) => {
-    console.log(file[0]);
-    setVideoFile(file[0]); // Assuming single file for video
+    console.log(file[0])
+    setVideoFile(file[0]);  // Assuming single file for video
   };
 
   const handleImageUpload = (files, index) => {
     const newImageFiles = [...imageFiles];
-    newImageFiles[index] = files[0]; // Assuming single file for each image slot
-    console.log(files[0]);
+    newImageFiles[index] = files[0];  // Assuming single file for each image slot
+    console.log(files[0])
     setImageFiles(newImageFiles);
   };
 
   const handleDocumentUpload = (files, index) => {
     const newDocumentFiles = [...documentFiles];
-    newDocumentFiles[index] = files[0]; // Assuming single file for each document slot
-    console.log(newDocumentFiles);
+    newDocumentFiles[index] = files[0];  // Assuming single file for each document slot
+    console.log(newDocumentFiles)
     setDocumentFiles(newDocumentFiles);
   };
   async function onSubmit(values) {
     /* Selmani: I didn't check if all the values are being passed here
-     * And i'm sure not all, so please make sure all necessary inputs are being passed
-     * NOTE: Make sure to check the ShadCN documentation
-     * https://ui.shadcn.com/docs/components
-     * I know you know but just wanted to mention :D
-     */
-    let postData = values;
-    postData.gigCategory = currentCategory;
-    postData.subCategory = currentSub;
-    console.log('--------- ', postData);
-    console.log('tag: ', tags);
-    console.log('qa: ', requirementQuestions);
-    values.question = requirementQuestions;
-    values.searchKeywords = tags;
-    values.email = auth.user.email;
+      * And i'm sure not all, so please make sure all necessary inputs are being passed
+      * NOTE: Make sure to check the ShadCN documentation
+      * https://ui.shadcn.com/docs/components
+      * I know you know but just wanted to mention :D
+    */
+   let postData = values;
+   postData.gigCategory = currentCategory;
+   postData.subCategory = currentSub;
+   console.log("--------- ", postData)
+    console.log("tag: ", tags)
+    console.log("qa: ", requirementQuestions)
+    values.question = requirementQuestions
+    values.searchKeywords = tags
+    values.email = auth.user.email
     if (profile) {
-      console.log(profile._id);
-      values.creator = profile._id;
+      console.log(profile._id)
+      values.creator = profile._id
     }
 
     if (!values.gigTitle) {
       return toast({
-        variant: 'default',
+        variant: "default",
         title: <h1 className='text-center'>Warning</h1>,
         description: <h3 className='text-center'>Input Gig Title</h3>,
-        className:
-          'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        className: "bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
       });
     }
 
     const formData = new FormData();
     if (videoFile) {
-      console.log('video');
+      console.log("video")
       formData.append('video', videoFile);
     }
 
@@ -558,91 +563,85 @@ const CreateGig = () => {
         'Content-Type': 'multipart/form-data',
       },
     };
-    await api
-      .post('/api/v1/freelancer_gig/post_gig', values)
-      .then(async (data) => {
-        console.log(data);
-        // await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
-        //   console.log("Successfully uploaded");
-        // })
-        toast({
-          variant: 'default',
-          title: <h1 className='text-center'>Success</h1>,
-          description: <h3>Successfully posted gig titled {values.gigTitle}</h3>,
-          className:
-            'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        });
-        router.push('../');
-      })
-      .catch((err) => {
-        console.log('Error corrupted during posting gig', err);
-        toast({
-          variant: 'destructive',
-          title: <h1 className='text-center'>Error</h1>,
-          description: <h3>Internal Server Error</h3>,
-          className:
-            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        });
+    await api.post('/api/v1/freelancer_gig/post_gig', values).then(async (data) => {
+      console.log(data)
+      // await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
+      //   console.log("Successfully uploaded");
+      // })
+      toast({
+        variant: "default",
+        title: <h1 className='text-center'>Success</h1>,
+        description: <h3>Successfully posted gig titled {values.gigTitle}</h3>,
+        className: "bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
       });
+      router.push('../')
+    }).catch(err => {
+      console.log("Error corrupted during posting gig", err);
+      toast({
+        variant: "destructive",
+        title: <h1 className='text-center'>Error</h1>,
+        description: <h3>Internal Server Error</h3>,
+        className: "bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center"
+      });
+    });
   }
+
 
   return (
     <StepProvider>
       <div className='flex w-full flex-col'>
-        <nav className='flex w-full flex-nowrap rounded-t-xl bg-[#10191d] mobile:overflow-x-scroll'>
-          <StepNavItem name='Overview' num={1} />
-          <StepNavItem name='Pricing' num={2} />
-          <StepNavItem name='Description' num={3} />
-          <StepNavItem name='Requirements' num={4} />
-          <StepNavItem name='Gallery' num={5} />
-          <StepNavItem name='Publish' num={6} />
+        <nav className='flex flex-nowrap w-full bg-[#10191d] rounded-t-xl mobile:overflow-x-scroll'>
+          <StepNavItem name="Overview" num={1} />
+          <StepNavItem name="Pricing" num={2} />
+          <StepNavItem name="Description" num={3} />
+          <StepNavItem name="Requirements" num={4} />
+          <StepNavItem name="Gallery" num={5} />
+          <StepNavItem name="Publish" num={6} />
         </nav>
         <Form {...form}>
-          <form
-            className='mx-auto mt-10 flex w-full max-w-3xl flex-col gap-6 rounded-xl bg-[#10191d] p-7 mobile:px-3'
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className='p-7 mobile:px-3 bg-[#10191d] max-w-3xl w-full mx-auto mt-10 rounded-xl flex flex-col gap-6'>
             <FormStep stepOrder={1}>
               <FormField
-                name='gigTitle'
+                name="gigTitle"
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Gig title</FormLabel>
+                    <FormLabel className='text-2xl text-[#F5F5F5]'>
+                      Gig title
+                    </FormLabel>
                     <FormDescription className='text-base text-[#96B0BD]'>
-                      As your Gig storefront, your title is the most important place to include
-                      words that buyers would likely use to search for a service like yours
+                      As your Gig storefront, your title is the most important place to include words that buyers would likely use to search for a service like yours
                     </FormDescription>
                     <FormControl>
                       <Textarea
                         {...field}
-                        className='h-18 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
                         placeholder='I will do something im really good at...'
+                        className='border-slate-500 rounded-xl text-base px-4 py-4 h-18 bg-transparent'
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <div className='flex flex-col gap-2'>
-                <p className='text-2xl text-[#F5F5F5]'>Category</p>
+              <div className="flex flex-col gap-2">
+                <p className='text-2xl text-[#F5F5F5]'>
+                  Category
+                </p>
                 <p className='text-base text-[#96B0BD]'>
                   Choose the category and subcategory most suitable for your Gig
                 </p>
-                <div className='flex gap-3 mobile:flex-col'>
+                <div className="flex gap-3 mobile:flex-col">
                   <FormField
-                    name='gigCategory'
+                    name="gigCategory"
                     render={({ field }) => (
-                      <FormItem className='flex w-full flex-col gap-2'>
+                      <FormItem className='flex flex-col gap-2 w-full'>
                         <FormControl>
                           <Select
-                            onValueChange={(e) => {
-                              setCurrentCategory(e);
-                            }}
+                            onValueChange={e => { setCurrentCategory(e) }}
                           >
-                            <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                              <SelectValue placeholder='Select a Category' />
+                            <SelectTrigger className='bg-[#1B272C] py-7 px-5 rounded-xl text-base text-[#96B0BD]'>
+                              <SelectValue placeholder="Select a Category" />
                             </SelectTrigger>
-                            <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                            <SelectContent className='bg-[#1B272C] rounded-xl text-base text-[#96B0BD]'>
                               <SelectGroup>
                                 {categories_list.map((job_category) => (
                                   <SelectItem key={job_category.value} value={job_category.label}>
@@ -658,19 +657,19 @@ const CreateGig = () => {
                     )}
                   />
                   <FormField
-                    name='subCategory'
+                    name="subCategory"
                     render={({ field }) => (
-                      <FormItem className='flex w-full flex-col gap-2'>
+                      <FormItem className='flex flex-col gap-2 w-full'>
                         <FormControl>
                           <Select
                             onValueChange={(e) => {
                               setCurrentSub(e);
                             }}
                           >
-                            <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                              <SelectValue placeholder='Select a Sub Category' />
+                            <SelectTrigger className='bg-[#1B272C] py-7 px-5 rounded-xl text-base text-[#96B0BD]'>
+                              <SelectValue placeholder="Select a Sub Category" />
                             </SelectTrigger>
-                            <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                            <SelectContent className='bg-[#1B272C] rounded-xl text-base text-[#96B0BD]'>
                               <SelectGroup>
                                 {subcategory_list.map((subcat, index) => {
                                   if (subcat.parent === currentCategory) {
@@ -692,9 +691,9 @@ const CreateGig = () => {
                   />
                 </div>
               </div>
-              <div className='flex w-full flex-col gap-4'>
+              <div className='w-full flex flex-col gap-4'>
                 <FormField
-                  name='gig_tags'
+                  name="gig_tags"
                   render={({ field }) => (
                     <FormItem className='flex flex-col gap-2'>
                       <FormLabel className='text-2xl text-[#F5F5F5]'>
@@ -704,47 +703,47 @@ const CreateGig = () => {
                         Enter search terms you feel buyers will use when looking for service.
                       </FormDescription>
                       <FormControl>
-                        <Input defaultValue={tags.join(', ')} type='hidden' {...field} />
+                        <Input
+                          defaultValue={tags.join(', ')}
+                          type='hidden'
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 <input
-                  className={`h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base ${tags.length >= 5 ? 'cursor-not-allowed opacity-15' : ''}`}
+                  placeholder="Enter tag"
+                  className={`w-full border-slate-500 rounded-xl text-base px-4 py-4 h-14 bg-transparent border ${tags.length >= 5 ? 'cursor-not-allowed opacity-15' : ''}`}
+                  value={tagInputValue}
                   onChange={(event) => setTagInputValue(event.target.value)}
                   onKeyDown={tagsInputFocus}
-                  placeholder='Enter tag'
-                  value={tagInputValue}
                 />
-                <div className='flex flex-wrap items-center gap-3'>
+                <div className="flex gap-3 items-center flex-wrap">
                   {tags.map((tag, index) => (
-                    <div
-                      className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-white px-2 py-1 text-sm text-black'
-                      key={index}
-                      onClick={() => removeTag(index)}
-                    >
+                    <div key={index} className="bg-white py-1 px-2 text-black rounded-full text-sm flex items-center cursor-pointer w-auto whitespace-nowrap" onClick={() => removeTag(index)}>
                       {tag}
                       <GoTrash className='ml-2' />
                     </div>
                   ))}
                 </div>
-                <p className='text-sm text-[#526872]'>
-                  5 tags maximum, use letters and numbers only
-                </p>
+                <p className='text-sm text-[#526872]'>5 tags maximum, use letters and numbers only</p>
               </div>
             </FormStep>
             <FormStep stepOrder={2}>
               <FormField
-                name='gigPrice'
+                name="gigPrice"
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Setup price</FormLabel>
+                    <FormLabel className='text-2xl text-[#F5F5F5]'>
+                      Setup price
+                    </FormLabel>
                     <FormControl>
                       <Input
-                        className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
-                        placeholder='Price'
+                        className='w-full border-slate-500 rounded-xl text-base px-4 py-4 h-14 bg-transparent border'
                         type='number'
+                        placeholder='Price'
                         {...field}
                       />
                     </FormControl>
@@ -753,16 +752,18 @@ const CreateGig = () => {
                 )}
               />
               <FormField
-                name='revision'
+                name="revision"
                 render={({ field }) => (
-                  <FormItem className='flex w-full flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Revisions</FormLabel>
+                  <FormItem className='flex flex-col gap-2 w-full'>
+                    <FormLabel className='text-2xl text-[#F5F5F5]'>
+                      Revisions
+                    </FormLabel>
                     <FormControl>
-                      <Select defaultValue={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                          <SelectValue placeholder='Revisions' />
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className='bg-[#1B272C] py-7 px-5 rounded-xl text-base text-[#96B0BD]'>
+                          <SelectValue placeholder="Revisions" />
                         </SelectTrigger>
-                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                        <SelectContent className='bg-[#1B272C] rounded-xl text-base text-[#96B0BD]'>
                           <SelectGroup>
                             {Array.from({ length: 30 }, (_, i) => (
                               <SelectItem key={i + 1} value={`${i + 1}`}>
@@ -778,23 +779,25 @@ const CreateGig = () => {
                 )}
               />
               <FormField
-                name='deliveryTime'
+                name="deliveryTime"
                 render={({ field }) => (
-                  <FormItem className='flex w-full flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Delivery time</FormLabel>
+                  <FormItem className='flex flex-col gap-2 w-full'>
+                    <FormLabel className='text-2xl text-[#F5F5F5]'>
+                      Delivery time
+                    </FormLabel>
                     <FormControl>
-                      <Select defaultValue={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                          <SelectValue placeholder='Delivery time' />
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className='bg-[#1B272C] py-7 px-5 rounded-xl text-base text-[#96B0BD]'>
+                          <SelectValue placeholder="Delivery time" />
                         </SelectTrigger>
-                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                        <SelectContent className='bg-[#1B272C] rounded-xl text-base text-[#96B0BD]'>
                           <SelectGroup>
                             {Array.from({ length: 60 }, (_, i) => (
                               <SelectItem key={i + 1} value={`${i + 1} days`}>
                                 {i + 1} day{i + 1 > 1 ? 's' : ''}
                               </SelectItem>
                             ))}
-                            <SelectItem value='+ 2 months'>+ 2 Months</SelectItem>
+                            <SelectItem value="+ 2 months">+ 2 Months</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -806,7 +809,7 @@ const CreateGig = () => {
             </FormStep>
             <FormStep stepOrder={3}>
               <FormField
-                name='gigDescription'
+                name="gigDescription"
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-2'>
                     <FormLabel className='text-2xl text-[#F5F5F5]'>
@@ -823,8 +826,8 @@ const CreateGig = () => {
                     <FormControl>
                       <Textarea
                         {...field}
-                        className='h-60 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
                         placeholder='Add info here...'
+                        className='border-slate-500 rounded-xl text-base px-4 py-4 h-60 bg-transparent'
                       />
                     </FormControl>
                     <FormMessage />
@@ -837,123 +840,123 @@ const CreateGig = () => {
                 Get all the information you need from buyers to get started
               </div>
               <div className='text-base text-[#96B0BD]'>
-                Add questions to help buyers provide you with exactly what you need to start working
-                on their order
+                Add questions to help buyers provide you with exactly what you need to start working on their order
               </div>
               {requirementQuestions.map((requirement_question, q_indx) => (
                 <Question
-                  answer_placeholder={requirement_question.answer_placeholder}
-                  id={requirement_question.id}
                   key={requirement_question.id}
-                  onDelete={deleteQuestion}
-                  question={requirement_question.question}
+                  id={requirement_question.id}
                   question_num={q_indx + 1}
+                  question={requirement_question.question}
+                  answer_placeholder={requirement_question.answer_placeholder}
+                  onDelete={deleteQuestion}
                 />
               ))}
-              <div className='flex flex-col gap-3 rounded-xl border border-[#526872] p-3'>
+              <div className="p-3 border border-[#526872] rounded-xl flex flex-col gap-3">
                 <input
-                  className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
-                  placeholder='Add question here'
                   ref={newQuestionRef}
+                  className='w-full border-slate-500 rounded-xl text-base px-4 py-4 h-14 bg-transparent border'
+                  placeholder='Add question here'
                 />
                 <input
-                  className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
-                  placeholder='Answer example (For the client to know how to answer)'
                   ref={newAnswerPlaceholderRef}
+                  className='w-full border-slate-500 rounded-xl text-base px-4 py-4 h-14 bg-transparent border'
+                  placeholder='Answer example (For the client to know how to answer)'
                 />
-                <div
-                  className='h-14 w-full cursor-pointer rounded-xl bg-slate-700 px-4 py-4 text-center text-base text-white transition hover:bg-white hover:text-black'
-                  onClick={addNewQuestion}
-                >
+                <div className="w-full cursor-pointer rounded-xl text-base px-4 py-4 h-14 text-center bg-slate-700 text-white hover:text-black hover:bg-white transition" onClick={addNewQuestion}>
                   Add new question
                 </div>
               </div>
             </FormStep>
             <FormStep stepOrder={5}>
-              <div className='text-3xl text-[#F5F5F5] mobile:text-xl'>
-                Showcase your services in a Gig gallery. Drag and drop your files here or{' '}
-                <span className='main_color'>browse</span> to upload
+              <div className='text-3xl mobile:text-xl text-[#F5F5F5]'>
+                Showcase your services in a Gig gallery. Drag and drop your files here or <span className='main_color'>browse</span> to upload
               </div>
               <div className='text-base text-[#96B0BD]'>
-                Encourage buyers to choose your Gig by featuring a variety of your work. Format:
-                JPEG, JPG, PNG, GIF, MP4, AVI. Max size per image/video: 50MB
+                Encourage buyers to choose your Gig by featuring a variety of your work. Format: JPEG, JPG, PNG, GIF, MP4, AVI. Max size per image/video: 50MB
               </div>
-              <div className='flex flex-col gap-4'>
-                <p className='text-2xl text-[#F5F5F5]'>Video (1 only)</p>
+              <div className="flex flex-col gap-4">
+                <p className='text-2xl text-[#F5F5F5]'>
+                  Video (1 only)
+                </p>
                 <p className='text-base text-[#96B0BD]'>
                   Capture buyers attention with a video that showcases your services
                 </p>
                 <DropFile
+                  className="aspect-video max-h-80"
+                  placeHolderPlusIconSize={60}
                   acceptOnly='video'
-                  className='aspect-video max-h-80'
                   inputName='video'
                   onFileUpload={handleVideoUpload}
-                  placeHolderPlusIconSize={60}
                 />
               </div>
-              <div className='flex flex-col gap-4'>
-                <p className='text-2xl text-[#F5F5F5]'>Images (up to 4)</p>
-                <p className='text-base text-[#96B0BD]'>
-                  Het noticed by the right buyers with visual examples of your services
+              <div className="flex flex-col gap-4">
+                <p className='text-2xl text-[#F5F5F5]'>
+                  Images (up to 4)
                 </p>
-                <div className='grid gap-5 md:grid-cols-2'>
+                <p className='text-base text-[#96B0BD]'>
+                  Het noticed by  the right buyers with visual examples of your services
+                </p>
+                <div className="grid md:grid-cols-2 gap-5">
                   {Array.from({ length: 4 }, (_, indx) => (
                     <DropFile
-                      acceptOnly='image'
-                      className='aspect-video'
-                      inputName={`gig_image_${indx}`}
                       key={indx}
-                      onFileUpload={(files) => handleImageUpload(files, indx)}
+                      className="aspect-video"
                       placeHolderPlusIconSize={40}
+                      acceptOnly='image'
+                      inputName={`gig_image_${indx}`}
+                      onFileUpload={(files) => handleImageUpload(files, indx)}
                     />
                   ))}
                 </div>
               </div>
-              <div className='flex flex-col gap-4'>
-                <p className='text-2xl text-[#F5F5F5]'>Documents (up to 2)</p>
+              <div className="flex flex-col gap-4">
+                <p className='text-2xl text-[#F5F5F5]'>
+                  Documents (up to 2)
+                </p>
                 <p className='text-base text-[#96B0BD]'>
                   Show some the best work you created in a document. Format: PDF
                 </p>
-                <div className='grid gap-5 md:grid-cols-2'>
+                <div className="grid md:grid-cols-2 gap-5">
                   {Array.from({ length: 2 }, (_, indx) => (
                     <DropFile
-                      acceptOnly='other'
-                      className='h-12'
-                      inputName={`gig_document_${indx}`}
                       key={indx}
-                      onFileUpload={(files) => handleDocumentUpload(files, indx)}
+                      className="h-12"
                       placeHolderPlusIconSize={40}
+                      acceptOnly='other'
+                      inputName={`gig_document_${indx}`}
+                      onFileUpload={(files) => handleDocumentUpload(files, indx)}
                     />
                   ))}
                 </div>
               </div>
-              <div className='flex items-start gap-5'>
-                <Checkbox id='terms' />
+              <div className="flex items-start gap-5">
+                <Checkbox id="terms" />
                 <label
-                  className='text-sm peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
-                  htmlFor='terms'
+                  htmlFor="terms"
+                  className="text-sm peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  I declare that these materials were created by myself or by my team and do not
-                  infringe on any 3rd party rights. I understand that the illegal use of digital
-                  assets is against JOBS3’s Terms of Service and may result in blocking my account
+                  I declare that these materials were created by myself or by my team and do not infringe on any 3rd party rights. I understand that the illegal use of digital assets is against JOBS3’s Terms of Service and may result in blocking my account
                 </label>
               </div>
             </FormStep>
             <FormStep stepOrder={6}>
-              <div className='flex flex-col gap-2'>
-                <div className='text-center text-3xl text-[#F5F5F5]'>You’re almost done!</div>
-                <div className='text-center text-base text-[#96B0BD]'>
+              <div className="flex flex-col gap-2">
+                <div className='text-3xl text-[#F5F5F5] text-center'>
+                  You’re almost done!
+                </div>
+                <div className='text-base text-[#96B0BD] text-center'>
                   Let’s publish your Gig and get you ready to start selling
                 </div>
               </div>
-              <img className='mx-auto w-1/2' src='/assets/images/publish_image.png' />
+              <img src="/assets/images/publish_image.png" className='w-1/2 mx-auto' />
             </FormStep>
             <FormNavigation />
           </form>
         </Form>
       </div>
     </StepProvider>
-  );
-};
+  )
+}
 
 export default CreateGig;

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   Select,
@@ -12,10 +13,20 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { FaX, FaArrowRight } from 'react-icons/fa6';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { FaX, FaEllipsis, FaBan } from 'react-icons/fa6';
 import { Separator } from '@/components/ui/seperator';
 import api from '@/utils/api';
 import searchOptions from './searchOptions';
+import { FaArrowRight } from 'react-icons/fa6';
 import CustomIconDropdown from '@/components/ui/dropdown';
 
 const Freelancers = () => {
@@ -34,13 +45,13 @@ const Freelancers = () => {
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [searchKeyWords, setSearchKeyWords] = useState(false);
 
-  const handleSearchTypeChange = (v) => setSearchType(v);
+  const handleSearchTypeChange = v => setSearchType(v);
 
-  const setKey = (e) => {
+  const setKey = e => {
     setSearchKeyWords(e.target.value);
     if (searchType == searchOptions[0]) {
       const filtered = freelancers.filter(
-        (freelancer) =>
+        freelancer =>
           freelancer.email?.toLowerCase().includes(e.target.value.toLowerCase()) ||
           freelancer.freelancerBio?.toLowerCase().includes(e.target.value.toLowerCase()) ||
           freelancer.fullName?.toLowerCase().includes(e.target.value.toLowerCase()) ||
@@ -52,20 +63,20 @@ const Freelancers = () => {
 
   const aiSearch = () => {
     console.log('AI search', searchKeyWords);
-    api.get(`/api/v1/profile/ai-search-profile/${searchKeyWords}`).then((data) => {
+    api.get(`/api/v1/profile/ai-search-profile/${searchKeyWords}`).then(data => {
       let ai_ids = [];
       if (data.data.profileIDs) ai_ids = data.data.profileIDs;
       console.log(ai_ids);
       console.log(freelancers[0]);
       const ai_filtered = ai_ids
-        .map((id) => freelancers.find((freelancer) => freelancer._id.toString() === id))
-        .filter((freelancer) => freelancer != undefined);
+        .map(id => freelancers.find(freelancer => freelancer._id.toString() === id))
+        .filter(freelancer => freelancer != undefined);
       console.log(ai_filtered);
       setFilteredFreelancers(ai_filtered);
     });
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = e => {
     if (e.key === 'Enter' && searchType === searchOptions[1]) {
       aiSearch();
     }
@@ -86,7 +97,7 @@ const Freelancers = () => {
 
     window.addEventListener('resize', handleResize);
 
-    api.get(`/api/v1/profile/get-all-freelancers`).then((data) => {
+    api.get(`/api/v1/profile/get-all-freelancers`).then(data => {
       if (data.data.data) {
         console.log(data.data.data[0]);
         setFreelancers(data.data.data);
@@ -102,29 +113,29 @@ const Freelancers = () => {
   }, []);
 
   return (
-    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
-      <div className='flex gap-5 rounded-xl bg-[#10191D]'>
-        <div className='m-3 flex flex-1 items-center gap-3'>
+    <div className='p-0 sm:p-0 xl:mt-8 lg:mt-8'>
+      <div className='flex bg-[#10191D] rounded-xl gap-5'>
+        <div className='flex flex-1 items-center gap-3 m-3'>
           <CustomIconDropdown
-            onChange={handleSearchTypeChange}
-            optionLabel={'icon'}
             options={searchOptions}
             value={searchType}
+            optionLabel={'icon'}
+            onChange={handleSearchTypeChange}
           />
           <input
-            className='w-full bg-transparent outline-none'
+            type='text'
+            placeholder={isSmallScreen ? 'Search' : 'Search for keywords'}
+            className=' bg-transparent outline-none w-full'
             onChange={setKey}
             onKeyDown={handleKeyDown}
-            placeholder={isSmallScreen ? 'Search' : 'Search for keywords'}
-            type='text'
           />
           {isSmallScreen && searchType === searchOptions[0] && (
             <button>
               <svg
-                fill='none'
+                width='25'
                 height='24'
                 viewBox='0 0 25 24'
-                width='25'
+                fill='none'
                 xmlns='http://www.w3.org/2000/svg'
               >
                 <path
@@ -142,141 +153,141 @@ const Freelancers = () => {
           )}
         </div>
         {(!isSmallScreen || (isSmallScreen && searchType === searchOptions[0])) && (
-          <div className='flex flex-none flex-row items-center gap-2 px-4'>
-            <button className='flex flex-row items-center justify-center gap-3'>
+          <div className='flex flex-row items-center flex-none gap-2 px-4'>
+            <button className='flex flex-row justify-center items-center gap-3'>
               {!isSmallScreen ? (
                 <>
                   <svg
-                    fill='none'
+                    width='25'
                     height='24'
                     viewBox='0 0 25 24'
-                    width='25'
+                    fill='none'
                     xmlns='http://www.w3.org/2000/svg'
                   >
                     <path
                       d='M22.2119 6.58594H16.3057'
                       stroke='#96B0BD'
+                      strokeWidth='1.5'
+                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
                     />
                     <path
                       d='M6.46191 6.58594H2.52441'
                       stroke='#96B0BD'
+                      strokeWidth='1.5'
+                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
                     />
                     <path
                       d='M10.3994 10.0312C12.3022 10.0312 13.8447 8.48873 13.8447 6.58594C13.8447 4.68314 12.3022 3.14062 10.3994 3.14062C8.49662 3.14062 6.9541 4.68314 6.9541 6.58594C6.9541 8.48873 8.49662 10.0312 10.3994 10.0312Z'
                       stroke='#96B0BD'
+                      strokeWidth='1.5'
+                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
                     />
                     <path
                       d='M22.2119 17.4141H18.2744'
                       stroke='#96B0BD'
+                      strokeWidth='1.5'
+                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
                     />
                     <path
                       d='M8.43066 17.4141H2.52441'
                       stroke='#96B0BD'
+                      strokeWidth='1.5'
+                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
                     />
                     <path
                       d='M14.3369 20.8594C16.2397 20.8594 17.7822 19.3169 17.7822 17.4141C17.7822 15.5113 16.2397 13.9688 14.3369 13.9688C12.4341 13.9688 10.8916 15.5113 10.8916 17.4141C10.8916 19.3169 12.4341 20.8594 14.3369 20.8594Z'
                       stroke='#96B0BD'
+                      strokeWidth='1.5'
+                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
                     />
                   </svg>
                   Filter
                 </>
               ) : (
                 <svg
-                  fill='none'
+                  width='25'
                   height='24'
                   viewBox='0 0 25 24'
-                  width='25'
+                  fill='none'
                   xmlns='http://www.w3.org/2000/svg'
                 >
                   <path
                     d='M22.1719 6.58594H16.2656'
                     stroke='#96B0BD'
+                    strokeWidth='1.5'
+                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
                   />
                   <path
                     d='M6.42188 6.58594H2.48438'
                     stroke='#96B0BD'
+                    strokeWidth='1.5'
+                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
                   />
                   <path
                     d='M10.3594 10.0312C12.2622 10.0312 13.8047 8.48873 13.8047 6.58594C13.8047 4.68314 12.2622 3.14062 10.3594 3.14062C8.45658 3.14062 6.91406 4.68314 6.91406 6.58594C6.91406 8.48873 8.45658 10.0312 10.3594 10.0312Z'
                     stroke='#96B0BD'
+                    strokeWidth='1.5'
+                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
                   />
                   <path
                     d='M22.1719 17.4141H18.2344'
                     stroke='#96B0BD'
+                    strokeWidth='1.5'
+                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
                   />
                   <path
                     d='M8.39062 17.4141H2.48438'
                     stroke='#96B0BD'
+                    strokeWidth='1.5'
+                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
                   />
                   <path
                     d='M14.2969 20.8594C16.1997 20.8594 17.7422 19.3169 17.7422 17.4141C17.7422 15.5113 16.1997 13.9688 14.2969 13.9688C12.3941 13.9688 10.8516 15.5113 10.8516 17.4141C10.8516 19.3169 12.3941 20.8594 14.2969 20.8594Z'
                     stroke='#96B0BD'
+                    strokeWidth='1.5'
+                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
                   />
-                  <circle cx='18.2344' cy='5.10938' fill='#DC4F13' r='4.92188' />
+                  <circle cx='18.2344' cy='5.10938' r='4.92188' fill='#DC4F13' />
                 </svg>
               )}
             </button>
             {!isSmallScreen && (
-              <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
+              <div className='rounded-full w-[23px] h-[23px] bg-[#DC4F13] text-center flex items-center justify-center align-middle'>
                 4
               </div>
             )}
           </div>
         )}
         {!isSmallScreen && (
-          <div className='flex flex-row items-center justify-center gap-2'>
+          <div className='flex flex-row items-center gap-2 justify-center'>
             <div>Sort by</div>
             <div>
               <Select>
-                <SelectTrigger className='flex justify-center border-none bg-transparent text-[#96B0BD] focus:border-none focus:outline-none'>
+                <SelectTrigger className='bg-transparent border-none text-[#96B0BD] flex justify-center focus:outline-none focus:border-none'>
                   <SelectValue placeholder='Sort By' />
                 </SelectTrigger>
                 <SelectContent>
@@ -290,24 +301,21 @@ const Freelancers = () => {
           </div>
         )}
         {isSmallScreen && searchType === searchOptions[1] && (
-          <div className='flex'>
-            <button
-              class='flex w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white'
-              onClick={aiSearch}
-            >
+          <div className='flex  '>
+            <button class='w-12 bg-orange text-white rounded-s-[0px] rounded-e-[15px] flex items-center justify-center text-lg self-stretch' onClick={aiSearch}>
               <FaArrowRight />
             </button>
           </div>
         )}
       </div>
-      <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
+      <div className='flex flex-row gap-3 mt-4 items-center text-[#F5F5F5] overflow-x-auto touch-pan-x overscroll-x-contain'>
         {filterCategory.map((item, index) => {
           return (
             <span
-              className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
               key={`filterCategory_${index}`}
+              className='bg-[#28373E] pl-2 pr-2 p-1 rounded-full border border-[#3E525B] gap-1 flex flex-row items-center'
             >
-              <FaX className='rounded-full bg-[#3E525B] p-[2px]' />
+              <FaX className='p-[2px] bg-[#3E525B] rounded-full' />
               {item}
             </span>
           );
@@ -318,21 +326,21 @@ const Freelancers = () => {
         filteredFreelancers.map((freelancer, index) => {
           return (
             <div
-              className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'
+              className='bg-[#10191D] mt-4 text-center p-5 rounded-xl'
               key={`freelancers_${index}`}
             >
-              <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
-                <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
+              <div className='flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start'>
+                <div className='flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3'>
                   Front-End Developer
                 </div>
               </div>
-              <div className='mt-3 flex flex-col items-start justify-between gap-6 md:flex-row md:justify-start'>
+              <div className='flex md:flex-row flex-col gap-6 mt-3 items-start md:justify-start justify-between'>
                 <div className='flex flex-row items-center gap-2'>
                   <svg
-                    fill='none'
+                    width='24'
                     height='24'
                     viewBox='0 0 24 24'
-                    width='24'
+                    fill='none'
                     xmlns='http://www.w3.org/2000/svg'
                   >
                     <path
@@ -351,10 +359,10 @@ const Freelancers = () => {
                 <div className='flex flex-row items-center gap-6'>
                   <div className='flex flex-row gap-2'>
                     <svg
-                      fill='none'
+                      width='24'
                       height='24'
                       viewBox='0 0 24 24'
-                      width='24'
+                      fill='none'
                       xmlns='http://www.w3.org/2000/svg'
                     >
                       <path
@@ -373,10 +381,10 @@ const Freelancers = () => {
                   </div>
                   <div className='flex flex-row gap-2'>
                     <svg
-                      fill='none'
+                      width='22'
                       height='24'
                       viewBox='0 0 22 24'
-                      width='22'
+                      fill='none'
                       xmlns='http://www.w3.org/2000/svg'
                     >
                       <path
@@ -387,23 +395,23 @@ const Freelancers = () => {
                       <path
                         d='M12.7318 14.9084H8.37999C8.18555 14.9084 7.96796 14.7709 7.90314 14.6042L5.98647 9.77923C5.71333 9.08757 6.03277 8.87507 6.69018 9.30007L8.49573 10.4626C8.79666 10.6501 9.13925 10.5542 9.26888 10.2501L10.0837 8.2959C10.343 7.6709 10.7735 7.6709 11.0328 8.2959L11.8476 10.2501C11.9772 10.5542 12.3198 10.6501 12.6161 10.4626L14.3105 9.37507C15.0328 8.9084 15.38 9.1459 15.0837 9.90007L13.2133 14.6126C13.1439 14.7709 12.9263 14.9084 12.7318 14.9084Z'
                         stroke='#34E250'
+                        strokeWidth='0.625'
                         strokeLinecap='round'
                         strokeLinejoin='round'
-                        strokeWidth='0.625'
                       />
                       <path
                         d='M8.00879 16.1665H13.1014'
                         stroke='#34E250'
+                        strokeWidth='0.625'
                         strokeLinecap='round'
                         strokeLinejoin='round'
-                        strokeWidth='0.625'
                       />
                       <path
                         d='M9.39844 12.8335H11.7133'
                         stroke='#34E250'
+                        strokeWidth='0.625'
                         strokeLinecap='round'
                         strokeLinejoin='round'
-                        strokeWidth='0.625'
                       />
                     </svg>
                     96% Job Success
@@ -412,33 +420,33 @@ const Freelancers = () => {
               </div>
               <Separator className='my-4' />
               <div className='text-left text-[#96B0BD]'>{freelancer.freelancerBio}</div>
-              <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
+              <div className='flex flex-row gap-3 mt-4 items-center text-[#F5F5F5] overflow-x-auto touch-pan-x overscroll-x-contain'>
                 {freelancer.skills &&
                   freelancer.skills.map((item, index) => {
                     return (
                       <span
-                        className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
                         key={`skills_${index}`}
+                        className='bg-[#28373E] pl-2 pr-2 p-1 rounded-full border border-[#3E525B] gap-1 flex flex-row items-center'
                       >
-                        <FaX className='rounded-full bg-[#3E525B] p-[2px]' />
+                        <FaX className='p-[2px] bg-[#3E525B] rounded-full' />
                         {item}
                       </span>
                     );
                   })}
               </div>
-              <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
-                <div className='flex flex-1 flex-row items-center gap-3 text-left'>
+              <div className='mt-3 flex md:flex-row flex-col justify-between md:items-center items-start'>
+                <div className='flex flex-row gap-3 text-left flex-1 items-center'>
                   <div>
-                    <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
+                    <img src='/assets/images/Rectangle 273.png' width={40} height={40}></img>
                   </div>
                   <div className='flex flex-col gap-1 text-left'>
-                    <div className='flex flex-row items-center gap-1 font-bold'>
+                    <div className='flex flex-row gap-1 font-bold items-center'>
                       {freelancer.fullName}
                       <svg
-                        fill='none'
+                        width='17'
                         height='17'
                         viewBox='0 0 17 17'
-                        width='17'
+                        fill='none'
                         xmlns='http://www.w3.org/2000/svg'
                       >
                         <path
@@ -447,12 +455,12 @@ const Freelancers = () => {
                         />
                       </svg>
                     </div>
-                    <div className='text-left text-[14px] text-[#516170]'>Freelancer</div>
+                    <div className='text-[14px] text-[#516170] text-left'>Freelancer</div>
                   </div>
                 </div>
-                <div className='mt-2 flex-1 rounded-xl bg-[#1B272C] p-1 md:mt-0 md:flex-none'>
-                  <button className='p-4 px-8 md:p-5'>Message</button>
-                  <button className='bg-[#DC4F13] p-4 px-8 md:p-5'>Invite to job</button>
+                <div className='bg-[#1B272C] p-1 rounded-xl md:flex-none md:mt-0 mt-2 flex-1'>
+                  <button className='md:p-5 px-8 p-4'>Message</button>
+                  <button className='bg-[#DC4F13] md:p-5 px-8 p-4'>Invite to job</button>
                 </div>
               </div>
             </div>
