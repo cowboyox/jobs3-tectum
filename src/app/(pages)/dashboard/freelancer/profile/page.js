@@ -78,6 +78,7 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
   );
 };
 
+<<<<<<< HEAD
 const reviews = [
   {
     id: 1,
@@ -107,6 +108,9 @@ const reviews = [
     reviewText: 'Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.'
   }
 ];
+=======
+const reviews = [];
+>>>>>>> 14859a5dbde5bfc194b0eaaee5b133a3bd300d6c
 
 const FreelancerProfile = () => {
   const [selectedImage, setSelectedImage] = useState([]);
