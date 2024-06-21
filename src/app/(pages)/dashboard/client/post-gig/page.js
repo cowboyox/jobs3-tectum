@@ -278,9 +278,10 @@ const GigPosting = () => {
     await api
       .post('/api/v1/client_gig/post_gig', postData)
       .then(async (data) => {
-        await api
-          .post(`/api/v1/client_gig/upload_attachment/${data.data.gigId}`, formData, config)
-          .then(() => {});
+        // await api
+        //   .post(`/api/v1/client_gig/upload_attachment/${data.data.gigId}`, formData, config)
+        //   .then(() => {});
+        await api.post('/api/v1/client_gig/send_tg_bot', {profileType: "Client", profileName: JSON.parse(tmp).data.user.name, gigDescription: postData.gigDescription})
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
