@@ -2,7 +2,6 @@
 'use client';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { backend_url } from "@/utils/variables";
 
 // Create a context for the socket
 const SocketContext = createContext();
@@ -13,11 +12,11 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io(backend_url, {
+    const newSocket = io(process.env.NEXT_PUBLIC_JOBS3_BACKEND, {
       transports: ['websocket', 'polling'],
       withCredentials: true,
     });
-    
+
     setSocket(newSocket);
 
     return () => {
@@ -25,9 +24,5 @@ export const SocketProvider = ({ children }) => {
     };
   }, []);
 
-  return (
-    <SocketContext.Provider value={socket}>
-      {children}
-    </SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 };

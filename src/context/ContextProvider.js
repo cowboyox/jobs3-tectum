@@ -1,30 +1,26 @@
-"use client";
+'use client';
 
-import React, { useReducer, createContext, useEffect, useContext } from "react";
-import PropTypes from 'prop-types'
-import { useRouter } from "next/navigation";
-const { useState } = React;
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import PropTypes from 'prop-types';
+import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 
-// Context API
-// import AuthContext from "./Context";
-import api from "@/utils/api";
-import { backend_url } from "@/utils/variables";
-import axios from "axios";
+import api from '@/utils/api';
 
 const HANDLERS = {
+  ACCOUNT_TYPE: 'ACCOUNT_TYPE',
   INITIALIZE: 'INITIALIZE',
   SIGN_IN: 'SIGN_IN',
-  SIGN_OUT: 'SIGN_OUT',
   SIGN_IN_WALLET: 'SIGN_IN_WALLET',
-  ACCOUNT_TYPE: 'ACCOUNT_TYPE'
+  SIGN_OUT: 'SIGN_OUT',
 };
 
 const initialState = {
+  acc_type: null,
   isAuthenticated: false,
   isLoading: true,
   user: null,
   wallet: null,
-  acc_type: null
 };
 
 const handlers = {
@@ -33,18 +29,16 @@ const handlers = {
 
     return {
       ...state,
-      ...(
-        // if payload (user) is provided, then is authenticated
-        user
-          ? ({
+      ...// if payload (user) is provided, then is authenticated
+      (user
+        ? {
             isAuthenticated: true,
             isLoading: false,
-            user
-          })
-          : ({
-            isLoading: false
-          })
-      )
+            user,
+          }
+        : {
+            isLoading: false,
+          }),
     };
   },
   [HANDLERS.SIGN_IN]: (state, action) => {
@@ -53,16 +47,16 @@ const handlers = {
     return {
       ...state,
       isAuthenticated: true,
-      user
+      user,
     };
   },
   [HANDLERS.SIGN_OUT]: (state) => {
     return {
       ...state,
+      acc_type: null,
       isAuthenticated: false,
       user: null,
       wallet: null,
-      acc_type: null
     };
   },
   [HANDLERS.SIGN_IN_WALLET]: (state, action) => {
@@ -71,8 +65,8 @@ const handlers = {
     return {
       ...state,
       isAuthenticated: true,
+      user: null,
       wallet,
-      user: null
     };
   },
   [HANDLERS.ACCOUNT_TYPE]: (state, action) => {
@@ -80,14 +74,13 @@ const handlers = {
 
     return {
       ...state,
-      acc_type
-    }
-  }
+      acc_type,
+    };
+  },
 };
 
-const reducer = (state, action) => (
-  handlers[action.type] ? handlers[action.type](state, action) : state
-);
+const reducer = (state, action) =>
+  handlers[action.type] ? handlers[action.type](state, action) : state;
 
 export const CustomContext = createContext({ undefined });
 
@@ -101,9 +94,9 @@ const ContextProvider = ({ children }) => {
     // Define your context data here
     message: 'Hello, world!',
   };
-  const [verify_id, setVerify] = useState(null)
+  const [verify_id, setVerify] = useState(null);
 
-  const router = useRouter()
+  const router = useRouter();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const login = async (credentials) => {
@@ -111,58 +104,70 @@ const ContextProvider = ({ children }) => {
     //   alert('Please select account type');
     //   return;
     // }
-    const { data } = await axios.post(`${backend_url}/api/v1/user/login`, credentials);
+    const { data } = await axios.post(
+      `${process.env.NEXT_PUBLIC_JOBS3_BACKEND}/api/v1/user/login`,
+      credentials
+    );
 
     const { user, token } = data;
-    api.defaults.headers.common.Authorization = token
-    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
+    api.defaults.headers.common.Authorization = token;
+    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }));
     dispatch({
+      payload: user,
       type: HANDLERS.SIGN_IN,
-      payload: user
-    })
+    });
     return user;
-  }
+  };
 
   const register = async (credentials) => {
     if (state.acc_type === null) {
-      alert("Please select account type")
+      alert('Please select account type');
       return;
     }
-    const { data } = await api.post('/api/v1/user/register', { ...credentials, acc_type: state.acc_type })
+    const { data } = await api.post('/api/v1/user/register', {
+      ...credentials,
+      acc_type: state.acc_type,
+    });
     const { user_id } = data;
-    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
-    setVerify(user_id)
-  }
+    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }));
+    setVerify(user_id);
+  };
 
   const verifyOTP = async (credential) => {
     if (state.acc_type === null) {
-      alert("Please select account type")
+      alert('Please select account type');
       return;
     }
-    const { data } = await api.post('/api/v1/user/verify', { user_id: verify_id, otp: credential, acc_type: state.acc_type });
-    const { user, token, verified } = data;
-    api.defaults.headers.common.Authorization = token
-    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
+    const { data } = await api.post('/api/v1/user/verify', {
+      acc_type: state.acc_type,
+      otp: credential,
+      user_id: verify_id,
+    });
+    const { user, token } = data;
+    api.defaults.headers.common.Authorization = token;
+    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }));
     dispatch({
+      payload: user,
       type: HANDLERS.SIGN_IN,
-      payload: user
-    })
-  }
+    });
+  };
 
   const signUpwithWallet = async (wallet) => {
     if (state.acc_type === null) {
-      alert("Please select account type")
+      alert('Please select account type');
       return;
     }
     try {
-      const { data } = await api.post('/api/v1/user/wallet/register', { wallet, acc_type: state.acc_type });
+      const { data } = await api.post('/api/v1/user/wallet/register', {
+        acc_type: state.acc_type,
+        wallet,
+      });
       dispatch({
+        payload: wallet,
         type: HANDLERS.SIGN_IN_WALLET,
-        payload: wallet
-      })
-      localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
+      });
+      localStorage.setItem('jobs_2024_token', JSON.stringify({ data }));
       let accountType = data.user.role[0];
-      console.log("type: ", accountType)
       let accountTypeName;
       switch (accountType) {
         case 0:
@@ -175,12 +180,12 @@ const ContextProvider = ({ children }) => {
           accountTypeName = 'client';
           break;
       }
-      router.push(`/dashboard/${data.user.name}/${accountTypeName}/`);
+      router.push(`/dashboard/${accountTypeName}/`);
       // router.push('/jobs')
     } catch (err) {
-      console.log(err)
+      console.error(err);
     }
-  }
+  };
 
   const signInwithWallet = async (wallet) => {
     // if (state.acc_type === null) {
@@ -188,14 +193,13 @@ const ContextProvider = ({ children }) => {
     //   return;
     // }
     try {
-      const { data } = await api.post('/api/v1/user/wallet/login', { wallet })
+      const { data } = await api.post('/api/v1/user/wallet/login', { wallet });
       dispatch({
+        payload: wallet,
         type: HANDLERS.SIGN_IN_WALLET,
-        payload: wallet
-      })
-      localStorage.setItem('jobs_2024_token', JSON.stringify({ data }))
+      });
+      localStorage.setItem('jobs_2024_token', JSON.stringify({ data }));
       let accountType = data.user.role[0];
-      console.log("type: ", accountType)
       let accountTypeName;
       switch (accountType) {
         case 0:
@@ -208,62 +212,61 @@ const ContextProvider = ({ children }) => {
           accountTypeName = 'client';
           break;
       }
-      console.log()
-      router.push(`/dashboard/${data.user.name}/${accountTypeName}/`);
+      router.push(`/dashboard/${accountTypeName}/`);
     } catch (err) {
-      console.log(err)
+      console.error(err);
     }
-  }
+  };
 
   const signOut = () => {
-    localStorage.removeItem('jobs_2024_token')
+    localStorage.removeItem('jobs_2024_token');
     dispatch({
       type: HANDLERS.SIGN_OUT,
-    })
-  }
+    });
+  };
 
   const setRole = (role) => {
     dispatch({
+      payload: role,
       type: HANDLERS.ACCOUNT_TYPE,
-      payload: role
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    const storedData = localStorage.getItem('jobs_2024_token')
+    const storedData = localStorage.getItem('jobs_2024_token');
     try {
-      const data = JSON.parse(storedData)
-      if (data && typeof (data) === 'object') {
-        const { user, token, verified } = data.data;
-        api.defaults.headers.common.Authorization = token
+      const data = JSON.parse(storedData);
+      if (data && typeof data === 'object') {
+        const { user, token } = data.data;
+        api.defaults.headers.common.Authorization = token;
         dispatch({
+          payload: user,
           type: HANDLERS.SIGN_IN,
-          payload: user
-        })
+        });
         // router.push('/jobs')
       }
     } catch (err) {
-      console.log('Error getting data!')
+      console.error('Error getting data!');
     }
-  }, [])
+  }, []);
 
   return (
     <CustomContext.Provider
       value={{
         ...state,
+        contextValue,
         dispatch,
-        preloader: [loading, setLoading],
-        loading3D: [load3D, setLoad3D],
-        scroll: [scrollPause, setScrollPause],
         loader: [loadCompleted, setLoadCompleted],
+        loading3D: [load3D, setLoad3D],
         login,
+        preloader: [loading, setLoading],
         register,
-        verifyOTP,
-        signUpwithWallet,
+        scroll: [scrollPause, setScrollPause],
+        setRole,
         signInwithWallet,
         signOut,
-        setRole,
-        contextValue
+        signUpwithWallet,
+        verifyOTP,
       }}
     >
       {children}
@@ -272,7 +275,7 @@ const ContextProvider = ({ children }) => {
 };
 
 ContextProvider.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 export const CustomConsumer = CustomContext.Consumer;
@@ -280,4 +283,3 @@ export const CustomConsumer = CustomContext.Consumer;
 export const useCustomContext = () => useContext(CustomContext);
 
 export default ContextProvider;
-

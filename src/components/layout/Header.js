@@ -1,27 +1,29 @@
-import React, { useRef, useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { useCustomContext } from "@/context/use-custom";
-import { useRouter } from "next/navigation";
+import gsap from 'gsap';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDisconnect } from 'wagmi';
+
+import { usePopupFunctions } from '../popups/popups';
+
+import { useCustomContext } from '@/context/use-custom';
 // Dependencies
-import gsap from "gsap";
 
 // Components
-import { usePopupFunctions } from "../popups/popups";
-import { useDisconnect } from "wagmi";
 
 const Header = () => {
   const [user, setUser] = useState({
-    email: "",
-    name: "no-user",
+    email: '',
+    name: 'no-user',
     role: [0],
     verified: false,
   });
   const [accType, setAccType] = useState([]);
   useEffect(() => {
-    let tmp = localStorage.getItem("jobs_2024_token");
+    let tmp = localStorage.getItem('jobs_2024_token');
     if (tmp === null) {
-      console.log("Login First!");
+      console.log('Login First!');
     } else {
       setUser(JSON.parse(tmp).data.user);
       setAccType(JSON.parse(tmp).data.acc_type);
@@ -39,88 +41,71 @@ const Header = () => {
   const handleMenuClick = (status) => {
     if (status == true) {
       gsap.to(mobileMenu.current, {
-        translateX: 0,
         duration: 0.5,
+        translateX: 0,
       });
     }
 
     if (status == false) {
       gsap.to(mobileMenu.current, {
-        translateX: "-100%",
         duration: 0.5,
+        translateX: '-100%',
       });
     }
   };
   const handleSignOut = () => {
     disconnect();
     auth.signOut();
-    location.href = "/";
+    location.href = '/';
   };
 
   // Authenticated user details
-	const isAuthenticated = auth.isAuthenticated;
-	const userRole = Array.isArray(user?.role) ? user.role : [];
+  const isAuthenticated = auth.isAuthenticated;
+  const userRole = Array.isArray(user?.role) ? user.role : [];
 
-	const clientUrl = isAuthenticated && userRole.includes(3) 
-		? `/dashboard/${user.name}/client/home` 
-		: "/"
-	;
-	const freelancerUrl = isAuthenticated && userRole.includes(0) 
-		? `/dashboard/${user.name}/freelancer/home` 
-		: "/"
-	;
-	const employerUrl = isAuthenticated && userRole.includes(2) 
-		? `/dashboard/${user.name}/employer/home` 
-		: "/"
-	;
-	const employeeUrl = isAuthenticated && userRole.includes(1) 
-		? `/dashboard/${user.name}/employee/home` 
-		: "/"
-	;
-
+  const clientUrl = isAuthenticated && userRole.includes(3) ? `/dashboard/client/home` : '/';
+  const freelancerUrl =
+    isAuthenticated && userRole.includes(0) ? `/dashboard/freelancer/home` : '/';
+  const employerUrl = isAuthenticated && userRole.includes(2) ? `/dashboard/employer/home` : '/';
+  const employeeUrl = isAuthenticated && userRole.includes(1) ? `/dashboard/employee/home` : '/';
   return (
     <>
       {renderPopup()}
 
-      <header className="main_header">
-        <div className="container">
-          <Link href={"/"} className="main_logo">
+      <header className='main_header'>
+        <div className='container'>
+          <Link className='main_logo' href={'/'}>
             <Image
-              src={"/assets/images/logo.svg"}
-              width={133}
+              alt='Jobs3'
+              className='min-w-[133px]'
               height={50}
-              alt="Jobs3"
-			  className="min-w-[133px]"
+              src={'/assets/images/logo.svg'}
+              width={133}
             />
           </Link>
-          <button className="menu_bars" onClick={() => handleMenuClick(true)}>
-            <Image
-              src={"/assets/images/menu_icon.svg"}
-              width={40}
-              height={40}
-              alt=""
-            />
+          <button className='menu_bars' onClick={() => handleMenuClick(true)}>
+            <Image alt='' height={40} src={'/assets/images/menu_icon.svg'} width={40} />
           </button>
           <nav>
-            <Link href="/">HOME</Link>
-						<Link href={clientUrl}>Client</Link>
-						<Link href={freelancerUrl}>Freelancer</Link>
-						{/* <Link href={employerUrl}>Employer</Link>
+            <Link href='/'>HOME</Link>
+            <Link href={clientUrl}>Client</Link>
+            <Link href={freelancerUrl}>Freelancer</Link>
+            {/* <Link href={employerUrl}>Employer</Link>
 						<Link href={employeeUrl}>Employee</Link> */}
           </nav>
-          <div className="right_side">
+          <div className='right_side'>
             {!auth?.isAuthenticated ? (
               <Link
-                href={"#sign-out"}
-                onClick={() => openPopup("TypeOfAccount")}
-                className="btn_classified ml-10 whitespace-nowrap"
+                className='btn_classified ml-10 whitespace-nowrap'
+                href={'#sign-out'}
+                onClick={() => openPopup('TypeOfAccount')}
               >
                 Sign Up
               </Link>
             ) : (
               <Link
-                href={"/jobs"}
-                className="btn_classified ml-10 whitespace-nowrap"
+                className='btn_classified ml-10 whitespace-nowrap'
+                href={'/jobs'}
                 onClick={handleSignOut}
               >
                 Sign Out
@@ -129,9 +114,9 @@ const Header = () => {
             {!auth?.isAuthenticated && (
               <div>
                 <Link
-                  href={"#sign-out"}
-                  onClick={() => openPopup("SignIn")}
-                  className="btn_classified whitespace-nowrap"
+                  className='btn_classified whitespace-nowrap'
+                  href={'#sign-out'}
+                  onClick={() => openPopup('SignIn')}
                 >
                   Launch App
                 </Link>
@@ -141,44 +126,33 @@ const Header = () => {
         </div>
       </header>
 
-      <div className="mobile-menu" ref={mobileMenu}>
-        <div className="mm-head">
-          <button
-            className="close-button"
-            onClick={() => handleMenuClick(false)}
-          >
+      <div className='mobile-menu' ref={mobileMenu}>
+        <div className='mm-head'>
+          <button className='close-button' onClick={() => handleMenuClick(false)}>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
+              fill='none'
+              stroke='#fff'
               strokeWidth={1.5}
-              stroke="#fff"
-              style={{ width: "20px" }}
+              style={{ width: '20px' }}
+              viewBox='0 0 24 24'
+              xmlns='http://www.w3.org/2000/svg'
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18 18 6M6 6l12 12"
-              />
+              <path d='M6 18 18 6M6 6l12 12' strokeLinecap='round' strokeLinejoin='round' />
             </svg>
             <span>Close</span>
           </button>
         </div>
-        <Link href={"/"}>HOME</Link>
+        <Link href={'/'}>HOME</Link>
         <Link
           href={`${
-            auth.isAuthenticated && user.role?.includes(3)
-              ? `/dashboard/${user.name}/client/home`
-              : "/"
+            auth.isAuthenticated && user.role?.includes(3) ? `/dashboard/client/home` : '/'
           }`}
         >
           Client
         </Link>
         <Link
           href={`${
-            auth.isAuthenticated && user.role?.includes(0)
-              ? `/dashboard/${user.name}/freelancer/home`
-              : "/"
+            auth.isAuthenticated && user.role?.includes(0) ? `/dashboard/freelancer/home` : '/'
           }`}
         >
           Freelancer
@@ -186,28 +160,20 @@ const Header = () => {
 
         {!auth?.isAuthenticated ? (
           <Link
-            href={"#sign-out"}
-            onClick={() => openPopup("TypeOfAccount")}
-            className="btn_classified"
+            className='btn_classified'
+            href={'#sign-out'}
+            onClick={() => openPopup('TypeOfAccount')}
           >
             Sign Up
           </Link>
         ) : (
-          <Link
-            href={"/jobs"}
-            className="btn_classified"
-            onClick={handleSignOut}
-          >
+          <Link className='btn_classified' href={'/jobs'} onClick={handleSignOut}>
             Sign Out
           </Link>
         )}
         {!auth?.isAuthenticated && (
           <div>
-            <Link
-              href={"#sign-out"}
-              onClick={() => openPopup("SignIn")}
-              className="btn_classified"
-            >
+            <Link className='btn_classified' href={'#sign-out'} onClick={() => openPopup('SignIn')}>
               Launch App
             </Link>
           </div>

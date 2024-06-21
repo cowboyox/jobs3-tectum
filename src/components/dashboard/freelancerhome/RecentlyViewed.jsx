@@ -1,10 +1,8 @@
-"use client";
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { MdVerified } from "react-icons/md";
-import { RiPoliceBadgeLine } from "react-icons/ri";
-import { GiLaurelCrown } from "react-icons/gi";
-import { getRecentViewedGigs } from "@/utils/http";
+'use client';
+import Image from 'next/image';
+import React, { useEffect } from 'react';
+
+import { getRecentViewedGigs } from '@/utils/http';
 
 const recentViewed = [
   // {
@@ -25,55 +23,47 @@ const recentViewed = [
 ];
 
 const RecentlyViewed = () => {
-  const [data, setData] = useState([]);
-
   useEffect(() => {
     const fetchRecentViewGigs = async () => {
       try {
         const res = await getRecentViewedGigs();
-        console.log("Gigs Data", res);
-        setData(res.data);
       } catch (err) {
-        console.log("Err fetching Gigs", err);
+        console.error('Err fetching Gigs', err);
       }
     };
+
     fetchRecentViewGigs();
   }, []);
   return (
-    <div className="mt-10 flex flex-col gap-4">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-semibold">Recently Viewed</h1>
-        <p className="cursor-pointer">Show more</p>
+    <div className='mt-10 flex flex-col gap-4'>
+      <div className='flex justify-between'>
+        <h1 className='text-2xl font-semibold'>Recently Viewed</h1>
+        <p className='cursor-pointer'>Show more</p>
       </div>
-      <div className="grid lg:grid-cols-3 gap-4 mt-2">
-        {recentViewed.length ? recentViewed.map((spend, index) => (
-          <div
-            key={index}
-            className="flex px-4 py-8 gap-1 items-center flex-col bg-darkGray rounded-2xl"
-
-          >
-            <div className=" flex flex-col gap-4">
-              <div className="">
-                <Image
-                  src={"/assets/icons/ActiveOrder.png"}
-                  width={45}
-                  height={45}
-                />
-                <h3 className="text-white text-xl font-[500] mt-4">
-                  {spend.title}
-                </h3>
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <p className="text-medGray font-[400] text-lg">{spend.price}</p>
-                <div className="flex gap-1 items-center text-white border-2 border-white rounded-[6px] px-3">
-                  <p className="p-[1px]">{spend.location}</p>
+      <div className='mt-2 grid gap-4 lg:grid-cols-3'>
+        {recentViewed.length ? (
+          recentViewed.map((spend, index) => (
+            <div
+              className='flex flex-col items-center gap-1 rounded-2xl bg-darkGray px-4 py-8'
+              key={index}
+            >
+              <div className='flex flex-col gap-4'>
+                <div className=''>
+                  <Image height={45} src={'/assets/icons/ActiveOrder.png'} width={45} />
+                  <h3 className='mt-4 text-xl font-[500] text-white'>{spend.title}</h3>
+                </div>
+                <div className='flex items-center justify-between gap-4'>
+                  <p className='text-lg font-[400] text-medGray'>{spend.price}</p>
+                  <div className='flex items-center gap-1 rounded-[6px] border-2 border-white px-3 text-white'>
+                    <p className='p-[1px]'>{spend.location}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )): 
-        <div className="text-center mt-[10%]">Not yet</div>  
-      }
+          ))
+        ) : (
+          <div className='mt-[10%] text-center'>Not yet</div>
+        )}
       </div>
     </div>
   );

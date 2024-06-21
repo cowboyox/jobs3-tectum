@@ -1,37 +1,39 @@
-"use client";
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { GiLaurelCrown } from "react-icons/gi";
-import { MdVerified } from "react-icons/md";
-import { RiPoliceBadgeLine } from "react-icons/ri";
-import { TiLocationOutline } from "react-icons/ti";
-import { getGigs } from "@/utils/http";
+'use client';
+
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import { GiLaurelCrown } from 'react-icons/gi';
+import { MdVerified } from 'react-icons/md';
+import { RiPoliceBadgeLine } from 'react-icons/ri';
+import { TiLocationOutline } from 'react-icons/ti';
+
+import { getGigs } from '@/utils/http';
 
 const gigOptions = [
-  "Figma",
-  "WebDesign",
-  "Javascript",
-  "React.JS",
-  "Next.JS",
-  "Shadcn",
-  "Tailwind",
-  "MobileDevelopment",
-  "WebDevelopment",
-  "DatabaseDevelopment",
-  "DesktopApplication",
-  "Python",
-  "Java",
-  "C++",
-  "Swift",
-  "Kotlin",
-  "SQL",
-  "MongoDB",
-  "Angular",
-  "Vue.JS",
+  'Figma',
+  'WebDesign',
+  'Javascript',
+  'React.JS',
+  'Next.JS',
+  'Shadcn',
+  'Tailwind',
+  'MobileDevelopment',
+  'WebDevelopment',
+  'DatabaseDevelopment',
+  'DesktopApplication',
+  'Python',
+  'Java',
+  'C++',
+  'Swift',
+  'Kotlin',
+  'SQL',
+  'MongoDB',
+  'Angular',
+  'Vue.JS',
 ];
 
 const Gigs = () => {
-  const [selectedGigs, setSelectedGigs] = useState(["Figma"]);
+  const [selectedGigs, setSelectedGigs] = useState(['Figma']);
   const [data, setData] = useState([]);
   const [displayedData, setDisplayedData] = useState([]);
   const [page, setPage] = useState(1);
@@ -40,11 +42,11 @@ const Gigs = () => {
   const fetchGigs = async (gigs) => {
     try {
       const res = await getGigs(gigs);
-      console.log("Gigs Data", res); 
+      console.log('Gigs Data', res);
       setData(res.data);
       setDisplayedData(res.data.slice(0, itemsPerPage));
     } catch (err) {
-      console.log("Err fetching Gigs", err);
+      console.log('Err fetching Gigs', err);
     }
   };
 
@@ -69,86 +71,87 @@ const Gigs = () => {
     setPage(nextPage);
   };
 
-
   return (
-    <div className="mt-10 flex flex-col gap-4">
+    <div className='mt-10 flex flex-col gap-4'>
       <h1>Gigs you may like</h1>
-      <div className="flex gap-2 items-center flex-wrap">
+      <div className='flex flex-wrap items-center gap-2'>
         {gigOptions.map((gig, index) => (
           <div
+            className={`${
+              selectedGigs.includes(gig) ? 'bg-orange' : 'bg-darkGray'
+            } cursor-pointer rounded-full border border-lightGray px-2 py-1 text-center`}
             key={index}
             onClick={() => handleGigClick(gig)}
-            className={`${
-              selectedGigs.includes(gig) ? "bg-orange" : "bg-darkGray"
-            } cursor-pointer py-1 px-2 text-center rounded-full border border-lightGray`}
           >
             {gig}
           </div>
         ))}
       </div>
-      <div className="flex flex-col gap-2">
+      <div className='flex flex-col gap-2'>
         {displayedData?.map((gig, index) => (
-          <div
-            key={index}
-            className="bg-deepGreen px-5 flex flex-col gap-4 text-white rounded-2xl"
-          >
-            <div className="py-5 border-b border-lightGray flex flex-col gap-3">
+          <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-5 text-white' key={index}>
+            <div className='flex flex-col gap-3 border-b border-lightGray py-5'>
               <h1>{gig.gigTitle}</h1>
-              <div className="flex  gap-4 flex-wrap">
-                <div className="flex gap-1 items-center">
-                  <TiLocationOutline className="text-medGray text-xl" />
+              <div className='flex flex-wrap gap-4'>
+                <div className='flex items-center gap-1'>
+                  <TiLocationOutline className='text-xl text-medGray' />
                   <span>{gig.location}</span>
                 </div>
-                <div className="flex gap-2 items-center">
-                  <RiPoliceBadgeLine className="text-[#158FE8]" />
+                <div className='flex items-center gap-2'>
+                  <RiPoliceBadgeLine className='text-[#158FE8]' />
                   <span>Top Rated</span>
                 </div>
-                <div className="flex gap-2 items-center">
-                  <GiLaurelCrown className="text-[#34E250]" />
+                <div className='flex items-center gap-2'>
+                  <GiLaurelCrown className='text-[#34E250]' />
                   <span>0% Job Success</span>
                 </div>
               </div>
             </div>
-            <p className="w-[80%] text-medGray">{gig?.gigDescription?.length > 100 ? gig.gigDescription?.substring(0, 200) + "..." : gig.gigDescription}</p>
-            
-            <div className="flex gap-2 flex-wrap">
+            <p className='w-[80%] text-medGray'>
+              {gig?.gigDescription?.length > 100
+                ? gig.gigDescription?.substring(0, 200) + '...'
+                : gig.gigDescription}
+            </p>
+
+            <div className='flex flex-wrap gap-2'>
               {gig?.requiredSkills.map((skill, index) => (
-                <div key={index} className="bg-darkGray cursor-pointer py-1 px-2 text-center rounded-full border border-lightGray">
+                <div
+                  className='cursor-pointer rounded-full border border-lightGray bg-darkGray px-2 py-1 text-center'
+                  key={index}
+                >
                   {skill}
                 </div>
               ))}
             </div>
-            <div className="flex flex-col gap-2 md:flex-row justify-between pb-5">
-              <div className="flex gap-4 items-center flex-1">
-                <div className="w-10 flex justify-center items-center">
-                  <div className=" w-[100%] h-10 outline-none border-none flex justify-center items-center">
+            <div className='flex flex-col justify-between gap-2 pb-5 md:flex-row'>
+              <div className='flex flex-1 items-center gap-4'>
+                <div className='flex w-10 items-center justify-center'>
+                  <div className='flex h-10 w-[100%] items-center justify-center border-none outline-none'>
                     <Image
-                      src={"/assets/dashboard-media/profilePic.png"}
-                      alt="pic"
-                      width={1000}
+                      alt='pic'
+                      className='h-full w-full object-contain'
                       height={1000}
-                      className="w-full h-full object-contain"
+                      src={'/assets/dashboard-media/profilePic.png'}
+                      width={1000}
                     />
                   </div>
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-white text-lg truncate">
+                <div className='flex-1'>
+                  <div className='flex items-center gap-2'>
+                    <h3 className='truncate text-lg text-white'>
                       {gig?.clientProfileId?.chosen_visible_name}
                     </h3>
-                    {gig?.clientProfileId?.verified && (
-                    <MdVerified className="text-[#0A75C2]" />
-                    )}
+                    {gig?.clientProfileId?.verified && <MdVerified className='text-[#0A75C2]' />}
                   </div>
-                  <div className="flex gap-1 items-center text-medGray">
-                    <p className="text-medGray font-thin">Freelancer</p>
+                  <div className='flex items-center gap-1 text-medGray'>
+                    <p className='font-thin text-medGray'>Freelancer</p>
                   </div>
                 </div>
               </div>
-              <div className="w-full md:w-56 h-14 md:h-auto flex justify-end items-center">
-                <div className="w-full flex gap-2 bg-darkGray h-full rounded-2xl">
-                  <button className="flex-1">Message</button>
-                  <button className="w-[55%] bg-orange">Invite to Job</button>
+              <div className='flex h-14 w-full items-center justify-end md:h-auto md:w-56'>
+                <div className='flex h-full w-full gap-2 rounded-2xl bg-darkGray'>
+                  <button className='flex-1'>Message</button>
+                  <button className='w-[55%] bg-orange'>Invite to Job</button>
                 </div>
               </div>
             </div>
@@ -157,7 +160,7 @@ const Gigs = () => {
       </div>
       {displayedData.length < data.length && (
         <div
-          className="py-3 border border-lightGray rounded-2xl text-center cursor-pointer"
+          className='cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
           onClick={handleLoadMore}
         >
           Load More +
@@ -168,4 +171,3 @@ const Gigs = () => {
 };
 
 export default Gigs;
-

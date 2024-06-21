@@ -1,25 +1,21 @@
-"use client";
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { GiLaurelCrown } from "react-icons/gi";
-import { MdVerified } from "react-icons/md";
-import { RiPoliceBadgeLine } from "react-icons/ri";
-import { TiLocationOutline } from "react-icons/ti";
-import { getGigs } from "@/utils/http";
-import { MdAccessTime } from "react-icons/md";
-import { FaRegUser } from "react-icons/fa";
-import { IoLogoUsd } from "react-icons/io";
-import { FaRegHeart } from "react-icons/fa";
-import { IoIosMore } from "react-icons/io";
+'use client';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import { FaRegHeart, FaRegUser } from 'react-icons/fa';
+import { IoIosMore, IoLogoUsd } from 'react-icons/io';
+import { MdAccessTime } from 'react-icons/md';
+import { TiLocationOutline } from 'react-icons/ti';
+
+import { getGigs } from '@/utils/http';
 
 const gigOptions = [
-  "Figma",
-  "WebDesign",
-  "Javascript",
-  "React.JS",
-  "Next.JS",
-  "Shadcn",
-  "Tailwind",
+  'Figma',
+  'WebDesign',
+  'Javascript',
+  'React.JS',
+  'Next.JS',
+  'Shadcn',
+  'Tailwind',
 ];
 
 const gigs = [
@@ -142,23 +138,18 @@ const gigs = [
   // },
 ];
 
-const Recent = ({search, setSearch}) => {
-
-  const [selectedGigs, setSelectedGigs] = useState(["Figma"]);
+const Recent = ({ search }) => {
+  const [selectedGigs, setSelectedGigs] = useState(['Figma']);
   const [data, setData] = useState([]);
-  const [displayedData, setDisplayedData] = useState([]);
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
-
 
   const fetchGigs = async (gigs) => {
     try {
       const res = await getGigs(gigs);
-      console.log("Gigs Data", res);
       setData(res.data);
-      setDisplayedData(res.data.slice(0, itemsPerPage));
     } catch (err) {
-      console.log("Err fetching Gigs", err);
+      console.warn('Err fetching Gigs', err);
     }
   };
 
@@ -176,7 +167,6 @@ const Recent = ({search, setSearch}) => {
     });
   };
 
-  
   const handleFilter = () => {
     let filteredGigs = gigs;
 
@@ -209,87 +199,85 @@ const Recent = ({search, setSearch}) => {
   };
 
   return (
-    <div className="mt-10 flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold">Recent Job Posts</h1>
-      <div className="flex gap-2 items-center flex-wrap">
+    <div className='mt-10 flex flex-col gap-4'>
+      <h1 className='text-2xl font-semibold'>Recent Job Posts</h1>
+      <div className='flex flex-wrap items-center gap-2'>
         {gigOptions.map((gig, index) => (
           <div
+            className={`${
+              selectedGigs.includes(gig) ? 'bg-orange' : 'bg-darkGray'
+            } cursor-pointer rounded-full border border-lightGray px-2 py-1 text-center`}
             key={index}
             onClick={() => handleGigClick(gig)}
-            className={`${
-              selectedGigs.includes(gig) ? "bg-orange" : "bg-darkGray"
-            } cursor-pointer py-1 px-2 text-center rounded-full border border-lightGray`}
           >
             {gig}
           </div>
         ))}
       </div>
-      <div className="flex flex-col gap-4">
-        {filteredRecentJob.length ? filteredRecentJob.map((gig, index) => (
-          <div
-            key={index}
-            className="bg-deepGreen px-6 py-6 flex flex-col gap-4 text-white rounded-2xl"
-          >
-            <div className="pb-5 border-b border-lightGray flex flex-col gap-3">
-              <div className="flex gap-4 items-center justify-between">
-                <div className="flex gap-4 items-center">
-                  <Image
-                    src={"/assets/icons/ActiveOrder.png"}
-                    width={45}
-                    height={45}
-                  />
-                  <h3 className="text-white hidden md:block text-xl font-semibold whitespace-nowrap">
-                    {gig.title}
-                  </h3>
+      <div className='flex flex-col gap-4'>
+        {filteredRecentJob.length ? (
+          filteredRecentJob.map((gig, index) => (
+            <div
+              className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'
+              key={index}
+            >
+              <div className='flex flex-col gap-3 border-b border-lightGray pb-5'>
+                <div className='flex items-center justify-between gap-4'>
+                  <div className='flex items-center gap-4'>
+                    <Image height={45} src={'/assets/icons/ActiveOrder.png'} width={45} />
+                    <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
+                      {gig.title}
+                    </h3>
+                  </div>
+                  <div className='flex items-center gap-6'>
+                    <p className='cursor-pointer rounded-[6px] border border-green-600 p-[1px] px-2 font-[500] text-green-600'>
+                      Applied
+                    </p>
+                    <FaRegHeart className='text-xl text-medGray' />
+                    <IoIosMore className='text-xl text-medGray' />
+                  </div>
                 </div>
-                <div className="flex gap-6 items-center">
-                  <p className="border border-green-600 text-green-600 font-[500] rounded-[6px] p-[1px] px-2 cursor-pointer">
-                    Applied
-                  </p>
-                  <FaRegHeart className="text-medGray text-xl" />
-                  <IoIosMore className="text-medGray text-xl" />
-                </div>
-              </div>
-              <h3 className="text-white md:hidden text-xl font-semibold whitespace-nowrap">
-                {gig.title}
-              </h3>
-              <div className="flex  gap-4 flex-wrap">
-                <div className="flex gap-1 items-center">
-                  <MdAccessTime className="text-medGray text-xl" />
-                  <span>{gig.time}</span>
-                </div>
-                <div className="flex gap-1 items-center">
-                  <TiLocationOutline className="text-medGray text-xl" />
-                  <span>{gig.location}</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <FaRegUser className="text-medGray text-xl" />
-                  <span>{gig.rated}</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <IoLogoUsd className="text-medGray text-xl" />
-                  <span>{gig.jobSuccess}</span>
+                <h3 className='whitespace-nowrap text-xl font-semibold text-white md:hidden'>
+                  {gig.title}
+                </h3>
+                <div className='flex flex-wrap gap-4'>
+                  <div className='flex items-center gap-1'>
+                    <MdAccessTime className='text-xl text-medGray' />
+                    <span>{gig.time}</span>
+                  </div>
+                  <div className='flex items-center gap-1'>
+                    <TiLocationOutline className='text-xl text-medGray' />
+                    <span>{gig.location}</span>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <FaRegUser className='text-xl text-medGray' />
+                    <span>{gig.rated}</span>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <IoLogoUsd className='text-xl text-medGray' />
+                    <span>{gig.jobSuccess}</span>
+                  </div>
                 </div>
               </div>
+              <p className='text-medGray'>{gig.about}</p>
+              <p className='text-white'>Show more</p>
+              <div className='flex flex-wrap gap-2'>
+                {gig.skills.map((skill, skillIndex) => (
+                  <div
+                    className='cursor-pointer rounded-full border border-lightGray bg-darkGray px-2 py-1 text-center'
+                    key={skillIndex}
+                  >
+                    {skill}
+                  </div>
+                ))}
+              </div>
             </div>
-            <p className="text-medGray">{gig.about}</p>
-            <p className="text-white">Show more</p>
-            <div className="flex gap-2 flex-wrap">
-              {gig.skills.map((skill, skillIndex) => (
-                <div
-                  key={skillIndex}
-                  className="bg-darkGray cursor-pointer py-1 px-2 text-center rounded-full border border-lightGray"
-                >
-                  {skill}
-                </div>
-              ))}
-            </div>
-          </div>
-        )): 
-        <div className="text-center">Not yet</div>  
-      }
+          ))
+        ) : (
+          <div className='text-center'>Not yet</div>
+        )}
       </div>
-      <div className="py-3 border border-lightGray rounded-2xl text-center cursor-pointer">
+      <div className='cursor-pointer rounded-2xl border border-lightGray py-3 text-center'>
         Load More +
       </div>
     </div>
