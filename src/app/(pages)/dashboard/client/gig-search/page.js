@@ -310,7 +310,7 @@ const GigSearch = () => {
         </Popover>
       </div>
       <div className='flex items-center justify-center rounded-xl bg-[#10191d] px-3 py-6 text-lg'>
-        Wow! <span className='main_color px-2'>49</span> projects available 😀
+        Wow! <span className='main_color px-2'>{filteredGigList.length}</span> projects available 😀
       </div>
       {/*
        * These should be dynamic, you can pass all the data you need through attributes and retrieve it on the component
