@@ -1,40 +1,36 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
+import axios from 'axios';
 import {
-    useAnchorWallet,
-    useConnection,
-    useWallet,
-} from "@solana/wallet-adapter-react";
-import axios from "axios";
+  Program,
+  AnchorProvider,
+  setProvider,
+  getProvider,
+  Idl,
+  utils,
+  BN,
+  Provider,
+} from '@project-serum/anchor';
+import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
+
 import {
-    Program,
-    AnchorProvider,
-    setProvider,
-    getProvider,
-    Idl,
-    utils,
-    BN,
-    Provider,
-} from "@project-serum/anchor";
-import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
-  
+  TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  getAssociatedTokenAddressSync,
+} from '@solana/spl-token';
+import { v4 as uuid } from 'uuid';
 import {
-    TOKEN_PROGRAM_ID,
-    ASSOCIATED_TOKEN_PROGRAM_ID,
-    getAssociatedTokenAddressSync,
-} from "@solana/spl-token";
-import { v4 as uuid } from "uuid";
-import {
-    PROGRAM_ID,
-    ADMIN_ADDRESS,
-    CONTRACT_SEED,
-    PAYTOKEN_MINT,
-    DECIMALS,
-} from "@/utils/constants";
-import IDL from "@/idl/gig_basic_contract.json";
+  PROGRAM_ID,
+  ADMIN_ADDRESS,
+  CONTRACT_SEED,
+  PAYTOKEN_MINT,
+  DECIMALS,
+} from '@/utils/constants';
+import IDL from '@/idl/gig_basic_contract.json';
 import {
   Select,
   SelectContent,
@@ -60,21 +56,21 @@ import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 
 const Orders = () => {
-    const auth = useCustomContext();
-    const router = useRouter();
-    const wallet = useAnchorWallet();
-    const { sendTransaction } = useWallet();
-    const { connection } = useConnection();
-  
-    const [program, setProgram] = useState();
-    const [search, setSearch] = useState();
-    const [filterCategory, setFilterCategories] = useState([
-        "Active",
-        "Paused",
-        "Completed",
-        "Cancelled"
-    ])
-    const [orders, setOrders] = useState([]);
+  const auth = useCustomContext();
+  const router = useRouter();
+  const wallet = useAnchorWallet();
+  const { sendTransaction } = useWallet();
+  const { connection } = useConnection();
+
+  const [program, setProgram] = useState();
+  const [search, setSearch] = useState();
+  const [filterCategory, setFilterCategories] = useState([
+    'Active',
+    'Paused',
+    'Completed',
+    'Cancelled',
+  ]);
+  const [orders, setOrders] = useState([]);
 
   const [filteredOrders, setfilteredOrders] = useState([]);
   const [profile, setProfile] = useState(null);
@@ -101,7 +97,7 @@ const Orders = () => {
 
   useEffect(() => {
     if (auth.user) {
-      api.get(`/api/v1/client_gig/find_all_gigs_proposed/${auth.user._id}`).then(data => {
+      api.get(`/api/v1/client_gig/find_all_gigs_proposed/${auth.user._id}`).then((data) => {
         console.log(data.data.data);
         if (data.data.data) {
           setOrders(data.data.data);
@@ -114,12 +110,12 @@ const Orders = () => {
     }
   }, [auth]);
 
-  const handleSearch = event => {
+  const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
 
     const filtered = orders.filter(
-      order =>
+      (order) =>
         order.clientName.toLowerCase().includes(value) ||
         order.email.toLowerCase().includes(value) ||
         order.location.toLowerCase().includes(value) ||
@@ -129,12 +125,12 @@ const Orders = () => {
     setfilteredOrders(filtered);
   };
 
-  const handleMessage = order => {
+  const handleMessage = (order) => {
     if (auth.user)
       window.location.href = `/dashboard/${auth.user.name}/freelancer/inbox/${order.clientID}`;
   };
 
-  const getFormattedDate = dateStr => {
+  const getFormattedDate = (dateStr) => {
     // Convert the string to a Date object
     const date = new Date(dateStr);
 
@@ -145,9 +141,9 @@ const Orders = () => {
   };
 
   return (
-    <div className='p-0 sm:p-0 xl:mt-8 lg:mt-8'>
-      <div className='flex flex-row justify-between items-center bg-[#10191D] p-3 rounded-xl gap-5'>
-        <div className='flex flex-1 items-center ml-3 gap-3'>
+    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
+      <div className='flex flex-row items-center justify-between gap-5 rounded-xl bg-[#10191D] p-3'>
+        <div className='ml-3 flex flex-1 items-center gap-3'>
           <button>
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -155,7 +151,7 @@ const Orders = () => {
               viewBox='0 0 24 24'
               strokeWidth={1.5}
               stroke='currentColor'
-              className='w-6 h-6'
+              className='h-6 w-6'
             >
               <path
                 strokeLinecap='round'
@@ -167,8 +163,8 @@ const Orders = () => {
           <input
             type='text'
             placeholder={isSmallScreen ? 'Search' : 'Search by Order title...'}
-            className=' bg-transparent outline-none w-full'
-            onChange={e => handleSearch(e)}
+            className='w-full bg-transparent outline-none'
+            onChange={(e) => handleSearch(e)}
           />
           {isSmallScreen && (
             <button>
@@ -193,8 +189,8 @@ const Orders = () => {
             </button>
           )}
         </div>
-        <div className='flex flex-row items-center flex-none gap-2'>
-          <button className='flex flex-row justify-center items-center gap-3'>
+        <div className='flex flex-none flex-row items-center gap-2'>
+          <button className='flex flex-row items-center justify-center gap-3'>
             {!isSmallScreen ? (
               <>
                 <svg
@@ -316,17 +312,17 @@ const Orders = () => {
             )}
           </button>
           {!isSmallScreen && (
-            <div className='rounded-full w-[23px] h-[23px] bg-[#DC4F13] text-center flex items-center justify-center align-middle'>
+            <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
               4
             </div>
           )}
         </div>
         {!isSmallScreen && (
-          <div className='flex flex-row items-center gap-2 justify-center'>
+          <div className='flex flex-row items-center justify-center gap-2'>
             <div>Sort by</div>
             <div>
               <Select>
-                <SelectTrigger className='bg-transparent border-none text-[#96B0BD] flex justify-center focus:outline-none focus:border-none'>
+                <SelectTrigger className='flex justify-center border-none bg-transparent text-[#96B0BD] focus:border-none focus:outline-none'>
                   <SelectValue placeholder='Sort By' />
                 </SelectTrigger>
                 <SelectContent>
@@ -340,17 +336,17 @@ const Orders = () => {
           </div>
         )}
       </div>
-      <div className='bg-[#10191D] mt-4 text-center p-5 rounded-xl'>
-        You have <span className='text-[#DC4F13] font-bold'>{filteredOrders.length}</span> Orders😊
+      <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
+        You have <span className='font-bold text-[#DC4F13]'>{filteredOrders.length}</span> Orders😊
       </div>
-      <div className='flex flex-row gap-3 mt-4 items-center text-[#F5F5F5] overflow-x-auto touch-pan-x overscroll-x-contain'>
+      <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
         {filterCategory.map((item, index) => {
           return (
             <span
               key={index}
-              className='bg-[#28373E] pl-2 pr-2 p-1 rounded-full border border-[#3E525B] gap-1 flex flex-row items-center'
+              className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
             >
-              <FaX className='p-[2px] bg-[#3E525B] rounded-full' />
+              <FaX className='rounded-full bg-[#3E525B] p-[2px]' />
               {item}
             </span>
           );
@@ -359,32 +355,32 @@ const Orders = () => {
       </div>
       {filteredOrders.map((order, index) => {
         return (
-          <div className='bg-[#10191D] mt-4 text-center p-5 rounded-xl' key={index}>
-            <div className='flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start'>
-              <div className='flex-1 text-left md:text-2xl text-[20px] md:mt-0 mt-3'>
+          <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
+            <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+              <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                 {order.gigTitle}
               </div>
-              <div className='flex-none flex flex-row gap-2 items-center'>
-                <div className='border border-[#F7AE20] text-[#F7AE20] p-1 rounded-xl px-3'>
+              <div className='flex flex-none flex-row items-center gap-2'>
+                <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                   15 H: 30 S
                 </div>
-                <div className='border border-[#1BBF36] text-[#1BBF36] p-1 rounded-xl px-3'>
+                <div className='rounded-xl border border-[#1BBF36] p-1 px-3 text-[#1BBF36]'>
                   Active
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant='outline'
-                      className='bg-transparent border-none hover:bg-transparent'
+                      className='border-none bg-transparent hover:bg-transparent'
                     >
                       <FaEllipsis />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className='bg-[#28373E] border-[#3E525B] rounded-xl'>
+                  <DropdownMenuContent className='rounded-xl border-[#3E525B] bg-[#28373E]'>
                     <DropdownMenuCheckboxItem
                       // checked={showStatusBar}
                       // onCheckedChange={setShowStatusBar}
-                      className='gap-2 hover:bg-white rounded-xl'
+                      className='gap-2 rounded-xl hover:bg-white'
                     >
                       <svg
                         width='24'
@@ -420,7 +416,7 @@ const Orders = () => {
                     <DropdownMenuCheckboxItem
                       // checked={showActivityBar}
                       // onCheckedChange={setShowActivityBar}
-                      className='mt-1 gap-2 hover:bg-white rounded-xl'
+                      className='mt-1 gap-2 rounded-xl hover:bg-white'
                     >
                       <svg
                         width='24'
@@ -479,7 +475,7 @@ const Orders = () => {
                     <DropdownMenuCheckboxItem
                       // checked={showPanel}
                       // onCheckedChange={setShowPanel}
-                      className='mt-1 gap-2 hover:bg-white rounded-xl'
+                      className='mt-1 gap-2 rounded-xl hover:bg-white'
                     >
                       <svg
                         width='24'
@@ -515,7 +511,7 @@ const Orders = () => {
                     <DropdownMenuCheckboxItem
                       // checked={showPanel}
                       // onCheckedChange={setShowPanel}
-                      className='mt-1 gap-2 hover:bg-white rounded-xl'
+                      className='mt-1 gap-2 rounded-xl hover:bg-white'
                     >
                       <svg
                         width='24'
@@ -547,7 +543,7 @@ const Orders = () => {
                 </DropdownMenu>
               </div>
             </div>
-            <div className='flex md:flex-row flex-row-reverse gap-6 mt-3 items-start md:justify-start justify-between'>
+            <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
               <div className='flex flex-row items-center gap-2'>
                 <svg
                   width='24'
@@ -635,13 +631,13 @@ const Orders = () => {
             {isSmallScreen && (
               <div className='text-left text-[#96B0BD]'>{order.gigDescription}</div>
             )}
-            <div className='mt-3 flex md:flex-row flex-col justify-between md:items-center items-start'>
-              <div className='flex flex-row gap-3 text-left flex-1 items-center'>
+            <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
+              <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                 <div>
                   <img src='/assets/images/Rectangle 273.png' width={40} height={40}></img>
                 </div>
                 <div className='flex flex-col gap-1 text-left'>
-                  <div className='flex flex-row gap-1 font-bold items-center'>
+                  <div className='flex flex-row items-center gap-1 font-bold'>
                     {order.userId.chosen_visible_name}
                     <svg
                       width='17'
@@ -656,14 +652,14 @@ const Orders = () => {
                       />
                     </svg>
                   </div>
-                  <div className='text-[14px] text-[#516170] text-left'>Client</div>
+                  <div className='text-left text-[14px] text-[#516170]'>Client</div>
                 </div>
               </div>
-              <div className='bg-[#1B272C] p-1 rounded-xl flex-none md:mt-0 mt-2'>
-                <button onClick={e => handleMessage(order)} className='md:p-5 px-10 p-4'>
+              <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
+                <button onClick={(e) => handleMessage(order)} className='p-4 px-10 md:p-5'>
                   Message
                 </button>
-                <button className='bg-[#DC4F13] md:p-5 px-10 p-4'>Deliver</button>
+                <button className='bg-[#DC4F13] p-4 px-10 md:p-5'>Deliver</button>
               </div>
             </div>
           </div>

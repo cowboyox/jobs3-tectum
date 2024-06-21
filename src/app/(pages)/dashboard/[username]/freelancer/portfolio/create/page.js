@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React from 'react';
 
 /*
  - Selmani: i abandoned this page in it's beggining of the progress lol
@@ -12,9 +12,7 @@ import React from 'react';
 */
 
 const CreatePortfolio = () => {
-    return (
-      <></> 
-    );
+  return <></>;
 };
 
 export default CreatePortfolio;

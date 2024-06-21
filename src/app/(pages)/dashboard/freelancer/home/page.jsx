@@ -9,7 +9,7 @@ import Stats from '@/components/dashboard/freelancerhome/Stats';
 const Page = () => {
   return (
     <div className='flex min-h-screen w-full flex-col items-center py-10'>
-      <div className='px-4 md:px-0 2xl:max-w-[1000px] w-full'>
+      <div className='w-full px-4 md:px-0 2xl:max-w-[1000px]'>
         <Stats />
         <FillProfile />
         <RecentlyViewed />

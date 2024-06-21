@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const GigsPage = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  return <div></div>;
+};
 
-export default GigsPage
+export default GigsPage;

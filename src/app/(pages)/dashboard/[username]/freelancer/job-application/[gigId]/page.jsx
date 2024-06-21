@@ -5,7 +5,7 @@ import Job from '@/components/dashboard/jobapplication/Job';
 import api from '@/utils/api';
 import { useParams, useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
-import { useCustomContext } from "@/context/use-custom";
+import { useCustomContext } from '@/context/use-custom';
 
 const Page = () => {
   const { gigId } = useParams();
@@ -24,7 +24,7 @@ const Page = () => {
     func();
   }, [gigId]);
 
-  const onChangeCoverletter = e => {
+  const onChangeCoverletter = (e) => {
     setCoverLetter(e.target.value);
   };
 
@@ -39,7 +39,7 @@ const Page = () => {
 
     await api
       .post(`/api/v1/bidding/${gigId}/apply`, values)
-      .then(async data => {
+      .then(async (data) => {
         console.log(data);
 
         toast({
@@ -51,7 +51,7 @@ const Page = () => {
         });
         router.push('../find-job');
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Error corrupted during applying gig', err);
         toast({
           variant: 'destructive',
@@ -64,14 +64,11 @@ const Page = () => {
   };
 
   return (
-    <div
-      className='flex gap-8 md:flex-row flex-col items-center md:justify-center md:items-start
-     '
-    >
+    <div className='flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-center'>
       <div className='w-full md:w-[65%] md:max-w-[690px]'>
         {gigInfo ? <Job gigData={gigInfo} /> : <></>}
-        <div className='bg-deepGreen mt-4  px-6 py-6 flex flex-col gap-4 text-white rounded-2xl'>
-          <h3 className='text-white hidden md:block text-xl font-semibold whitespace-nowrap'>
+        <div className='mt-4 flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
+          <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
             Cover letter
           </h3>
           <textarea
@@ -79,16 +76,16 @@ const Page = () => {
             id=''
             cols='30'
             rows='7'
-            className='border border-medGray bg-deepGreen w-full rounded-xl p-4'
+            className='w-full rounded-xl border border-medGray bg-deepGreen p-4'
             placeholder='Type here...'
             onChange={onChangeCoverletter}
           ></textarea>
         </div>
       </div>
       <div className='w-full md:w-[35%] md:max-w-[420px]'>
-        <div className='bg-deepGreen px-6 py-6 flex flex-col gap-4 text-white rounded-2xl'>
+        <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
           <div className='flex flex-col gap-3'>
-            <div className='bg-[#1B272C] p-3 rounded-xl flex items-center justify-center gap-2'>
+            <div className='flex items-center justify-center gap-2 rounded-xl bg-[#1B272C] p-3'>
               <svg
                 width='24'
                 height='24'
@@ -134,15 +131,15 @@ const Page = () => {
                 <p className='text-xl font-semibold'>$ 0</p>
               </div>
             </div>
-            <div className='bg-[#1B272C] p-1 rounded-xl flex md:mt-0 mt-2 '>
-              <button className='md:p-3 md:px-8 px-8 p-2'>Back</button>
-              <button className='bg-[#DC4F13] md:p-3 px-8 p-2 w-full' onClick={onApply}>
+            <div className='mt-2 flex rounded-xl bg-[#1B272C] p-1 md:mt-0'>
+              <button className='p-2 px-8 md:p-3 md:px-8'>Back</button>
+              <button className='w-full bg-[#DC4F13] p-2 px-8 md:p-3' onClick={onApply}>
                 Apply
               </button>
             </div>
           </div>
         </div>
-        <p className='text-medGray text-sm p-4'>
+        <p className='p-4 text-sm text-medGray'>
           * Refundable Dispute Fee will be charged in case the client accepts the offer
         </p>
       </div>

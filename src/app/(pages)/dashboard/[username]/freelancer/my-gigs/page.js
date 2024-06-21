@@ -37,7 +37,7 @@ const GigsPage = () => {
       ) : (
         <BlankView />
       )}
-      <div className='py-5 md:text-xl hover:bg-[#28373E] transition px-10 w-full max-w-full rounded-xl mobile:px-5 border border-[#28373E] text-center mx-auto cursor-pointer mt-8'>
+      <div className='mx-auto mt-8 w-full max-w-full cursor-pointer rounded-xl border border-[#28373E] px-10 py-5 text-center transition hover:bg-[#28373E] md:text-xl mobile:px-5'>
         Load more +
       </div>
     </div>

@@ -12,30 +12,30 @@ import Coverletter from './Coverletter';
 const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelancerLocation }) => {
   const [coverLetter, setCoverLetter] = useState('');
 
-  const handleChange = value => {
+  const handleChange = (value) => {
     setCoverLetter(value);
   };
   return (
-    <div className='flex gap-8 md:flex-row flex-col items-center md:justify-center md:items-start'>
+    <div className='flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-center'>
       <div className='w-full md:w-[65%] md:max-w-[690px]'>
-        <div className='bg-deepGreen px-6 py-6 flex flex-col gap-4 text-white rounded-2xl'>
-          <div className='pb-5 border-b border-lightGray flex flex-col gap-4'>
+        <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
+          <div className='flex flex-col gap-4 border-b border-lightGray pb-5'>
             <img
               src='/assets/images/portfolio_works/portfolio.jpeg'
               alt='Gig Image'
-              className='object-cover w-full rounded-xl aspect-video'
+              className='aspect-video w-full rounded-xl object-cover'
             />
             <div className='flex items-center'>
-              <h3 className='text-white hidden md:block text-xl font-semibold whitespace-nowrap'>
+              <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
                 {gigTitle}
               </h3>
             </div>
-            <div className='flex gap-4 flex-wrap justify-start'>
-              <div className='flex gap-1 items-center'>
-                <MdAccessTime className='text-medGray text-2xl' />
+            <div className='flex flex-wrap justify-start gap-4'>
+              <div className='flex items-center gap-1'>
+                <MdAccessTime className='text-2xl text-medGray' />
                 <span>{minutesDifference(gigPostDate)}</span>
               </div>
-              <div className='flex gap-2 items-center'>
+              <div className='flex items-center gap-2'>
                 <svg
                   width='24'
                   height='24'
@@ -90,13 +90,13 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
                 </svg>
                 <span>$ {gigPrice}</span>
               </div>
-              <div className='flex gap-2 items-center'>
+              <div className='flex items-center gap-2'>
                 <FaStar className='text-2xl text-orange' />
                 <span>
                   5.5 <span className='text-medGray'>(921)</span>
                 </span>
               </div>
-              <div className='flex gap-2 items-center'>
+              <div className='flex items-center gap-2'>
                 <svg
                   width='24'
                   height='24'
@@ -121,42 +121,42 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
               </div>
             </div>
           </div>
-          <div className='bg-[#10191D] md:rounded-xl rounded-t-xl flex md:gap-4 gap-4 md:items-center items-start'>
-            <div className='w-10 md:w-10 md:h-10 relative'>
+          <div className='flex items-start gap-4 rounded-t-xl bg-[#10191D] md:items-center md:gap-4 md:rounded-xl'>
+            <div className='relative w-10 md:h-10 md:w-10'>
               <img
                 src='/assets/images/users/user-5.png'
-                className='rounded-full w-full h-full aspect-square'
+                className='aspect-square h-full w-full rounded-full'
               />
-              <div className='rounded-full h-2 w-2 absolute right-0.5 bottom-0.5 bg-green-500'></div>
+              <div className='absolute bottom-0.5 right-0.5 h-2 w-2 rounded-full bg-green-500'></div>
             </div>
             <div className='flex flex-col gap-0'>
               <div className='flex items-center gap-1'>
                 <h2 className='text-md md:text-md font-bold'>{freelancerFullName}</h2>
-                <img src='/assets/images/icons/checkmark.svg' className='w-4 h-4' />
+                <img src='/assets/images/icons/checkmark.svg' className='h-4 w-4' />
               </div>
-              <div className='flex md:flex-row flex-col gap-2 md:gap-4'>
+              <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
                 <p className='text-md text-medGray'>{freelancerLocation}</p>
               </div>
             </div>
           </div>
         </div>
-        <div className='bg-deepGreen mt-4  px-6 py-6 flex flex-col gap-4 text-white rounded-2xl'>
+        <div className='mt-4 flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
           <div className='flex flex-col gap-4'>
-            <h3 className='text-white hidden md:block text-xl font-semibold whitespace-nowrap'>
+            <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
               Single order ($20)
             </h3>
             <p className='text-medGray'>Specify the quantity of services</p>
-            <div className='flex gap-1 items-center flex-1 bg-darkGray rounded-2xl'>
-              <div className=' flex flex-1 justify-between items-center flex-col md:flex-row px-8 py-8'>
-                <div className='flex gap-4 items-center'>
-                  <h3 className='text-medGray whitespace-nowrap'>Gig Quantity</h3>
+            <div className='flex flex-1 items-center gap-1 rounded-2xl bg-darkGray'>
+              <div className='flex flex-1 flex-col items-center justify-between px-8 py-8 md:flex-row'>
+                <div className='flex items-center gap-4'>
+                  <h3 className='whitespace-nowrap text-medGray'>Gig Quantity</h3>
                 </div>
-                <div className='flex items-center gap-4 justify-between w-full md:w-auto'>
-                  <button class='w-10 h-10 bg-orange text-white rounded-full flex items-center justify-center text-lg'>
+                <div className='flex w-full items-center justify-between gap-4 md:w-auto'>
+                  <button class='flex h-10 w-10 items-center justify-center rounded-full bg-orange text-lg text-white'>
                     -
                   </button>
-                  <p className='text-medGray font-[500] text-xl'>1</p>
-                  <button class='w-10 h-10 bg-orange text-white rounded-full flex items-center justify-center text-lg'>
+                  <p className='text-xl font-[500] text-medGray'>1</p>
+                  <button class='flex h-10 w-10 items-center justify-center rounded-full bg-orange text-lg text-white'>
                     +
                   </button>
                 </div>
@@ -164,35 +164,35 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
             </div>
           </div>
           <div className='flex flex-col gap-4'>
-            <h3 className='text-white hidden md:block text-xl font-semibold whitespace-nowrap'>
+            <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
               Documents (up to 2)
             </h3>
             <p className='text-medGray'>
               Show some the best work you createdin a document. Format: PDF
             </p>
-            <div className='grid-cols-2 gap-4 hidden md:grid'>
-              <div className='space-y-3 h-full'>
+            <div className='hidden grid-cols-2 gap-4 md:grid'>
+              <div className='h-full space-y-3'>
                 <div className='h-full'>
                   <label
                     htmlFor='dropzone-file'
-                    className={`w-full h-15 bg-[#1a272c] rounded-2xl flex items-center justify-center border border-dashed border-[#526872] cursor-pointer transition hover:bg-[#23343b]`}
+                    className={`h-15 flex w-full cursor-pointer items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] transition hover:bg-[#23343b]`}
                   >
                     <div className='text-center'>
-                      <div className='p-2 rounded-md max-w-min mx-auto'>
+                      <div className='mx-auto max-w-min rounded-md p-2'>
                         <GoPlus size='2.6em' />
                       </div>
                     </div>
                   </label>
                 </div>
               </div>
-              <div className='space-y-3 h-full'>
+              <div className='h-full space-y-3'>
                 <div className='h-full'>
                   <label
                     htmlFor='dropzone-file'
-                    className={`w-full h-15 bg-[#1a272c] rounded-2xl flex items-center justify-center border border-dashed border-[#526872] cursor-pointer transition hover:bg-[#23343b]`}
+                    className={`h-15 flex w-full cursor-pointer items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] transition hover:bg-[#23343b]`}
                   >
                     <div className='text-center'>
-                      <div className='p-2 rounded-md max-w-min mx-auto'>
+                      <div className='mx-auto max-w-min rounded-md p-2'>
                         <GoPlus size='2.6em' />
                       </div>
                     </div>

@@ -8,20 +8,20 @@ const ActiveView = ({ allGigs }) => {
       {allGigs.map((gig, index) => (
         <div
           key={index}
-          className='bg-[#10191d] p-4 rounded-xl flex gap-4 w-full items-start mobile:flex-col'
+          className='flex w-full items-start gap-4 rounded-xl bg-[#10191d] p-4 mobile:flex-col'
         >
-          <div className='basis-1/3 mobile:basis-auto h-[250px] mobile:w-full overflow-hidden'>
+          <div className='h-[250px] basis-1/3 overflow-hidden mobile:w-full mobile:basis-auto'>
             <img
               src='/assets/images/portfolio_works/portfolio.jpeg'
               alt='Gig Image'
-              className='object-cover w-full h-full rounded-xl '
+              className='h-full w-full rounded-xl object-cover'
             />
           </div>
-          <div className='basis-2/3 mobile:w-full flex flex-col gap-2 flex-grow'>
-            <div className='flex md:flex-row flex-col-reverse justify-between md:items-center mt-1 items-start'>
-              <div className='flex-1 text-left md:text-2xl text-[24px]'>{gig.gigTitle}</div>
+          <div className='flex flex-grow basis-2/3 flex-col gap-2 mobile:w-full'>
+            <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+              <div className='flex-1 text-left text-[24px] md:text-2xl'>{gig.gigTitle}</div>
             </div>
-            <div className='flex flex-row gap-6 items-start justify-start'>
+            <div className='flex flex-row items-start justify-start gap-6'>
               <div className='flex flex-row items-center gap-2'>
                 <svg
                   width='24'
@@ -105,11 +105,11 @@ const ActiveView = ({ allGigs }) => {
             </div>
             <Separator className='my-1' />
             <p className='text-medGray'>{gig.gigDescription}</p>
-            <div className='flex gap-3 items-center flex-wrap'>
+            <div className='flex flex-wrap items-center gap-3'>
               {gig.searchKeywords.map((keyword, index) => (
                 <div
                   key={index}
-                  className='bg-[#28373E] py-1 px-2 text-white rounded-full text-sm flex items-center cursor-pointer w-auto whitespace-nowrap border-[#3E525B] border-1'
+                  className='border-1 flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full border-[#3E525B] bg-[#28373E] px-2 py-1 text-sm text-white'
                 >
                   {keyword}
                 </div>
