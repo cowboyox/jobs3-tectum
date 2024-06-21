@@ -1,145 +1,140 @@
-import React, { useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
-import Link from 'next/link';
 import Image from 'next/image';
-import { GoPlus } from "react-icons/go";
-import RadialProgress from "@/components/ui/progress";
+import React, { useCallback, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { GoPlus } from 'react-icons/go';
+
 import { Input } from '@/components/ui/input';
+import RadialProgress from '@/components/ui/progress';
 import api from '@/utils/api';
-import { backend_url } from "@/utils/variables";
+import { backend_url } from '@/utils/variables';
 
 const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, viewMode }) => {
-    const [loading, setLoading] = useState(false);
-    const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(false);
+  // const [progress, setProgress] = useState(0);
+  const progress = 0;
 
-    const onUploadProgress = (progressEvent) => {
-        if (progressEvent.total) {
-            const percentage = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-            );
-            setProgress(percentage);
-        }
-    };
+  // const onUploadProgress = (progressEvent) => {
+  //   if (progressEvent.total) {
+  //     const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+  //     setProgress(percentage);
+  //   }
+  // };
 
-    const handleImageChange = (event) => {
-        if (event.target.files?.length) {
-            const image = event.target.files[0];
-            handleImageUpload(image);
-        }
-    };
+  const handleImageChange = (event) => {
+    if (event.target.files?.length) {
+      const image = event.target.files[0];
+      handleImageUpload(image);
+    }
+  };
 
-    // const removeSelectedImage = () => {
-    //   setLoading(false);
-    //   setUploadedImagePath(null);
-    //   setSelectedImage(null);
-    // };
+  // const removeSelectedImage = () => {
+  //   setLoading(false);
+  //   setUploadedImagePath(null);
+  //   setSelectedImage(null);
+  // };
 
-    const handleImageUpload = async (image) => {
+  const onDrop = useCallback(
+    async (acceptedFiles) => {
+      const handleImageUpload = async (image) => {
         if (!image) return;
         setLoading(true);
         const formData = new FormData();
-        formData.append("file", image);
+        formData.append('file', image);
         const config = {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         };
 
         try {
-            // const res = await uploadImageToCloudinary(formData, onUploadProgress);
-            const res = await api.post(`/api/v1/profile/upload-portfolio/${email}`, formData, config);
+          // const res = await uploadImageToCloudinary(formData, onUploadProgress);
+          const res = await api.post(`/api/v1/profile/upload-portfolio/${email}`, formData, config);
 
-            if (res.status === 200) {
-                setLoading(false);
-                // setUploadedImagePath(URL.createObjectURL(image));
-                setUploadedImagePath((prev) => [
-                    ...prev,
-                    URL.createObjectURL(image)
-                ])
-                console.log("---------- ", image)
-                let tmp = `/images/uploads/${email}/portfolio/${image.name}`
-                setProfileData((prev) => ({
-                    ...prev,
-                    portfolio: [...prev.portfolio, tmp]
-                }))
-
-                // if (onUploadComplete) {
-                //   onUploadComplete(res.data.url);
-                // }
-                // setUploadUrl(res.data.url);
-            }
-        } catch (error) {
+          if (res.status === 200) {
             setLoading(false);
-            console.error("Error uploading image:", error);
+            // setUploadedImagePath(URL.createObjectURL(image));
+            setUploadedImagePath((prev) => [...prev, URL.createObjectURL(image)]);
+            let tmp = `/images/uploads/${email}/portfolio/${image.name}`;
+            setProfileData((prev) => ({
+              ...prev,
+              portfolio: [...prev.portfolio, tmp],
+            }));
+
+            // if (onUploadComplete) {
+            //   onUploadComplete(res.data.url);
+            // }
+            // setUploadUrl(res.data.url);
+          }
+        } catch (error) {
+          setLoading(false);
+          console.error('Error uploading image:', error);
         }
-    };
+      };
 
-    const onDrop = useCallback(async (acceptedFiles) => {
-        if (acceptedFiles.length > 0) {
-            const image = acceptedFiles[0];
-            setSelectedImage(image);
-            handleImageUpload(image);
-        }
-    }, []);
+      if (acceptedFiles.length > 0) {
+        const image = acceptedFiles[0];
+        setSelectedImage(image);
+        handleImageUpload(image);
+      }
+    },
+    [email, setProfileData, setUploadedImagePath]
+  );
 
-    const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-
-    return (
-        <div className="space-y-3 h-full">
-            <div {...getRootProps()} className="h-full">
-                <label
-                    htmlFor="dropzone-file1"
-                    className={`w-full h-72 bg-[#1a272c] rounded-2xl flex items-center justify-center border border-dashed border-[#526872] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
-                    onClick={e => e.stopPropagation()}
-                >
-                    {loading && (
-                        <div className="text-center max-w-md">
-                            <RadialProgress progress={progress} />
-                            <p className="text-sm font-semibold">Uploading Picture</p>
-                            <p className="text-xs text-gray-400">
-                                Do not refresh or perform any other action while the picture is
-                                being uploaded
-                            </p>
-                        </div>
-                    )}
-
-                    {!loading && imagePath === "" && (
-                        <div className="text-center">
-                            <div className="p-2 rounded-md max-w-min mx-auto">
-                                <GoPlus size="2.6em" />
-                            </div>
-                        </div>
-                    )}
-
-                    {imagePath && !loading && (
-                        <div className="text-center space-y-2">
-                            <Image
-                                width={1000}
-                                height={1000}
-                                src={`${backend_url}/${imagePath}`}
-                                className="w-full object-contain opacity-70 rounded-xl"
-                                alt="uploaded image"
-                                key={imagePath}
-                            />
-                        </div>
-                    )}
-                </label>
-                {
-                    viewMode === "edit" && 
-                        <Input
-                            {...getInputProps()}
-                            id="dropzone-file1"
-                            accept="image/png, image/jpeg"
-                            type="file"
-                            className="hidden"
-                            disabled={loading}
-                            onChange={handleImageChange}
-                        />
-                }
+  return (
+    <div className='h-full space-y-3'>
+      <div {...getRootProps()} className='h-full'>
+        <label
+          className={`flex h-72 w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
+          htmlFor='dropzone-file1'
+          onClick={(e) => e.stopPropagation()}
+        >
+          {loading && (
+            <div className='max-w-md text-center'>
+              <RadialProgress progress={progress} />
+              <p className='text-sm font-semibold'>Uploading Picture</p>
+              <p className='text-xs text-gray-400'>
+                Do not refresh or perform any other action while the picture is being uploaded
+              </p>
             </div>
+          )}
 
-            {/* {!!uploadedImagePath && (
+          {!loading && imagePath === '' && (
+            <div className='text-center'>
+              <div className='mx-auto max-w-min rounded-md p-2'>
+                <GoPlus size='2.6em' />
+              </div>
+            </div>
+          )}
+
+          {imagePath && !loading && (
+            <div className='space-y-2 text-center'>
+              <Image
+                alt='uploaded image'
+                className='w-full rounded-xl object-contain opacity-70'
+                height={1000}
+                key={imagePath}
+                src={`${backend_url}/${imagePath}`}
+                width={1000}
+              />
+            </div>
+          )}
+        </label>
+        {viewMode === 'edit' && (
+          <Input
+            {...getInputProps()}
+            accept='image/png, image/jpeg'
+            className='hidden'
+            disabled={loading}
+            id='dropzone-file1'
+            onChange={handleImageChange}
+            type='file'
+          />
+        )}
+      </div>
+
+      {/* {!!uploadedImagePath && (
           <div className="flex items-center justify-between">
             <Link
               href={uploadedImagePath}
@@ -157,8 +152,8 @@ const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, vie
             </Button>
           </div>
         )} */}
-        </div>
-    )
-}
+    </div>
+  );
+};
 
 export default Portfolio;

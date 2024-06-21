@@ -1,4 +1,5 @@
-import { useContext } from 'react'
-import { CustomContext } from './ContextProvider'
+import { useContext } from 'react';
 
-export const useCustomContext = () => useContext(CustomContext)
+import { CustomContext } from './ContextProvider';
+
+export const useCustomContext = () => useContext(CustomContext);
