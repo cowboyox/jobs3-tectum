@@ -9,14 +9,15 @@ import api from '@/utils/api';
 
 const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, viewMode }) => {
   const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
+  // const [progress, setProgress] = useState(0);
+  const progress = 0;
 
-  const onUploadProgress = (progressEvent) => {
-    if (progressEvent.total) {
-      const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-      setProgress(percentage);
-    }
-  };
+  // const onUploadProgress = (progressEvent) => {
+  //   if (progressEvent.total) {
+  //     const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+  //     setProgress(percentage);
+  //   }
+  // };
 
   const handleImageChange = (event) => {
     if (event.target.files?.length) {
@@ -31,49 +32,52 @@ const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, vie
   //   setSelectedImage(null);
   // };
 
-  const handleImageUpload = async (image) => {
-    if (!image) return;
-    setLoading(true);
-    const formData = new FormData();
-    formData.append('file', image);
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    };
+  const onDrop = useCallback(
+    async (acceptedFiles) => {
+      const handleImageUpload = async (image) => {
+        if (!image) return;
+        setLoading(true);
+        const formData = new FormData();
+        formData.append('file', image);
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        };
 
-    try {
-      // const res = await uploadImageToCloudinary(formData, onUploadProgress);
-      const res = await api.post(`/api/v1/profile/upload-portfolio/${email}`, formData, config);
+        try {
+          // const res = await uploadImageToCloudinary(formData, onUploadProgress);
+          const res = await api.post(`/api/v1/profile/upload-portfolio/${email}`, formData, config);
 
-      if (res.status === 200) {
-        setLoading(false);
-        // setUploadedImagePath(URL.createObjectURL(image));
-        setUploadedImagePath((prev) => [...prev, URL.createObjectURL(image)]);
-        let tmp = `/images/uploads/${email}/portfolio/${image.name}`;
-        setProfileData((prev) => ({
-          ...prev,
-          portfolio: [...prev.portfolio, tmp],
-        }));
+          if (res.status === 200) {
+            setLoading(false);
+            // setUploadedImagePath(URL.createObjectURL(image));
+            setUploadedImagePath((prev) => [...prev, URL.createObjectURL(image)]);
+            let tmp = `/images/uploads/${email}/portfolio/${image.name}`;
+            setProfileData((prev) => ({
+              ...prev,
+              portfolio: [...prev.portfolio, tmp],
+            }));
 
-        // if (onUploadComplete) {
-        //   onUploadComplete(res.data.url);
-        // }
-        // setUploadUrl(res.data.url);
+            // if (onUploadComplete) {
+            //   onUploadComplete(res.data.url);
+            // }
+            // setUploadUrl(res.data.url);
+          }
+        } catch (error) {
+          setLoading(false);
+          console.error('Error uploading image:', error);
+        }
+      };
+
+      if (acceptedFiles.length > 0) {
+        const image = acceptedFiles[0];
+        setSelectedImage(image);
+        handleImageUpload(image);
       }
-    } catch (error) {
-      setLoading(false);
-      console.error('Error uploading image:', error);
-    }
-  };
-
-  const onDrop = useCallback(async (acceptedFiles) => {
-    if (acceptedFiles.length > 0) {
-      const image = acceptedFiles[0];
-      setSelectedImage(image);
-      handleImageUpload(image);
-    }
-  }, []);
+    },
+    [email, setProfileData, setUploadedImagePath]
+  );
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 

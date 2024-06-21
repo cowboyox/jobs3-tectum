@@ -23,20 +23,15 @@ const Litepaper = () => {
   useEffect(() => {
     async function fetchListOfPages() {
       document.getElementById('mask').style.display = 'flex';
-      const user_response = await client.user.getAuthenticatedUser();
       // console.log("result:", user_response.data)
-      const { id } = user_response.data;
       const res = await client.orgs.listSpacesInOrganizationById(org_id);
       const { items } = res.data;
-      console.log('items:', items);
       const space_res = await client.spaces.listPages(items[1].id);
-      console.log(space_res.data.pages);
       const document_res = await client.spaces.getPageById(
         items[1].id,
         space_res.data.pages[0].id,
         { format: 'document' }
       );
-      console.log(document_res.data);
       // const file_res = await client.spaces.getFileById(items[items.length - 1].id, "jygegVi0ytQNQ1wBByb9")
       // console.log(file_res.data.downloadURL)
       setOrg(items[1]);
@@ -46,7 +41,7 @@ const Litepaper = () => {
       document.getElementById('mask').style.display = 'none';
     }
     fetchListOfPages();
-  }, []);
+  }, [client.orgs, client.spaces]);
 
   const findNextPrevBtns = (curPos) => {
     const center = pages.findIndex((item) => item.id === curPos.id);
@@ -75,7 +70,7 @@ const Litepaper = () => {
         document.getElementById('mask').style.display = 'none';
         setFileUrl(res.data.downloadURL);
       })
-      .catch((err) => {
+      .catch(() => {
         document.getElementById('mask').style.display = 'none';
       });
   };

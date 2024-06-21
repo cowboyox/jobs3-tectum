@@ -13,73 +13,73 @@ const MenuBar = ({ editor }) => {
     <div className='editor_topbar'>
       <div
         className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
       >
         h1
       </div>
       <div
         className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
       >
         h2
       </div>
       <div
         className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
       >
         h3
       </div>
       <div
         className={editor.isActive('paragraph') ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().setParagraph().run()}
+        onClick={() => editor.chain().focus().setParagraph().run()}
       >
         paragraph
       </div>
       <div
         className={editor.isActive('bold') ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().toggleBold().run()}
+        onClick={() => editor.chain().focus().toggleBold().run()}
       >
         bold
       </div>
       <div
         className={editor.isActive('italic') ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().toggleItalic().run()}
+        onClick={() => editor.chain().focus().toggleItalic().run()}
       >
         italic
       </div>
       <div
         className={editor.isActive('strike') ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().toggleStrike().run()}
+        onClick={() => editor.chain().focus().toggleStrike().run()}
       >
         strike
       </div>
       <div
         className={editor.isActive('highlight') ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().toggleHighlight().run()}
+        onClick={() => editor.chain().focus().toggleHighlight().run()}
       >
         highlight
       </div>
       <div
         className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().setTextAlign('left').run()}
+        onClick={() => editor.chain().focus().setTextAlign('left').run()}
       >
         left
       </div>
       <div
         className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().setTextAlign('center').run()}
+        onClick={() => editor.chain().focus().setTextAlign('center').run()}
       >
         center
       </div>
       <div
         className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().setTextAlign('right').run()}
+        onClick={() => editor.chain().focus().setTextAlign('right').run()}
       >
         right
       </div>
       <div
         className={editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}
-        onClick={(evnt) => editor.chain().focus().setTextAlign('justify').run()}
+        onClick={() => editor.chain().focus().setTextAlign('justify').run()}
       >
         justify
       </div>

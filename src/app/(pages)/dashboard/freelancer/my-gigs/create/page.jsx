@@ -429,7 +429,6 @@ const CreateGig = () => {
   useEffect(() => {
     if (auth.user) {
       api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then((res) => {
-        console.log(res.data.profile);
         setProfileData(res.data.profile);
       });
     }
@@ -481,21 +480,18 @@ const CreateGig = () => {
   const [documentFiles, setDocumentFiles] = useState([]);
 
   const handleVideoUpload = (file) => {
-    console.log(file[0]);
     setVideoFile(file[0]); // Assuming single file for video
   };
 
   const handleImageUpload = (files, index) => {
     const newImageFiles = [...imageFiles];
     newImageFiles[index] = files[0]; // Assuming single file for each image slot
-    console.log(files[0]);
     setImageFiles(newImageFiles);
   };
 
   const handleDocumentUpload = (files, index) => {
     const newDocumentFiles = [...documentFiles];
     newDocumentFiles[index] = files[0]; // Assuming single file for each document slot
-    console.log(newDocumentFiles);
     setDocumentFiles(newDocumentFiles);
   };
   async function onSubmit(values) {
@@ -508,14 +504,10 @@ const CreateGig = () => {
     let postData = values;
     postData.gigCategory = currentCategory;
     postData.subCategory = currentSub;
-    console.log('--------- ', postData);
-    console.log('tag: ', tags);
-    console.log('qa: ', requirementQuestions);
     values.question = requirementQuestions;
     values.searchKeywords = tags;
     values.email = auth.user.email;
     if (profile) {
-      console.log(profile._id);
       values.creator = profile._id;
     }
 
@@ -531,26 +523,24 @@ const CreateGig = () => {
 
     const formData = new FormData();
     if (videoFile) {
-      console.log('video');
       formData.append('video', videoFile);
     }
 
-    imageFiles.forEach((file, index) => {
+    imageFiles.forEach((file) => {
       if (file) formData.append('image', file);
     });
-    documentFiles.forEach((file, index) => {
+    documentFiles.forEach((file) => {
       if (file) formData.append('document', file);
     });
 
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    };
+    // const config = {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    // };
     await api
       .post('/api/v1/freelancer_gig/post_gig', values)
-      .then(async (data) => {
-        console.log(data);
+      .then(async () => {
         // await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
         //   console.log("Successfully uploaded");
         // })
@@ -564,7 +554,7 @@ const CreateGig = () => {
         router.push('../');
       })
       .catch((err) => {
-        console.log('Error corrupted during posting gig', err);
+        console.error('Error corrupted during posting gig', err);
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -620,7 +610,7 @@ const CreateGig = () => {
                 <div className='flex gap-3 mobile:flex-col'>
                   <FormField
                     name='gigCategory'
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem className='flex w-full flex-col gap-2'>
                         <FormControl>
                           <Select
@@ -648,7 +638,7 @@ const CreateGig = () => {
                   />
                   <FormField
                     name='subCategory'
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem className='flex w-full flex-col gap-2'>
                         <FormControl>
                           <Select
@@ -661,7 +651,7 @@ const CreateGig = () => {
                             </SelectTrigger>
                             <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
                               <SelectGroup>
-                                {subcategory_list.map((subcat, index) => {
+                                {subcategory_list.map((subcat) => {
                                   if (subcat.parent === currentCategory) {
                                     return subcat.value.map((item, index) => (
                                       <SelectItem key={index} value={item}>

@@ -2,8 +2,6 @@
 import Image from 'next/image';
 import React, { useEffect } from 'react';
 
-import { getRecentViewedGigs } from '@/utils/http';
-
 const recentViewed = [
   // {
   //   title: "Figma and Flow Bite Mentor Needed",
@@ -26,7 +24,6 @@ const RecentlyViewed = () => {
   useEffect(() => {
     const fetchRecentViewGigs = async () => {
       try {
-        const res = await getRecentViewedGigs();
       } catch (err) {
         console.error('Err fetching Gigs', err);
       }

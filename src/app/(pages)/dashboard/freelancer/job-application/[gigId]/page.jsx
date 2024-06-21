@@ -40,9 +40,7 @@ const Page = () => {
 
     await api
       .post(`/api/v1/bidding/${gigId}/apply`, values)
-      .then(async (data) => {
-        console.log(data);
-
+      .then(async () => {
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -53,7 +51,7 @@ const Page = () => {
         router.push('../find-job');
       })
       .catch((err) => {
-        console.log('Error corrupted during applying gig', err);
+        console.error('Error corrupted during applying gig', err);
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',

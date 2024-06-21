@@ -19,48 +19,37 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useCustomContext } from '@/context/use-custom';
 
-const DashboardHeader = ({ userRole, setUserRole }) => {
-  const { openPopup, renderPopup } = usePopupFunctions();
+const DashboardHeader = ({ setUserRole }) => {
+  const { renderPopup } = usePopupFunctions();
 
   function OpenSideBar() {
     document.querySelector('.main_sidebar').classList.toggle('-translate-x-full');
   }
   const auth = useCustomContext();
 
-  const [user, setUser] = useState({
-    email: '',
-    name: '',
-    role: [0],
-    verified: false,
-  });
-
   const [accType, setAccType] = useState([]);
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (tmp === null) {
-      console.log('Login First!');
     } else {
-      setUser(JSON.parse(tmp).data.user);
       setAccType(JSON.parse(tmp).data.user.role);
     }
   }, []);
 
   const [currentNav, setCurrentNav] = useState('');
-  const [currentUser, setCurrentUser] = useState('');
   useEffect(() => {
     // if(!auth.isAuthenticated){
     // 	router.replace('/')
     // }
     setCurrentNav(window.location.href.split('/')[5]);
-    console.log('NAV', window.location.href.split('/')[5]);
+
     if (window.location.href.split('/')[5].toLowerCase() === 'freelancer') {
       setUserRole(0);
     } else {
       setUserRole(3);
     }
-    setCurrentUser(window.location.href.split('/')[4]);
-  }, []);
+  }, [setUserRole]);
 
   const handleTap = (item) => {
     if (!item) {
@@ -79,7 +68,6 @@ const DashboardHeader = ({ userRole, setUserRole }) => {
   const { disconnect } = useDisconnect();
 
   const handleNavigation = (nav) => {
-    console.log('🚀 ~ handleNavigation ~ nav:', nav);
     if (nav.toLowerCase() === 'freelancer') {
       setUserRole(0);
     } else {

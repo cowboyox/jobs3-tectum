@@ -1,7 +1,5 @@
 'use client';
 
-import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaEllipsis, FaX } from 'react-icons/fa6';
 
@@ -27,23 +25,11 @@ import api from '@/utils/api';
 
 const Orders = () => {
   const auth = useCustomContext();
-  const router = useRouter();
-  const wallet = useAnchorWallet();
-  const { sendTransaction } = useWallet();
-  const { connection } = useConnection();
 
-  const [program, setProgram] = useState();
-  const [search, setSearch] = useState();
-  const [filterCategory, setFilterCategories] = useState([
-    'Active',
-    'Paused',
-    'Completed',
-    'Cancelled',
-  ]);
+  const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
   const [orders, setOrders] = useState([]);
 
   const [filteredOrders, setfilteredOrders] = useState([]);
-  const [profile, setProfile] = useState(null);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   useEffect(() => {
     const handleResize = () => {
@@ -68,7 +54,6 @@ const Orders = () => {
   useEffect(() => {
     if (auth.user) {
       api.get(`/api/v1/client_gig/find_all_gigs_proposed/${auth.user._id}`).then((data) => {
-        console.log(data.data.data);
         if (data.data.data) {
           setOrders(data.data.data);
           setfilteredOrders(data.data.data);
@@ -625,7 +610,7 @@ const Orders = () => {
                 </div>
               </div>
               <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-                <button className='p-4 px-10 md:p-5' onClick={(e) => handleMessage(order)}>
+                <button className='p-4 px-10 md:p-5' onClick={() => handleMessage(order)}>
                   Message
                 </button>
                 <button className='bg-[#DC4F13] p-4 px-10 md:p-5'>Deliver</button>

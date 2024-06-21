@@ -73,7 +73,6 @@ const MyGigs = () => {
   const [myGigs, setMyGigs] = useState([]);
   useEffect(() => {
     api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
-      console.log('------- ', data.data.data);
       setMyGigs(data.data.data);
     });
   }, []);

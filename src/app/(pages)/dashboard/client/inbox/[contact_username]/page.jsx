@@ -2,10 +2,9 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { BsPatchCheckFill } from 'react-icons/bs';
-import { CiCircleCheck, CiReceipt } from 'react-icons/ci';
 import { FaRegStar, FaStar } from 'react-icons/fa';
 import { FaAngleLeft } from 'react-icons/fa6';
-import { GoArrowUp, GoClock } from 'react-icons/go';
+import { GoArrowUp } from 'react-icons/go';
 import { HiOutlineExclamationTriangle } from 'react-icons/hi2';
 import { IoMdAttach } from 'react-icons/io';
 import { TbDotsCircleHorizontal } from 'react-icons/tb';
@@ -184,35 +183,35 @@ const MessageText = (props) => {
     </div>
   );
 };
-const Offer = (props) => {
-  return (
-    <div className='pr-10'>
-      <div className='flex flex-col gap-4 rounded-xl bg-[#10191D] p-5 font-normal text-[15x]'>
-        <p className='text-lg text-white'>{props.offer_description}</p>
-        <div className='border-t border-[#28373E]' />
-        <div className='flex flex-wrap gap-6'>
-          <div className='flex items-center gap-3'>
-            <GoClock className='h-5 w-5' />
-            <p className='text-[15px] text-[#96B0BD]'>{props.duration} Delivery</p>
-          </div>
-          {props.is_accepted && (
-            <div className='flex items-center gap-3'>
-              <CiCircleCheck className='h-5 w-5' />
-              <p className='text-[15px] text-[#96B0BD]'>Offer accepted</p>
-            </div>
-          )}
-          <div className='flex items-center gap-3'>
-            <CiReceipt className='h-5 w-5' />
-            <p className='text-[15px] text-[#96B0BD]'>
-              {props.price_currency}
-              {props.price}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+// const Offer = (props) => {
+//   return (
+//     <div className='pr-10'>
+//       <div className='flex flex-col gap-4 rounded-xl bg-[#10191D] p-5 font-normal text-[15x]'>
+//         <p className='text-lg text-white'>{props.offer_description}</p>
+//         <div className='border-t border-[#28373E]' />
+//         <div className='flex flex-wrap gap-6'>
+//           <div className='flex items-center gap-3'>
+//             <GoClock className='h-5 w-5' />
+//             <p className='text-[15px] text-[#96B0BD]'>{props.duration} Delivery</p>
+//           </div>
+//           {props.is_accepted && (
+//             <div className='flex items-center gap-3'>
+//               <CiCircleCheck className='h-5 w-5' />
+//               <p className='text-[15px] text-[#96B0BD]'>Offer accepted</p>
+//             </div>
+//           )}
+//           <div className='flex items-center gap-3'>
+//             <CiReceipt className='h-5 w-5' />
+//             <p className='text-[15px] text-[#96B0BD]'>
+//               {props.price_currency}
+//               {props.price}
+//             </p>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 const ChatPage = (parameters) => {
   const socket = useSocket();
@@ -250,7 +249,7 @@ const ChatPage = (parameters) => {
     return () => {
       socket?.off('newMessage');
     };
-  }, [auth]);
+  }, [auth, parameters.params.contact_username, socket]);
 
   const sendMessage = () => {
     const message = { messageText: input, receiverId: receiver._id, senderId: auth.user._id };

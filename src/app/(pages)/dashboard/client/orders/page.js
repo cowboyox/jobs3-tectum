@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaEllipsis, FaX } from 'react-icons/fa6';
 
@@ -29,20 +28,11 @@ import api from '@/utils/api';
 
 const Orders = () => {
   const auth = useCustomContext();
-  const router = useRouter();
-  const [search, setSearch] = useState();
 
-  const [filterCategory, setFilterCategories] = useState([
-    'Active',
-    'Paused',
-    'Completed',
-    'Cancelled',
-  ]);
+  const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
   const [orders, setOrders] = useState([]);
-  const [filteredOrders, setfilteredOrders] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const handleSearchTypeChange = (v) => setSearchType(v);
-  const [placeholderText, setPlaceholderText] = useState('Search by Order title...');
   const [profile, setProfile] = useState(null);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   useEffect(() => {
@@ -69,7 +59,6 @@ const Orders = () => {
     if (auth.user) {
       api.get(`/api/v1/profile/get-profile/${auth.user.email}/3`).then((data) => {
         setProfile(data.data.profile);
-        console.log(data.data.profile);
       });
     }
   }, [auth]);
@@ -77,13 +66,10 @@ const Orders = () => {
   useEffect(() => {
     if (profile) {
       api.get(`/api/v1/freelancer_gig/find_all_gigs_proposed/${profile._id}`).then((data) => {
-        console.log(data.data.data);
         if (data.data.data) {
           setOrders(data.data.data);
-          setfilteredOrders(data.data.data);
         } else {
           setOrders([]);
-          setfilteredOrders([]);
         }
       });
     }
@@ -100,7 +86,6 @@ const Orders = () => {
 
     // Formatted date string
     const formattedDate = `${monthAbbreviation} ${day}`;
-    console.log(formattedDate); // Output: "Apr 18"
     return formattedDate;
   };
 

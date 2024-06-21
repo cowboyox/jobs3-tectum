@@ -86,70 +86,72 @@ const ClientDashboard = () => {
         setLastLogin(data.data.data);
       });
     }
-  }, []);
+  }, [router, toast]);
 
-  const onDrop = useCallback(async (acceptedFiles) => {
-    if (acceptedFiles.length > 0) {
-      const image = acceptedFiles[0];
-      // setSelectedImage(image);
-      handleBannerUpload(image);
-    }
-  }, []);
+  const onDrop = useCallback(
+    async (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        const handleBannerUpload = async (event) => {
+          if (event.target.files?.length) {
+            const image = event.target.files[0];
+            const formData = new FormData();
+            formData.append('file', image);
+            const config = {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            };
+            let imageName = 'clientBanner' + image.type.split('/')[1];
+
+            try {
+              // const res = await uploadImageToCloudinary(formData, onUploadProgress);
+              const res = await api.post(
+                `/api/v1/profile/upload-client-banner/${user.email}`,
+                formData,
+                config
+              );
+
+              if (res.status === 200) {
+                // setUploadedImagePath(URL.createObjectURL(image));
+                setUploadedBanner(URL.createObjectURL(image));
+                setPreviewBanner(true);
+                let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
+                setProfileData((prev) => ({
+                  ...prev,
+                  clientBanner: tmp,
+                }));
+                toast({
+                  className:
+                    'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+                  description: <h3>Successfully updated Client Profile</h3>,
+                  title: <h1 className='text-center'>Success</h1>,
+                  variant: 'default',
+                });
+              }
+            } catch (error) {
+              setLoading(false);
+              console.error('Error uploading image:', error);
+              toast({
+                className:
+                  'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+                description: <h3>Internal Server Error</h3>,
+                title: <h1 className='text-center'>Error</h1>,
+                variant: 'destructive',
+              });
+            }
+          }
+        };
+
+        const image = acceptedFiles[0];
+        // setSelectedImage(image);
+        handleBannerUpload(image);
+      }
+    },
+    [toast, user.email]
+  );
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  const handleBannerUpload = async (event) => {
-    console.log('fileupload: ', event.target.files);
-    if (event.target.files?.length) {
-      const image = event.target.files[0];
-      const formData = new FormData();
-      formData.append('file', image);
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-      let imageName = 'clientBanner' + image.type.split('/')[1];
-
-      try {
-        // const res = await uploadImageToCloudinary(formData, onUploadProgress);
-        const res = await api.post(
-          `/api/v1/profile/upload-client-banner/${user.email}`,
-          formData,
-          config
-        );
-
-        if (res.status === 200) {
-          // setUploadedImagePath(URL.createObjectURL(image));
-          setUploadedBanner(URL.createObjectURL(image));
-          setPreviewBanner(true);
-          let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
-          console.log('tmp: ', tmp);
-          setProfileData((prev) => ({
-            ...prev,
-            clientBanner: tmp,
-          }));
-          toast({
-            className:
-              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-            description: <h3>Successfully updated Client Profile</h3>,
-            title: <h1 className='text-center'>Success</h1>,
-            variant: 'default',
-          });
-        }
-      } catch (error) {
-        setLoading(false);
-        console.error('Error uploading image:', error);
-        toast({
-          className:
-            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
-          title: <h1 className='text-center'>Error</h1>,
-          variant: 'destructive',
-        });
-      }
-    }
-  };
   return !isLoading ? (
     <div className='p-0'>
       <div className='group relative cursor-pointer' {...getRootProps()}>

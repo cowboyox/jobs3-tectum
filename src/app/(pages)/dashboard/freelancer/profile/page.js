@@ -108,7 +108,6 @@ const reviews = [
 ];
 
 const FreelancerProfile = () => {
-  const [selectedImage, setSelectedImage] = useState([]);
   const [uploadedImagePath, setUploadedImagePath] = useState([]);
   const [uploadedGigPath, setUploadedGigPath] = useState([]);
   const [viewMode, setViewMode] = useState('edit');
@@ -122,7 +121,6 @@ const FreelancerProfile = () => {
   });
   const [isEditBio, setStatusBio] = useState(true);
   const [isLoading, setLoading] = useState(true);
-  const [previewBanner, setPreviewBanner] = useState(false);
   const [fetchBanner, setFetchBanner] = useState('');
   const [fetchAvatar, setFetchAvatar] = useState('');
   const [isEditProfileInfo, setEditProfileInfo] = useState(false);
@@ -176,13 +174,10 @@ const FreelancerProfile = () => {
           setUser(JSON.parse(tmp).data.user);
 
           const data = await api.get(`/api/v1/profile/get-profile/${email}`);
-          console.log('------getprofile: ', data.data.profile);
           setProfileData(data.data.profile);
 
           if (data.data.profile.freelancerBio) {
             const lines = data.data.profile.freelancerBio.split(/\r\n|\r|\n/).length;
-            const letterCnt = data.data.profile.freelancerBio.length;
-            console.log(lines, letterCnt);
             if (lines > 4) {
               let tmp = data.data.profile.freelancerBio.split(/\r\n|\r|\n/);
               let previewText = '';
@@ -225,18 +220,16 @@ const FreelancerProfile = () => {
             setFetchAvatar(fetchAvatarUrl);
           }
         } catch (error) {
-          console.log('Error while fetching user profile data:', error);
+          console.error('Error while fetching user profile data:', error);
         } finally {
           setLoading(false);
         }
       })();
     }
-  }, []);
+  }, [router, toast]);
 
   useEffect(() => {
     const lines = bio.split(/\r\n|\r|\n/).length;
-    const letterCnt = bio.length;
-    console.log(lines, letterCnt);
     if (lines > 4) {
       let tmp = bio.split(/\r\n|\r|\n/);
       let previewText = '';
@@ -258,13 +251,12 @@ const FreelancerProfile = () => {
   }, [bio]);
 
   const handleEditBio = () => {
-    console.log('EditBio: ', isEditBio);
     if (isEditBio) {
       api
         .put(`/api/v1/profile/update-freelancer-bio/${user.email}`, {
           freelancerBio: bio,
         })
-        .then((data) => {
+        .then(() => {
           toast({
             className:
               'bg-green-500 border-none rounded-xl absolute top-[-94vh] xl:w-[15vw] md:w-[30vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -273,7 +265,7 @@ const FreelancerProfile = () => {
             variant: 'default',
           });
         })
-        .catch((err) => {
+        .catch(() => {
           toast({
             className:
               'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -296,7 +288,7 @@ const FreelancerProfile = () => {
   const saveToDB = (tmp) => {
     api
       .put(`/api/v1/profile/update-profileinfo/${user.email}`, tmp)
-      .then((data) => {
+      .then(() => {
         return toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -305,7 +297,7 @@ const FreelancerProfile = () => {
           variant: 'default',
         });
       })
-      .catch((err) => {
+      .catch(() => {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -343,19 +335,126 @@ const FreelancerProfile = () => {
     }
   };
 
-  const onDropHandleBannerUpload = useCallback(async (acceptedFiles) => {
-    if (acceptedFiles.length > 0) {
-      const image = acceptedFiles[0];
-      handleBannerUpload(image);
-    }
-  }, []);
+  const onDropHandleBannerUpload = useCallback(
+    async (acceptedFiles) => {
+      const handleBannerUpload = async (event) => {
+        if (event.target.files?.length) {
+          const image = event.target.files[0];
+          const formData = new FormData();
+          formData.append('file', image);
+          const config = {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          };
+          let imageName = 'clientBanner' + image.type.split('/')[1];
 
-  const onDropHandleAvatarUpload = useCallback(async (acceptedFiles) => {
-    if (acceptedFiles.length > 0) {
-      const image = acceptedFiles[0];
-      handleAvatarUpload(image);
-    }
-  }, []);
+          try {
+            // const res = await uploadImageToCloudinary(formData, onUploadProgress);
+            const res = await api.post(
+              `/api/v1/profile/upload-client-banner/${user.email}`,
+              formData,
+              config
+            );
+
+            if (res.status === 200) {
+              // setUploadedImagePath(URL.createObjectURL(image));
+              setFetchBanner(URL.createObjectURL(image));
+              setPreviewBanner(true);
+              let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
+              setProfileData((prev) => ({
+                ...prev,
+                clientBanner: tmp,
+              }));
+              toast({
+                className:
+                  'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+                description: <h3>Successfully updated Freelancer Profile</h3>,
+                title: <h1 className='text-center'>Success</h1>,
+                variant: 'default',
+              });
+            }
+          } catch (error) {
+            setLoading(false);
+            console.error('Error uploading image:', error);
+            toast({
+              className:
+                'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+              description: <h3>Internal Server Error</h3>,
+              title: <h1 className='text-center'>Error</h1>,
+              variant: 'destructive',
+            });
+          }
+        }
+      };
+
+      if (acceptedFiles.length > 0) {
+        const image = acceptedFiles[0];
+        handleBannerUpload(image);
+      }
+    },
+    [toast, user.email]
+  );
+
+  const onDropHandleAvatarUpload = useCallback(
+    async (acceptedFiles) => {
+      const handleAvatarUpload = async (event) => {
+        if (event.target.files?.length) {
+          const image = event.target.files[0];
+          const formData = new FormData();
+          formData.append('file', image);
+          const config = {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          };
+          let imageName = 'clientAvatar' + image.type.split('/')[1];
+
+          try {
+            // const res = await uploadImageToCloudinary(formData, onUploadProgress);
+            const res = await api.post(
+              `/api/v1/profile/upload-client-avatar/${user.email}`,
+              formData,
+              config
+            );
+
+            if (res.status === 200) {
+              // setUploadedImagePath(URL.createObjectURL(image));
+              setFetchAvatar(URL.createObjectURL(image));
+              let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
+              setProfileData((prev) => ({
+                ...prev,
+                avatar: tmp,
+              }));
+              toast({
+                className:
+                  'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+                description: <h3>Successfully updated Freelancer Profile</h3>,
+                title: <h1 className='text-center'>Success</h1>,
+                variant: 'default',
+              });
+            }
+          } catch (error) {
+            setLoading(false);
+            console.error('Error uploading image:', error);
+            toast({
+              className:
+                'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+              description: <h3>Internal Server Error</h3>,
+              title: <h1 className='text-center'>Error</h1>,
+              variant: 'destructive',
+            });
+          }
+        }
+      };
+
+      if (acceptedFiles.length > 0) {
+        const image = acceptedFiles[0];
+        handleAvatarUpload(image);
+      }
+    },
+    [toast, user.email]
+  );
 
   const { getRootProps: getBannerRootProps, getInputProps: getBannerInputProps } = useDropzone({
     onDrop: onDropHandleBannerUpload,
@@ -364,111 +463,6 @@ const FreelancerProfile = () => {
   const { getRootProps: getAvatarRootProps, getInputProps: getAvatarInputProps } = useDropzone({
     onDrop: onDropHandleAvatarUpload,
   });
-
-  const handleBannerUpload = async (event) => {
-    console.log('fileupload: ', event.target.files);
-    if (event.target.files?.length) {
-      const image = event.target.files[0];
-      const formData = new FormData();
-      formData.append('file', image);
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-      let imageName = 'clientBanner' + image.type.split('/')[1];
-
-      try {
-        // const res = await uploadImageToCloudinary(formData, onUploadProgress);
-        const res = await api.post(
-          `/api/v1/profile/upload-client-banner/${user.email}`,
-          formData,
-          config
-        );
-
-        if (res.status === 200) {
-          // setUploadedImagePath(URL.createObjectURL(image));
-          setFetchBanner(URL.createObjectURL(image));
-          setPreviewBanner(true);
-          let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
-          console.log('tmp: ', tmp);
-          setProfileData((prev) => ({
-            ...prev,
-            clientBanner: tmp,
-          }));
-          toast({
-            className:
-              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-            description: <h3>Successfully updated Freelancer Profile</h3>,
-            title: <h1 className='text-center'>Success</h1>,
-            variant: 'default',
-          });
-        }
-      } catch (error) {
-        setLoading(false);
-        console.error('Error uploading image:', error);
-        toast({
-          className:
-            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
-          title: <h1 className='text-center'>Error</h1>,
-          variant: 'destructive',
-        });
-      }
-    }
-  };
-
-  const handleAvatarUpload = async (event) => {
-    console.log('fileupload for avatar: ', event.target.files);
-    if (event.target.files?.length) {
-      const image = event.target.files[0];
-      const formData = new FormData();
-      formData.append('file', image);
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-      let imageName = 'clientAvatar' + image.type.split('/')[1];
-
-      try {
-        // const res = await uploadImageToCloudinary(formData, onUploadProgress);
-        const res = await api.post(
-          `/api/v1/profile/upload-client-avatar/${user.email}`,
-          formData,
-          config
-        );
-
-        if (res.status === 200) {
-          // setUploadedImagePath(URL.createObjectURL(image));
-          setFetchAvatar(URL.createObjectURL(image));
-          let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
-          console.log('tmp: ', tmp);
-          setProfileData((prev) => ({
-            ...prev,
-            avatar: tmp,
-          }));
-          toast({
-            className:
-              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-            description: <h3>Successfully updated Freelancer Profile</h3>,
-            title: <h1 className='text-center'>Success</h1>,
-            variant: 'default',
-          });
-        }
-      } catch (error) {
-        setLoading(false);
-        console.error('Error uploading image:', error);
-        toast({
-          className:
-            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
-          title: <h1 className='text-center'>Error</h1>,
-          variant: 'destructive',
-        });
-      }
-    }
-  };
 
   return !isLoading ? (
     <div className='p-0'>
@@ -716,7 +710,7 @@ const FreelancerProfile = () => {
                           key={index}
                           onClick={() => {
                             if (isEditSkills) {
-                              let tmp = profileData.skills.filter((Iskill, num) => {
+                              let tmp = profileData.skills.filter((Iskill) => {
                                 return Iskill !== skill;
                               });
                               return setProfileData((prev) => ({
@@ -785,7 +779,7 @@ const FreelancerProfile = () => {
                           key={index}
                           onClick={() => {
                             if (isEditLang) {
-                              let tmp = profileData.languages.filter((Ilang, num) => {
+                              let tmp = profileData.languages.filter((Ilang) => {
                                 return Ilang !== lang;
                               });
                               return setProfileData((prev) => ({

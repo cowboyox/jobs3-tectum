@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaArrowRight, FaX } from 'react-icons/fa6';
 
@@ -20,15 +19,7 @@ import { Separator } from '@/components/ui/seperator';
 import api from '@/utils/api';
 
 const Freelancers = () => {
-  const router = useRouter();
-  const [search, setSearch] = useState();
-  const [filterCategory, setFilterCategories] = useState([
-    'English',
-    'Developer',
-    'Blockchain',
-    'Web3',
-  ]);
-  const [skillSet, setSkillSet] = useState(['UI/UX', 'Design', 'WebDesign', 'FullTime']);
+  const filterCategory = ['English', 'Developer', 'Blockchain', 'Web3'];
   const [freelancers, setFreelancers] = useState([]);
   const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
@@ -52,16 +43,12 @@ const Freelancers = () => {
   };
 
   const aiSearch = () => {
-    console.log('AI search', searchKeyWords);
     api.get(`/api/v1/profile/ai-search-profile/${searchKeyWords}`).then((data) => {
       let ai_ids = [];
       if (data.data.profileIDs) ai_ids = data.data.profileIDs;
-      console.log(ai_ids);
-      console.log(freelancers[0]);
       const ai_filtered = ai_ids
         .map((id) => freelancers.find((freelancer) => freelancer._id.toString() === id))
         .filter((freelancer) => freelancer != undefined);
-      console.log(ai_filtered);
       setFilteredFreelancers(ai_filtered);
     });
   };
@@ -89,7 +76,6 @@ const Freelancers = () => {
 
     api.get(`/api/v1/profile/get-all-freelancers`).then((data) => {
       if (data.data.data) {
-        console.log(data.data.data[0]);
         setFreelancers(data.data.data);
         setFilteredFreelancers(data.data.data);
       } else {

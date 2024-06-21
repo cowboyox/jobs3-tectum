@@ -9,10 +9,9 @@ const InfoPanel = (props) => {
   const { toast } = useToast();
 
   const saveToDB = (data) => {
-    console.log('-----> ', data);
     api
       .put(`/api/v1/profile/update-profileinfo/${props.email}`, data)
-      .then((data) => {
+      .then(() => {
         return toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -21,7 +20,7 @@ const InfoPanel = (props) => {
           variant: 'default',
         });
       })
-      .catch((err) => {
+      .catch(() => {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',

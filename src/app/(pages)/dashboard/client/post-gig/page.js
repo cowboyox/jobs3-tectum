@@ -189,12 +189,6 @@ const all_form_structure = {
 
 const GigPosting = () => {
   const { toast } = useToast();
-  const [user, setUser] = useState({
-    email: '',
-    name: '',
-    role: [0],
-    verified: false,
-  });
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
@@ -209,9 +203,8 @@ const GigPosting = () => {
       alert('Login First!');
       router.push('/');
     } else {
-      setUser(JSON.parse(tmp).data.user);
     }
-  }, []);
+  }, [router, toast]);
 
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -287,9 +280,7 @@ const GigPosting = () => {
       .then(async (data) => {
         await api
           .post(`/api/v1/client_gig/upload_attachment/${data.data.gigId}`, formData, config)
-          .then((data) => {
-            console.log('Successfully uploaded');
-          });
+          .then(() => {});
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -300,7 +291,7 @@ const GigPosting = () => {
         router.push('/jobs');
       })
       .catch((err) => {
-        console.log('Error corrupted during posting gig', err);
+        console.error('Error corrupted during posting gig', err);
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -320,7 +311,7 @@ const GigPosting = () => {
         <form className='max-w-lg'>
           <FormField
             name='gig_title'
-            render={({ field }) => (
+            render={() => (
               <FormItem className='mt-8'>
                 <FormLabel className='text-lg uppercase text-slate-500'>
                   {all_form_structure.title_label}
@@ -340,7 +331,7 @@ const GigPosting = () => {
           />
           <FormField
             name='job_category'
-            render={({ field }) => (
+            render={() => (
               <FormItem className='mt-8'>
                 <FormLabel className='text-lg uppercase text-slate-500'>
                   {all_form_structure.categories_label}
@@ -411,7 +402,7 @@ const GigPosting = () => {
           />
           <FormField
             name='gig_skills'
-            render={({ field }) => (
+            render={() => (
               <FormItem className='gig_skills mt-8'>
                 <FormLabel className='text-lg uppercase text-slate-500'>
                   {all_form_structure.skills_label}
@@ -490,7 +481,7 @@ const GigPosting = () => {
                       <RadioGroupItem
                         className='hidden'
                         id={single_option.value}
-                        onClick={(e) => {
+                        onClick={() => {
                           setPostData((prev) => ({
                             ...prev,
                             gigDeadline: single_option.indexNum,
@@ -530,7 +521,7 @@ const GigPosting = () => {
                       <RadioGroupItem
                         className='h-6 w-6'
                         id={experience_option.value}
-                        onClick={(e) => {
+                        onClick={() => {
                           setPostData((prev) => ({
                             ...prev,
                             experienceLevel: experience_option.indexNum,
@@ -553,7 +544,7 @@ const GigPosting = () => {
           />
           <FormField
             name='location'
-            render={({ field }) => (
+            render={() => (
               <FormItem className='mt-8'>
                 <FormLabel className='text-lg uppercase text-slate-500'>
                   {all_form_structure.location_label}
@@ -626,7 +617,7 @@ const GigPosting = () => {
             <div className='flex gap-5'>
               <FormField
                 name='hourly_rate_from'
-                render={({ field }) => (
+                render={() => (
                   <FormItem className='mt-8 w-full'>
                     <FormLabel className='text-lg uppercase text-slate-500'>
                       {all_form_structure.gig_from_to.from_label}
@@ -659,7 +650,7 @@ const GigPosting = () => {
               />
               <FormField
                 name='hourly_rate_to'
-                render={({ field }) => (
+                render={() => (
                   <FormItem className='mt-8 w-full'>
                     <FormLabel className='text-lg uppercase text-slate-500'>
                       {all_form_structure.gig_from_to.to_label}
@@ -696,7 +687,7 @@ const GigPosting = () => {
           {budgetMode == 'fixed' && (
             <FormField
               name='fixed_price'
-              render={({ field }) => (
+              render={() => (
                 <FormItem className='mt-8 w-full'>
                   <FormLabel className='text-lg uppercase text-slate-500'>
                     {all_form_structure.gig_fixed_label}
@@ -729,7 +720,7 @@ const GigPosting = () => {
           {/* Description */}
           <FormField
             name='gig_description'
-            render={({ field }) => (
+            render={() => (
               <FormItem className='mt-8'>
                 <FormLabel className='text-lg uppercase text-slate-500'>
                   {all_form_structure.gig_description_label}
@@ -753,7 +744,7 @@ const GigPosting = () => {
           {/* File Upload */}
           <FormField
             name='attachemnts'
-            render={({ field }) => (
+            render={() => (
               <FormItem className='mt-8'>
                 <FormLabel className='text-lg uppercase text-slate-500'>
                   {all_form_structure.upload_files_label}
@@ -794,7 +785,7 @@ const GigPosting = () => {
         </form>
         <Button
           className='mt-8 w-1/5 rounded-full bg-[#DC4F13] text-white'
-          onClick={(e) => {
+          onClick={() => {
             handlePublish();
           }}
         >

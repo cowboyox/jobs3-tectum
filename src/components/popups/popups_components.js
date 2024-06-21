@@ -25,12 +25,12 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
   const { open } = useWeb3Modal();
   const router = useRouter();
 
-  const { address, isConnected, isDisconnected } = useAccount();
+  const { address, isConnected } = useAccount();
 
   useEffect(() => {
     const tmp = searchParams.get('referrer');
     setReferrer(tmp);
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     if (isConnected) {
@@ -50,14 +50,13 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
             accountTypeName = 'client';
             break;
         }
-        const info = JSON.parse(localStorage.getItem('jobs_2024_token'));
         router.push(`/dashboard/${accountTypeName}/`);
       } catch (err) {
-        console.log(err);
+        console.error(err);
         // router.replace('/')
       }
     }
-  }, [isConnected, isDisconnected, address, auth, onClose]);
+  }, [isConnected, router, address, auth, onClose]);
 
   const validateEmail = (email) => {
     return String(email)
@@ -72,7 +71,6 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
       ev.target.classList.add('not_empty');
 
       // Validate Email If input is not empty
-      console.log(ev.target.getAttribute('type'));
       if (ev.target.getAttribute('type') == 'email') {
         if (!validateEmail(ev.target.value)) {
           ev.target.closest('.field_container').classList.add('field_error');
@@ -90,7 +88,6 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         }
       }
       if (attr === 'password') {
-        console.log(ev.target.value);
         if (ev.target.value.length < 8) {
           ev.target.closest('.field_container').classList.add('field_error');
         } else {
@@ -99,7 +96,6 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         }
       }
       if (attr === 'confirmPassword') {
-        console.log(password, '   ===   ', ev.target.value);
         if (ev.target.value.length < 8 || !password || password !== ev.target.value) {
           ev.target.closest('.field_container').classList.add('field_error');
         } else {
@@ -108,7 +104,6 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         }
       }
       if (attr === 'referralUser') {
-        console.log(referralUser, '   ===   ', ev.target.value);
         ev.target.closest('.field_container')?.classList.remove('field_error');
         setReferralUser(ev.target.value);
       }
@@ -129,7 +124,6 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
     if (!name || !email || !password || !confirmPwd || !accept) {
       return false;
     }
-    console.log('1111');
     if (
       name.length === 0 ||
       !validateEmail(email) ||
@@ -140,13 +134,11 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
     ) {
       return false;
     }
-    console.log('222');
     return true;
   };
 
-  const onRegisterSubmit = async (e) => {
+  const onRegisterSubmit = async () => {
     if (!validateUserInfo()) {
-      console.log('validate error!');
       return toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -155,7 +147,6 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         variant: 'destructive',
       });
     }
-    console.log('clicked');
     try {
       const verified = await auth.register({
         email,
@@ -183,7 +174,6 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         router.push(`/dashboard/${accountTypeName}/`);
       }
     } catch (err) {
-      console.log('error => ', err);
       return toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -308,22 +298,24 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
   const [password, setPassword] = useState(null);
   const [accept, setAccept] = useState(null);
 
+  console.warn({ accept });
+
   const auth = useCustomContext();
   const { open } = useWeb3Modal();
   const router = useRouter();
 
-  const { address, isConnected, isDisconnected } = useAccount();
+  const { address, isConnected } = useAccount();
 
   useEffect(() => {
     if (isConnected) {
       try {
         auth.signInwithWallet(address);
       } catch (err) {
-        console.log(err);
+        console.error(err);
         // router.replace('/')
       }
     }
-  }, [isConnected, isDisconnected, address]);
+  }, [isConnected, address, auth]);
 
   const validateEmail = (email) => {
     return String(email)
@@ -338,7 +330,6 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
       ev.target.classList.add('not_empty');
 
       // Validate Email If input is not empty
-      console.log(ev.target.getAttribute('type'));
       if (ev.target.getAttribute('type') == 'email') {
         if (!validateEmail(ev.target.value)) {
           ev.target.closest('.field_container').classList.add('field_error');
@@ -368,8 +359,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
     }
   }
 
-  const handleLogin = async (e) => {
-    console.log(email, password, accept);
+  const handleLogin = async () => {
     if (!email || !password || password.length < 8 || !validateEmail(email)) {
       return toast({
         className:
@@ -505,7 +495,6 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
   );
 }
 export function PasswordResetPopup({ onClose }) {
-  const { toast } = useToast();
   const validateEmail = (email) => {
     return String(email)
       .toLowerCase()
@@ -519,7 +508,6 @@ export function PasswordResetPopup({ onClose }) {
       ev.target.classList.add('not_empty');
 
       // Validate Email If input is not empty
-      console.log(ev.target.getAttribute('type'));
       if (ev.target.getAttribute('type') == 'email') {
         if (!validateEmail(ev.target.value)) {
           ev.target.closest('.field_container').classList.add('field_error');
@@ -576,7 +564,6 @@ export function PasswordResetPopup({ onClose }) {
   );
 }
 export function DeleteNotePopup({ onClose }) {
-  const { toast } = useToast();
   return (
     <div className='popup_overlay' onClick={onClose}>
       <div className='popup modern_alert' onClick={(e) => e.stopPropagation()}>
@@ -599,7 +586,6 @@ export function DeleteNotePopup({ onClose }) {
   );
 }
 export function DeactivateAccount({ onClose }) {
-  const { toast } = useToast();
   return (
     <div className='popup_overlay' onClick={onClose}>
       <div className='popup modern_alert small_title' onClick={(e) => e.stopPropagation()}>
@@ -622,7 +608,6 @@ export function DeactivateAccount({ onClose }) {
   );
 }
 export function ApprovedPopup({ onClose }) {
-  const { toast } = useToast();
   return (
     <div className='popup_overlay' onClick={onClose}>
       <div className='popup modern_alert' onClick={(e) => e.stopPropagation()}>
@@ -646,7 +631,6 @@ export function ApprovedPopup({ onClose }) {
   );
 }
 export function SubscibePopup({ onClose }) {
-  const { toast } = useToast();
   return (
     <div className='popup_overlay' onClick={onClose}>
       <div className='popup modern_alert' onClick={(e) => e.stopPropagation()}>
@@ -675,7 +659,7 @@ export function VerificationPopup({ onClose }) {
     content = e.target.value;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async () => {
     if (!content || content.length < 1) {
       return toast({
         className:
@@ -686,7 +670,6 @@ export function VerificationPopup({ onClose }) {
       });
     }
     try {
-      const res = await auth.verifyOTP(content);
       let accountType = auth.acc_type[0];
       let accountTypeName;
       switch (accountType) {
@@ -700,10 +683,9 @@ export function VerificationPopup({ onClose }) {
           accountTypeName = 'client';
           break;
       }
-      const info = JSON.parse(localStorage.getItem('jobs_2024_token'));
       router.push(`/dashboard/${accountTypeName}/profile`);
     } catch (err) {
-      console.log('error', err);
+      console.error('error', err);
     }
   };
   return (
@@ -727,7 +709,6 @@ export function VerificationPopup({ onClose }) {
   );
 }
 export function CodePopup({ onClose }) {
-  const { toast } = useToast();
   return (
     <div className='popup_overlay' onClick={onClose}>
       <div className='popup modern_alert' onClick={(e) => e.stopPropagation()}>
@@ -747,7 +728,6 @@ export function CodePopup({ onClose }) {
   );
 }
 export function DashboardOptions({ onClose, onSwitchPopup }) {
-  const { toast } = useToast();
   return (
     <div className='popup_overlay' onClick={onClose}>
       <div className='popup welcome_popup' onClick={(e) => e.stopPropagation()}>

@@ -213,7 +213,7 @@ const InboxPage = ({ children }) => {
     if (auth.user) {
       socket.emit('add-user', auth.user._id);
     }
-  }, [auth]);
+  }, [auth, socket]);
 
   useEffect(() => {
     if (auth.user) {

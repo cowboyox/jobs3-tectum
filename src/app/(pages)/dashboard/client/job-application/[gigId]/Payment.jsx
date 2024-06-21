@@ -8,19 +8,17 @@ import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 
 const Payment = ({ coverLetter }) => {
+  console.warn(coverLetter);
   const [profileData, setProfileData] = useState();
   const auth = useCustomContext();
   const { gigId } = useParams();
   const { toast } = useToast();
-
-  console.log({ profileData });
 
   useEffect(() => {
     const func = async () => {
       if (auth.user) {
         const data = await api.get(`/api/v1/profile/get-profile/${auth.user.email}/3`);
 
-        console.log('------getprofile: ', data.data.profile);
         setProfileData(data.data.profile);
       }
     };
@@ -30,9 +28,7 @@ const Payment = ({ coverLetter }) => {
   const onApply = async () => {
     await api
       .post(`/api/v1/bidding/${gigId}/confirm_and_pay`, { clientProfileId: profileData._id })
-      .then(async (data) => {
-        console.log(data);
-
+      .then(async () => {
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -42,7 +38,7 @@ const Payment = ({ coverLetter }) => {
         });
       })
       .catch((err) => {
-        console.log('Error corrupted during applying gig', err);
+        console.error('Error corrupted during applying gig', err);
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',

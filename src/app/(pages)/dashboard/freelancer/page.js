@@ -107,7 +107,6 @@ const reviews = [
 ];
 
 const Freelancer = () => {
-  const [selectedImage, setSelectedImage] = useState([]);
   const [uploadedImagePath, setUploadedImagePath] = useState([]);
   const [uploadedGigPath, setUploadedGigPath] = useState([]);
   const [viewMode, setViewMode] = useState('edit');
@@ -165,12 +164,9 @@ const Freelancer = () => {
       let email = JSON.parse(tmp).data.user.email;
       setUser(JSON.parse(tmp).data.user);
       api.get(`/api/v1/profile/get-profile/${email}`).then((data) => {
-        console.log('------getprofile: ', data.data.profile);
         setProfileData(data.data.profile);
         if (data.data.profile.freelancerBio) {
           const lines = data.data.profile.freelancerBio.split(/\r\n|\r|\n/).length;
-          const letterCnt = data.data.profile.freelancerBio.length;
-          console.log(lines, letterCnt);
           if (lines > 4) {
             let tmp = data.data.profile.freelancerBio.split(/\r\n|\r|\n/);
             let previewText = '';
@@ -202,12 +198,10 @@ const Freelancer = () => {
         }
       });
     }
-  }, []);
+  }, [router, toast]);
 
   useEffect(() => {
     const lines = bio.split(/\r\n|\r|\n/).length;
-    const letterCnt = bio.length;
-    console.log(lines, letterCnt);
     if (lines > 4) {
       let tmp = bio.split(/\r\n|\r|\n/);
       let previewText = '';
@@ -229,13 +223,12 @@ const Freelancer = () => {
   }, [bio]);
 
   const handleEditBio = () => {
-    console.log('EditBio: ', isEditBio);
     if (isEditBio) {
       api
         .put(`/api/v1/profile/update-freelancer-bio/${user.email}`, {
           freelancerBio: bio,
         })
-        .then((data) => {
+        .then(() => {
           toast({
             className:
               'bg-green-500 border-none rounded-xl absolute top-[-94vh] xl:w-[15vw] md:w-[30vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -244,7 +237,7 @@ const Freelancer = () => {
             variant: 'default',
           });
         })
-        .catch((err) => {
+        .catch(() => {
           toast({
             className:
               'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -267,7 +260,7 @@ const Freelancer = () => {
   const saveProfile = () => {
     api
       .put(`/api/v1/profile/update-profileinfo/${user.email}`, profileData)
-      .then((data) => {
+      .then(() => {
         return toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -276,7 +269,7 @@ const Freelancer = () => {
           variant: 'default',
         });
       })
-      .catch((err) => {
+      .catch(() => {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -490,7 +483,7 @@ const Freelancer = () => {
                           key={index}
                           onClick={() => {
                             if (isEditSkills) {
-                              let tmp = profileData.skills.filter((Iskill, num) => {
+                              let tmp = profileData.skills.filter((Iskill) => {
                                 return Iskill !== skill;
                               });
                               return setProfileData((prev) => ({
@@ -559,7 +552,7 @@ const Freelancer = () => {
                           key={index}
                           onClick={() => {
                             if (isEditLang) {
-                              let tmp = profileData.languages.filter((Ilang, num) => {
+                              let tmp = profileData.languages.filter((Ilang) => {
                                 return Ilang !== lang;
                               });
                               return setProfileData((prev) => ({

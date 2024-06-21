@@ -1,6 +1,5 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -30,9 +29,6 @@ const FormSchema = z.object({});
 const pageReadyToLaunch = false;
 
 const PostJob = () => {
-  const router = useRouter();
-  const currentUrl = router.asPath;
-
   const form = useForm({
     defaultValues: {
       username: '',
@@ -40,9 +36,8 @@ const PostJob = () => {
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data) {
+  function onSubmit() {
     // For Backend: To make things easier, the parameter (data) is the data submitted from the user
-    console.log(data);
     alert('Thanks for submitting');
   }
 
@@ -219,7 +214,7 @@ const PostJob = () => {
                       <FormField
                         control={form.control}
                         name='workingHours'
-                        render={({ field }) => (
+                        render={() => (
                           <FormItem>
                             <FormLabel>Working Hours *</FormLabel>
                             <Select>
@@ -243,7 +238,7 @@ const PostJob = () => {
                       <FormField
                         control={form.control}
                         name='AnnualSallery'
-                        render={({ field }) => (
+                        render={() => (
                           <FormItem>
                             <FormLabel>Annual Sallery $USD *</FormLabel>
                             <Select>
@@ -268,7 +263,7 @@ const PostJob = () => {
                       <FormField
                         control={form.control}
                         name='AnnualSallery'
-                        render={({ field }) => (
+                        render={() => (
                           <FormItem>
                             <FormLabel>Equity Option</FormLabel>
                             <Select>
@@ -294,7 +289,7 @@ const PostJob = () => {
                       <FormField
                         control={form.control}
                         name='AnnualSallery'
-                        render={({ field }) => (
+                        render={() => (
                           <FormItem>
                             <FormLabel>Years Experience Required</FormLabel>
                             <Select>

@@ -27,14 +27,13 @@ async function getData(slug) {
 
     return post;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     // res.status(500).json({ error: "Error fetching Post" });
   }
 }
 
 const post = async ({ params }) => {
   const post = await getData(params.slug);
-  console.log(post);
 
   return (
     <Layout>

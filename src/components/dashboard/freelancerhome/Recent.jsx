@@ -1,12 +1,10 @@
 'use client';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FaRegHeart, FaRegUser } from 'react-icons/fa';
 import { IoIosMore, IoLogoUsd } from 'react-icons/io';
 import { MdAccessTime } from 'react-icons/md';
 import { TiLocationOutline } from 'react-icons/ti';
-
-import { getGigs } from '@/utils/http';
 
 const gigOptions = [
   'Figma',
@@ -140,22 +138,22 @@ const gigs = [
 
 const Recent = ({ search }) => {
   const [selectedGigs, setSelectedGigs] = useState(['Figma']);
-  const [data, setData] = useState([]);
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 10;
+  // const [data, setData] = useState([]);
+  // const [page, setPage] = useState(1);
+  // const itemsPerPage = 10;
 
-  const fetchGigs = async (gigs) => {
-    try {
-      const res = await getGigs(gigs);
-      setData(res.data);
-    } catch (err) {
-      console.warn('Err fetching Gigs', err);
-    }
-  };
+  // const fetchGigs = async (gigs) => {
+  //   try {
+  //     const res = await getGigs(gigs);
+  //     setData(res.data);
+  //   } catch (err) {
+  //     console.warn('Err fetching Gigs', err);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchGigs(selectedGigs);
-  }, [selectedGigs]);
+  // useEffect(() => {
+  //   fetchGigs(selectedGigs);
+  // }, [selectedGigs]);
 
   const handleGigClick = (gig) => {
     setSelectedGigs((prevSelectedGigs) => {
@@ -191,12 +189,12 @@ const Recent = ({ search }) => {
 
   const filteredRecentJob = handleFilter();
 
-  const handleLoadMore = () => {
-    const nextPage = page + 1;
-    const newDisplayedData = data.slice(0, nextPage * itemsPerPage);
-    setDisplayedData(newDisplayedData);
-    setPage(nextPage);
-  };
+  // const handleLoadMore = () => {
+  //   const nextPage = page + 1;
+  //   const newDisplayedData = data.slice(0, nextPage * itemsPerPage);
+  //   setDisplayedData(newDisplayedData);
+  //   setPage(nextPage);
+  // };
 
   return (
     <div className='mt-10 flex flex-col gap-4'>

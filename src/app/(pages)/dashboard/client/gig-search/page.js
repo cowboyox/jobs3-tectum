@@ -148,14 +148,13 @@ const GigSearch = () => {
     api
       .get(`/api/v1/freelancer_gig/find_all_gigs`)
       .then((data) => {
-        console.log('getAllGigs: ', data.data.data[0]);
         if (data.data.data) {
           setGigList(data.data.data);
           setFilteredGigList(data.data.data);
         }
       })
       .catch((err) => {
-        console.log('Error corrupted while getting all gigs: ', err);
+        console.error('Error corrupted while getting all gigs: ', err);
       });
   }, []);
 
@@ -180,16 +179,12 @@ const GigSearch = () => {
   };
 
   const aiSearch = () => {
-    console.log('AI search', searchKeywords);
     api.get(`/api/v1/freelancer_gig/ai-search/${searchKeywords}`).then((data) => {
       let ai_ids = [];
       if (data.data.profileIDs) ai_ids = data.data.profileIDs;
-      console.log(ai_ids);
-      console.log(gigList[0]);
       const ai_filtered = ai_ids
         .map((id) => gigList.find((gig) => gig._id.toString() === id))
         .filter((gig) => gig != undefined);
-      console.log(ai_filtered);
       setFilteredGigList(ai_filtered);
     });
   };

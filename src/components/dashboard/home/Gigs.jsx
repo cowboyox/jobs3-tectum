@@ -42,11 +42,10 @@ const Gigs = () => {
   const fetchGigs = async (gigs) => {
     try {
       const res = await getGigs(gigs);
-      console.log('Gigs Data', res);
       setData(res.data);
       setDisplayedData(res.data.slice(0, itemsPerPage));
     } catch (err) {
-      console.log('Err fetching Gigs', err);
+      console.error('Err fetching Gigs', err);
     }
   };
 

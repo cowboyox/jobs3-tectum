@@ -1,7 +1,6 @@
 import gsap from 'gsap';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDisconnect } from 'wagmi';
 
@@ -19,22 +18,17 @@ const Header = () => {
     role: [0],
     verified: false,
   });
-  const [accType, setAccType] = useState([]);
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (tmp === null) {
-      console.log('Login First!');
     } else {
       setUser(JSON.parse(tmp).data.user);
-      setAccType(JSON.parse(tmp).data.acc_type);
     }
   }, []);
 
   const { openPopup, renderPopup } = usePopupFunctions();
 
   const mobileMenu = useRef();
-
-  const router = useRouter();
   const auth = useCustomContext();
   const { disconnect } = useDisconnect();
 
@@ -66,8 +60,7 @@ const Header = () => {
   const clientUrl = isAuthenticated && userRole.includes(3) ? `/dashboard/client/home` : '/';
   const freelancerUrl =
     isAuthenticated && userRole.includes(0) ? `/dashboard/freelancer/home` : '/';
-  const employerUrl = isAuthenticated && userRole.includes(2) ? `/dashboard/employer/home` : '/';
-  const employeeUrl = isAuthenticated && userRole.includes(1) ? `/dashboard/employee/home` : '/';
+
   return (
     <>
       {renderPopup()}

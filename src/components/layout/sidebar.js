@@ -1,25 +1,13 @@
 'use client';
 import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const SideBar = ({ userRole }) => {
-  const [user, setUser] = useState({
-    email: '',
-    name: '',
-    role: [0],
-    verified: false,
-  });
-  const [currentNav, setCurrentNav] = useState('');
-  console.log('🚀 ~ SideBar ~ currentNav:', currentNav);
-
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (tmp === null) {
-      console.log('Please Login First');
     } else {
-      setUser(JSON.parse(tmp).data.user);
     }
-    setCurrentNav(window.location.href.split('/')[5]);
   }, [userRole]);
 
   const freelancer_menu_data = [

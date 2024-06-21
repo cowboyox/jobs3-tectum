@@ -28,14 +28,8 @@ import { minutesDifference } from '@/utils/Helpers';
 
 const FindJob = () => {
   const router = useRouter();
-  const [search, setSearch] = useState('');
   const [sortOrder, setSortOrder] = useState('');
-  const [filterCategory, setFilterCategories] = useState([
-    'Active',
-    'Paused',
-    'Completed',
-    'Cancelled',
-  ]);
+  const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
 
   const [gigList, setGigList] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -51,10 +45,9 @@ const FindJob = () => {
       .then((data) => {
         setGigList(data.data.data);
         setFilteredGigList(data.data.data);
-        console.log(data.data.data);
       })
       .catch((err) => {
-        console.log('Error corrupted while getting all gigs: ', err);
+        console.error('Error corrupted while getting all gigs: ', err);
       });
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -110,16 +103,12 @@ const FindJob = () => {
   };
 
   const aiSearch = () => {
-    console.log('AI search', searchKeyWords);
     api.get(`/api/v1/client_gig/ai-search/${searchKeyWords}`).then((data) => {
       let ai_ids = [];
       if (data.data.profileIDs) ai_ids = data.data.profileIDs;
-      console.log(ai_ids);
-      console.log(gigList[0]);
       const ai_filtered = ai_ids
         .map((id) => gigList.find((gig) => gig._id.toString() === id))
         .filter((gig) => gig != undefined);
-      console.log(ai_filtered);
       setFilteredGigList(ai_filtered);
     });
   };
@@ -146,12 +135,11 @@ const FindJob = () => {
             </SelectContent>
           </Select>
           <input
-            className=' bg-transparent outline-none w-full'
+            className='w-full bg-transparent outline-none'
+            onChange={(e) => setKey(e)}
             onKeyDown={handleKeyDown}
-            type='text'
             placeholder={isSmallScreen ? 'Search' : 'Search by Order title...'}
-            // value={search}
-            onChange={e => setKey(e)}
+            type='text'
           />
 
           {isSmallScreen && searchType === 'normal' && (

@@ -114,29 +114,29 @@ const RecentlyViewed = ({ search }) => {
 
 export default RecentlyViewed;
 
-const recentlyViewed = [
-  {
-    jobSuccess: '96% Job Success',
-    locatin: 'Yogyakarta, Indonesia',
-    name: 'Deven Miles',
-    pic: '/assets/dashboard-media/profilePic.png',
-    rated: 'Top Rated',
-    skills: ['UI/UX', 'Design', 'Webdesign'],
-  },
-  {
-    jobSuccess: '96% Job Success',
-    locatin: 'Yogyakarta, Indonesia',
-    name: 'Deven Miles',
-    pic: '/assets/dashboard-media/profilePic.png',
-    rated: 'Top Rated',
-    skills: ['UI/UX', 'Design', 'Webdesign'],
-  },
-  {
-    jobSuccess: '96% Job Success',
-    locatin: 'Yogyakarta, Indonesia',
-    name: 'Deven Miles',
-    pic: '/assets/dashboard-media/profilePic.png',
-    rated: 'Top Rated',
-    skills: ['UI/UX', 'Design', 'Webdesign'],
-  },
-];
+// const recentlyViewed = [
+//   {
+//     jobSuccess: '96% Job Success',
+//     locatin: 'Yogyakarta, Indonesia',
+//     name: 'Deven Miles',
+//     pic: '/assets/dashboard-media/profilePic.png',
+//     rated: 'Top Rated',
+//     skills: ['UI/UX', 'Design', 'Webdesign'],
+//   },
+//   {
+//     jobSuccess: '96% Job Success',
+//     locatin: 'Yogyakarta, Indonesia',
+//     name: 'Deven Miles',
+//     pic: '/assets/dashboard-media/profilePic.png',
+//     rated: 'Top Rated',
+//     skills: ['UI/UX', 'Design', 'Webdesign'],
+//   },
+//   {
+//     jobSuccess: '96% Job Success',
+//     locatin: 'Yogyakarta, Indonesia',
+//     name: 'Deven Miles',
+//     pic: '/assets/dashboard-media/profilePic.png',
+//     rated: 'Top Rated',
+//     skills: ['UI/UX', 'Design', 'Webdesign'],
+//   },
+// ];

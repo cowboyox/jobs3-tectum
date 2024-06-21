@@ -34,7 +34,7 @@ export default function ClientDashboard() {
     } else {
       setUser(JSON.parse(tmp).data.user);
     }
-  }, []);
+  }, [router, toast]);
   const assets_data = {
     chart: {
       backgroundColor: 'transparent',
