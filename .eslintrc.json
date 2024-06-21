@@ -30,13 +30,6 @@
   },
   "rules": {
     "prettier/prettier": ["error", {}, { "usePrettierrc": true }],
-    "import/order": [
-      "error",
-      {
-        "alphabetize": { "order": "asc", "caseInsensitive": true },
-        "newlines-between": "always"
-      }
-    ],
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-unused-vars": "error",
@@ -54,18 +47,6 @@
       { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
     ],
     "typescript-sort-keys/interface": "error",
-    "typescript-sort-keys/string-enum": "error",
-    "sort-imports": [
-      "error",
-      {
-        "ignoreCase": true,
-        "ignoreDeclarationSort": true,
-        "ignoreMemberSort": false,
-        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
-        "allowSeparatedGroups": false
-      }
-    ],
-    "sort-keys": 0, // disable default eslint sort-keys
-    "sort-keys/sort-keys-fix": 2
+    "typescript-sort-keys/string-enum": "error"
   }
 }
