@@ -1,7 +1,7 @@
 import React from 'react';
 
 const EmployerDashboard = () => {
-  return <div></div>;
+  return <div />;
 };
 
 export default EmployerDashboard;

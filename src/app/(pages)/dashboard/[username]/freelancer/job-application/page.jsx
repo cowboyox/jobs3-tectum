@@ -1,6 +1,5 @@
 import React from 'react';
 import Job from '../../../../../../components/dashboard/jobapplication/Job';
-import { VscLock } from 'react-icons/vsc';
 
 const Page = () => {
   return (
@@ -12,13 +11,13 @@ const Page = () => {
             Cover letter
           </h3>
           <textarea
-            name=''
-            id=''
-            cols='30'
-            rows='7'
             className='w-full rounded-xl border border-medGray bg-deepGreen p-4'
+            cols='30'
+            id=''
+            name=''
             placeholder='Type here...'
-          ></textarea>
+            rows='7'
+          />
         </div>
       </div>
       <div className='w-full md:w-[35%] md:max-w-[420px]'>
@@ -26,32 +25,32 @@ const Page = () => {
           <div className='flex flex-col gap-3'>
             <div className='flex items-center justify-center gap-2 rounded-xl bg-[#1B272C] p-3'>
               <svg
-                width='24'
+                fill='none'
                 height='24'
                 viewBox='0 0 24 24'
-                fill='none'
+                width='24'
                 xmlns='http://www.w3.org/2000/svg'
               >
                 <path
                   d='M6 10V8C6 4.69 7 2 12 2C17 2 18 4.69 18 8V10'
                   stroke='#96B0BD'
-                  stroke-width='1.5'
                   stroke-linecap='round'
                   stroke-linejoin='round'
+                  stroke-width='1.5'
                 />
                 <path
                   d='M12 18.5C13.3807 18.5 14.5 17.3807 14.5 16C14.5 14.6193 13.3807 13.5 12 13.5C10.6193 13.5 9.5 14.6193 9.5 16C9.5 17.3807 10.6193 18.5 12 18.5Z'
                   stroke='#96B0BD'
-                  stroke-width='1.5'
                   stroke-linecap='round'
                   stroke-linejoin='round'
+                  stroke-width='1.5'
                 />
                 <path
                   d='M17 22H7C3 22 2 21 2 17V15C2 11 3 10 7 10H17C21 10 22 11 22 15V17C22 21 21 22 17 22Z'
                   stroke='#96B0BD'
-                  stroke-width='1.5'
                   stroke-linecap='round'
                   stroke-linejoin='round'
+                  stroke-width='1.5'
                 />
               </svg>
               SSL Secure Payment

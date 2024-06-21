@@ -4,14 +4,11 @@ import Link from 'next/link';
 
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { TbDotsCircleHorizontal } from 'react-icons/tb';
-import { FaStar } from 'react-icons/fa';
-import { FaRegStar } from 'react-icons/fa';
+import { FaStar, FaRegStar } from 'react-icons/fa';
 import { HiOutlineExclamationTriangle } from 'react-icons/hi2';
-import { GoClock } from 'react-icons/go';
-import { CiCircleCheck } from 'react-icons/ci';
-import { CiReceipt } from 'react-icons/ci';
+import { GoClock, GoArrowUp } from 'react-icons/go';
+import { CiCircleCheck, CiReceipt } from 'react-icons/ci';
 import { IoMdAttach } from 'react-icons/io';
-import { GoArrowUp } from 'react-icons/go';
 import { FaAngleLeft } from 'react-icons/fa6';
 
 import {
@@ -166,8 +163,8 @@ const MessageDetails = (props) => {
     >
       <div className='relative h-5 min-w-5 md:h-7 md:min-w-7'>
         <img
-          src={props.user_image}
           className='aspect-square h-full w-full rounded-full object-cover'
+          src={props.user_image}
         />
       </div>
       <span className='text-sm text-[#526872]'>
@@ -194,7 +191,7 @@ const Offer = (props) => {
     <div className='pr-10'>
       <div className='flex flex-col gap-4 rounded-xl bg-[#10191D] p-5 font-normal text-[15x]'>
         <p className='text-lg text-white'>{props.offer_description}</p>
-        <div className='border-t border-[#28373E]'></div>
+        <div className='border-t border-[#28373E]' />
         <div className='flex flex-wrap gap-6'>
           <div className='flex items-center gap-3'>
             <GoClock className='h-5 w-5' />
@@ -291,20 +288,20 @@ const ChatPage = (parameters) => {
           {/* Chat header */}
           <div className='flex h-24 border-b border-[#28373E] px-8 mobile:px-5 mobile:py-3'>
             <div className='flex w-3/5 items-center gap-3'>
-              <Link href='../inbox' className='md:hidden'>
+              <Link className='md:hidden' href='../inbox'>
                 <FaAngleLeft />
               </Link>
               <div className='relative h-10 min-w-10'>
                 <img
-                  src={receiver.avatar}
                   alt={receiver.name}
                   className='aspect-square h-full w-full rounded-full object-cover'
+                  src={receiver.avatar}
                 />
                 <div
                   className={`absolute bottom-0 right-0 h-[10px] w-[10px] rounded-full ${
                     receiver.online ? 'bg-green-500' : 'bg-gray-500'
                   }`}
-                ></div>
+                />
               </div>
               <div className='flex w-full flex-col gap-1'>
                 <p className='flex items-center gap-3 text-nowrap text-xl font-semibold text-white mobile:text-base'>
@@ -330,19 +327,19 @@ const ChatPage = (parameters) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='flex flex-col gap-1 rounded-xl border-2 border-[#28373e] bg-[#1a272c]'>
                   <DropdownMenuItem className='flex gap-2 rounded-xl py-2'>
-                    <img src='/assets/images/icons/share.svg' className='w-5' />
+                    <img className='w-5' src='/assets/images/icons/share.svg' />
                     <span className='text-[15px]'>Share</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className='flex gap-2 rounded-xl py-2'>
-                    <img src='/assets/images/icons/forward.svg' className='w-5' />
+                    <img className='w-5' src='/assets/images/icons/forward.svg' />
                     <span className='text-[15px]'>Forward</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className='flex gap-2 rounded-xl py-2'>
-                    <img src='/assets/images/icons/export.svg' className='w-5' />
+                    <img className='w-5' src='/assets/images/icons/export.svg' />
                     <span className='text-[15px]'>Export</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className='flex gap-2 rounded-xl py-2'>
-                    <img src='/assets/images/icons/delete.svg' className='w-5' />
+                    <img className='w-5' src='/assets/images/icons/delete.svg' />
                     <span className='text-[15px] text-[#DC4F13]'>Delete</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -356,10 +353,10 @@ const ChatPage = (parameters) => {
               {conversations.map((conv, id) => (
                 <div className='flex flex-col gap-3' key={id}>
                   <MessageDetails
-                    user_image='/assets/images/users/user-6.png'
                     date='17 May 2024'
-                    time='17:37'
                     sender={conv.senderId == auth.user._id ? 'me' : ''}
+                    time='17:37'
+                    user_image='/assets/images/users/user-6.png'
                   />
                   <MessageText text={conv.messageText} />
                 </div>
@@ -411,10 +408,10 @@ const ChatPage = (parameters) => {
             <div className='mx-auto flex h-14 w-full max-w-[684px] items-center gap-4 overflow-hidden rounded-2xl border border-[#526872] py-2 pl-4 pr-2'>
               <IoMdAttach className='h-6 w-6 cursor-pointer transition hover:fill-[#dc4f14]' />
               <textarea
-                placeholder='Send message...'
                 className='h-full w-full resize-none bg-transparent pt-2 outline-none placeholder:text-[#96B0BD]'
-                value={input}
                 onChange={(e) => setInput(e.target.value)}
+                placeholder='Send message...'
+                value={input}
               />
               <Button
                 className='group rounded-xl bg-[#dc4f14] p-2 transition hover:bg-white'

@@ -16,15 +16,15 @@ const Coverletter = ({ handleChange }) => {
         Cover letter
       </h3>
       <textarea
-        value={text}
-        onChange={onChange}
-        name=''
-        id=''
-        cols='30'
-        rows='7'
         className='w-full rounded-xl border border-medGray bg-deepGreen p-4'
+        cols='30'
+        id=''
+        name=''
+        onChange={onChange}
         placeholder='Type here...'
-      ></textarea>
+        rows='7'
+        value={text}
+      />
     </div>
   );
 };

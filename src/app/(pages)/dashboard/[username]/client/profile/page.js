@@ -6,7 +6,6 @@ import { useDropzone } from 'react-dropzone';
 
 import api from '@/utils/api';
 import { Input } from '@/components/ui/input';
-import { backend_url } from '@/utils/variables';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 
@@ -258,14 +257,14 @@ const ClientDashboard = () => {
     <div className='p-0'>
       <div className='group relative cursor-pointer' {...getBannerRootProps()}>
         <label
+          className='w-full hover:cursor-pointer'
           htmlFor='dropzone-banner'
           onClick={(e) => e.stopPropagation()}
-          className='w-full hover:cursor-pointer'
         >
           <img
-            src={`${fetchBanner ? fetchBanner : '/assets/images/placeholder.jpeg'}`}
-            className='h-64 w-full rounded-b-2xl object-cover transition group-hover:opacity-75'
             alt='banner'
+            className='h-64 w-full rounded-b-2xl object-cover transition group-hover:opacity-75'
+            src={`${fetchBanner ? fetchBanner : '/assets/images/placeholder.jpeg'}`}
           />
           <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
             <IoCameraOutline className='h-6 w-6' />
@@ -273,11 +272,11 @@ const ClientDashboard = () => {
         </label>
         <Input
           {...getBannerInputProps()}
-          id='dropzone-banner'
           accept='image/png, image/jpeg'
-          type='file'
           className='hidden'
+          id='dropzone-banner'
           onChange={(e) => handleBannerUpload(e)}
+          type='file'
         />
       </div>
       <div className='mx-auto flex max-w-7xl -translate-y-8 flex-col gap-3 px-0 md:px-8'>
@@ -288,14 +287,14 @@ const ClientDashboard = () => {
               {...getAvatarRootProps()}
             >
               <label
+                className='w-full hover:cursor-pointer'
                 htmlFor='dropzone-avatar'
                 onClick={(e) => e.stopPropagation()}
-                className='w-full hover:cursor-pointer'
               >
                 <img
-                  src={`${fetchAvatar ? fetchAvatar : '/assets/images/users/user-5.png'}`}
-                  className='aspect-square h-full w-full rounded-full group-hover:opacity-75'
                   alt='banner'
+                  className='aspect-square h-full w-full rounded-full group-hover:opacity-75'
+                  src={`${fetchAvatar ? fetchAvatar : '/assets/images/users/user-5.png'}`}
                 />
                 <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
                   <IoCameraOutline className='h-6 w-6' />
@@ -303,33 +302,33 @@ const ClientDashboard = () => {
               </label>
               <Input
                 {...getAvatarInputProps()}
-                id='dropzone-avatar'
                 accept='image/png, image/jpeg'
-                type='file'
                 className='hidden'
+                id='dropzone-avatar'
                 onChange={(e) => handleAvatarUpload(e)}
+                type='file'
               />
             </div>
             {/* Change background color depending on user online status */}
-            <div className='absolute bottom-1 right-1 h-4 w-4 rounded-full bg-green-500'></div>
+            <div className='absolute bottom-1 right-1 h-4 w-4 rounded-full bg-green-500' />
           </div>
           <div className='flex flex-col gap-4'>
             <div className='flex items-center gap-4'>
               <h2 className='text-2xl md:text-3xl'>{profileData.fullName}</h2>
-              <img src='/assets/images/icons/checkmark.svg' className='h-5 w-5' />
+              <img className='h-5 w-5' src='/assets/images/icons/checkmark.svg' />
             </div>
             <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
               <div className='flex items-center gap-2'>
                 <img
-                  src='/assets/images/icons/location.svg'
                   className='h-6 w-6 object-contain object-center'
+                  src='/assets/images/icons/location.svg'
                 />
                 <p className='text-lg text-white'>{profileData.location}</p>
               </div>
               <div className='flex items-center gap-2'>
                 <img
-                  src='/assets/images/icons/clocks.svg'
                   className='h-6 w-6 object-contain object-center'
+                  src='/assets/images/icons/clocks.svg'
                 />
                 <p className='text-lg text-white'>
                   {lastLogin &&
@@ -380,8 +379,9 @@ const ClientDashboard = () => {
           <div className='flex w-full flex-col gap-4 md:w-2/3 md:pl-4'>
             {/* All this should be dynamic data for sure */}
             <InfoPanel
-              title='Personal Information'
               editAction='editPersonalInfo'
+              email={user.email}
+              index={-1}
               information_data={[
                 {
                   id: 0,
@@ -403,16 +403,16 @@ const ClientDashboard = () => {
                   idName: 'phoneNumber',
                 },
               ]}
-              setProfileData={setProfileData}
               profileData={profileData}
-              index={-1}
-              email={user.email}
+              setProfileData={setProfileData}
+              title='Personal Information'
             />
             {profileData.companyDetails.map((company, index) => {
               return (
                 <InfoPanel
-                  title='Company Details'
                   editAction='companyDetails'
+                  email={user.email}
+                  index={index}
                   information_data={[
                     { id: 0, label: 'Country', value: `${company.country}`, idName: 'country' },
                     {
@@ -430,11 +430,10 @@ const ClientDashboard = () => {
                     { id: 3, label: 'Time Zone', value: `${company.timeZone}`, idName: 'timeZone' },
                     { id: 4, label: 'VAT ID', value: `${company.vatID}`, idName: 'vatID' },
                   ]}
-                  setProfileData={setProfileData}
-                  index={index}
-                  profileData={profileData}
-                  email={user.email}
                   key={index}
+                  profileData={profileData}
+                  setProfileData={setProfileData}
+                  title='Company Details'
                 />
               );
             })}

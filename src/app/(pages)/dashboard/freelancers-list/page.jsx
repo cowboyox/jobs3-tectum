@@ -146,7 +146,7 @@ const freelancers = [
 
 const SelectField = ({ options, value, onValueChange, placeholder }) => {
   return (
-    <Select value={value} onValueChange={onValueChange}>
+    <Select onValueChange={onValueChange} value={value}>
       <SelectTrigger className='w-[49%] gap-2 rounded-xl bg-[#1a272c] px-2 text-left md:w-auto md:max-w-fit md:px-4'>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
@@ -180,10 +180,10 @@ const FreelancersList = () => {
         <Command>
           <div className='w-full rounded-xl border border-slate-500 p-3 text-base'>
             <CommandInput
-              placeholder='Search for keywords'
               className='search_bar'
-              value={inputValue}
               onValueChange={setInputValue}
+              placeholder='Search for keywords'
+              value={inputValue}
             />
           </div>
           <CommandList>
@@ -205,13 +205,13 @@ const FreelancersList = () => {
                 ))}
                 {filteredSuggestions.map((keywords_suggestion) => (
                   <CommandItem
-                    key={keywords_suggestion.keyword}
-                    value={keywords_suggestion.keyword}
                     className='suggestion_item flex cursor-pointer items-center whitespace-nowrap rounded-xl border border-[#28373e] bg-transparent px-2 py-1 text-sm text-white md:px-4 md:py-2'
+                    key={keywords_suggestion.keyword}
                     onSelect={(currentSkill) => {
                       setKeyword((prevKeywordSwet) => [...prevKeywordSwet, currentSkill]);
                       setInputValue('');
                     }}
+                    value={keywords_suggestion.keyword}
                   >
                     {keywords_suggestion.keyword}
                     <FiPlus className='ml-2' />
@@ -226,13 +226,13 @@ const FreelancersList = () => {
       <div className='flex flex-col-reverse gap-12 md:mt-6 md:flex-row md:gap-0'>
         <h3 className='w-full text-3xl md:w-1/5'>235 Results</h3>
         <div className='flex w-full flex-wrap justify-between md:w-4/5 md:justify-end md:gap-3'>
-          <Popover open={open} onOpenChange={setOpen}>
+          <Popover onOpenChange={setOpen} open={open}>
             <PopoverTrigger asChild>
               <Button
-                variant='outline'
-                role='combobox'
                 aria-expanded={open}
                 className='mb-2 w-[49%] justify-between rounded-xl bg-[#1a272c] px-2 text-[13px] md:mb-0 md:w-auto md:px-4 md:text-base'
+                role='combobox'
+                variant='outline'
               >
                 {jobCategory
                   ? categories_list.find((job_category) => job_category.value === jobCategory)
@@ -244,8 +244,8 @@ const FreelancersList = () => {
             <PopoverContent className='w-56 rounded-xl border-4 border-[#1a272c] bg-[#1a272c] p-0'>
               <Command className='bg-[#1a272c]'>
                 <CommandInput
-                  placeholder='Type or search...'
                   className='overflow-hidden rounded-xl'
+                  placeholder='Type or search...'
                 />
                 <CommandList>
                   <CommandEmpty>No results found.</CommandEmpty>
@@ -253,11 +253,11 @@ const FreelancersList = () => {
                     {categories_list.map((job_category) => (
                       <CommandItem
                         key={job_category.value}
-                        value={job_category.value}
                         onSelect={(currentValue) => {
                           setCategoryValue(currentValue === jobCategory ? '' : currentValue);
                           setOpen(false);
                         }}
+                        value={job_category.value}
                       >
                         {job_category.label}
                         {jobCategory === job_category.value && (
@@ -271,36 +271,36 @@ const FreelancersList = () => {
             </PopoverContent>
           </Popover>
           <SelectField
-            options={delivery_times}
-            value={deliveryTime}
             onValueChange={setDeliveryTime}
+            options={delivery_times}
             placeholder='Delivery time'
+            value={deliveryTime}
           />
           <SelectField
-            options={response_times}
-            value={responseTime}
             onValueChange={setResponseTime}
+            options={response_times}
             placeholder='Avg. Response Time'
+            value={responseTime}
           />
           <SelectField
-            options={ratings}
-            value={rating}
             onValueChange={setRating}
+            options={ratings}
             placeholder='Rating'
+            value={rating}
           />
         </div>
       </div>
       {/* Results: Freelancers */}
       {freelancers.map((freelancer, index) => (
         <div
-          key={index}
           className='border-1 mt-6 flex flex-col rounded-xl border border-[#526872] px-4 py-4 md:px-6 md:py-8'
+          key={index}
         >
           <div className='flex'>
             <div className='flex w-full flex-col gap-6 md:w-1/2 md:flex-row'>
               <img
-                src={freelancer.image}
                 className='mx-auto aspect-square w-28 rounded-full object-cover object-top md:mx-0 md:w-16'
+                src={freelancer.image}
               />
               <div className='flex flex-col gap-2'>
                 <h2 className='text-center text-2xl md:text-left'>{freelancer.title}</h2>
@@ -318,52 +318,52 @@ const FreelancersList = () => {
             <div className='flex flex-wrap gap-4 rounded-xl bg-[#1a272c] px-2 py-2 md:flex-nowrap md:px-4'>
               <div className='flex items-center gap-2'>
                 <img
-                  src='/assets/icons/profile-icons/check.svg'
                   className='h-5 w-5 object-contain'
+                  src='/assets/icons/profile-icons/check.svg'
                 />
                 <span className='md:text-md text-sm text-white'>{freelancer.jobSuccess}</span>
               </div>
               {freelancer.isTopRated && (
                 <div className='flex items-center gap-2'>
                   <img
-                    src='/assets/icons/profile-icons/top-rated.svg'
                     className='h-5 w-5 object-contain'
+                    src='/assets/icons/profile-icons/top-rated.svg'
                   />
                   <span className='md:text-md text-sm text-white'>Top Rated</span>
                 </div>
               )}
               <div className='flex items-center gap-2'>
                 <img
-                  src='/assets/icons/profile-icons/star.svg'
                   className='h-5 w-5 object-contain'
+                  src='/assets/icons/profile-icons/star.svg'
                 />
                 <span className='md:text-md text-sm text-white'>{freelancer.rating}</span>
               </div>
               <div className='flex items-center gap-2'>
                 <img
-                  src='/assets/icons/profile-icons/time.svg'
                   className='h-5 w-5 object-contain'
+                  src='/assets/icons/profile-icons/time.svg'
                 />
                 <span className='md:text-md text-sm text-white'>{freelancer.responseTime}</span>
               </div>
               <div className='flex items-center gap-2'>
                 <img
-                  src='/assets/icons/profile-icons/order.svg'
                   className='h-5 w-5 object-contain'
+                  src='/assets/icons/profile-icons/order.svg'
                 />
                 <span className='md:text-md text-sm text-white'>{freelancer.deliveryTime}</span>
               </div>
             </div>
             <div className='flex w-full items-center justify-end gap-4 md:w-auto'>
               <Link
-                href='#'
                 className='w-full rounded-xl border border-slate-500 bg-black px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-white hover:text-black md:w-auto md:text-lg'
+                href='#'
               >
                 Message
               </Link>
               <Link
-                href='#'
                 className='w-full rounded-xl bg-[#fa4e17] px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-white hover:text-black md:w-auto md:text-lg'
+                href='#'
               >
                 Invite to job
               </Link>
@@ -375,21 +375,21 @@ const FreelancersList = () => {
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious href='#' className='rounded-xl hover:bg-[#1a272c]' />
+              <PaginationPrevious className='rounded-xl hover:bg-[#1a272c]' href='#' />
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink href='#' className='rounded-xl bg-[#1a272c]' isActive>
+              <PaginationLink className='rounded-xl bg-[#1a272c]' href='#' isActive>
                 1
               </PaginationLink>
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink href='#' className='rounded-xl hover:bg-[#1a272c]'>
+              <PaginationLink className='rounded-xl hover:bg-[#1a272c]' href='#'>
                 {' '}
                 2{' '}
               </PaginationLink>
             </PaginationItem>
             <PaginationItem className='hidden md:block'>
-              <PaginationLink href='#' className='rounded-xl hover:bg-[#1a272c]'>
+              <PaginationLink className='rounded-xl hover:bg-[#1a272c]' href='#'>
                 3
               </PaginationLink>
             </PaginationItem>
@@ -397,7 +397,7 @@ const FreelancersList = () => {
               <PaginationEllipsis />
             </PaginationItem>
             <PaginationItem>
-              <PaginationNext href='#' className='rounded-xl hover:bg-[#1a272c]' />
+              <PaginationNext className='rounded-xl hover:bg-[#1a272c]' href='#' />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

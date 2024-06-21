@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   Select,
@@ -13,20 +12,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { FaX, FaEllipsis, FaBan } from 'react-icons/fa6';
+import { FaX, FaArrowRight } from 'react-icons/fa6';
 import { Separator } from '@/components/ui/seperator';
 import api from '@/utils/api';
 import searchOptions from './searchOptions';
-import { FaArrowRight } from 'react-icons/fa6';
 import CustomIconDropdown from '@/components/ui/dropdown';
 
 const Freelancers = () => {
@@ -117,25 +106,25 @@ const Freelancers = () => {
       <div className='flex gap-5 rounded-xl bg-[#10191D]'>
         <div className='m-3 flex flex-1 items-center gap-3'>
           <CustomIconDropdown
+            onChange={handleSearchTypeChange}
+            optionLabel={'icon'}
             options={searchOptions}
             value={searchType}
-            optionLabel={'icon'}
-            onChange={handleSearchTypeChange}
           />
           <input
-            type='text'
-            placeholder={isSmallScreen ? 'Search' : 'Search for keywords'}
             className='w-full bg-transparent outline-none'
             onChange={setKey}
             onKeyDown={handleKeyDown}
+            placeholder={isSmallScreen ? 'Search' : 'Search for keywords'}
+            type='text'
           />
           {isSmallScreen && searchType === searchOptions[0] && (
             <button>
               <svg
-                width='25'
+                fill='none'
                 height='24'
                 viewBox='0 0 25 24'
-                fill='none'
+                width='25'
                 xmlns='http://www.w3.org/2000/svg'
               >
                 <path
@@ -158,120 +147,120 @@ const Freelancers = () => {
               {!isSmallScreen ? (
                 <>
                   <svg
-                    width='25'
+                    fill='none'
                     height='24'
                     viewBox='0 0 25 24'
-                    fill='none'
+                    width='25'
                     xmlns='http://www.w3.org/2000/svg'
                   >
                     <path
                       d='M22.2119 6.58594H16.3057'
                       stroke='#96B0BD'
-                      strokeWidth='1.5'
-                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
+                      strokeMiterlimit='10'
+                      strokeWidth='1.5'
                     />
                     <path
                       d='M6.46191 6.58594H2.52441'
                       stroke='#96B0BD'
-                      strokeWidth='1.5'
-                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
+                      strokeMiterlimit='10'
+                      strokeWidth='1.5'
                     />
                     <path
                       d='M10.3994 10.0312C12.3022 10.0312 13.8447 8.48873 13.8447 6.58594C13.8447 4.68314 12.3022 3.14062 10.3994 3.14062C8.49662 3.14062 6.9541 4.68314 6.9541 6.58594C6.9541 8.48873 8.49662 10.0312 10.3994 10.0312Z'
                       stroke='#96B0BD'
-                      strokeWidth='1.5'
-                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
+                      strokeMiterlimit='10'
+                      strokeWidth='1.5'
                     />
                     <path
                       d='M22.2119 17.4141H18.2744'
                       stroke='#96B0BD'
-                      strokeWidth='1.5'
-                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
+                      strokeMiterlimit='10'
+                      strokeWidth='1.5'
                     />
                     <path
                       d='M8.43066 17.4141H2.52441'
                       stroke='#96B0BD'
-                      strokeWidth='1.5'
-                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
+                      strokeMiterlimit='10'
+                      strokeWidth='1.5'
                     />
                     <path
                       d='M14.3369 20.8594C16.2397 20.8594 17.7822 19.3169 17.7822 17.4141C17.7822 15.5113 16.2397 13.9688 14.3369 13.9688C12.4341 13.9688 10.8916 15.5113 10.8916 17.4141C10.8916 19.3169 12.4341 20.8594 14.3369 20.8594Z'
                       stroke='#96B0BD'
-                      strokeWidth='1.5'
-                      strokeMiterlimit='10'
                       strokeLinecap='round'
                       strokeLinejoin='round'
+                      strokeMiterlimit='10'
+                      strokeWidth='1.5'
                     />
                   </svg>
                   Filter
                 </>
               ) : (
                 <svg
-                  width='25'
+                  fill='none'
                   height='24'
                   viewBox='0 0 25 24'
-                  fill='none'
+                  width='25'
                   xmlns='http://www.w3.org/2000/svg'
                 >
                   <path
                     d='M22.1719 6.58594H16.2656'
                     stroke='#96B0BD'
-                    strokeWidth='1.5'
-                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
+                    strokeMiterlimit='10'
+                    strokeWidth='1.5'
                   />
                   <path
                     d='M6.42188 6.58594H2.48438'
                     stroke='#96B0BD'
-                    strokeWidth='1.5'
-                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
+                    strokeMiterlimit='10'
+                    strokeWidth='1.5'
                   />
                   <path
                     d='M10.3594 10.0312C12.2622 10.0312 13.8047 8.48873 13.8047 6.58594C13.8047 4.68314 12.2622 3.14062 10.3594 3.14062C8.45658 3.14062 6.91406 4.68314 6.91406 6.58594C6.91406 8.48873 8.45658 10.0312 10.3594 10.0312Z'
                     stroke='#96B0BD'
-                    strokeWidth='1.5'
-                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
+                    strokeMiterlimit='10'
+                    strokeWidth='1.5'
                   />
                   <path
                     d='M22.1719 17.4141H18.2344'
                     stroke='#96B0BD'
-                    strokeWidth='1.5'
-                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
+                    strokeMiterlimit='10'
+                    strokeWidth='1.5'
                   />
                   <path
                     d='M8.39062 17.4141H2.48438'
                     stroke='#96B0BD'
-                    strokeWidth='1.5'
-                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
+                    strokeMiterlimit='10'
+                    strokeWidth='1.5'
                   />
                   <path
                     d='M14.2969 20.8594C16.1997 20.8594 17.7422 19.3169 17.7422 17.4141C17.7422 15.5113 16.1997 13.9688 14.2969 13.9688C12.3941 13.9688 10.8516 15.5113 10.8516 17.4141C10.8516 19.3169 12.3941 20.8594 14.2969 20.8594Z'
                     stroke='#96B0BD'
-                    strokeWidth='1.5'
-                    strokeMiterlimit='10'
                     strokeLinecap='round'
                     strokeLinejoin='round'
+                    strokeMiterlimit='10'
+                    strokeWidth='1.5'
                   />
-                  <circle cx='18.2344' cy='5.10938' r='4.92188' fill='#DC4F13' />
+                  <circle cx='18.2344' cy='5.10938' fill='#DC4F13' r='4.92188' />
                 </svg>
               )}
             </button>
@@ -315,8 +304,8 @@ const Freelancers = () => {
         {filterCategory.map((item, index) => {
           return (
             <span
-              key={`filterCategory_${index}`}
               className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
+              key={`filterCategory_${index}`}
             >
               <FaX className='rounded-full bg-[#3E525B] p-[2px]' />
               {item}
@@ -340,10 +329,10 @@ const Freelancers = () => {
               <div className='mt-3 flex flex-col items-start justify-between gap-6 md:flex-row md:justify-start'>
                 <div className='flex flex-row items-center gap-2'>
                   <svg
-                    width='24'
+                    fill='none'
                     height='24'
                     viewBox='0 0 24 24'
-                    fill='none'
+                    width='24'
                     xmlns='http://www.w3.org/2000/svg'
                   >
                     <path
@@ -362,10 +351,10 @@ const Freelancers = () => {
                 <div className='flex flex-row items-center gap-6'>
                   <div className='flex flex-row gap-2'>
                     <svg
-                      width='24'
+                      fill='none'
                       height='24'
                       viewBox='0 0 24 24'
-                      fill='none'
+                      width='24'
                       xmlns='http://www.w3.org/2000/svg'
                     >
                       <path
@@ -384,10 +373,10 @@ const Freelancers = () => {
                   </div>
                   <div className='flex flex-row gap-2'>
                     <svg
-                      width='22'
+                      fill='none'
                       height='24'
                       viewBox='0 0 22 24'
-                      fill='none'
+                      width='22'
                       xmlns='http://www.w3.org/2000/svg'
                     >
                       <path
@@ -398,23 +387,23 @@ const Freelancers = () => {
                       <path
                         d='M12.7318 14.9084H8.37999C8.18555 14.9084 7.96796 14.7709 7.90314 14.6042L5.98647 9.77923C5.71333 9.08757 6.03277 8.87507 6.69018 9.30007L8.49573 10.4626C8.79666 10.6501 9.13925 10.5542 9.26888 10.2501L10.0837 8.2959C10.343 7.6709 10.7735 7.6709 11.0328 8.2959L11.8476 10.2501C11.9772 10.5542 12.3198 10.6501 12.6161 10.4626L14.3105 9.37507C15.0328 8.9084 15.38 9.1459 15.0837 9.90007L13.2133 14.6126C13.1439 14.7709 12.9263 14.9084 12.7318 14.9084Z'
                         stroke='#34E250'
-                        strokeWidth='0.625'
                         strokeLinecap='round'
                         strokeLinejoin='round'
+                        strokeWidth='0.625'
                       />
                       <path
                         d='M8.00879 16.1665H13.1014'
                         stroke='#34E250'
-                        strokeWidth='0.625'
                         strokeLinecap='round'
                         strokeLinejoin='round'
+                        strokeWidth='0.625'
                       />
                       <path
                         d='M9.39844 12.8335H11.7133'
                         stroke='#34E250'
-                        strokeWidth='0.625'
                         strokeLinecap='round'
                         strokeLinejoin='round'
+                        strokeWidth='0.625'
                       />
                     </svg>
                     96% Job Success
@@ -428,8 +417,8 @@ const Freelancers = () => {
                   freelancer.skills.map((item, index) => {
                     return (
                       <span
-                        key={`skills_${index}`}
                         className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
+                        key={`skills_${index}`}
                       >
                         <FaX className='rounded-full bg-[#3E525B] p-[2px]' />
                         {item}
@@ -440,16 +429,16 @@ const Freelancers = () => {
               <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
                 <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                   <div>
-                    <img src='/assets/images/Rectangle 273.png' width={40} height={40}></img>
+                    <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                   </div>
                   <div className='flex flex-col gap-1 text-left'>
                     <div className='flex flex-row items-center gap-1 font-bold'>
                       {freelancer.fullName}
                       <svg
-                        width='17'
+                        fill='none'
                         height='17'
                         viewBox='0 0 17 17'
-                        fill='none'
+                        width='17'
                         xmlns='http://www.w3.org/2000/svg'
                       >
                         <path

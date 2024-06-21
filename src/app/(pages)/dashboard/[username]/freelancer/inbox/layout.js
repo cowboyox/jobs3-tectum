@@ -12,8 +12,7 @@ import {
 } from '@/components/ui/select';
 
 import { IoIosSearch } from 'react-icons/io';
-import { FaStar } from 'react-icons/fa';
-import { FaRegStar } from 'react-icons/fa';
+import { FaStar, FaRegStar } from 'react-icons/fa';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
@@ -164,15 +163,15 @@ const MessageItem = ({ message }) => {
         <div className='flex w-3/5 gap-3'>
           <div className='relative h-10 min-w-10'>
             <img
-              src={message.avatar}
               alt={message.name}
               className='aspect-square h-full w-full rounded-full object-cover'
+              src={message.avatar}
             />
             <div
               className={`absolute bottom-1 right-1 h-[10px] w-[10px] rounded-full ${
                 message.online ? 'bg-green-500' : 'bg-gray-500'
               }`}
-            ></div>
+            />
           </div>
           <div className='flex w-full flex-col gap-2'>
             <p className='flex items-center gap-3 text-nowrap text-sm font-semibold text-white'>
@@ -181,7 +180,7 @@ const MessageItem = ({ message }) => {
             </p>
             <p className='relative w-full text-nowrap text-xs font-light text-white'>
               {truncateText(message.message, 17)}
-              <span className='absolute right-0 top-0 h-full w-1/2 bg-opacity-60 bg-gradient-to-r from-transparent to-black transition group-hover:to-[#1a272c]'></span>
+              <span className='absolute right-0 top-0 h-full w-1/2 bg-opacity-60 bg-gradient-to-r from-transparent to-black transition group-hover:to-[#1a272c]' />
             </p>
           </div>
         </div>
@@ -286,9 +285,9 @@ const InboxPage = ({ children }) => {
             <IoIosSearch />
             <input
               className='h-12 w-full bg-transparent pl-4 text-base outline-none'
+              onChange={handleSearch}
               placeholder='Search'
               value={searchTerm}
-              onChange={handleSearch}
             />
           </div>
           {/* Filter Chats */}

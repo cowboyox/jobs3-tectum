@@ -82,8 +82,8 @@ const GigCard = ({ gig }) => {
         <Status status={gig.gigStatus} />
         <div className='relative'>
           <button
-            onClick={handleDropdownToggle}
             className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-full p-2 transition hover:bg-slate-700'
+            onClick={handleDropdownToggle}
           >
             <BsThreeDots />
           </button>
@@ -96,8 +96,8 @@ const GigCard = ({ gig }) => {
                 </button>
               </Link>
               <button
-                onClick={handleDelete}
                 className='flex w-full items-center gap-2 px-4 py-2 text-left text-white transition hover:bg-gray-700'
+                onClick={handleDelete}
               >
                 <HiOutlineTrash size={20} />
                 Delete
@@ -130,10 +130,10 @@ const MyGigs = () => {
             <SelectContent className='rounded-xl bg-[#1B272C]'>
               <SelectGroup>
                 <SelectItem value='normal'>
-                  <CiSearch size={20} className='mobile:max-w-4' />
+                  <CiSearch className='mobile:max-w-4' size={20} />
                 </SelectItem>
                 <SelectItem value='ai'>
-                  <RiRobot2Line size={20} className='mobile:max-w-4' />
+                  <RiRobot2Line className='mobile:max-w-4' size={20} />
                 </SelectItem>
               </SelectGroup>
             </SelectContent>
@@ -143,7 +143,7 @@ const MyGigs = () => {
             placeholder='Search by job title, company, keywords'
           />
           <div className='flex cursor-pointer items-center gap-3 rounded-xl px-3 transition hover:bg-[#1B272C] mobile:p-1'>
-            <CiFilter fill='#96B0BD' size={20} className='mobile:max-w-4' />
+            <CiFilter className='mobile:max-w-4' fill='#96B0BD' size={20} />
             <span className='text-[#96B0BD] mobile:text-sm'>Filter</span>
             <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
               4
@@ -151,15 +151,15 @@ const MyGigs = () => {
           </div>
         </div>
         <Link
-          href='./post-gig'
           className='flex w-40 cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-1 text-center text-base transition hover:bg-white hover:text-black mobile:w-full mobile:py-2 mobile:text-center'
+          href='./post-gig'
         >
           Post a New Gig
         </Link>
       </div>
       <div className='flex flex-col'>
         {myGigs.length ? (
-          myGigs.map((gig, index) => <GigCard key={index} gig={gig} />)
+          myGigs.map((gig, index) => <GigCard gig={gig} key={index} />)
         ) : (
           <div className='mt-[10vh] text-center'>Not yet</div>
         )}

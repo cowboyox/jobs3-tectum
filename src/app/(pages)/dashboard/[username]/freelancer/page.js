@@ -1,30 +1,22 @@
 'use client';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 // import './remove_horizontal_padding.css';
 import '/src/app/css/remove_horizontal_padding.css';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { IoInformationCircleOutline } from 'react-icons/io5';
-import { GoPlus } from 'react-icons/go';
 import { GoChevronDown } from 'react-icons/go';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import { useDropzone } from 'react-dropzone';
-import { IoCloudUploadOutline } from 'react-icons/io5';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 import CollapsibleText from '@/components/elements/collapsible_text';
 import { useToast } from '@/components/ui/use-toast';
 import StarRating from '@/components/elements/starRating';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import Portfolio from '@/components/pages/dashboard/freelancer/Portfolio';
 import MyGigs from '@/components/pages/dashboard/freelancer/MyGigs';
 import api from '@/utils/api';
-import RadialProgress from '@/components/ui/progress';
 import { skillSets, languages } from '@/utils/constants';
 
 const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) => {
@@ -57,21 +49,21 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
   return (
     <div className='flex w-full justify-between'>
       <div className='flex w-1/2 items-center gap-2'>
-        <img src={iconSrc} className='h-5 w-5 object-contain object-center' />
+        <img className='h-5 w-5 object-contain object-center' src={iconSrc} />
         <span className='text-sm'>{handleLabel()}</span>
       </div>
       {editable && label !== 'created' ? (
         <span>
           <input
             className='border-b bg-transparent text-right text-sm text-[#96B0BD] outline-none focus:border-white'
-            value={handleValue(value)}
             onChange={(e) =>
               setProfileData((prev) => ({
                 ...prev,
                 [label]: e.target.value,
               }))
             }
-          ></input>
+            value={handleValue(value)}
+          />
         </span>
       ) : (
         <span className='text-sm text-[#96B0BD]'>{handleValue(value)}</span>
@@ -297,8 +289,8 @@ const Freelancer = () => {
   return (
     <div className='p-0'>
       <img
-        src='/assets/images/freelancer-image.jpeg'
         className='h-64 w-full rounded-b-2xl object-cover'
+        src='/assets/images/freelancer-image.jpeg'
       />
       <div className='mx-auto flex max-w-7xl -translate-y-8 flex-col gap-3 px-0 md:px-8'>
         <Tabs defaultValue='edit-profile'>
@@ -306,29 +298,29 @@ const Freelancer = () => {
             <div className='flex w-full items-center gap-4 md:w-3/4 md:gap-7'>
               <div className='relative w-16 md:h-24 md:w-24'>
                 <img
-                  src={`${fetchAvatar ? fetchAvatar : '/assets/images/users/user-5.png'}`}
                   className='aspect-square h-full w-full rounded-full'
+                  src={`${fetchAvatar ? fetchAvatar : '/assets/images/users/user-5.png'}`}
                 />
                 {/* Change background color depending on user online status */}
-                <div className='absolute bottom-1 right-1 h-4 w-4 rounded-full bg-green-500'></div>
+                <div className='absolute bottom-1 right-1 h-4 w-4 rounded-full bg-green-500' />
               </div>
               <div className='flex flex-col gap-4'>
                 <div className='flex items-center gap-4'>
                   <h2 className='text-2xl md:text-3xl'>{user.name}</h2>
-                  <img src='/assets/images/icons/checkmark.svg' className='h-5 w-5' />
+                  <img className='h-5 w-5' src='/assets/images/icons/checkmark.svg' />
                 </div>
                 <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
                   <div className='flex items-center gap-2'>
                     <img
-                      src='/assets/images/icons/blue-top-rated.svg'
                       className='h-6 w-6 object-contain object-center'
+                      src='/assets/images/icons/blue-top-rated.svg'
                     />
                     <p className='text-lg text-white'>Top Rated</p>
                   </div>
                   <div className='flex items-center gap-2'>
                     <img
-                      src='/assets/images/icons/green-job-success.svg'
                       className='h-6 w-6 object-contain object-center'
+                      src='/assets/images/icons/green-job-success.svg'
                     />
                     <p className='text-lg text-white'>96% Job Success</p>
                   </div>
@@ -339,15 +331,15 @@ const Freelancer = () => {
               <TabsList className='w-full rounded-xl md:w-auto'>
                 <TabsTrigger
                   className='w-full rounded-xl px-6 data-[state=active]:bg-[#dc4f14]'
-                  value='preview'
                   onClick={() => setViewMode('preview')}
+                  value='preview'
                 >
                   Preview
                 </TabsTrigger>
                 <TabsTrigger
                   className='w-full rounded-xl px-6 data-[state=active]:bg-[#dc4f14]'
-                  value='edit-profile'
                   onClick={() => setViewMode('edit')}
+                  value='edit-profile'
                 >
                   Edit profile
                 </TabsTrigger>
@@ -365,59 +357,59 @@ const Freelancer = () => {
                       <div className='text-xl text-[#96B0BD]'>
                         {isEditProfileInfo ? (
                           <img
-                            src='/assets/images/icons/save.png'
-                            width={25}
-                            height={25}
                             className='cursor-pointer'
+                            height={25}
                             onClick={() => {
                               saveProfile();
                               setEditProfileInfo(false);
                             }}
+                            src='/assets/images/icons/save.png'
+                            width={25}
                           />
                         ) : (
                           <img
-                            src='/assets/images/icons/edit-pen.svg'
                             className='cursor-pointer'
                             onClick={() => setEditProfileInfo(true)}
+                            src='/assets/images/icons/edit-pen.svg'
                           />
                         )}
                       </div>
                     )}
                   </div>
                   <ProfileInfoItem
+                    editable={isEditProfileInfo}
                     iconSrc='/assets/images/icons/personalcard.svg'
                     label={'zkpId'}
-                    value={profileData.zkpId}
                     setProfileData={setProfileData}
-                    editable={isEditProfileInfo}
+                    value={profileData.zkpId}
                   />
                   <ProfileInfoItem
+                    editable={isEditProfileInfo}
                     iconSrc='/assets/images/icons/buildings.svg'
                     label={'location'}
-                    value={profileData.location}
                     setProfileData={setProfileData}
-                    editable={isEditProfileInfo}
+                    value={profileData.location}
                   />
                   <ProfileInfoItem
+                    editable={isEditProfileInfo}
                     iconSrc='/assets/images/icons/user-portal.svg'
                     label='created'
-                    value={profileData.created}
                     setProfileData={setProfileData}
-                    editable={isEditProfileInfo}
+                    value={profileData.created}
                   />
                   <ProfileInfoItem
+                    editable={isEditProfileInfo}
                     iconSrc='/assets/images/icons/clocks.svg'
                     label='avgResponseTime'
-                    value={profileData.avgResponseTime}
                     setProfileData={setProfileData}
-                    editable={isEditProfileInfo}
+                    value={profileData.avgResponseTime}
                   />
                   <ProfileInfoItem
+                    editable={isEditProfileInfo}
                     iconSrc='/assets/images/icons/watch.svg'
                     label={'timeZone'}
-                    value={profileData.timeZone}
                     setProfileData={setProfileData}
-                    editable={isEditProfileInfo}
+                    value={profileData.timeZone}
                   />
                 </div>
                 <div className='flex flex-col gap-3 border-b border-[#28373e] bg-[#10191d] p-6'>
@@ -427,38 +419,38 @@ const Freelancer = () => {
                       <div className='text-xl text-[#96B0BD]'>
                         {isEditPrice ? (
                           <img
-                            src='/assets/images/icons/save.png'
-                            width={25}
-                            height={25}
                             className='cursor-pointer'
+                            height={25}
                             onClick={() => {
                               saveProfile();
                               setEditPrice(false);
                             }}
+                            src='/assets/images/icons/save.png'
+                            width={25}
                           />
                         ) : (
                           <img
-                            src='/assets/images/icons/edit-pen.svg'
                             className='cursor-pointer'
                             onClick={() => setEditPrice(true)}
+                            src='/assets/images/icons/edit-pen.svg'
                           />
                         )}
                       </div>
                     )}
                   </div>
                   <ProfileInfoItem
+                    editable={isEditPrice}
                     iconSrc='/assets/images/icons/receipt-item.svg'
                     label={'hourlyRate'}
-                    value={profileData.hourlyRate}
                     setProfileData={setProfileData}
-                    editable={isEditPrice}
+                    value={profileData.hourlyRate}
                   />
                   <ProfileInfoItem
+                    editable={isEditPrice}
                     iconSrc='/assets/images/icons/calendar-2.svg'
                     label={'monthlyRate'}
-                    value={profileData.monthlyRate}
                     setProfileData={setProfileData}
-                    editable={isEditPrice}
+                    value={profileData.monthlyRate}
                   />
                 </div>
                 <div className='flex flex-col gap-3 border-b bg-[#10191d] p-6'>
@@ -468,20 +460,20 @@ const Freelancer = () => {
                       <div className='text-xl text-[#96B0BD]'>
                         {isEditSkills ? (
                           <img
-                            src='/assets/images/icons/save.png'
-                            width={25}
-                            height={25}
                             className='cursor-pointer'
+                            height={25}
                             onClick={() => {
                               saveProfile();
                               setEditSkills(false);
                             }}
+                            src='/assets/images/icons/save.png'
+                            width={25}
                           />
                         ) : (
                           <img
-                            src='/assets/images/icons/edit-pen.svg'
                             className='cursor-pointer'
                             onClick={() => setEditSkills(true)}
+                            src='/assets/images/icons/edit-pen.svg'
                           />
                         )}
                       </div>
@@ -537,20 +529,20 @@ const Freelancer = () => {
                       <div className='text-xl text-[#96B0BD]'>
                         {isEditLang ? (
                           <img
-                            src='/assets/images/icons/save.png'
-                            width={25}
-                            height={25}
                             className='cursor-pointer'
+                            height={25}
                             onClick={() => {
                               saveProfile();
                               setEditLang(false);
                             }}
+                            src='/assets/images/icons/save.png'
+                            width={25}
                           />
                         ) : (
                           <img
-                            src='/assets/images/icons/edit-pen.svg'
                             className='cursor-pointer'
                             onClick={() => setEditLang(true)}
+                            src='/assets/images/icons/edit-pen.svg'
                           />
                         )}
                       </div>
@@ -615,10 +607,10 @@ const Freelancer = () => {
                       <div className='text-xl text-[#96B0BD]'>About</div>
                     </div>
                     <CollapsibleText
-                      previewText={previewBio}
+                      bio={bio}
                       expandedText={expandedBio}
                       isEditBio={false}
-                      bio={bio}
+                      previewText={previewBio}
                       setBio={setBio}
                     />
                   </div>
@@ -646,17 +638,17 @@ const Freelancer = () => {
                       {profileData.portfolio.length > 0 &&
                         profileData.portfolio.map((imagePath, index) => (
                           <Portfolio
-                            key={index}
-                            imagePath={imagePath}
-                            setUploadedImagePath={setUploadedImagePath}
                             email={user.email}
+                            imagePath={imagePath}
+                            key={index}
                             setProfileData={setProfileData}
+                            setUploadedImagePath={setUploadedImagePath}
                             viewMode={'preview'}
                           />
                         ))}
                     </div>
                     <div className='md:hidden'>
-                      <Swiper spaceBetween={20} slidesPerView={1.2}>
+                      <Swiper slidesPerView={1.2} spaceBetween={20}>
                         <SwiperSlide>
                           {' '}
                           <Portfolio />{' '}
@@ -699,17 +691,17 @@ const Freelancer = () => {
                       {profileData.myGigs.length > 0 &&
                         profileData.myGigs.map((imagePath, index) => (
                           <MyGigs
-                            key={index}
-                            imagePath={imagePath}
-                            setUploadedGigPath={setUploadedGigPath}
                             email={user.email}
+                            imagePath={imagePath}
+                            key={index}
                             setProfileData={setProfileData}
+                            setUploadedGigPath={setUploadedGigPath}
                             viewMode={'preview'}
                           />
                         ))}
                     </div>
                     <div className='md:hidden'>
-                      <Swiper spaceBetween={20} slidesPerView={1.2}>
+                      <Swiper slidesPerView={1.2} spaceBetween={20}>
                         <SwiperSlide>
                           {' '}
                           <MyGigs />{' '}
@@ -732,20 +724,20 @@ const Freelancer = () => {
                     <p className='text-2xl text-[#96B0BD]'>Reviews</p>
                     <div className='mt-4 flex flex-col gap-6'>
                       {reviews.map((review) => (
-                        <div key={review.id} className='flex w-full gap-6'>
+                        <div className='flex w-full gap-6' key={review.id}>
                           <div className='flex w-full flex-col gap-2 border-b border-[#28373e] pb-6'>
                             <div className='flex flex-wrap items-center gap-4 md:flex-nowrap'>
                               <img
-                                src={review.imgSrc}
-                                className='aspect-square h-10 w-10 rounded-full object-cover'
                                 alt='user'
+                                className='aspect-square h-10 w-10 rounded-full object-cover'
+                                src={review.imgSrc}
                               />
                               <div className='flex w-auto items-center gap-2'>
                                 <p className='text-xl'>{review.name}</p>
                                 <img
-                                  src={review.flagSrc}
-                                  className='h-fit w-6 bg-white'
                                   alt='flag'
+                                  className='h-fit w-6 bg-white'
+                                  src={review.flagSrc}
                                 />
                               </div>
                               <div className='ml-auto flex w-full items-center justify-between gap-3 md:w-auto md:justify-normal'>
@@ -774,26 +766,26 @@ const Freelancer = () => {
                       <div className='text-xl text-[#96B0BD]'>
                         {isEditBio ? (
                           <img
+                            className='cursor-pointer'
+                            height={25}
+                            onClick={() => handleEditBio()}
                             src='/assets/images/icons/save.png'
                             width={25}
-                            height={25}
-                            className='cursor-pointer'
-                            onClick={() => handleEditBio()}
                           />
                         ) : (
                           <img
-                            src='/assets/images/icons/edit-pen.svg'
                             className='cursor-pointer'
                             onClick={() => handleEditBio()}
+                            src='/assets/images/icons/edit-pen.svg'
                           />
                         )}
                       </div>
                     </div>
                     <CollapsibleText
-                      previewText={previewBio}
+                      bio={bio}
                       expandedText={expandedBio}
                       isEditBio={isEditBio}
-                      bio={bio}
+                      previewText={previewBio}
                       setBio={setBio}
                     />
                   </div>
@@ -815,32 +807,32 @@ const Freelancer = () => {
                         <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
                           Drafts
                         </p>
-                        <img src='/assets/images/icons/edit-pen.svg' className='cursor-pointer' />
+                        <img className='cursor-pointer' src='/assets/images/icons/edit-pen.svg' />
                       </div>
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
                       {profileData.portfolio.length > 0 &&
                         profileData.portfolio.map((imagePath, index) => (
                           <Portfolio
-                            key={index}
-                            imagePath={imagePath}
-                            setUploadedImagePath={setUploadedImagePath}
                             email={user.email}
+                            imagePath={imagePath}
+                            key={index}
                             setProfileData={setProfileData}
+                            setUploadedImagePath={setUploadedImagePath}
                             viewMode={'edit'}
                           />
                         ))}
                       <Portfolio
-                        key={`extra-${uploadedImagePath.length}`}
-                        imagePath=''
-                        setUploadedImagePath={setUploadedImagePath}
                         email={user.email}
+                        imagePath=''
+                        key={`extra-${uploadedImagePath.length}`}
                         setProfileData={setProfileData}
+                        setUploadedImagePath={setUploadedImagePath}
                         viewMode={'edit'}
                       />
                     </div>
                     <div className='md:hidden'>
-                      <Swiper spaceBetween={20} slidesPerView={1.2}>
+                      <Swiper slidesPerView={1.2} spaceBetween={20}>
                         <SwiperSlide>
                           {' '}
                           <Portfolio />{' '}
@@ -877,32 +869,32 @@ const Freelancer = () => {
                         <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
                           Drafts
                         </p>
-                        <img src='/assets/images/icons/edit-pen.svg' className='cursor-pointer' />
+                        <img className='cursor-pointer' src='/assets/images/icons/edit-pen.svg' />
                       </div>
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
                       {profileData.myGigs.length > 0 &&
                         profileData.myGigs.map((imagePath, index) => (
                           <MyGigs
-                            key={index}
-                            imagePath={imagePath}
-                            setUploadedGigPath={setUploadedGigPath}
                             email={user.email}
+                            imagePath={imagePath}
+                            key={index}
                             setProfileData={setProfileData}
+                            setUploadedGigPath={setUploadedGigPath}
                             viewMode={'edit'}
                           />
                         ))}
                       <MyGigs
-                        key={`extra-${uploadedGigPath.length}`}
-                        imagePath=''
-                        setUploadedGigPath={setUploadedGigPath}
                         email={user.email}
+                        imagePath=''
+                        key={`extra-${uploadedGigPath.length}`}
                         setProfileData={setProfileData}
+                        setUploadedGigPath={setUploadedGigPath}
                         viewMode={'edit'}
                       />
                     </div>
                     <div className='md:hidden'>
-                      <Swiper spaceBetween={20} slidesPerView={1.2}>
+                      <Swiper slidesPerView={1.2} spaceBetween={20}>
                         <SwiperSlide>
                           {' '}
                           <MyGigs />{' '}
@@ -925,20 +917,20 @@ const Freelancer = () => {
                     <p className='text-2xl text-[#96B0BD]'>Reviews</p>
                     <div className='mt-4 flex flex-col gap-6'>
                       {reviews.map((review) => (
-                        <div key={review.id} className='flex w-full gap-6'>
+                        <div className='flex w-full gap-6' key={review.id}>
                           <div className='flex w-full flex-col gap-2 border-b border-[#28373e] pb-6'>
                             <div className='flex flex-wrap items-center gap-4 md:flex-nowrap'>
                               <img
-                                src={review.imgSrc}
-                                className='aspect-square h-10 w-10 rounded-full object-cover'
                                 alt='user'
+                                className='aspect-square h-10 w-10 rounded-full object-cover'
+                                src={review.imgSrc}
                               />
                               <div className='flex w-auto items-center gap-2'>
                                 <p className='text-xl'>{review.name}</p>
                                 <img
-                                  src={review.flagSrc}
-                                  className='h-fit w-6 bg-white'
                                   alt='flag'
+                                  className='h-fit w-6 bg-white'
+                                  src={review.flagSrc}
                                 />
                               </div>
                               <div className='ml-auto flex w-full items-center justify-between gap-3 md:w-auto md:justify-normal'>

@@ -2,7 +2,6 @@ import FillProfile from '@/components/home/FillProfile';
 import Gigs from '@/components/home/Gigs';
 import RecentlyViewed from '@/components/home/RecentlyViewed';
 import Stats from '@/components/home/Stats';
-import Hero from '@/components/home/hero';
 import React from 'react';
 
 const page = () => {

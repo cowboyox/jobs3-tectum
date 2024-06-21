@@ -5,7 +5,6 @@ import { minutesDifference } from '@/utils/Helpers';
 import { MdAccessTime } from 'react-icons/md';
 import { FaStar } from 'react-icons/fa6';
 import { GoPlus } from 'react-icons/go';
-import api from '@/utils/api';
 import Payment from './Payment';
 import Coverletter from './Coverletter';
 
@@ -21,9 +20,9 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
         <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
           <div className='flex flex-col gap-4 border-b border-lightGray pb-5'>
             <img
-              src='/assets/images/portfolio_works/portfolio.jpeg'
               alt='Gig Image'
               className='aspect-video w-full rounded-xl object-cover'
+              src='/assets/images/portfolio_works/portfolio.jpeg'
             />
             <div className='flex items-center'>
               <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
@@ -37,55 +36,55 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
               </div>
               <div className='flex items-center gap-2'>
                 <svg
-                  width='24'
+                  fill='none'
                   height='24'
                   viewBox='0 0 24 24'
-                  fill='none'
+                  width='24'
                   xmlns='http://www.w3.org/2000/svg'
                 >
                   <path
                     d='M22 6V8.42C22 10 21 11 19.42 11H16V4.01C16 2.9 16.91 2 18.02 2C19.11 2.01 20.11 2.45 20.83 3.17C21.55 3.9 22 4.9 22 6Z'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
-                    stroke-miterlimit='10'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-miterlimit='10'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
-                    stroke-miterlimit='10'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-miterlimit='10'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M9 13.0098H12'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M9 9.00977H12'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M5.99609 13H6.00508'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M5.99609 9H6.00508'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-width='1.5'
                   />
                 </svg>
                 <span>$ {gigPrice}</span>
@@ -98,10 +97,10 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
               </div>
               <div className='flex items-center gap-2'>
                 <svg
-                  width='24'
+                  fill='none'
                   height='24'
                   viewBox='0 0 24 24'
-                  fill='none'
+                  width='24'
                   xmlns='http://www.w3.org/2000/svg'
                 >
                   <path
@@ -112,9 +111,9 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
                   <path
                     d='M12.5685 8.43475L13.3078 9.91337C13.4086 10.1192 13.6775 10.3166 13.9043 10.3544L15.2443 10.5771C16.1012 10.7199 16.3029 11.3416 15.6854 11.9549L14.6436 12.9966C14.4672 13.1731 14.3706 13.5133 14.4252 13.757L14.7234 15.0465C14.9587 16.0673 14.4168 16.4622 13.5136 15.9287L12.2577 15.1852C12.0308 15.0507 11.657 15.0507 11.4259 15.1852L10.1699 15.9287C9.271 16.4622 8.72492 16.0631 8.96015 15.0465L9.2584 13.757C9.31301 13.5133 9.21639 13.1731 9.03996 12.9966L7.99821 11.9549C7.38491 11.3416 7.58234 10.7199 8.43927 10.5771L9.77928 10.3544C10.0019 10.3166 10.2708 10.1192 10.3716 9.91337L11.1109 8.43475C11.5141 7.63243 12.1694 7.63243 12.5685 8.43475Z'
                     stroke='#158FE8'
-                    stroke-width='1.25'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-width='1.25'
                   />
                 </svg>
                 <span>Top Rated</span>
@@ -124,15 +123,15 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
           <div className='flex items-start gap-4 rounded-t-xl bg-[#10191D] md:items-center md:gap-4 md:rounded-xl'>
             <div className='relative w-10 md:h-10 md:w-10'>
               <img
-                src='/assets/images/users/user-5.png'
                 className='aspect-square h-full w-full rounded-full'
+                src='/assets/images/users/user-5.png'
               />
-              <div className='absolute bottom-0.5 right-0.5 h-2 w-2 rounded-full bg-green-500'></div>
+              <div className='absolute bottom-0.5 right-0.5 h-2 w-2 rounded-full bg-green-500' />
             </div>
             <div className='flex flex-col gap-0'>
               <div className='flex items-center gap-1'>
                 <h2 className='text-md md:text-md font-bold'>{freelancerFullName}</h2>
-                <img src='/assets/images/icons/checkmark.svg' className='h-4 w-4' />
+                <img className='h-4 w-4' src='/assets/images/icons/checkmark.svg' />
               </div>
               <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
                 <p className='text-md text-medGray'>{freelancerLocation}</p>
@@ -174,8 +173,8 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
               <div className='h-full space-y-3'>
                 <div className='h-full'>
                   <label
-                    htmlFor='dropzone-file'
                     className={`h-15 flex w-full cursor-pointer items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] transition hover:bg-[#23343b]`}
+                    htmlFor='dropzone-file'
                   >
                     <div className='text-center'>
                       <div className='mx-auto max-w-min rounded-md p-2'>
@@ -188,8 +187,8 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
               <div className='h-full space-y-3'>
                 <div className='h-full'>
                   <label
-                    htmlFor='dropzone-file'
                     className={`h-15 flex w-full cursor-pointer items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] transition hover:bg-[#23343b]`}
+                    htmlFor='dropzone-file'
                   >
                     <div className='text-center'>
                       <div className='mx-auto max-w-min rounded-md p-2'>

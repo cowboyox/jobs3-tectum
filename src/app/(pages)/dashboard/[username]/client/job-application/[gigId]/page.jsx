@@ -8,11 +8,11 @@ const Page = async ({ params }) => {
 
   return (
     <GigPage
-      gigTitle={gigTitle}
-      gigPostDate={gigPostDate}
-      gigPrice={gigPrice}
       freelancerFullName={freelancer.fullName}
       freelancerLocation={freelancer.location}
+      gigPostDate={gigPostDate}
+      gigPrice={gigPrice}
+      gigTitle={gigTitle}
     />
   );
 };

@@ -1,8 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 
-import { CiSearch } from 'react-icons/ci';
-import { CiGrid31 } from 'react-icons/ci';
+import { CiSearch, CiGrid31 } from 'react-icons/ci';
 import { CgSortAz } from 'react-icons/cg';
 import { FaAngleDown } from 'react-icons/fa6';
 
@@ -62,7 +61,7 @@ export default function Proposals() {
       <div className='form_filter'>
         <div className='search_container'>
           <CiSearch />
-          <input type='text' placeholder='AI SEARCH' />
+          <input placeholder='AI SEARCH' type='text' />
         </div>
         <div className='filter_options'>
           <div className='f_option'>

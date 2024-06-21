@@ -6,28 +6,16 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
 import { FaArrowRight } from 'react-icons/fa6';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
-import { CiSearch } from 'react-icons/ci';
-import { RiRobot2Line } from 'react-icons/ri';
-import { IoLocationOutline } from 'react-icons/io5';
-import { CiFilter } from 'react-icons/ci';
-import { IoChevronDownOutline } from 'react-icons/io5';
-import { FaStar, FaClock, FaDollarSign, FaCheckCircle } from 'react-icons/fa';
-import { CiReceipt } from 'react-icons/ci';
+import { IoLocationOutline, IoChevronDownOutline } from 'react-icons/io5';
+import { CiFilter, CiReceipt } from 'react-icons/ci';
+import { FaStar, FaClock } from 'react-icons/fa';
 import { PiShootingStarLight } from 'react-icons/pi';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import api from '@/utils/api';
@@ -38,7 +26,7 @@ const DropdownItem = (props) => {
   return (
     <div className='flex cursor-pointer items-center gap-4 p-0'>
       <Checkbox id={props.category_id} />
-      <label htmlFor={props.category_id} className='cursor-pointer text-sm text-[#96B0BD]'>
+      <label className='cursor-pointer text-sm text-[#96B0BD]' htmlFor={props.category_id}>
         {props.category_name}
       </label>
     </div>
@@ -61,9 +49,9 @@ const GigCard = (props) => {
     <div className='flex w-full items-center gap-4 rounded-xl bg-[#10191d] p-4 text-white mobile:flex-col'>
       <div className='relative w-[400px] max-w-full'>
         <img
-          src='/assets/images/portfolio_works/portfolio.jpeg'
           alt='Gig Image'
           className='aspect-video w-full rounded-xl object-cover'
+          src='/assets/images/portfolio_works/portfolio.jpeg'
         />
         <div className='absolute left-2 top-2 flex gap-2'>
           <div className='flex items-center gap-2 rounded-full bg-gray-800 px-2 py-1 text-white'>
@@ -95,11 +83,11 @@ const GigCard = (props) => {
         <div className='flex justify-between'>
           <div className='flex items-center'>
             <Image
-              src='/assets/images/users/user-6.png'
               alt='Devon Miles'
-              width={50}
-              height={50}
               className='rounded-full'
+              height={50}
+              src='/assets/images/users/user-6.png'
+              width={50}
             />
             <div className='ml-2'>
               <div className='flex items-center gap-2'>
@@ -228,18 +216,18 @@ const GigSearch = () => {
           </Select>
           <input
             className='w-full bg-transparent text-white outline-none mobile:text-sm'
-            placeholder='Search by job title, company, keywords'
             onChange={(e) => setKey(e)}
             onKeyDown={handleKeyDown}
+            placeholder='Search by job title, company, keywords'
           />
         </div>
         <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
-          <IoLocationOutline stroke='#96B0BD' size={20} />
+          <IoLocationOutline size={20} stroke='#96B0BD' />
           <span className='text-[#96B0BD]'>Anywhere</span>
         </div>
         {(!isSmallScreen || searchType === 'normal') && (
           <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:m-1'>
-            <CiFilter fill='#96B0BD' size={20} className='mobile:max-w-4' />
+            <CiFilter className='mobile:max-w-4' fill='#96B0BD' size={20} />
             <span className='text-[#96B0BD] mobile:text-sm'>Filter</span>
             <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
               4
@@ -305,9 +293,9 @@ const GigSearch = () => {
           >
             {Array.from({ length: 10 }, (_, i) => (
               <DropdownItem
-                key={i + 1}
                 category_id=''
                 category_name={i + 1 + ` day${i + 1 > 1 ? 's' : ''}`}
+                key={i + 1}
               />
             ))}
             <DropdownItem category_id='2_months' category_name='+ 14 days' />

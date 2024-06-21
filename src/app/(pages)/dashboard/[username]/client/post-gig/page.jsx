@@ -33,9 +33,8 @@ import api from '@/utils/api';
 
 // Icons
 import { IoCheckmark } from 'react-icons/io5';
-import { GoChevronDown } from 'react-icons/go';
+import { GoChevronDown, GoTrash } from 'react-icons/go';
 import { FiPlus } from 'react-icons/fi';
-import { GoTrash } from 'react-icons/go';
 import { useRouter } from 'next/navigation';
 
 function FileUploadBody() {
@@ -394,10 +393,10 @@ const GigPosting = (props) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder={all_form_structure.title_placeholder}
                     className='rounded-full border-slate-500 bg-black px-6 py-6 text-base'
-                    value={postData.gigTitle}
                     onChange={(e) => handleSetGigTitle(e)}
+                    placeholder={all_form_structure.title_placeholder}
+                    value={postData.gigTitle}
                   />
                 </FormControl>
                 <FormDescription />
@@ -413,16 +412,16 @@ const GigPosting = (props) => {
                   {all_form_structure.categories_label}
                 </FormLabel>
                 <FormControl className='w-full'>
-                  <Popover open={open} onOpenChange={setOpen}>
+                  <Popover onOpenChange={setOpen} open={open}>
                     <PopoverTrigger
                       asChild
                       className='w-full rounded-full border-slate-500 px-6 py-6 text-base'
                     >
                       <Button
-                        variant='outline'
-                        role='combobox'
                         aria-expanded={open}
                         className='w-full justify-between'
+                        role='combobox'
+                        variant='outline'
                       >
                         {jobCategory
                           ? all_form_structure.categories_list.find(
@@ -441,7 +440,6 @@ const GigPosting = (props) => {
                             {all_form_structure.categories_list.map((job_category) => (
                               <CommandItem
                                 key={job_category.value}
-                                value={job_category.value}
                                 onSelect={(currentValue) => {
                                   setCategoryValue(
                                     currentValue === jobCategory ? '' : currentValue
@@ -455,6 +453,7 @@ const GigPosting = (props) => {
                                   }));
                                   setOpen(false);
                                 }}
+                                value={job_category.value}
                               >
                                 {job_category.label}
                                 <IoCheckmark
@@ -511,11 +510,10 @@ const GigPosting = (props) => {
                         <div className='suggested_skills mt-3 flex flex-wrap gap-3'>
                           {all_form_structure.skills_list.map((suggestedSkill) => (
                             <CommandItem
-                              key={suggestedSkill.label}
-                              value={suggestedSkill.label}
                               className={`skill_name ${
                                 skillSet.includes(suggestedSkill.label) && 'hidden'
                               } w-auto cursor-pointer whitespace-nowrap rounded-full border border-slate-500 bg-transparent px-4 py-2`}
+                              key={suggestedSkill.label}
                               onSelect={(currentSkill) => {
                                 setSkillSet((prevSkillSet) => [...prevSkillSet, currentSkill]);
                                 setPostData((prev) => ({
@@ -523,6 +521,7 @@ const GigPosting = (props) => {
                                   requiredSkills: [...prev.requiredSkills, currentSkill],
                                 }));
                               }}
+                              value={suggestedSkill.label}
                             >
                               {suggestedSkill.label}
                               <FiPlus className='ml-2' />
@@ -547,25 +546,25 @@ const GigPosting = (props) => {
                   {all_form_structure.scope_placeholder}
                 </FormDescription>
                 <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={all_form_structure.scope_options[0].value}
                   className='radio_items flex flex-wrap gap-0 pt-3'
+                  defaultValue={all_form_structure.scope_options[0].value}
+                  onValueChange={field.onChange}
                 >
                   {all_form_structure.scope_options.map((single_option) => (
                     <div
-                      key={single_option.value}
                       className='radio_item mb-4 flex w-full items-center space-x-2 md:w-1/2 md:pr-2'
+                      key={single_option.value}
                     >
                       <RadioGroupItem
-                        value={single_option.value}
-                        id={single_option.value}
                         className='hidden'
+                        id={single_option.value}
                         onClick={(e) => {
                           setPostData((prev) => ({
                             ...prev,
                             gigDeadline: single_option.indexNum,
                           }));
                         }}
+                        value={single_option.value}
                       />
                       <Label
                         className='ml-0 w-full cursor-pointer rounded-full border border-slate-500 p-5 transition'
@@ -587,25 +586,25 @@ const GigPosting = (props) => {
                   {all_form_structure.experience_label}
                 </FormLabel>
                 <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={all_form_structure.experience_options[0].value}
                   className='flex flex-wrap gap-3 pt-3'
+                  defaultValue={all_form_structure.experience_options[0].value}
+                  onValueChange={field.onChange}
                 >
                   {all_form_structure.experience_options.map((experience_option) => (
                     <div
-                      key={experience_option.value}
                       className='flex w-full items-center gap-3 space-x-2 rounded-xl border border-slate-500 px-3 py-0'
+                      key={experience_option.value}
                     >
                       <RadioGroupItem
-                        value={experience_option.value}
-                        id={experience_option.value}
                         className='h-6 w-6'
+                        id={experience_option.value}
                         onClick={(e) => {
                           setPostData((prev) => ({
                             ...prev,
                             experienceLevel: experience_option.indexNum,
                           }));
                         }}
+                        value={experience_option.value}
                       />
                       <Label
                         className='w-full cursor-pointer py-7'
@@ -629,15 +628,15 @@ const GigPosting = (props) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder={all_form_structure.location_placeholder}
                     className='rounded-full border-slate-500 bg-black px-6 py-6 text-base'
-                    value={postData.location}
                     onChange={(e) => {
                       setPostData((prev) => ({
                         ...prev,
                         location: e.target.value,
                       }));
                     }}
+                    placeholder={all_form_structure.location_placeholder}
+                    value={postData.location}
                   />
                 </FormControl>
               </FormItem>
@@ -656,6 +655,8 @@ const GigPosting = (props) => {
                   {all_form_structure.budget_placeholder}
                 </FormDescription>
                 <RadioGroup
+                  className='flex flex-wrap gap-3 pt-3 md:flex-nowrap'
+                  defaultValue={all_form_structure.budget_mode[0].value}
                   onValueChange={(val) => {
                     field.onChange();
                     setBudgetMode(val);
@@ -664,18 +665,16 @@ const GigPosting = (props) => {
                       gigPaymentType: val === 'hourly' ? 1 : 0,
                     }));
                   }}
-                  defaultValue={all_form_structure.budget_mode[0].value}
-                  className='flex flex-wrap gap-3 pt-3 md:flex-nowrap'
                 >
                   {all_form_structure.budget_mode.map((budget_option) => (
                     <div
-                      key={budget_option.value}
                       className='flex w-full items-center gap-2 space-x-2 rounded-xl border border-slate-500 px-3 py-0'
+                      key={budget_option.value}
                     >
                       <RadioGroupItem
-                        value={budget_option.value}
-                        id={budget_option.value}
                         className='h-4 w-4'
+                        id={budget_option.value}
+                        value={budget_option.value}
                       />
                       <Label
                         className='w-full cursor-pointer py-7 text-xl text-slate-300'
@@ -703,17 +702,17 @@ const GigPosting = (props) => {
                     <FormControl>
                       <div className='relative w-full pr-7'>
                         <Input
-                          placeholder={all_form_structure.gig_from_to.from_placeholder}
                           className='rounded-full border-slate-400 bg-black px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                          value={postData.minBudget}
+                          min={0}
                           onChange={(e) =>
                             setPostData((prev) => ({
                               ...prev,
                               minBudget: e.target.value,
                             }))
                           }
+                          placeholder={all_form_structure.gig_from_to.from_placeholder}
                           type='number'
-                          min={0}
+                          value={postData.minBudget}
                         />
                         <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
                           $
@@ -736,17 +735,17 @@ const GigPosting = (props) => {
                     <FormControl>
                       <div className='relative w-full pr-7'>
                         <Input
-                          placeholder={all_form_structure.gig_from_to.to_placeholder}
                           className='rounded-full border-slate-400 bg-black px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                          value={postData.maxBudget}
+                          min={0}
                           onChange={(e) => {
                             setPostData((prev) => ({
                               ...prev,
                               maxBudget: e.target.value,
                             }));
                           }}
+                          placeholder={all_form_structure.gig_from_to.to_placeholder}
                           type='number'
-                          min={0}
+                          value={postData.maxBudget}
                         />
                         <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
                           $
@@ -773,17 +772,17 @@ const GigPosting = (props) => {
                   <FormControl>
                     <div className='relative w-full'>
                       <Input
-                        placeholder={all_form_structure.gig_fixed_price}
                         className='rounded-full border-slate-400 bg-black px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                        value={postData.gigPrice}
+                        min={0}
                         onChange={(e) => {
                           setPostData((prev) => ({
                             ...prev,
                             gigPrice: parseInt(e.target.value),
                           }));
                         }}
+                        placeholder={all_form_structure.gig_fixed_price}
                         type='number'
-                        min={0}
+                        value={postData.gigPrice}
                       />
                       <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
                         $
@@ -805,15 +804,15 @@ const GigPosting = (props) => {
                 </FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder={all_form_structure.gig_description_placeholder}
                     className='rounded-xl border-slate-500 px-6 py-6 text-base'
-                    value={postData.gigDescription}
                     onChange={(e) => {
                       setPostData((prev) => ({
                         ...prev,
                         gigDescription: e.target.value,
                       }));
                     }}
+                    placeholder={all_form_structure.gig_description_placeholder}
+                    value={postData.gigDescription}
                   />
                 </FormControl>
               </FormItem>
@@ -830,25 +829,25 @@ const GigPosting = (props) => {
                 <FormControl>
                   <div className='rounded-xl border border-slate-500 p-4'>
                     <FileUpload
-                      onError={FileError}
                       body={<FileUploadBody />}
-                      overlap={false}
                       fileValue={files}
                       onChange={(e) => FileChanged(e)}
+                      onError={FileError}
+                      overlap={false}
                     />
                     {files.length > 0 && (
                       <div className='mt-5 flex w-full flex-wrap gap-0 rounded-xl border border-slate-500'>
                         {files.map((item, index) => {
                           return (
                             <div
-                              onClick={() => onRemoveImage(item.id)}
                               aria-hidden
-                              key={index}
                               className='w-1/3 p-3'
+                              key={index}
+                              onClick={() => onRemoveImage(item.id)}
                             >
                               <img
-                                src={item.preview}
                                 className='aspect-square w-full rounded-xl bg-slate-800 object-cover p-2'
+                                src={item.preview}
                               />
                             </div>
                           );

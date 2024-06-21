@@ -1,36 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
-import axios from 'axios';
-import {
-  Program,
-  AnchorProvider,
-  setProvider,
-  getProvider,
-  Idl,
-  utils,
-  BN,
-  Provider,
-} from '@project-serum/anchor';
-import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 
-import {
-  TOKEN_PROGRAM_ID,
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  getAssociatedTokenAddressSync,
-} from '@solana/spl-token';
-import { v4 as uuid } from 'uuid';
-import {
-  PROGRAM_ID,
-  ADMIN_ADDRESS,
-  CONTRACT_SEED,
-  PAYTOKEN_MINT,
-  DECIMALS,
-} from '@/utils/constants';
-import IDL from '@/idl/gig_basic_contract.json';
 import {
   Select,
   SelectContent,
@@ -45,12 +18,10 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { FaX, FaEllipsis, FaBan } from 'react-icons/fa6';
+import { FaX, FaEllipsis } from 'react-icons/fa6';
 import { Separator } from '@/components/ui/seperator';
 import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
@@ -146,33 +117,33 @@ const Orders = () => {
         <div className='ml-3 flex flex-1 items-center gap-3'>
           <button>
             <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              strokeWidth={1.5}
-              stroke='currentColor'
               className='h-6 w-6'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth={1.5}
+              viewBox='0 0 24 24'
+              xmlns='http://www.w3.org/2000/svg'
             >
               <path
+                d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
                 strokeLinecap='round'
                 strokeLinejoin='round'
-                d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
               />
             </svg>
           </button>
           <input
-            type='text'
-            placeholder={isSmallScreen ? 'Search' : 'Search by Order title...'}
             className='w-full bg-transparent outline-none'
             onChange={(e) => handleSearch(e)}
+            placeholder={isSmallScreen ? 'Search' : 'Search by Order title...'}
+            type='text'
           />
           {isSmallScreen && (
             <button>
               <svg
-                width='25'
+                fill='none'
                 height='24'
                 viewBox='0 0 25 24'
-                fill='none'
+                width='25'
                 xmlns='http://www.w3.org/2000/svg'
               >
                 <path
@@ -194,120 +165,120 @@ const Orders = () => {
             {!isSmallScreen ? (
               <>
                 <svg
-                  width='25'
+                  fill='none'
                   height='24'
                   viewBox='0 0 25 24'
-                  fill='none'
+                  width='25'
                   xmlns='http://www.w3.org/2000/svg'
                 >
                   <path
                     d='M22.2119 6.58594H16.3057'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
-                    stroke-miterlimit='10'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-miterlimit='10'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M6.46191 6.58594H2.52441'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
-                    stroke-miterlimit='10'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-miterlimit='10'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M10.3994 10.0312C12.3022 10.0312 13.8447 8.48873 13.8447 6.58594C13.8447 4.68314 12.3022 3.14062 10.3994 3.14062C8.49662 3.14062 6.9541 4.68314 6.9541 6.58594C6.9541 8.48873 8.49662 10.0312 10.3994 10.0312Z'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
-                    stroke-miterlimit='10'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-miterlimit='10'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M22.2119 17.4141H18.2744'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
-                    stroke-miterlimit='10'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-miterlimit='10'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M8.43066 17.4141H2.52441'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
-                    stroke-miterlimit='10'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-miterlimit='10'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M14.3369 20.8594C16.2397 20.8594 17.7822 19.3169 17.7822 17.4141C17.7822 15.5113 16.2397 13.9688 14.3369 13.9688C12.4341 13.9688 10.8916 15.5113 10.8916 17.4141C10.8916 19.3169 12.4341 20.8594 14.3369 20.8594Z'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
-                    stroke-miterlimit='10'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-miterlimit='10'
+                    stroke-width='1.5'
                   />
                 </svg>
                 Filter
               </>
             ) : (
               <svg
-                width='25'
+                fill='none'
                 height='24'
                 viewBox='0 0 25 24'
-                fill='none'
+                width='25'
                 xmlns='http://www.w3.org/2000/svg'
               >
                 <path
                   d='M22.1719 6.58594H16.2656'
                   stroke='#96B0BD'
-                  stroke-width='1.5'
-                  stroke-miterlimit='10'
                   stroke-linecap='round'
                   stroke-linejoin='round'
+                  stroke-miterlimit='10'
+                  stroke-width='1.5'
                 />
                 <path
                   d='M6.42188 6.58594H2.48438'
                   stroke='#96B0BD'
-                  stroke-width='1.5'
-                  stroke-miterlimit='10'
                   stroke-linecap='round'
                   stroke-linejoin='round'
+                  stroke-miterlimit='10'
+                  stroke-width='1.5'
                 />
                 <path
                   d='M10.3594 10.0312C12.2622 10.0312 13.8047 8.48873 13.8047 6.58594C13.8047 4.68314 12.2622 3.14062 10.3594 3.14062C8.45658 3.14062 6.91406 4.68314 6.91406 6.58594C6.91406 8.48873 8.45658 10.0312 10.3594 10.0312Z'
                   stroke='#96B0BD'
-                  stroke-width='1.5'
-                  stroke-miterlimit='10'
                   stroke-linecap='round'
                   stroke-linejoin='round'
+                  stroke-miterlimit='10'
+                  stroke-width='1.5'
                 />
                 <path
                   d='M22.1719 17.4141H18.2344'
                   stroke='#96B0BD'
-                  stroke-width='1.5'
-                  stroke-miterlimit='10'
                   stroke-linecap='round'
                   stroke-linejoin='round'
+                  stroke-miterlimit='10'
+                  stroke-width='1.5'
                 />
                 <path
                   d='M8.39062 17.4141H2.48438'
                   stroke='#96B0BD'
-                  stroke-width='1.5'
-                  stroke-miterlimit='10'
                   stroke-linecap='round'
                   stroke-linejoin='round'
+                  stroke-miterlimit='10'
+                  stroke-width='1.5'
                 />
                 <path
                   d='M14.2969 20.8594C16.1997 20.8594 17.7422 19.3169 17.7422 17.4141C17.7422 15.5113 16.1997 13.9688 14.2969 13.9688C12.3941 13.9688 10.8516 15.5113 10.8516 17.4141C10.8516 19.3169 12.3941 20.8594 14.2969 20.8594Z'
                   stroke='#96B0BD'
-                  stroke-width='1.5'
-                  stroke-miterlimit='10'
                   stroke-linecap='round'
                   stroke-linejoin='round'
+                  stroke-miterlimit='10'
+                  stroke-width='1.5'
                 />
-                <circle cx='18.2344' cy='5.10938' r='4.92188' fill='#DC4F13' />
+                <circle cx='18.2344' cy='5.10938' fill='#DC4F13' r='4.92188' />
               </svg>
             )}
           </button>
@@ -343,8 +314,8 @@ const Orders = () => {
         {filterCategory.map((item, index) => {
           return (
             <span
-              key={index}
               className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
+              key={index}
             >
               <FaX className='rounded-full bg-[#3E525B] p-[2px]' />
               {item}
@@ -370,8 +341,8 @@ const Orders = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      variant='outline'
                       className='border-none bg-transparent hover:bg-transparent'
+                      variant='outline'
                     >
                       <FaEllipsis />
                     </Button>
@@ -383,32 +354,32 @@ const Orders = () => {
                       className='gap-2 rounded-xl hover:bg-white'
                     >
                       <svg
-                        width='24'
+                        fill='none'
                         height='24'
                         viewBox='0 0 24 24'
-                        fill='none'
+                        width='24'
                         xmlns='http://www.w3.org/2000/svg'
                       >
                         <path
                           d='M12 9V14'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-width='1.5'
                         />
                         <path
                           d='M12.0004 21.4098H5.94042C2.47042 21.4098 1.02042 18.9298 2.70042 15.8998L5.82042 10.2798L8.76042 4.99979C10.5404 1.78979 13.4604 1.78979 15.2404 4.99979L18.1804 10.2898L21.3004 15.9098C22.9804 18.9398 21.5204 21.4198 18.0604 21.4198H12.0004V21.4098Z'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-width='1.5'
                         />
                         <path
                           d='M11.9941 17H12.0031'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-width='1.5'
                         />
                       </svg>
                       Report
@@ -419,55 +390,55 @@ const Orders = () => {
                       className='mt-1 gap-2 rounded-xl hover:bg-white'
                     >
                       <svg
-                        width='24'
+                        fill='none'
                         height='24'
                         viewBox='0 0 24 24'
-                        fill='none'
+                        width='24'
                         xmlns='http://www.w3.org/2000/svg'
                       >
                         <path
                           d='M22 9V15C22 15.22 22 15.44 21.98 15.65C21.16 14.64 19.91 14 18.5 14C17.44 14 16.46 14.37 15.69 14.99C14.65 15.81 14 17.08 14 18.5C14 19.91 14.64 21.16 15.65 21.98C15.44 22 15.22 22 15 22H9C4 22 2 20 2 15V9C2 4 4 2 9 2H15C20 2 22 4 22 9Z'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-width='1.5'
                         />
                         <path
                           d='M2.51953 7.10986H21.4796'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-width='1.5'
                         />
                         <path
                           d='M8.51953 2.10986V6.96985'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-width='1.5'
                         />
                         <path
                           d='M15.4795 2.10986V6.5199'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-width='1.5'
                         />
                         <path
                           d='M23 18.5C23 19.85 22.4 21.05 21.47 21.88C20.67 22.57 19.64 23 18.5 23C17.42 23 16.42 22.62 15.65 21.98C14.64 21.16 14 19.91 14 18.5C14 17.08 14.65 15.81 15.69 14.99C16.46 14.37 17.44 14 18.5 14C19.91 14 21.16 14.64 21.98 15.65C22.62 16.42 23 17.42 23 18.5Z'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
-                          stroke-miterlimit='10'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-miterlimit='10'
+                          stroke-width='1.5'
                         />
                         <path
                           d='M18.7799 17.0898V18.7798L17.3799 19.6198'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
-                          stroke-miterlimit='10'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-miterlimit='10'
+                          stroke-width='1.5'
                         />
                       </svg>
                       Extend The Delivery Date
@@ -478,32 +449,32 @@ const Orders = () => {
                       className='mt-1 gap-2 rounded-xl hover:bg-white'
                     >
                       <svg
-                        width='24'
+                        fill='none'
                         height='24'
                         viewBox='0 0 24 24'
-                        fill='none'
+                        width='24'
                         xmlns='http://www.w3.org/2000/svg'
                       >
                         <path
                           d='M4 6C2.75 7.67 2 9.75 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C10.57 2 9.2 2.3 7.97 2.85'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-width='1.5'
                         />
                         <path
                           d='M10.75 14.4302V9.3702C10.75 8.8902 10.55 8.7002 10.04 8.7002H8.75004C8.24004 8.7002 8.04004 8.8902 8.04004 9.3702V14.4302C8.04004 14.9102 8.24004 15.1002 8.75004 15.1002H10.04C10.55 15.1002 10.75 14.9102 10.75 14.4302Z'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-width='1.5'
                         />
                         <path
                           d='M16.0303 14.4302V9.3702C16.0303 8.8902 15.8303 8.7002 15.3203 8.7002H14.0303C13.5203 8.7002 13.3203 8.8902 13.3203 9.3702V14.4302C13.3203 14.9102 13.5203 15.1002 14.0303 15.1002'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-width='1.5'
                         />
                       </svg>
                       Pause The Order
@@ -514,27 +485,27 @@ const Orders = () => {
                       className='mt-1 gap-2 rounded-xl hover:bg-white'
                     >
                       <svg
-                        width='24'
+                        fill='none'
                         height='24'
                         viewBox='0 0 24 24'
-                        fill='none'
+                        width='24'
                         xmlns='http://www.w3.org/2000/svg'
                       >
                         <path
                           d='M12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22Z'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
-                          stroke-miterlimit='10'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-miterlimit='10'
+                          stroke-width='1.5'
                         />
                         <path
                           d='M18.9004 5L4.90039 19'
                           stroke='#96B0BD'
-                          stroke-width='1.5'
-                          stroke-miterlimit='10'
                           stroke-linecap='round'
                           stroke-linejoin='round'
+                          stroke-miterlimit='10'
+                          stroke-width='1.5'
                         />
                       </svg>
                       Cancel Order
@@ -546,80 +517,80 @@ const Orders = () => {
             <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
               <div className='flex flex-row items-center gap-2'>
                 <svg
-                  width='24'
+                  fill='none'
                   height='24'
                   viewBox='0 0 24 24'
-                  fill='none'
+                  width='24'
                   xmlns='http://www.w3.org/2000/svg'
                 >
                   <path
                     d='M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-width='1.5'
                   />
                 </svg>
                 {`${getFormattedDate(order.gigPostDate)} - Present`}
               </div>
               <div className='flex flex-row items-center gap-2'>
                 <svg
-                  width='24'
+                  fill='none'
                   height='24'
                   viewBox='0 0 24 24'
-                  fill='none'
+                  width='24'
                   xmlns='http://www.w3.org/2000/svg'
                 >
                   <path
                     d='M22 6V8.42C22 10 21 11 19.42 11H16V4.01C16 2.9 16.91 2 18.02 2C19.11 2.01 20.11 2.45 20.83 3.17C21.55 3.9 22 4.9 22 6Z'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
-                    stroke-miterlimit='10'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-miterlimit='10'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
-                    stroke-miterlimit='10'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-miterlimit='10'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M9 13.0098H12'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M9 9.00977H12'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M5.99609 13H6.00508'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-width='1.5'
                   />
                   <path
                     d='M5.99609 9H6.00508'
                     stroke='#96B0BD'
-                    stroke-width='1.5'
                     stroke-linecap='round'
                     stroke-linejoin='round'
+                    stroke-width='1.5'
                   />
                 </svg>
                 {order.gigPaymentType
@@ -634,16 +605,16 @@ const Orders = () => {
             <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
               <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                 <div>
-                  <img src='/assets/images/Rectangle 273.png' width={40} height={40}></img>
+                  <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                 </div>
                 <div className='flex flex-col gap-1 text-left'>
                   <div className='flex flex-row items-center gap-1 font-bold'>
                     {order.userId.chosen_visible_name}
                     <svg
-                      width='17'
+                      fill='none'
                       height='17'
                       viewBox='0 0 17 17'
-                      fill='none'
+                      width='17'
                       xmlns='http://www.w3.org/2000/svg'
                     >
                       <path
@@ -656,7 +627,7 @@ const Orders = () => {
                 </div>
               </div>
               <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-                <button onClick={(e) => handleMessage(order)} className='p-4 px-10 md:p-5'>
+                <button className='p-4 px-10 md:p-5' onClick={(e) => handleMessage(order)}>
                   Message
                 </button>
                 <button className='bg-[#DC4F13] p-4 px-10 md:p-5'>Deliver</button>

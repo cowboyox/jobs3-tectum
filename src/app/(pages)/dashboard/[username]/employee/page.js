@@ -68,7 +68,7 @@ export default function EmployerProfile(parameters) {
       <div className='profile_container'>
         <div className='profile_top'>
           <div className='profile_img'>
-            <img src='/assets/images/icons/online_status_off.svg' className='status_icon' />
+            <img className='status_icon' src='/assets/images/icons/online_status_off.svg' />
             <img src='https://images.unsplash.com/photo-1600486913747-55e5470d6f40' />
           </div>
           <div className='profile_details'>
@@ -117,7 +117,7 @@ export default function EmployerProfile(parameters) {
             </div>
             <div className='ready_to_work'>
               <h3>Ready to work with Iqbal A.?</h3>
-              <Link href='#' className='sign_up'>
+              <Link className='sign_up' href='#'>
                 Sign up
               </Link>
               <div className='already_have_account'>
@@ -231,18 +231,18 @@ export default function EmployerProfile(parameters) {
                     <p>$30 per 30 min Zoom meeting</p>
                   </div>
                   <div className='consultation_tags'>
-                    <Link href='#' className='single_tag'>
+                    <Link className='single_tag' href='#'>
                       Mobile App Design
                     </Link>
-                    <Link href='#' className='single_tag'>
+                    <Link className='single_tag' href='#'>
                       Resume Design
                     </Link>
-                    <Link href='#' className='single_tag'>
+                    <Link className='single_tag' href='#'>
                       Web Design
                     </Link>
                   </div>
                 </div>
-                <Link href='#' className='book_consultaion_cta'>
+                <Link className='book_consultaion_cta' href='#'>
                   Book a consultation
                 </Link>
               </div>
@@ -273,16 +273,16 @@ export default function EmployerProfile(parameters) {
                       <div className='reviews_details'>
                         <div className='star_rating'>
                           <StarRatings
-                            rating={review.rating}
-                            starRatedColor='#E36103'
-                            starEmptyColor='#96b0bd'
                             numberOfStars={5}
+                            rating={review.rating}
                             starDimension='18px'
+                            starEmptyColor='#96b0bd'
+                            starRatedColor='#E36103'
                             starSpacing='1px'
                           />
                           <span>{review.rating}.00</span>
                         </div>
-                        <div className='review_details_divider'></div>
+                        <div className='review_details_divider' />
                         <div className='date_from_to'>
                           <span className='date_from'>{review.fromDate}</span> -{' '}
                           <span className='date_to'>{review.toDate}</span>
@@ -317,63 +317,63 @@ export default function EmployerProfile(parameters) {
             <div className='profile_skills'>
               <h3>Skills</h3>
               <div className='profile_skills_container'>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   Figma{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   Graphic Design{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   Mobile App Design{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   Wireframing{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   Webflow{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   Website Redesign{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   Landing Page{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   Web Design{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   Mobile UI Design{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   User Experience Design{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   UI/UX Prototyping{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   User Interface Design{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   UX & UI{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   Landing Page Design{' '}
                 </Link>
-                <Link href='#' className='profile_skill'>
+                <Link className='profile_skill' href='#'>
                   {' '}
                   Design-to-Code{' '}
                 </Link>

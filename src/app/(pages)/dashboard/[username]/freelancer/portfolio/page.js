@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 const portfolio = [
@@ -71,8 +70,8 @@ const FreelancerPortfolio = () => {
         </div>
         <div className='flex w-fit items-center justify-center gap-3 mobile:w-full'>
           <Link
-            href='./portfolio/create'
             className='cursor-pointer rounded-xl bg-[#DC4F13] px-12 py-3 text-lg transition hover:bg-white hover:text-black mobile:w-full mobile:text-center'
+            href='./portfolio/create'
           >
             Create
           </Link>
@@ -80,18 +79,18 @@ const FreelancerPortfolio = () => {
       </div>
       <div className='my-5 grid w-full grid-cols-3 gap-5 mobile:grid-cols-1'>
         {portfolio.map((portfolio_item) => (
-          <div key={portfolio_item.id} className='rounded-xl bg-[#10191d] p-4'>
+          <div className='rounded-xl bg-[#10191d] p-4' key={portfolio_item.id}>
             <div className='relative flex h-64 w-full'>
               <img
-                src='/assets/images/portfolio_works/portfolio.jpeg'
                 alt={portfolio_item.name}
                 className='absolute left-0 top-0 h-full w-full rounded-xl object-cover'
+                src='/assets/images/portfolio_works/portfolio.jpeg'
               />
               <div className='mt-auto flex flex-wrap gap-3 p-3'>
                 {portfolio_item.badges.map((portfolio_badge, pb_id) => (
                   <div
-                    key={pb_id}
                     className='relative cursor-pointer rounded-xl border border-white bg-[#10191d] px-3 py-1 text-sm'
+                    key={pb_id}
                   >
                     {portfolio_badge}
                   </div>

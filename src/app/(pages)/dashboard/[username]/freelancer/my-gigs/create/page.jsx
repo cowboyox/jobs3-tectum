@@ -34,7 +34,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -62,7 +61,7 @@ const Question = (props) => {
           {props.answer_placeholder}
         </p>
       </div>
-      <GoTrash onClick={() => props.onDelete(props.id)} className='cursor-pointer' />
+      <GoTrash className='cursor-pointer' onClick={() => props.onDelete(props.id)} />
     </div>
   );
 };
@@ -600,8 +599,8 @@ const CreateGig = () => {
         </nav>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
             className='mx-auto mt-10 flex w-full max-w-3xl flex-col gap-6 rounded-xl bg-[#10191d] p-7 mobile:px-3'
+            onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormStep stepOrder={1}>
               <FormField
@@ -616,8 +615,8 @@ const CreateGig = () => {
                     <FormControl>
                       <Textarea
                         {...field}
-                        placeholder='I will do something im really good at...'
                         className='h-18 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
+                        placeholder='I will do something im really good at...'
                       />
                     </FormControl>
                     <FormMessage />
@@ -712,17 +711,17 @@ const CreateGig = () => {
                   )}
                 />
                 <input
-                  placeholder='Enter tag'
                   className={`h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base ${tags.length >= 5 ? 'cursor-not-allowed opacity-15' : ''}`}
-                  value={tagInputValue}
                   onChange={(event) => setTagInputValue(event.target.value)}
                   onKeyDown={tagsInputFocus}
+                  placeholder='Enter tag'
+                  value={tagInputValue}
                 />
                 <div className='flex flex-wrap items-center gap-3'>
                   {tags.map((tag, index) => (
                     <div
-                      key={index}
                       className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-white px-2 py-1 text-sm text-black'
+                      key={index}
                       onClick={() => removeTag(index)}
                     >
                       {tag}
@@ -744,8 +743,8 @@ const CreateGig = () => {
                     <FormControl>
                       <Input
                         className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
-                        type='number'
                         placeholder='Price'
+                        type='number'
                         {...field}
                       />
                     </FormControl>
@@ -759,7 +758,7 @@ const CreateGig = () => {
                   <FormItem className='flex w-full flex-col gap-2'>
                     <FormLabel className='text-2xl text-[#F5F5F5]'>Revisions</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select defaultValue={field.value} onValueChange={field.onChange}>
                         <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                           <SelectValue placeholder='Revisions' />
                         </SelectTrigger>
@@ -784,7 +783,7 @@ const CreateGig = () => {
                   <FormItem className='flex w-full flex-col gap-2'>
                     <FormLabel className='text-2xl text-[#F5F5F5]'>Delivery time</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select defaultValue={field.value} onValueChange={field.onChange}>
                         <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                           <SelectValue placeholder='Delivery time' />
                         </SelectTrigger>
@@ -824,8 +823,8 @@ const CreateGig = () => {
                     <FormControl>
                       <Textarea
                         {...field}
-                        placeholder='Add info here...'
                         className='h-60 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
+                        placeholder='Add info here...'
                       />
                     </FormControl>
                     <FormMessage />
@@ -843,24 +842,24 @@ const CreateGig = () => {
               </div>
               {requirementQuestions.map((requirement_question, q_indx) => (
                 <Question
-                  key={requirement_question.id}
-                  id={requirement_question.id}
-                  question_num={q_indx + 1}
-                  question={requirement_question.question}
                   answer_placeholder={requirement_question.answer_placeholder}
+                  id={requirement_question.id}
+                  key={requirement_question.id}
                   onDelete={deleteQuestion}
+                  question={requirement_question.question}
+                  question_num={q_indx + 1}
                 />
               ))}
               <div className='flex flex-col gap-3 rounded-xl border border-[#526872] p-3'>
                 <input
-                  ref={newQuestionRef}
                   className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
                   placeholder='Add question here'
+                  ref={newQuestionRef}
                 />
                 <input
-                  ref={newAnswerPlaceholderRef}
                   className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
                   placeholder='Answer example (For the client to know how to answer)'
+                  ref={newAnswerPlaceholderRef}
                 />
                 <div
                   className='h-14 w-full cursor-pointer rounded-xl bg-slate-700 px-4 py-4 text-center text-base text-white transition hover:bg-white hover:text-black'
@@ -885,11 +884,11 @@ const CreateGig = () => {
                   Capture buyers attention with a video that showcases your services
                 </p>
                 <DropFile
-                  className='aspect-video max-h-80'
-                  placeHolderPlusIconSize={60}
                   acceptOnly='video'
+                  className='aspect-video max-h-80'
                   inputName='video'
                   onFileUpload={handleVideoUpload}
+                  placeHolderPlusIconSize={60}
                 />
               </div>
               <div className='flex flex-col gap-4'>
@@ -900,12 +899,12 @@ const CreateGig = () => {
                 <div className='grid gap-5 md:grid-cols-2'>
                   {Array.from({ length: 4 }, (_, indx) => (
                     <DropFile
-                      key={indx}
-                      className='aspect-video'
-                      placeHolderPlusIconSize={40}
                       acceptOnly='image'
+                      className='aspect-video'
                       inputName={`gig_image_${indx}`}
+                      key={indx}
                       onFileUpload={(files) => handleImageUpload(files, indx)}
+                      placeHolderPlusIconSize={40}
                     />
                   ))}
                 </div>
@@ -918,12 +917,12 @@ const CreateGig = () => {
                 <div className='grid gap-5 md:grid-cols-2'>
                   {Array.from({ length: 2 }, (_, indx) => (
                     <DropFile
-                      key={indx}
-                      className='h-12'
-                      placeHolderPlusIconSize={40}
                       acceptOnly='other'
+                      className='h-12'
                       inputName={`gig_document_${indx}`}
+                      key={indx}
                       onFileUpload={(files) => handleDocumentUpload(files, indx)}
+                      placeHolderPlusIconSize={40}
                     />
                   ))}
                 </div>
@@ -931,8 +930,8 @@ const CreateGig = () => {
               <div className='flex items-start gap-5'>
                 <Checkbox id='terms' />
                 <label
-                  htmlFor='terms'
                   className='text-sm peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+                  htmlFor='terms'
                 >
                   I declare that these materials were created by myself or by my team and do not
                   infringe on any 3rd party rights. I understand that the illegal use of digital
@@ -947,7 +946,7 @@ const CreateGig = () => {
                   Let’s publish your Gig and get you ready to start selling
                 </div>
               </div>
-              <img src='/assets/images/publish_image.png' className='mx-auto w-1/2' />
+              <img className='mx-auto w-1/2' src='/assets/images/publish_image.png' />
             </FormStep>
             <FormNavigation />
           </form>

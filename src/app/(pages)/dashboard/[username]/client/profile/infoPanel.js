@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import api from '@/utils/api';
 import { useToast } from '@/components/ui/use-toast';
@@ -58,11 +58,11 @@ const InfoPanel = (props) => {
       <div className='flex w-full justify-between'>
         <p className='text-[18px] font-medium text-[#96B0BD]'>{props.title}</p>
         <img
-          src='/assets/images/icons/edit-pen.svg'
           className='w-5 cursor-pointer'
           onClick={() => {
             setEditMode(true);
           }}
+          src='/assets/images/icons/edit-pen.svg'
         />
       </div>
       <form>
@@ -76,8 +76,6 @@ const InfoPanel = (props) => {
                 {editMode ? (
                   <input
                     className='border-b bg-transparent pb-2 text-sm font-medium text-white outline-none [appearance:textfield] focus:border-white md:text-[18px] md:font-medium [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                    value={singleInfo.value}
-                    type={singleInfo.idName === 'phoneNumber' ? 'number' : 'text'}
                     onChange={(e) => {
                       props.index !== -1
                         ? props.setProfileData((prev) => ({
@@ -93,6 +91,8 @@ const InfoPanel = (props) => {
                             [singleInfo.idName]: e.target.value,
                           }));
                     }}
+                    type={singleInfo.idName === 'phoneNumber' ? 'number' : 'text'}
+                    value={singleInfo.value}
                   />
                 ) : (
                   <p className='text-sm font-medium text-white md:text-[18px] md:font-medium'>

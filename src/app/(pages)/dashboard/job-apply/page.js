@@ -21,7 +21,7 @@ const JobApply = () => {
   const renderFiles = (files) => (
     <ul>
       {files.map((file) => (
-        <div key={file.path} className='single_file'>
+        <div className='single_file' key={file.path}>
           {' '}
           {file.path}{' '}
         </div>
@@ -38,11 +38,11 @@ const JobApply = () => {
         <div className='fields_top'>
           <div className='field_container'>
             <label>Enter Full Name</label>
-            <input type='text' placeholder='Enter your ful name' />
+            <input placeholder='Enter your ful name' type='text' />
           </div>
           <div className='field_container'>
             <label>Enter Email</label>
-            <input type='email' placeholder='Enter your email' />
+            <input placeholder='Enter your email' type='email' />
           </div>
           <div className='field_container'>
             <label>Upload CV</label>
@@ -71,7 +71,7 @@ const JobApply = () => {
         </div>
         <div className='write_message'>
           <label>Write your message</label>
-          <textarea placeholder='Write your message...'></textarea>
+          <textarea placeholder='Write your message...' />
           <button>Apply</button>
         </div>
       </form>
