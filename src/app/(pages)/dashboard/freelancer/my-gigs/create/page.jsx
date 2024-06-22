@@ -544,11 +544,6 @@ const CreateGig = () => {
         // await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
         //   console.log("Successfully uploaded");
         // })
-        await api.post('/api/v1/freelancer_gig/send_tg_bot', {
-          gigDescription: values.gigDescription,
-          profileName: auth.user.name,
-          profileType: 'Freelancer',
-        });
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
