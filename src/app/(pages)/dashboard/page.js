@@ -18,7 +18,7 @@ export default function ClientDashboard() {
     role: [0],
     verified: false,
   });
-console.log("Test");
+
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (tmp === null) {

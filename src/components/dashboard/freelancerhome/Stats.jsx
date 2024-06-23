@@ -44,7 +44,7 @@ const earnings = [
 
 const Stats = () => {
   return (
-    <div className='-mt-10 flex min-h-96 w-full flex-col font-roboto md:mt-6'>
+    <div className='-mt-10 flex min-h-96 w-full flex-col font-roboto md:mt-10'>
       <div className='flex h-16 items-center justify-between gap-6 rounded-2xl bg-deepGreen px-4'>
         <div className='flex min-w-[400px] items-center gap-4'>
           <CiSearch className='text-2xl text-medGray' />
