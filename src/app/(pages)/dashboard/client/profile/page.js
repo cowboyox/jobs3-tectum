@@ -253,6 +253,7 @@ const ClientDashboard = () => {
     onDrop: onDropHandleAvatarUpload,
   });
 
+  
   return !isLoading ? (
     <div className='p-0'>
       <div className='group relative cursor-pointer' {...getBannerRootProps()}>
