@@ -5,7 +5,7 @@ import api from '@/utils/api';
 
 const DisputeDetail = () => {
   const [myGigs, setMyGigs] = useState([]);
-  console.log(myGigs);
+
   useEffect(() => {
     api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
       setMyGigs(data.data.data);
