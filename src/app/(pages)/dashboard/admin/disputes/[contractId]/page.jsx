@@ -1,65 +1,16 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-// const Status = ({ status }) => {
-//   const getStatusStyles = () => {
-//     switch (status) {
-//       case 0:
-//         return 'border-green-500 text-green-500';
-//       case 'declined':
-//         return 'border-red-500 text-red-500';
-//       default:
-//         return 'border-gray-500 text-gray-500';
-//     }
-//   };
-
-//   const getStatusContent = () => {
-//     switch (status) {
-//       case 0:
-//         return 'Alive';
-//       case 1:
-//         return 'Hired';
-//       case 2:
-//         return 'Ended';
-//     }
-//   };
-
-//   return (
-//     <div className={`rounded border px-2 py-1 text-sm capitalize ${getStatusStyles()}`}>
-//       {getStatusContent(status)}
-//     </div>
-//   );
-// };
-// const GigCard = ({ gig }) => {
-//   return (
-//     <div className='cursor-pointer border-t-2 bg-[#10191d] py-7 mobile:flex-col-reverse mobile:gap-3 mobile:py-3'>
-//       <div className='flex items-center justify-between gap-1'>
-//         <div>
-//           <h3 className='mb-2 text-lg text-white'>Dispute Case For Contract Id#</h3>
-//           <p className='text-slate-500'>#23532523532</p>
-//         </div>
-//         <div>
-//           <h3 className='mb-2 text-lg text-white'>Date</h3>
-//           <p className='text-slate-500'>6/22, 2024</p>
-//         </div>
-//         <div>
-//           <h3 className='mb-2 text-lg text-white'>Amount</h3>
-//           <p className='text-slate-500'>$780</p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
+import api from '@/utils/api';
 
 const DisputeDetail = () => {
-  // const params = useParams();
-
-  // const [myGigs, setMyGigs] = useState([]);
-  // useEffect(() => {
-  //   api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
-  //     setMyGigs(data.data.data);
-  //   });
-  // }, []);
+  const [myGigs, setMyGigs] = useState([]);
+  console.log(myGigs);
+  useEffect(() => {
+    api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
+      setMyGigs(data.data.data);
+    });
+  }, []);
 
   return (
     <div className='flex justify-between gap-2'>

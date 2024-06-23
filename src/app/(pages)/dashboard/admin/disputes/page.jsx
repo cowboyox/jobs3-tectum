@@ -1,11 +1,9 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-
 import api from '@/utils/api';
 
-const GigCard = ({ gig }) => {
-  console.warn(gig);
+const GigCard = ({}) => {
   const router = useRouter();
 
   return (
