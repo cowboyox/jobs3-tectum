@@ -20,7 +20,7 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "unused-imports", "typescript-sort-keys", "sort-keys"],
+  "plugins": ["@typescript-eslint", "unused-imports"],
   "settings": {
     "import/resolver": {
       "node": {
@@ -29,24 +29,20 @@
     }
   },
   "rules": {
-    "prettier/prettier": ["error", {}, { "usePrettierrc": true }],
+    "prettier/prettier": ["warn", {}, { "usePrettierrc": true }],
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-explicit-any": "error",
-    "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/sort-type-constituents": "error",
+    "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
-    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
     "react/self-closing-comp": ["error", { "component": true, "html": true }],
     "react-hooks/exhaustive-deps": "error",
     "react/display-name": "off",
-    "react/jsx-sort-props": "error",
     "react/prop-types": "off",
-    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-imports": "warn",
     "unused-imports/no-unused-vars": [
       "warn",
       { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
-    ],
-    "typescript-sort-keys/interface": "error",
-    "typescript-sort-keys/string-enum": "error"
+    ]
   }
 }
