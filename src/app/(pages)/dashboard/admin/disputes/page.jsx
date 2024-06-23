@@ -1,21 +1,7 @@
 'use client';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from 'react';
-import { BsThreeDots } from 'react-icons/bs';
-import { CiClock2, CiFilter, CiReceipt, CiSearch } from 'react-icons/ci';
-import { RiRobot2Line } from 'react-icons/ri';
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import api from '@/utils/api';
-import { minutesDifference } from '@/utils/Helpers';
 
 
 const GigCard = ({ gig }) => {

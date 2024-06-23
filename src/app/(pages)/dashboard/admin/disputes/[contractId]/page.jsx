@@ -1,71 +1,8 @@
 'use client';
-import Link from 'next/link';
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from 'react';
-import { BsThreeDots } from 'react-icons/bs';
-import { CiClock2, CiFilter, CiReceipt, CiSearch } from 'react-icons/ci';
-import { RiRobot2Line } from 'react-icons/ri';
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import api from '@/utils/api';
-import { minutesDifference } from '@/utils/Helpers';
-
-const Status = ({ status }) => {
-  const getStatusStyles = () => {
-    switch (status) {
-      case 0:
-        return 'border-green-500 text-green-500';
-      case 'declined':
-        return 'border-red-500 text-red-500';
-      default:
-        return 'border-gray-500 text-gray-500';
-    }
-  };
-
-  const getStatusContent = () => {
-    switch (status) {
-      case 0:
-        return 'Alive';
-      case 1:
-        return 'Hired';
-      case 2:
-        return 'Ended';
-    }
-  };
-
-  return (
-    <div className={`rounded border px-2 py-1 text-sm capitalize ${getStatusStyles()}`}>
-      {getStatusContent(status)}
-    </div>
-  );
-};
-const GigCard = ({ gig }) => {
-  return (
-    <div className='bg-[#10191d] py-7 mobile:flex-col-reverse mobile:gap-3 mobile:py-3 border-t-2 cursor-pointer'>
-      <div className='flex items-center justify-between gap-1'>
-        <div>
-          <h3 className='text-lg text-white mb-2'>Dispute Case For Contract Id#</h3>
-          <p className='text-slate-500'>#23532523532</p>
-        </div>
-        <div>
-          <h3 className='text-lg text-white mb-2'>Date</h3>
-          <p className='text-slate-500'>6/22, 2024</p>
-        </div>
-        <div>
-          <h3 className='text-lg text-white mb-2'>Amount</h3>
-          <p className='text-slate-500'>$780</p>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const DisputeDetail = () => {
   const params = useParams();
