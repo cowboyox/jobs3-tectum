@@ -1,12 +1,14 @@
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import { useAccount } from 'wagmi';
 
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
+import { useDebounce } from '@/hooks/useDebounce';
+import { useVerifyUsername } from '@/hooks/useVerifyUsername';
 import { USER_ROLE } from '@/utils/constants';
 
 // Icons
@@ -16,12 +18,17 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState(null);
   const [name, setName] = useState(null);
+  const [isValidatedUsername, setIsValidatedUsername] = useState(false);
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState(null);
   const [confirmPwd, setConfirmPwd] = useState(null);
   const [referralUser, setReferralUser] = useState(null);
   const [referrer, setReferrer] = useState('');
   const [accept, setAccept] = useState(null);
 
+  const debouncedUsername = useDebounce(username);
+  const { data: isExists } = useVerifyUsername(debouncedUsername);
+  const ref = useRef(null);
   const auth = useCustomContext();
   const { open } = useWeb3Modal();
   const router = useRouter();
@@ -59,6 +66,24 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
     }
   }, [isConnected, router, address, auth, onClose]);
 
+  useLayoutEffect(() => {
+    if (ref.current && !!username) {
+      if (!username.match(/^[a-z0-9_-]+$/)) {
+        ref.current.classList.add('field_error');
+        setIsValidatedUsername(false);
+      } else {
+        ref.current.classList.remove('field_error');
+        setIsValidatedUsername(true);
+
+        if (isExists) {
+          ref.current.classList.add('field_error');
+        } else {
+          ref.current.classList.remove('field_error');
+        }
+      }
+    }
+  }, [isExists, username]);
+
   const validateEmail = (email) => {
     return String(email)
       .toLowerCase()
@@ -66,6 +91,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
   };
+
   function checkInput(ev, attr) {
     // Check if input is empty
     if (ev.target.value.trim() !== '') {
@@ -86,6 +112,13 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         } else {
           ev.target.closest('.field_container')?.classList.remove('field_error');
           setName(ev.target.value);
+        }
+      }
+      if (attr === 'username') {
+        if (ev.target.value.length < 1) {
+          ev.target.closest('.field_container').classList.add('field_error');
+        } else {
+          setUsername(ev.target.value.trim());
         }
       }
       if (attr === 'password') {
@@ -122,11 +155,24 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
   }
 
   const validateUserInfo = () => {
-    if (!name || !email || !password || !confirmPwd || !accept) {
+    if (
+      !name ||
+      !username ||
+      isExists ||
+      !isValidatedUsername ||
+      !email ||
+      !password ||
+      !confirmPwd ||
+      !accept
+    ) {
       return false;
     }
+
     if (
       name.length === 0 ||
+      isExists ||
+      !isValidatedUsername ||
+      username.length === 0 ||
       !validateEmail(email) ||
       password.length < 8 ||
       confirmPwd.length < 8 ||
@@ -155,6 +201,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         password,
         referralUser,
         referrer,
+        username,
       });
       if (!verified) {
         onSwitchPopup('Verification');
@@ -175,6 +222,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         router.push(`/dashboard/${accountTypeName}/`);
       }
     } catch (err) {
+      console.error(err);
       return toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -215,6 +263,23 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
               />
               <label htmlFor='sign_up_full_name'>Full name</label>
               <span className='error_message'>Please enter your full name.</span>
+            </div>
+            <div className='field_container' ref={ref}>
+              <input
+                id='sign_up_username'
+                onChange={(ev) => {
+                  checkInput(ev, 'username');
+                }}
+                type='text'
+              />
+              <label htmlFor='sign_up_username'>Username</label>
+              {!username ? (
+                <span className='error_message'>Please enter your username.</span>
+              ) : !isValidatedUsername ? (
+                <span className='error_message'>You can only input with a~z, 0~9, _, -</span>
+              ) : (
+                <span className='error_message'>This username already exists.</span>
+              )}
             </div>
             <div className='field_container'>
               <input
