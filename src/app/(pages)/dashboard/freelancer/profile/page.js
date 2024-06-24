@@ -348,7 +348,7 @@ const FreelancerProfile = () => {
         });
       }
     }
-  }, [profileData._id, formData, toast]);
+  }, [profileData._id, toast]);
 
   const onDropHandleBannerUpload = useCallback(
     async (acceptedFiles) => {
@@ -408,7 +408,7 @@ const FreelancerProfile = () => {
         });
       }
     }
-  }, [profileData._id, formData, toast]);
+  }, [profileData._id, toast]);
 
   const onDropHandleAvatarUpload = useCallback(
     async (acceptedFiles) => {

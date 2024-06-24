@@ -167,7 +167,7 @@ const ClientDashboard = () => {
         });
       }
     }
-  }, [profileData._id, formData, toast]);
+  }, [profileData._id, toast]);
 
   const onDropHandleBannerUpload = useCallback(
     async (acceptedFiles) => {
@@ -222,7 +222,7 @@ const ClientDashboard = () => {
         });
       }
     }
-  }, [profileData._id, formData, toast]);
+  }, [profileData._id, toast]);
 
   const onDropHandleAvatarUpload = useCallback(
     async (acceptedFiles) => {
