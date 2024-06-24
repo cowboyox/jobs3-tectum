@@ -124,7 +124,7 @@ const ClientDashboard = () => {
     }
   }, [router, toast]);
 
-  const handleBannerUpload = async (event) => {
+  const handleBannerUpload = useCallback( async (event) => {
     if (event.target.files?.length) {
       const image = event.target.files[0];
       const formData = new FormData();
@@ -167,7 +167,7 @@ const ClientDashboard = () => {
         });
       }
     }
-  };
+  }, [profileData._id, formData, toast]);
 
   const onDropHandleBannerUpload = useCallback(
     async (acceptedFiles) => {
@@ -179,7 +179,7 @@ const ClientDashboard = () => {
     [handleBannerUpload]
   );
 
-  const handleAvatarUpload = async (event) => {
+  const handleAvatarUpload = useCallback( async (event) => {
     if (event.target.files?.length) {
       const image = event.target.files[0];
       const formData = new FormData();
@@ -222,7 +222,7 @@ const ClientDashboard = () => {
         });
       }
     }
-  };
+  }, [profileData._id, formData, toast]);
 
   const onDropHandleAvatarUpload = useCallback(
     async (acceptedFiles) => {

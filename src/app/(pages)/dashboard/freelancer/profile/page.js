@@ -305,7 +305,7 @@ const FreelancerProfile = () => {
     }
   };
 
-  const handleBannerUpload = async (event) => {
+  const handleBannerUpload = useCallback(async (event) => {
     if (event.target.files?.length) {
       const image = event.target.files[0];
       const formData = new FormData();
@@ -317,7 +317,6 @@ const FreelancerProfile = () => {
       };
 
       try {
-        // const res = await uploadImageToCloudinary(formData, onUploadProgress);
         const res = await api.post(
           `/api/v1/profile/upload-client-banner/${profileData._id}`,
           formData,
@@ -325,10 +324,6 @@ const FreelancerProfile = () => {
         );
 
         if (res.status === 200) {
-          // setUploadedImagePath(URL.createObjectURL(image));
-          // setFetchBanner(URL.createObjectURL(image));
-          // setPreviewBanner(true);
-          // let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
           setProfileData((prev) => ({
             ...prev,
             clientBannerURL: res.data.data,
@@ -353,7 +348,7 @@ const FreelancerProfile = () => {
         });
       }
     }
-  };
+  }, [profileData._id, formData, toast]);
 
   const onDropHandleBannerUpload = useCallback(
     async (acceptedFiles) => {
@@ -365,7 +360,7 @@ const FreelancerProfile = () => {
     [handleBannerUpload]
   );
 
-  const handleAvatarUpload = async (event) => {
+  const handleAvatarUpload = useCallback(async (event) => {
     if (event.target.files?.length) {
       const image = event.target.files[0];
       const formData = new FormData();
@@ -413,7 +408,7 @@ const FreelancerProfile = () => {
         });
       }
     }
-  };
+  }, [profileData._id, formData, toast]);
 
   const onDropHandleAvatarUpload = useCallback(
     async (acceptedFiles) => {
