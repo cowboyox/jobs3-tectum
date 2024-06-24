@@ -88,6 +88,7 @@ export const CustomContext = createContext({ undefined });
 
 const ContextProvider = ({ children }) => {
   const [currentRole, setCurrentRole] = useState(USER_ROLE.FREELANCER);
+  const [currentProfile, setCurrentProfile] = useState(null)
   // Context API States
   const [loading, setLoading] = useState(true);
   const [loadCompleted, setLoadCompleted] = useState(true);
@@ -113,9 +114,10 @@ const ContextProvider = ({ children }) => {
     const { user, token } = data;
     api.defaults.headers.common.Authorization = token;
     setCurrentRole(user.role[0]);
+    const profileData = await api.get(`/api/v1/profile/get-profile/${user.email}/${user.role[0]}`);
     localStorage.setItem(
       'jobs_2024_token',
-      JSON.stringify({ data: { ...data, currentRole: user.role[0] } })
+      JSON.stringify({ data: { ...data, currentRole: user.role[0], currentProfile: profileData.data.profile } })
     );
     dispatch({
       payload: user,
@@ -151,9 +153,10 @@ const ContextProvider = ({ children }) => {
     const { user, token } = data;
     api.defaults.headers.common.Authorization = token;
     setCurrentRole(user.role[0]);
+    const profileData = await api.get(`/api/v1/profile/get-profile/${user.email}/${user.role[0]}`);
     localStorage.setItem(
       'jobs_2024_token',
-      JSON.stringify({ data: { ...data, currentRole: user.role[0] } })
+      JSON.stringify({ data: { ...data, currentRole: user.role[0], currentProfile: profileData.data.profile } })
     );
     dispatch({
       payload: user,
@@ -171,13 +174,14 @@ const ContextProvider = ({ children }) => {
         acc_type: state.acc_type,
         wallet,
       });
+      const profileData = await api.get(`/api/v1/profile/get-profile/${data.user.email}/${data.user.role[0]}`);
       dispatch({
         payload: wallet,
         type: HANDLERS.SIGN_IN_WALLET,
       });
       localStorage.setItem(
         'jobs_2024_token',
-        JSON.stringify({ data: { ...data, currentRole: data.user.role[0] } })
+        JSON.stringify({ data: { ...data, currentRole: data.user.role[0], currentProfile: profileData.data.profile } })
       );
       let accountType = data.user.role[0];
       let accountTypeName;
@@ -206,13 +210,14 @@ const ContextProvider = ({ children }) => {
     // }
     try {
       const { data } = await api.post('/api/v1/user/wallet/login', { wallet });
+      const profileData = await api.get(`/api/v1/profile/get-profile/${data.user.email}/${data.user.role[0]}`);
       dispatch({
         payload: wallet,
         type: HANDLERS.SIGN_IN_WALLET,
       });
       localStorage.setItem(
         'jobs_2024_token',
-        JSON.stringify({ data: { ...data, currentRole: data.user.role[0] } })
+        JSON.stringify({ data: { ...data, currentRole: data.user.role[0], currentProfile: profileData.data.profile } })
       );
       let accountType = data.user.role[0];
       let accountTypeName;
@@ -252,8 +257,9 @@ const ContextProvider = ({ children }) => {
     try {
       const data = JSON.parse(storedData);
       if (data && typeof data === 'object') {
-        const { user, token, currentRole } = data.data;
+        const { user, token, currentRole, profileData } = data.data;
         setCurrentRole(currentRole);
+        setCurrentProfile(profileData)
         api.defaults.headers.common.Authorization = token;
         dispatch({
           payload: user,
@@ -268,33 +274,55 @@ const ContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (router) {
+    const fetchData = async () => {
       const storedData = localStorage.getItem('jobs_2024_token');
+      if (!storedData) return;
+
       try {
         const data = JSON.parse(storedData);
+        const email = data?.data?.user?.email;
+
         if (pathname.includes('dashboard/freelancer')) {
           setCurrentRole(USER_ROLE.FREELANCER);
-
-          if (data && typeof data === 'object') {
+          const profileData = await api.get(`/api/v1/profile/get-profile/${email}/${USER_ROLE.FREELANCER}`);
+          const profile = profileData.data.profile
+          if (profile) {
+            setCurrentProfile(profile);
             localStorage.setItem(
               'jobs_2024_token',
-              JSON.stringify({ data: { ...data.data, currentRole: USER_ROLE.FREELANCER } })
+              JSON.stringify({
+                data: {
+                  ...data.data,
+                  currentRole: USER_ROLE.FREELANCER,
+                  currentProfile: profile,
+                },
+              })
             );
           }
         } else if (pathname.includes('dashboard/client')) {
           setCurrentRole(USER_ROLE.CLIENT);
-
-          if (data && typeof data === 'object') {
+          const profileData = await api.get(`/api/v1/profile/get-profile/${email}/${USER_ROLE.CLIENT}`);
+          const profile = profileData.data.profile
+          if (profile) {
+            setCurrentProfile(profile);
             localStorage.setItem(
               'jobs_2024_token',
-              JSON.stringify({ data: { ...data.data, currentRole: USER_ROLE.CLIENT } })
+              JSON.stringify({
+                data: {
+                  ...data.data,
+                  currentRole: USER_ROLE.CLIENT,
+                  currentProfile: profile,
+                },
+              })
             );
           }
         }
       } catch (err) {
-        console.error('Error getting data!');
+        console.error('Error processing stored data!', err);
       }
-    }
+    };
+
+    fetchData();
   }, [router, pathname]);
 
   return (
@@ -303,6 +331,7 @@ const ContextProvider = ({ children }) => {
         ...state,
         contextValue,
         currentRole,
+        currentProfile,
         dispatch,
         loader: [loadCompleted, setLoadCompleted],
         loading3D: [load3D, setLoad3D],
@@ -311,6 +340,7 @@ const ContextProvider = ({ children }) => {
         register,
         scroll: [scrollPause, setScrollPause],
         setCurrentRole,
+        setCurrentProfile,
         setRole,
         signInwithWallet,
         signOut,
