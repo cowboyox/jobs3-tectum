@@ -9,7 +9,8 @@ import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import { USER_ROLE } from '@/utils/constants';
 
-import { useGetAllUsernames } from '@/hooks/useGetAllUsernames';
+import { useVerifyUsername } from '@/hooks/useVerifyUsername';
+import { useDebounce } from '@/hooks/useDebounce';
 
 // Icons
 
@@ -18,7 +19,6 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState(null);
   const [name, setName] = useState(null);
-  const [isVerifiedUsername, setIsVerifiedUsername] = useState(false);
   const [isValidatedUsername, setIsValidatedUsername] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState(null);
@@ -27,7 +27,8 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
   const [referrer, setReferrer] = useState('');
   const [accept, setAccept] = useState(null);
 
-  const { data: allUsernames } = useGetAllUsernames();
+  const debouncedUsername = useDebounce(username);
+  const { data: isExists } = useVerifyUsername(debouncedUsername);
   const ref = useRef(null);
   const auth = useCustomContext();
   const { open } = useWeb3Modal();
@@ -75,18 +76,14 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         ref.current.classList.remove('field_error');
         setIsValidatedUsername(true);
 
-        if (!!allUsernames) {
-          if (allUsernames.includes(username)) {
-            ref.current.classList.add('field_error');
-            setIsVerifiedUsername(false);
-          } else {
-            ref.current.classList.remove('field_error');
-            setIsVerifiedUsername(true);
-          }
+        if (isExists) {
+          ref.current.classList.add('field_error');
+        } else {
+          ref.current.classList.remove('field_error');
         }
       }
     }
-  }, [allUsernames, username]);
+  }, [isExists, username]);
 
   const validateEmail = (email) => {
     return String(email)
@@ -162,7 +159,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
     if (
       !name ||
       !username ||
-      !isVerifiedUsername ||
+      isExists ||
       !isValidatedUsername ||
       !email ||
       !password ||
@@ -174,7 +171,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
 
     if (
       name.length === 0 ||
-      !isVerifiedUsername ||
+      isExists ||
       !isValidatedUsername ||
       username.length === 0 ||
       !validateEmail(email) ||
