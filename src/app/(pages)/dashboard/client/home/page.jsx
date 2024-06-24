@@ -3,7 +3,7 @@ import React from 'react';
 import FillProfile from '@/components/dashboard/home/FillProfile';
 import Gigs from '@/components/home/Gigs';
 import RecentlyViewed from '@/components/home/RecentlyViewed';
-import Stats from '@/components/home/Stats';
+import Stats from '@/components/dashboard/home/Stats';
 import Hero from '../../../../../components/dashboard/home/hero'
 
 
