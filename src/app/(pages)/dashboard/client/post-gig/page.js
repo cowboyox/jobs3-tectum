@@ -193,7 +193,7 @@ const GigPosting = () => {
 
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [jobCategory, setCategoryValue] = useState('');
+  const [jobCategories, setJobCategories] = useState([]);
   const [skillSet, setSkillSet] = useState([]);
   const [budgetMode, setBudgetMode] = useState('hourly');
   const [files, setFiles] = useState([]);
@@ -201,7 +201,7 @@ const GigPosting = () => {
   const [postData, setPostData] = useState({
     attachment: [],
     experienceLevel: 0,
-    gigCategory: '',
+    gigCategory: [],
     gigDeadline: 3,
     gigDescription: '',
     gigPaymentType: true, // hourly budget gig first
@@ -308,6 +308,19 @@ const GigPosting = () => {
       });
   };
 
+  const onSelectJobCatetory = (currentValue) => {
+    let categories = jobCategories.includes(currentValue)
+      ? jobCategories.filter((c) => c !== currentValue)
+      : [...jobCategories, currentValue];
+
+    setJobCategories(categories);
+    setPostData((prev) => ({
+      ...prev,
+      gigCategory: categories,
+    }));
+    setOpen(false);
+  };
+
   return (
     <div className='gig_posting'>
       <h1 className='text-3xl md:text-4xl'>
@@ -350,14 +363,15 @@ const GigPosting = () => {
                     >
                       <Button
                         aria-expanded={open}
-                        className='w-full justify-between'
+                        className='w-full justify-between overflow-hidden'
                         role='combobox'
                         variant='outline'
                       >
-                        {jobCategory
-                          ? all_form_structure.categories_list.find(
-                              (job_category) => job_category.value === jobCategory
-                            )?.label
+                        {jobCategories.length
+                          ? all_form_structure.categories_list
+                              .filter((job_category) => jobCategories.includes(job_category.value))
+                              ?.map((data) => data.label)
+                              .join(', ')
                           : all_form_structure.categories_placeholder}
                         <GoChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                       </Button>
@@ -371,21 +385,16 @@ const GigPosting = () => {
                             {all_form_structure.categories_list.map((job_category) => (
                               <CommandItem
                                 key={job_category.value}
-                                onSelect={(currentValue) => {
-                                  setCategoryValue(currentValue);
-                                  setPostData((prev) => ({
-                                    ...prev,
-                                    gigCategory: currentValue,
-                                  }));
-                                  setOpen(false);
-                                }}
+                                onSelect={onSelectJobCatetory}
                                 value={job_category.value}
                               >
                                 {job_category.label}
                                 <IoCheckmark
                                   className={cn(
                                     'ml-auto h-4 w-4',
-                                    jobCategory === job_category.value ? 'opacity-100' : 'opacity-0'
+                                    jobCategories.includes(job_category.value)
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
                                   )}
                                 />
                               </CommandItem>
