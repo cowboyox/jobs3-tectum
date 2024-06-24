@@ -35,9 +35,13 @@ const RecentlyViewed = () => {
     <div className='mt-10 flex flex-col gap-4'>
       <div className='flex justify-between'>
         <h1 className='text-2xl font-semibold'>Recently Viewed</h1>
-        <p className='cursor-pointer'>Show more</p>
+
+        {/* <p className='cursor-pointer'>Show more</p> */}
       </div>
-      <div className='mt-2 grid gap-4 lg:grid-cols-2'>
+      <div className='flex justify-center items-center mt-50px'>
+        Not yet
+      </div>
+      {/* <div className='mt-2 grid gap-4 lg:grid-cols-2'>
         {recentViewed.length ? (
           recentViewed.map((spend, index) => (
             <div
@@ -62,7 +66,7 @@ const RecentlyViewed = () => {
         ) : (
           <div className='mt-[10%] text-center'>Not yet</div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

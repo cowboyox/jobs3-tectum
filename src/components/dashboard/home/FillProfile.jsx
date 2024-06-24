@@ -4,12 +4,12 @@ import React from "react";
 
 const FillProfile = () => {
   return (
-    <div className="mt-10 flex  flex-col justify-between rounded-2xl bg-deepGreen gap-4 p-8 md:flex-row h-full">
+    <div className="mt-10 flex  flex-col justify-between rounded-2xl bg-deepGreen gap-4 p-10 md:flex-row h-full">
       <div className="flex h-full w-full flex-col justify-center gap-4">
         <h1 className="text-3xl font-semibold text-white">
           Fill out your profile 🤩
         </h1>
-        <p className="text-sm text-medGray">
+        <p className="text-sm text-medGray w-full md:w-2/3">
           Increase your chances of standing out on job applications and
           searches.
         </p>

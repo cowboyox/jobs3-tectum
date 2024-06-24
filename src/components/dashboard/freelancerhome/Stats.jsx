@@ -47,10 +47,10 @@ const earnings = [
 const Stats = () => {
   return (
     <div className=' flex min-h-96 w-full flex-col font-roboto mt-10'>
-      <div className='flex md:h-16 items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4'>
-        <div className='flex min-w-[400px] items-center gap-4'>
-        <Select defaultValue='normal' className="outline-none">
-            <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] h-14 mobile:w-14 mobile:p-2 outline-none'>
+      <div className='flex items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4 md:h-16'>
+        <div className='flex items-center gap-4'>
+          <Select defaultValue='normal' className='outline-none'>
+            <SelectTrigger className='h-full w-20 rounded-xl bg-[#1B272C] outline-none mobile:w-14 mobile:p-2'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className='rounded-xl bg-[#1B272C]'>

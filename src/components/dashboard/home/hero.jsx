@@ -4,13 +4,13 @@ import React from 'react';
 const Hero = () => {
   return (
     <div className='w-full'>
-      <Image
+      {/* <Image
         alt='hero'
         className='h-full w-full object-cover md:hidden'
         height={10000}
         src={'/assets/dashboard-media/homeHeroSm.png'}
         width={10000}
-      />
+      /> */}
       <Image
         alt='hero'
         className='hidden h-full w-full object-cover md:block'

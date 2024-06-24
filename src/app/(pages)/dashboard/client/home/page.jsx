@@ -10,7 +10,7 @@ import Hero from '../../../../../components/dashboard/home/hero'
 const page = () => {
   return (
     <div className='flex min-h-screen w-full flex-col items-center py-10'>
-      <div className='2xl:max-w-[1000px]'>
+      <div className=''>
         <Hero/>
         <FillProfile />
         <Stats />
