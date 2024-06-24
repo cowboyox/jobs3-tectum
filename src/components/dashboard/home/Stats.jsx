@@ -101,7 +101,7 @@ const Stats = ({ search, setSearch }) => {
           <span className='flex size-6 items-center justify-center rounded-full bg-orange'>4</span>
         </div>
       </div> */}
-      <div className='mt-10 flex flex-col gap-4'>
+      <div className='mt-5 flex flex-col gap-4'>
         <h1>Your Stats</h1>
         <div className='grid gap-4 lg:grid-cols-3'>
           <div className='flex h-full min-h-96 flex-col rounded-2xl bg-deepGreen p-5'>
