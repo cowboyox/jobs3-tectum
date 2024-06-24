@@ -1,14 +1,14 @@
 import api from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 
-export const useGetAllUsernames = () => {
+export const useVerifyUsername = (username) => {
   return useQuery({
-    queryKey: ['useGetAllUsernames'],
+    queryKey: ['useVerifyUsername', username],
     queryFn: async () => {
       try {
-        const { data } = await api.get('/api/v1/user/get-all-usernames');
+        const { data } = await api.post('/api/v1/user/verify_username', { username });
 
-        return data.map((user) => user.username);
+        return data.isExists;
       } catch (e) {
         console.error(e);
 
