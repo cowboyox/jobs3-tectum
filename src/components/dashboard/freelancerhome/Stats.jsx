@@ -1,9 +1,11 @@
 'use client';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Image from 'next/image';
 import React from 'react';
 import { CgOptions } from 'react-icons/cg';
 import { CiSearch } from 'react-icons/ci';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
+import { RiRobot2Line } from 'react-icons/ri';
 
 const orders = [
   // {
@@ -44,29 +46,43 @@ const earnings = [
 
 const Stats = () => {
   return (
-    <div className='-mt-10 flex min-h-96 w-full flex-col font-roboto md:mt-10'>
-      <div className='flex h-16 items-center justify-between gap-6 rounded-2xl bg-deepGreen px-4'>
+    <div className=' flex min-h-96 w-full flex-col font-roboto mt-10'>
+      <div className='flex md:h-16 items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4'>
         <div className='flex min-w-[400px] items-center gap-4'>
-          <CiSearch className='text-2xl text-medGray' />
+        <Select defaultValue='normal' className="outline-none">
+            <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] h-14 mobile:w-14 mobile:p-2 outline-none'>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='rounded-xl bg-[#1B272C]'>
+              <SelectGroup>
+                <SelectItem value='normal'>
+                  <CiSearch className='mobile:max-w-4' size={20} />
+                </SelectItem>
+                <SelectItem value='ai'>
+                  <RiRobot2Line className='mobile:max-w-4' size={20} />
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <input
             className='h-full w-full flex-1 border-none bg-transparent text-medGray outline-none'
             id='search'
             name='search'
-            placeholder='Search by job title, co...'
+            placeholder='Search by job title, company, keywords'
             type='text'
           />
         </div>
         <div className='flex h-16 min-w-28 items-center justify-center gap-4'>
-          <div className='hidden rounded-full bg-[#1BBF36] md:block'>
+          {/* <div className='hidden rounded-full bg-[#1BBF36] md:block'>
             <Image height={32} src={'/assets/icons/AIChatIcon.png'} width={32} />
-          </div>
-          <div className='flex items-center gap-2'>
+          </div> */}
+          <div className='flex items-center gap-4'>
             <HiOutlineLocationMarker className='text-2xl text-medGray' />
             <p className='hidden text-medGray md:block'>Anywhere</p>
           </div>
           <CgOptions className='text-2xl text-medGray' />
           <p className='hidden text-medGray md:block'>Filter</p>
-          <span className='flex size-6 items-center justify-center rounded-full bg-orange'>4</span>
+          {/* <span className='flex size-6 items-center justify-center rounded-full bg-orange'>4</span> */}
         </div>
       </div>
       <div className='mt-10 flex flex-col gap-4'>

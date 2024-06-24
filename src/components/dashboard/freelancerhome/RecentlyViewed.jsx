@@ -3,16 +3,16 @@ import Image from 'next/image';
 import React, { useEffect } from 'react';
 
 const recentViewed = [
-  // {
-  //   title: "Figma and Flow Bite Mentor Needed",
-  //   location: "Remote",
-  //   price: "$360",
-  // },
-  // {
-  //   title: "Figma and Flow Bite Mentor Needed",
-  //   location: "Remote",
-  //   price: "$400",
-  // },
+  {
+    title: "Figma and Flow Bite Mentor Needed",
+    location: "Remote",
+    price: "Applied 2 days ago",
+  },
+  {
+    title: "Figma and Flow Bite Mentor Needed",
+    location: "Remote",
+    price: "Applied 2 days ago",
+  },
   // {
   //   title: "Figma and Flow Bite Mentor Needed",
   //   location: "Remote",
@@ -37,11 +37,11 @@ const RecentlyViewed = () => {
         <h1 className='text-2xl font-semibold'>Recently Viewed</h1>
         <p className='cursor-pointer'>Show more</p>
       </div>
-      <div className='mt-2 grid gap-4 lg:grid-cols-3'>
+      <div className='mt-2 grid gap-4 lg:grid-cols-2'>
         {recentViewed.length ? (
           recentViewed.map((spend, index) => (
             <div
-              className='flex flex-col items-center gap-1 rounded-2xl bg-darkGray px-4 py-8'
+              className='flex justify-between items-start gap-1 rounded-2xl bg-deepGreen p-8'
               key={index}
             >
               <div className='flex flex-col gap-4'>
@@ -51,11 +51,12 @@ const RecentlyViewed = () => {
                 </div>
                 <div className='flex items-center justify-between gap-4'>
                   <p className='text-lg font-[400] text-medGray'>{spend.price}</p>
-                  <div className='flex items-center gap-1 rounded-[6px] border-2 border-white px-3 text-white'>
-                    <p className='p-[1px]'>{spend.location}</p>
-                  </div>
+                 
                 </div>
               </div>
+              <div className='flex items-center gap-1 rounded-[6px] border-2 border-white px-3 text-white'>
+                    <p className='p-[1px]'>{spend.location}</p>
+                  </div>
             </div>
           ))
         ) : (
