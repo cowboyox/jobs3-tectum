@@ -425,14 +425,14 @@ const CreateGig = () => {
     },
   ]);
 
-  const [profile, setProfileData] = useState(null);
-  useEffect(() => {
-    if (auth.user) {
-      api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then((res) => {
-        setProfileData(res.data.profile);
-      });
-    }
-  }, [auth]);
+  // const [profile, setProfileData] = useState(null);
+  // useEffect(() => {
+  //   if (auth.user) {
+  //     api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then((res) => {
+  //       setProfileData(res.data.profile);
+  //     });
+  //   }
+  // }, [auth]);
 
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
@@ -507,9 +507,10 @@ const CreateGig = () => {
     values.question = requirementQuestions;
     values.searchKeywords = tags;
     values.email = auth.user.email;
-    if (profile) {
-      values.creator = profile._id;
-    }
+    values.creator = auth.currentProfile._id
+    // if (profile) {
+    //   values.creator = profile._id;
+    // }
 
     if (!values.gigTitle) {
       return toast({
@@ -523,32 +524,32 @@ const CreateGig = () => {
 
     const formData = new FormData();
     if (videoFile) {
-      formData.append('video', videoFile);
+      formData.append('file', videoFile);
     }
 
     imageFiles.forEach((file) => {
-      if (file) formData.append('image', file);
+      if (file) formData.append('file', file);
     });
     documentFiles.forEach((file) => {
-      if (file) formData.append('document', file);
+      if (file) formData.append('file', file);
     });
 
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data',
-    //   },
-    // };
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
     await api
       .post('/api/v1/freelancer_gig/post_gig', values)
-      .then(async () => {
-        // await api.post(`/api/v1/freelancer_gig/upload_attachment/${data.data.gigId}`, formData, config).then(data => {
-        //   console.log("Successfully uploaded");
-        // })
-        await api.post('/api/v1/freelancer_gig/send_tg_bot', {
-          gigDescription: values.gigDescription,
-          profileName: auth.user.name,
-          profileType: 'Freelancer',
-        });
+      .then(async (data) => {
+        await api.post(`/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${data.data.gigId}`, formData, config).then(async (data) => {
+          console.log("Successfully uploaded", data);
+          await api.post('/api/v1/freelancer_gig/send_tg_bot', {
+            gigDescription: values.gigDescription,
+            profileName: auth.user.name,
+            profileType: 'Freelancer',
+          })
+        })
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
