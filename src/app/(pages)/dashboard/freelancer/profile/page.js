@@ -16,6 +16,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useToast } from '@/components/ui/use-toast';
 import api from '@/utils/api';
 import { languages, skillSets } from '@/utils/constants';
+import { USER_ROLE } from '@/utils/constants';
 
 import 'swiper/css';
 // import './remove_horizontal_padding.css';
@@ -142,7 +143,7 @@ const FreelancerProfile = () => {
           let email = JSON.parse(tmp).data.user.email;
           setUser(JSON.parse(tmp).data.user);
 
-          const data = await api.get(`/api/v1/profile/get-profile/${email}`);
+          const data = await api.get(`/api/v1/profile/get-profile/${email}/${USER_ROLE.FREELANCER}`);
           setProfileData(data.data.profile);
 
           if (data.data.profile.freelancerBio) {
@@ -304,59 +305,59 @@ const FreelancerProfile = () => {
     }
   };
 
+  const handleBannerUpload = async (event) => {
+    if (event.target.files?.length) {
+      const image = event.target.files[0];
+      const formData = new FormData();
+      formData.append('file', image);
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      let imageName = 'clientBanner' + image.type.split('/')[1];
+
+      try {
+        // const res = await uploadImageToCloudinary(formData, onUploadProgress);
+        const res = await api.post(
+          `/api/v1/profile/upload-client-banner/${profileData._id}`,
+          formData,
+          config
+        );
+
+        if (res.status === 200) {
+          // setUploadedImagePath(URL.createObjectURL(image));
+          // setFetchBanner(URL.createObjectURL(image));
+          // setPreviewBanner(true);
+          // let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
+          setProfileData((prev) => ({
+            ...prev,
+            clientBannerURL: res.data.data,
+          }));
+          toast({
+            className:
+              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Successfully updated Freelancer Profile</h3>,
+            title: <h1 className='text-center'>Success</h1>,
+            variant: 'default',
+          });
+        }
+      } catch (error) {
+        setLoading(false);
+        console.error('Error uploading image:', error);
+        toast({
+          className:
+            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>Internal Server Error</h3>,
+          title: <h1 className='text-center'>Error</h1>,
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
   const onDropHandleBannerUpload = useCallback(
     async (acceptedFiles) => {
-      const handleBannerUpload = async (event) => {
-        if (event.target.files?.length) {
-          const image = event.target.files[0];
-          const formData = new FormData();
-          formData.append('file', image);
-          const config = {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          };
-          let imageName = 'clientBanner' + image.type.split('/')[1];
-
-          try {
-            // const res = await uploadImageToCloudinary(formData, onUploadProgress);
-            const res = await api.post(
-              `/api/v1/profile/upload-client-banner/${user.email}`,
-              formData,
-              config
-            );
-
-            if (res.status === 200) {
-              // setUploadedImagePath(URL.createObjectURL(image));
-              setFetchBanner(URL.createObjectURL(image));
-              setPreviewBanner(true);
-              let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
-              setProfileData((prev) => ({
-                ...prev,
-                clientBanner: tmp,
-              }));
-              toast({
-                className:
-                  'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-                description: <h3>Successfully updated Freelancer Profile</h3>,
-                title: <h1 className='text-center'>Success</h1>,
-                variant: 'default',
-              });
-            }
-          } catch (error) {
-            setLoading(false);
-            console.error('Error uploading image:', error);
-            toast({
-              className:
-                'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-              description: <h3>Internal Server Error</h3>,
-              title: <h1 className='text-center'>Error</h1>,
-              variant: 'destructive',
-            });
-          }
-        }
-      };
-
       if (acceptedFiles.length > 0) {
         const image = acceptedFiles[0];
         handleBannerUpload(image);
@@ -365,58 +366,58 @@ const FreelancerProfile = () => {
     [toast, user.email]
   );
 
+  const handleAvatarUpload = async (event) => {
+    if (event.target.files?.length) {
+      const image = event.target.files[0];
+      const formData = new FormData();
+      formData.append('file', image);
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      let imageName = 'clientAvatar' + image.type.split('/')[1];
+
+      try {
+        // const res = await uploadImageToCloudinary(formData, onUploadProgress);
+        const res = await api.post(
+          `/api/v1/profile/upload-client-avatar/${profileData._id}`,
+          formData,
+          config
+        );
+
+        if (res.status === 200) {
+          // setUploadedImagePath(URL.createObjectURL(image));
+          // setFetchAvatar(URL.createObjectURL(image));
+          // let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
+          setProfileData((prev) => ({
+            ...prev,
+            avatarURL: res.data.data,
+          }));
+          toast({
+            className:
+              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Successfully updated Freelancer Profile</h3>,
+            title: <h1 className='text-center'>Success</h1>,
+            variant: 'default',
+          });
+        }
+      } catch (error) {
+        setLoading(false);
+        console.error('Error uploading image:', error);
+        toast({
+          className:
+            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>Internal Server Error</h3>,
+          title: <h1 className='text-center'>Error</h1>,
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
   const onDropHandleAvatarUpload = useCallback(
     async (acceptedFiles) => {
-      const handleAvatarUpload = async (event) => {
-        if (event.target.files?.length) {
-          const image = event.target.files[0];
-          const formData = new FormData();
-          formData.append('file', image);
-          const config = {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          };
-          let imageName = 'clientAvatar' + image.type.split('/')[1];
-
-          try {
-            // const res = await uploadImageToCloudinary(formData, onUploadProgress);
-            const res = await api.post(
-              `/api/v1/profile/upload-client-avatar/${user.email}`,
-              formData,
-              config
-            );
-
-            if (res.status === 200) {
-              // setUploadedImagePath(URL.createObjectURL(image));
-              setFetchAvatar(URL.createObjectURL(image));
-              let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
-              setProfileData((prev) => ({
-                ...prev,
-                avatar: tmp,
-              }));
-              toast({
-                className:
-                  'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-                description: <h3>Successfully updated Freelancer Profile</h3>,
-                title: <h1 className='text-center'>Success</h1>,
-                variant: 'default',
-              });
-            }
-          } catch (error) {
-            setLoading(false);
-            console.error('Error uploading image:', error);
-            toast({
-              className:
-                'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-              description: <h3>Internal Server Error</h3>,
-              title: <h1 className='text-center'>Error</h1>,
-              variant: 'destructive',
-            });
-          }
-        }
-      };
-
       if (acceptedFiles.length > 0) {
         const image = acceptedFiles[0];
         handleAvatarUpload(image);
@@ -444,7 +445,7 @@ const FreelancerProfile = () => {
           <img
             alt='banner'
             className='h-64 w-full rounded-b-2xl object-cover transition group-hover:opacity-75'
-            src={`${fetchBanner ? fetchBanner : '/assets/images/freelancer-image.jpeg'}`}
+            src={profileData?.clientBannerURL ? profileData.clientBannerURL : '/assets/images/freelancer-image.jpeg'}
           />
           <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
             <IoCameraOutline className='h-6 w-6' />
@@ -476,7 +477,7 @@ const FreelancerProfile = () => {
                     <img
                       alt='banner'
                       className='aspect-square h-full w-full rounded-full group-hover:opacity-75'
-                      src={`${fetchAvatar ? fetchAvatar : '/assets/images/users/user-5.png'}`}
+                      src={profileData?.avatarURL ? profileData.avatarURL : '/assets/images/users/user-5.png'}
                     />
                     <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
                       <IoCameraOutline className='h-6 w-6' />
