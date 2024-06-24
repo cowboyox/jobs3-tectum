@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 import React from "react";
 
 const FillProfile = () => {
@@ -14,11 +15,13 @@ const FillProfile = () => {
         </p>
       </div>
       <div className="flex w-full flex-row items-center justify-center gap-2 md:w-1/5 md:flex-col">
-        <Button
-          className={`w-full md:w-[180px] rounded-xl bg-[#DC4F13] px-10 py-8 text-white hover:bg-[#DC4F13]`}
-        >
-          Edit Profile
-        </Button>
+        <Link href={"/dashboard/client/profile"}>
+          <Button
+              className={`w-full md:w-[180px] rounded-xl bg-[#DC4F13] px-10 py-8 text-white hover:bg-[#DC4F13]`}
+            >
+            Edit Profile
+          </Button>
+        </Link>
       </div>
     </div>
   );

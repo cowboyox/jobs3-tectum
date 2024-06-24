@@ -124,8 +124,8 @@ const Stats = ({ search, setSearch }) => {
                     </div>
                   </div>
                   <div className='flex flex-1 items-center justify-center'>
-                    <div className='flex h-8 w-[90%] items-center justify-center gap-2 rounded-[8px] border-none bg-lightGray outline-none'>
-                      <span>-</span> {spend.price}
+                    <div className='flex h-8 w-[90%] items-center text-red-600 justify-center gap-2 rounded-[8px] border-none  outline-none'>
+                      <span>-</span>{spend.price}
                     </div>
                   </div>
                 </div>
