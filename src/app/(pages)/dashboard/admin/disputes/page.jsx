@@ -50,9 +50,9 @@ const Disputes = () => {
             <div className='mt-[10vh] text-center'>Not Disputes yet</div>
           )}
         </div>
-        <div className='mx-auto w-[30%] max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'>
-          Load more +
-        </div>
+        <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
+          Load more +{' '}
+        </button>
       </div>
     </div>
   );
