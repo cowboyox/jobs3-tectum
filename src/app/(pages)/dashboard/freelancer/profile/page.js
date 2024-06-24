@@ -362,7 +362,7 @@ const FreelancerProfile = () => {
         handleBannerUpload(image);
       }
     },
-    [toast, user.email, profileData._id, handleBannerUpload]
+    [handleBannerUpload]
   );
 
   const handleAvatarUpload = async (event) => {
@@ -422,7 +422,7 @@ const FreelancerProfile = () => {
         handleAvatarUpload(image);
       }
     },
-    [toast, user.email, profileData._id, handleAvatarUpload]
+    [handleAvatarUpload]
   );
 
   const { getRootProps: getBannerRootProps, getInputProps: getBannerInputProps } = useDropzone({
