@@ -315,7 +315,6 @@ const FreelancerProfile = () => {
           'Content-Type': 'multipart/form-data',
         },
       };
-      let imageName = 'clientBanner' + image.type.split('/')[1];
 
       try {
         // const res = await uploadImageToCloudinary(formData, onUploadProgress);
@@ -363,7 +362,7 @@ const FreelancerProfile = () => {
         handleBannerUpload(image);
       }
     },
-    [toast, user.email]
+    [toast, user.email, profileData._id, handleBannerUpload]
   );
 
   const handleAvatarUpload = async (event) => {
@@ -423,7 +422,7 @@ const FreelancerProfile = () => {
         handleAvatarUpload(image);
       }
     },
-    [toast, user.email]
+    [toast, user.email, profileData._id, handleAvatarUpload]
   );
 
   const { getRootProps: getBannerRootProps, getInputProps: getBannerInputProps } = useDropzone({

@@ -134,10 +134,8 @@ const ClientDashboard = () => {
           'Content-Type': 'multipart/form-data',
         },
       };
-      let imageName = 'clientBanner' + image.type.split('/')[1];
 
       try {
-        // const res = await uploadImageToCloudinary(formData, onUploadProgress);
         const res = await api.post(
           `/api/v1/profile/upload-client-banner/${profileData._id}`,
           formData,
@@ -178,7 +176,7 @@ const ClientDashboard = () => {
         handleBannerUpload(image);
       }
     },
-    [toast, user.email]
+    [toast, user.email, profileData._id, handleBannerUpload]
   );
 
   const handleAvatarUpload = async (event) => {
@@ -191,10 +189,8 @@ const ClientDashboard = () => {
           'Content-Type': 'multipart/form-data',
         },
       };
-      let imageName = 'clientAvatar' + image.type.split('/')[1];
 
       try {
-        // const res = await uploadImageToCloudinary(formData, onUploadProgress);
         const res = await api.post(
           `/api/v1/profile/upload-client-avatar/${profileData._id}`,
           formData,
@@ -202,10 +198,6 @@ const ClientDashboard = () => {
         );
 
         if (res.status === 200) {
-          // setUploadedImagePath(URL.createObjectURL(image));
-          // setFetchAvatar(URL.createObjectURL(image));
-          // setPreviewBanner(true);
-          // let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
           setProfileData((prev) => ({
             ...prev,
             avatarURL: res.data.data,
@@ -239,7 +231,7 @@ const ClientDashboard = () => {
         handleAvatarUpload(image);
       }
     },
-    [toast, user.email]
+    [toast, user.email, profileData._id, handleAvatarUpload]
   );
 
   const { getRootProps: getBannerRootProps, getInputProps: getBannerInputProps } = useDropzone({
