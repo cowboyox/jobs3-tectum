@@ -1,4 +1,5 @@
 'use client';
+
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import FileUpload from 'react-drag-n-drop-image';
@@ -200,10 +201,10 @@ const GigPosting = () => {
   const [postData, setPostData] = useState({
     attachment: [],
     experienceLevel: 0,
-    gigCategory: [],
+    gigCategory: '',
     gigDeadline: 3,
     gigDescription: '',
-    gigPaymentType: false, // fixed budget gig
+    gigPaymentType: true, // hourly budget gig first
     gigPrice: 0,
     gigTitle: '',
     location: '',
@@ -282,9 +283,9 @@ const GigPosting = () => {
         //   .post(`/api/v1/client_gig/upload_attachment/${data.data.gigId}`, formData, config)
         //   .then(() => {});
         await api.post('/api/v1/client_gig/send_tg_bot', {
-          profileType: 'Client',
           gigDescription: postData.gigDescription,
           profileName: JSON.parse(tmp).data.user.name,
+          profileType: 'Client',
         });
         toast({
           className:
@@ -371,15 +372,10 @@ const GigPosting = () => {
                               <CommandItem
                                 key={job_category.value}
                                 onSelect={(currentValue) => {
-                                  setCategoryValue(
-                                    currentValue === jobCategory ? '' : currentValue
-                                  );
+                                  setCategoryValue(currentValue);
                                   setPostData((prev) => ({
                                     ...prev,
-                                    gigCategory: [
-                                      ...prev.gigCategory,
-                                      currentValue === jobCategory ? '' : currentValue,
-                                    ],
+                                    gigCategory: currentValue,
                                   }));
                                   setOpen(false);
                                 }}
@@ -591,6 +587,9 @@ const GigPosting = () => {
                     setPostData((prev) => ({
                       ...prev,
                       gigPaymentType: val === 'hourly' ? 1 : 0,
+                      gigPrice: val === 'hourly' ? 0 : prev.gigPrice,
+                      maxBudget: val === 'hourly' ? prev.maxBudget : 0,
+                      minBudget: val === 'hourly' ? prev.minBudget : 0,
                     }));
                   }}
                 >
@@ -635,7 +634,7 @@ const GigPosting = () => {
                           onChange={(e) =>
                             setPostData((prev) => ({
                               ...prev,
-                              minBudget: e.target.value,
+                              minBudget: parseInt(e.target.value),
                             }))
                           }
                           placeholder={all_form_structure.gig_from_to.from_placeholder}
@@ -668,7 +667,7 @@ const GigPosting = () => {
                           onChange={(e) => {
                             setPostData((prev) => ({
                               ...prev,
-                              maxBudget: e.target.value,
+                              maxBudget: parseInt(e.target.value),
                             }));
                           }}
                           placeholder={all_form_structure.gig_from_to.to_placeholder}
