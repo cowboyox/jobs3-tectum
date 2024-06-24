@@ -1,16 +1,15 @@
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import { useAccount } from 'wagmi';
 
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
-import { USER_ROLE } from '@/utils/constants';
-
-import { useVerifyUsername } from '@/hooks/useVerifyUsername';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useVerifyUsername } from '@/hooks/useVerifyUsername';
+import { USER_ROLE } from '@/utils/constants';
 
 // Icons
 
@@ -199,10 +198,10 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
       const verified = await auth.register({
         email,
         name,
-        username,
         password,
         referralUser,
         referrer,
+        username,
       });
       if (!verified) {
         onSwitchPopup('Verification');
