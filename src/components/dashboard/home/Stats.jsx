@@ -62,7 +62,7 @@ const recentHires = [
 
 const Stats = ({ search, setSearch }) => {
   return (
-    <div className='flex min-h-96 w-full flex-col font-roboto mt-10'>{/* 
+    <div className='flex min-h-55 w-full flex-col font-roboto mt-10'>
        <div className='flex md:h-16 items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4'>
         <div className='flex min-w-[400px] items-center gap-4'>
         <Select defaultValue='normal' className="outline-none">
@@ -100,8 +100,8 @@ const Stats = ({ search, setSearch }) => {
           <p className='hidden text-medGray md:block'>Filter</p>
           <span className='flex size-6 items-center justify-center rounded-full bg-orange'>4</span>
         </div>
-      </div> */}
-      <div className='mt-5 flex flex-col gap-4'>
+      </div>
+      {/* <div className='mt-10 flex flex-col gap-4'>
         <h1>Your Stats</h1>
         <div className='grid gap-4 lg:grid-cols-3'>
           <div className='flex h-full min-h-96 flex-col rounded-2xl bg-deepGreen p-5'>
@@ -203,7 +203,7 @@ const Stats = ({ search, setSearch }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
