@@ -80,87 +80,87 @@ const Orders = () => {
   useEffect(() => {
     setOrders([
       {
-        gigPrice: 200,
-        gigDescription: 'Rust smart contract development',
         creator: {
           fullName: 'Test User',
         },
-        gitTitle: 'Smart contract Development',
+        gigDescription: 'Rust smart contract development',
         gigPostDate: new Date(),
+        gigPrice: 200,
+        gitTitle: 'Smart contract Development',
       },
       {
-        gigPrice: 200,
-        gigDescription: 'Rust smart contract development',
         creator: {
           fullName: 'Test User',
         },
-        gitTitle: 'Smart contract Development',
+        gigDescription: 'Rust smart contract development',
         gigPostDate: new Date(),
+        gigPrice: 200,
+        gitTitle: 'Smart contract Development',
       },
       {
-        gigPrice: 200,
-        gigDescription: 'Rust smart contract development',
         creator: {
           fullName: 'Test User',
         },
-        gitTitle: 'Smart contract Development',
+        gigDescription: 'Rust smart contract development',
         gigPostDate: new Date(),
+        gigPrice: 200,
+        gitTitle: 'Smart contract Development',
       },
       {
-        gigPrice: 200,
-        gigDescription: 'Rust smart contract development',
         creator: {
           fullName: 'Test User',
         },
-        gitTitle: 'Smart contract Development',
+        gigDescription: 'Rust smart contract development',
         gigPostDate: new Date(),
+        gigPrice: 200,
+        gitTitle: 'Smart contract Development',
       },
     ]);
     setProposals([
       {
-        gigPrice: 500,
+        creator: {
+          fullName: 'web developer',
+        },
         gigDescription: 'Website Development',
-        creator: {
-          fullName: 'web developer',
-        },
-        gitTitle: 'Website Development',
         gigPostDate: new Date(),
+        gigPrice: 500,
+        gitTitle: 'Website Development',
       },
       {
-        gigPrice: 500,
-        gigDescription: 'Website development',
         creator: {
           fullName: 'web developer',
         },
-        gitTitle: 'Website Development',
+        gigDescription: 'Website development',
         gigPostDate: new Date(),
+        gigPrice: 500,
+        gitTitle: 'Website Development',
       },
       {
-        gigPrice: 500,
-        gigDescription: 'Website development',
         creator: {
           fullName: 'web developer',
         },
-        gitTitle: 'Website Development',
+        gigDescription: 'Website development',
         gigPostDate: new Date(),
+        gigPrice: 500,
+        gitTitle: 'Website Development',
       },
       {
-        gigPrice: 500,
-        gigDescription: 'Website development',
         creator: {
           fullName: 'web developer',
         },
-        gitTitle: 'Website Development',
+        gigDescription: 'Website development',
         gigPostDate: new Date(),
+        gigPrice: 500,
+        gitTitle: 'Website Development',
       },
       {
-        gigPrice: 500,
-        gigDescription: 'Website development',
         creator: {
           fullName: 'web developer',
         },
-        gitTitle: 'Website Development',
+        gigDescription: 'Website development',
         gigPostDate: new Date(),
+        gigPrice: 500,
+        gitTitle: 'Website Development',
       },
     ]);
   }, []);
