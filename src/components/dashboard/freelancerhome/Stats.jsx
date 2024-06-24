@@ -91,7 +91,7 @@ const Stats = () => {
           <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[70%]'>
             <div className='flex h-1/6 items-center justify-between'>
               <h3 className='text-2xl font-semibold text-white'>Active Orders</h3>
-              <p className='text-medGray'>See All</p>
+              {/* <p className='text-medGray'>See All</p> */}
             </div>
             <div className='mt-6 flex flex-1 flex-col justify-between gap-2'>
               {orders.length ? (
@@ -135,7 +135,7 @@ const Stats = () => {
           <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[30%]'>
             <div className='flex h-1/6 items-center justify-between'>
               <h3 className='text-2xl font-semibold text-white'>Earnings</h3>
-              <p className='text-medGray'>See All</p>
+              {/* <p className='text-medGray'>See All</p> */}
             </div>
             <div className='mt-6 flex-1'>
               {earnings.length ? (
