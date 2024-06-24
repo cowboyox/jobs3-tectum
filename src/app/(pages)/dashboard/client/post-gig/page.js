@@ -81,15 +81,46 @@ const all_form_structure = {
       value: 'category_3',
     },
     {
-      label: 'Category 4',
+      label: 'Crypto & Web3',
       value: 'category_4',
     },
     {
-      label: 'Category 5',
+      label: 'Data Science & Analytics',
       value: 'category_5',
     },
+    {
+      label: 'Design & Creative',
+      value: 'category_6',
+    },
+    {
+      label: 'Engineering & Architecture',
+      value: 'category_7',
+    },
+    {
+      label: 'IT & Networking',
+      value: 'category_8',
+    },
+    {
+      label: 'Legal',
+      value: 'category_9',
+    },
+    {
+      label: 'Sales & Marketing',
+      value: 'category_10',
+    },
+    {
+      label: 'Translation',
+      value: 'category_11',
+    },
+    {
+      label: 'Web, Mobile & Software Development',
+      value: 'category_12',
+    },
+    {
+      label: 'Writing',
+      value: 'category_13',
+    },
   ],
-
   categories_placeholder: 'Dropdown menu with categories list',
   experience_label: 'Experience Requirements',
   experience_options: [
