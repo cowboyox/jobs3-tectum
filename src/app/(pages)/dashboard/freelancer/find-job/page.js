@@ -36,8 +36,10 @@ const FindJob = () => {
   const [searchType, setSearchType] = useState('normal');
   const [searchKeyWords, setSearchKeyWords] = useState('');
   const [filteredGigList, setFilteredGigList] = useState([]);
+  const [filteredGigShowModeList, setFilteredGigShowModeList] = useState([]);
 
   const [isSmallScreen, setIsSmallScree] = useState(false);
+  const descriptionTextMaxLength = 320;
 
   useEffect(() => {
     api
@@ -45,6 +47,7 @@ const FindJob = () => {
       .then((data) => {
         setGigList(data.data.data);
         setFilteredGigList(data.data.data);
+        setFilteredGigShowModeList(new Array(data.data.data.length).fill(false));
       })
       .catch((err) => {
         console.error('Error corrupted while getting all gigs: ', err);
@@ -88,6 +91,7 @@ const FindJob = () => {
             .includes(e.target.value.toLowerCase())
       );
       setFilteredGigList(filtered);
+      setFilteredGigShowModeList(new Array(filtered.length).fill(false));
     }
   };
 
@@ -100,6 +104,7 @@ const FindJob = () => {
       sorted.sort((a, b) => new Date(b.gigPostDate) - new Date(a.gigPostDate));
     }
     setFilteredGigList(sorted);
+    setFilteredGigShowModeList(new Array(sorted.length).fill(false));
   };
 
   const aiSearch = () => {
@@ -110,6 +115,7 @@ const FindJob = () => {
         .map((id) => gigList.find((gig) => gig._id.toString() === id))
         .filter((gig) => gig != undefined);
       setFilteredGigList(ai_filtered);
+      setFilteredGigShowModeList(new Array(ai_filtered.length).fill(false));
     });
   };
 
@@ -969,9 +975,49 @@ const FindJob = () => {
                   </div>
                 )}
                 <Separator className='my-4' />
-                <div className='text-left text-[#96B0BD]'>{gig.gigDescription}</div>
+                <div className='text-left text-[#96B0BD]'>
+                  {gig.gigDescription.length < descriptionTextMaxLength
+                    ? gig.gigDescription
+                    : filteredGigShowModeList[index]
+                      ? gig.gigDescription
+                      : gig.gigDescription.slice(0, descriptionTextMaxLength) + '...'}
+                </div>
                 <div className='mt-3 text-left'>
-                  <button>Show more</button>
+                  {gig.gigDescription.length < descriptionTextMaxLength ? (
+                    <></>
+                  ) : !filteredGigShowModeList[index] ? (
+                    <button
+                      onClick={() => {
+                        const tempShowModeList = filteredGigShowModeList.map((item, i) => {
+                          if (i == index) {
+                            return true;
+                          } else {
+                            return item;
+                          }
+                        });
+
+                        setFilteredGigShowModeList(tempShowModeList);
+                      }}
+                    >
+                      Show more
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        const tempShowModeList = filteredGigShowModeList.map((item, i) => {
+                          if (i == index) {
+                            return false;
+                          } else {
+                            return item;
+                          }
+                        });
+
+                        setFilteredGigShowModeList(tempShowModeList);
+                      }}
+                    >
+                      Show less
+                    </button>
+                  )}
                 </div>
                 <div className='flex flex-col justify-between md:flex-row md:items-center'>
                   <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
