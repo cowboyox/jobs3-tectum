@@ -698,7 +698,7 @@ const GigPosting = () => {
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
-        // router.push('./home');
+        router.push('./home');
       })
       .catch((err) => {
         console.error('Error corrupted during posting gig', err);
@@ -726,10 +726,7 @@ const GigPosting = () => {
   };
 
   return (
-    <div className='gig_posting flex min-h-screen w-full flex-col items-center py-10'>
-      <div className='flex w-full'>
-        <h1 className='mb-12 text-start text-3xl md:text-4xl'>Post a Gig</h1>
-      </div>
+    <div className='mb-4 flex justify-between rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-3'>
       <Form {...form}>
         <form className='itmes-end rounded-2xl bg-[#10191D] p-[30px]' onSubmit={(e)=>{e.preventDefault();handlePublish()}} >
           <FormField
@@ -743,13 +740,14 @@ const GigPosting = () => {
                   {all_form_structure.title_label2}
                 </p>
                 <FormControl>
-                  <Input
-                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'
-                    // className='rounded-full flex h-11 w-full ml-3 bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50'
+                  <div className='mt-4 rounded-2xl bg-transparent text-base outline-none p-5 placeholder:text-muted-foreground border border-[#526872] disabled:opacity-50'>
+                  <input
+                    className='bg-transparent box-border !p-0 text-[#96B0BD] outline-none'
                     onChange={(e) => handleSetGigTitle(e)}
                     placeholder={all_form_structure.title_placeholder}
                     value={postData.gigTitle}
                   />
+                  </div>
                 </FormControl>
                 <FormDescription />
                 <FormMessage />
@@ -831,127 +829,6 @@ const GigPosting = () => {
               />
             </div>
           </div>
-          {/* <FormField
-            name='job_category'
-            render={() => (
-              <FormItem className='mt-[60px]'>
-                <h1 className='text-2xl font-semibold mb-4'>
-                  Category
-                </h1>
-                <FormLabel className='text-lg text-slate-500'>
-                  {all_form_structure.categories_label}
-                </FormLabel>
-                <div className='w-full flex flex-row gap-4'>
-                  <FormControl className='w-full'>
-                    <Popover onOpenChange={setOpenCategory} open={openCategory}>
-                      <PopoverTrigger
-                        asChild
-                        className='w-full rounded-full border-slate-500 px-6 py-6 text-base bg-[#10191D]'
-                      >
-                        <Button
-                          aria-expanded={openCategory}
-                          className='w-full justify-between overflow-hidden'
-                          role='combobox'
-                          variant='outline'
-                        >
-                          {jobCategories.length
-                            ? all_form_structure.categories_list
-                                .filter((job_category) =>
-                                  jobCategories.includes(job_category.value)
-                                )
-                                ?.map((data) => data.label)
-                                .join(', ')
-                            : all_form_structure.categories_placeholder}
-                          <GoChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className='w-full p-0 bg-[#10191D]'>
-                        <Command>
-                          <CommandInput placeholder='Type or search...' />
-                          <CommandList>
-                            <CommandEmpty>No results found.</CommandEmpty>
-                            <CommandGroup>
-                              {all_form_structure.categories_list.map((job_category) => (
-                                <CommandItem
-                                  key={job_category.value}
-                                  onSelect={onSelectJobCatetory}
-                                  value={job_category.value}
-                                >
-                                  {job_category.label}
-                                  <IoCheckmark
-                                    className={cn(
-                                      'ml-auto h-4 w-4',
-                                      jobCategories.includes(job_category.value)
-                                        ? 'opacity-100'
-                                        : 'opacity-0'
-                                    )}
-                                  />
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </FormControl>
-                  <FormControl className='w-full'>
-                    <Popover onOpenChange={setOpenSubCategory} open={openSubCategory}>
-                      <PopoverTrigger
-                        asChild
-                        className='w-full rounded-full border-slate-500 px-6 py-6 text-base bg-[#10191D]'
-                      >
-                        <Button
-                          aria-expanded={openSubCategory}
-                          className='w-full justify-between overflow-hidden'
-                          role='combobox'
-                          variant='outline'
-                        >
-                          {jobCategories.length
-                            ? all_form_structure.categories_list
-                                .filter((job_category) =>
-                                  jobCategories.includes(job_category.value)
-                                )
-                                ?.map((data) => data.label)
-                                .join(', ')
-                            : all_form_structure.categories_placeholder}
-                          <GoChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className='w-screen max-w-lg p-0 bg-[#10191D]'>
-                        <Command>
-                          <CommandInput placeholder='Type or search...' />
-                          <CommandList>
-                            <CommandEmpty>No results found.</CommandEmpty>
-                            <CommandGroup>
-                              {all_form_structure.categories_list.map((job_category) => (
-                                <CommandItem
-                                  key={job_category.value}
-                                  onSelect={onSelectJobCatetory}
-                                  value={job_category.value}
-                                >
-                                  {job_category.label}
-                                  <IoCheckmark
-                                    className={cn(
-                                      'ml-auto h-4 w-4',
-                                      jobCategories.includes(job_category.value)
-                                        ? 'opacity-100'
-                                        : 'opacity-0'
-                                    )}
-                                  />
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </FormControl>
-                </div>
-                <FormDescription />
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
           <FormField
             name='gig_skills'
             render={() => (
@@ -981,7 +858,7 @@ const GigPosting = () => {
                         </div>
                       ))}
                     </div>
-                    <div className='w-full rounded-full border border-slate-500 px-6 py-3 text-base'>
+                    <div className='w-full mt-4 rounded-2xl bg-transparent text-base outline-none p-5 placeholder:text-muted-foreground border border-[#526872] disabled:opacity-50'>
                       <CommandInput placeholder={all_form_structure.skills_placeholder} />
                     </div>
                     <CommandList>
@@ -1111,10 +988,11 @@ const GigPosting = () => {
                 <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.location_label}
                 </FormLabel>
-
                 <FormControl>
-                  <Input
-                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'
+                  <div className='mt-4 rounded-2xl bg-transparent text-base outline-none p-5 placeholder:text-muted-foreground border border-[#526872] disabled:opacity-50'>
+                  <input
+                    className='bg-transparent box-border !p-0 text-[#96B0BD] outline-none'
+                    value={postData.location}
                     onChange={(e) => {
                       setPostData((prev) => ({
                         ...prev,
@@ -1122,8 +1000,8 @@ const GigPosting = () => {
                       }));
                     }}
                     placeholder={all_form_structure.location_placeholder}
-                    value={postData.location}
                   />
+                  </div>
                 </FormControl>
               </FormItem>
             )}
@@ -1293,8 +1171,10 @@ const GigPosting = () => {
                   {all_form_structure.git_description}
                 </FormDescription>
                 <FormControl>
-                  <Input
-                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'
+                  <div className='mt-4 rounded-2xl bg-transparent text-base outline-none p-5 placeholder:text-muted-foreground border border-[#526872] disabled:opacity-50'>
+                  <input
+                    className='bg-transparent box-border !p-0 text-[#96B0BD] outline-none'
+                    value={postData.gigDescription}
                     onChange={(e) => {
                       setPostData((prev) => ({
                         ...prev,
@@ -1302,8 +1182,8 @@ const GigPosting = () => {
                       }));
                     }}
                     placeholder={all_form_structure.gig_description_placeholder}
-                    value={postData.gigDescription}
                   />
+                  </div>
                 </FormControl>
               </FormItem>
             )}
