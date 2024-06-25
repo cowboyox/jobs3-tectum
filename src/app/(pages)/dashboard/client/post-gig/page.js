@@ -6,8 +6,16 @@ import FileUpload from 'react-drag-n-drop-image';
 import { useForm } from 'react-hook-form';
 import { FiPlus } from 'react-icons/fi';
 import { GoChevronDown, GoTrash } from 'react-icons/go';
+import { IoIosCloseCircleOutline } from 'react-icons/io';
 import { IoCheckmark } from 'react-icons/io5';
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -34,14 +42,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import api from '@/utils/api';
+import { PiExportThin } from "react-icons/pi";
 
 // Icons
 
 function FileUploadBody() {
   return (
-    <div className='flex h-52 w-full items-center justify-center rounded-xl border border-dashed border-slate-500 p-3'>
+    <div className='flex w-full items-center justify-center rounded-xl border border-dashed pt-2 pb-2 border-slate-500'>
+      <PiExportThin className='h-[24px] w-[24px] text-[#A0B4C0] mr-2'/>
       <p className='text-center'>
-        <span className='text-lg text-slate-500'>Drag and drop or &nbsp; </span> browse files
+        <span className='text-base text-slate-500'>Upload</span>
       </p>
     </div>
   );
@@ -53,7 +63,7 @@ function FileUploadBody() {
  * I just created it quickly to have an easier method to edit the info on the page
  */
 const all_form_structure = {
-  budget_label: 'Your Budget',
+  budget_label: 'Setup Price',
   budget_mode: [
     {
       label: 'Hourly Rate',
@@ -65,8 +75,8 @@ const all_form_structure = {
     },
   ],
 
-  budget_placeholder: 'Select the payment mode and min/max budget',
-  categories_label: 'JOB CATEGORY',
+  budget_placeholder: 'Choose',
+  categories_label: 'Choose the category and subcategory most suitable for your Gig',
   categories_list: [
     {
       label: 'Accounting & Consulting',
@@ -121,8 +131,9 @@ const all_form_structure = {
       value: 'category_13',
     },
   ],
-  categories_placeholder: 'Dropdown menu with categories list',
+  categories_placeholder: 'Choose',
   experience_label: 'Experience Requirements',
+  experience_description: 'Determine what skills you are looking for',
   experience_options: [
     {
       description: 'Looking for someone relatively new to this field',
@@ -142,16 +153,11 @@ const all_form_structure = {
       label: 'Expert',
       value: 'Expert',
     },
-    {
-      description: 'Looking for comprehensive and deep expertise in this field',
-      indexNum: 3,
-      label: 'Not Sure',
-      value: 'Not Sure',
-    },
   ],
 
-  gig_description_label: 'Description',
-  gig_description_placeholder: 'Write gig description',
+  gig_description_label: 'Briefly Describe Your Gig',
+  git_description: '80/1200 characters',
+  gig_description_placeholder: 'Type here',
   gig_fixed_label: 'Project Price',
 
   gig_fixed_price: '36.00',
@@ -167,7 +173,7 @@ const all_form_structure = {
   location_label: 'Location',
   location_placeholder: 'Budapest, Hungary',
 
-  scope_label: 'Scope',
+  scope_label: 'Estimate The Scope Of Your Work',
   scope_options: [
     {
       indexNum: 3,
@@ -190,7 +196,7 @@ const all_form_structure = {
       value: 'Less than a month',
     },
   ], // Default will be the first option
-  scope_placeholder: 'Estimate the scope of your work',
+  scope_placeholder: 'Choose the item',
 
   skills_label: 'Skills',
   skills_list: [
@@ -211,24 +217,30 @@ const all_form_structure = {
     },
   ],
 
-  skills_placeholder: 'Type or search...',
+  skills_placeholder: 'Add tags',
 
-  title_label: 'Title',
-  title_placeholder: 'Write a title for your job post',
+  title_label1: 'As your Gig storefront, ',
+  title_label2:
+    ' to include words that buyers  would likely use to search for a service like yours',
+  title_label0: 'Your Title Is The Most Important Place',
+  title_placeholder: 'Type the title here',
 
-  upload_files_label: 'Upload Files',
+  upload_files_label: 'Documents (Up To 2)',
+  upload_files_description: 'Upload files. Format: PDF',
 };
 
 const GigPosting = () => {
   const { toast } = useToast();
 
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [openCategory, setOpenCategory] = useState(false);
+  const [openSubCategory, setOpenSubCategory] = useState(false);
   const [jobCategories, setJobCategories] = useState([]);
   const [skillSet, setSkillSet] = useState([]);
   const [budgetMode, setBudgetMode] = useState('hourly');
   const [files, setFiles] = useState([]);
   const [files2, setFiles2] = useState([]);
+  const [selectedLevel, setSelectedLevel] = useState(0);
   const [postData, setPostData] = useState({
     attachment: [],
     experienceLevel: 0,
@@ -243,7 +255,355 @@ const GigPosting = () => {
     minBudget: 0,
     requiredSkills: [],
   });
+  const categories_list = [
+    {
+      label: 'Accounting & Consulting',
+      value: 'category_1',
+    },
+    {
+      label: 'Admin Support',
+      value: 'category_2',
+    },
+    {
+      label: 'Customer Service',
+      value: 'category_3',
+    },
+    {
+      label: 'Crypto & Web3',
+      value: 'category_4',
+    },
+    {
+      label: 'Data Science & Analytics',
+      value: 'category_5',
+    },
+    {
+      label: 'Design & Creative',
+      value: 'category_6',
+    },
+    {
+      label: 'Engineering & Architecture',
+      value: 'category_7',
+    },
+    {
+      label: 'IT & Networking',
+      value: 'category_8',
+    },
+    {
+      label: 'Legal',
+      value: 'category_9',
+    },
+    {
+      label: 'Sales & Marketing',
+      value: 'category_10',
+    },
+    {
+      label: 'Translation',
+      value: 'category_11',
+    },
+    {
+      label: 'Web, Mobile & Software Development',
+      value: 'category_12',
+    },
+    {
+      label: 'Writing',
+      value: 'category_13',
+    },
+  ];
 
+  const subcategory_list = [
+    {
+      parent: 'Accounting & Consulting',
+      value: [
+        'Personal Coaching',
+        'Career Coaching',
+        'Business Analysis',
+        'Management Consulting',
+        'Instructional Design',
+        'HR Administration',
+        'Recruiting & Talent Sourcing',
+        'Training & Development',
+        'Tax Preparation',
+        'Bookkeeping',
+        'Accounting',
+        'Financial Management/CFO',
+        'Financial Analysis & Modeling',
+      ],
+    },
+    {
+      parent: 'Admin Support',
+      value: [
+        'Personal Virtual Assistance',
+        'Executive Virtual Assistance',
+        'Legal Virtual Assistance',
+        'Ecommerce Mangement',
+        'Medical Virtual Assistance',
+        'General Virtual Assistance',
+        'Data Entry',
+        'Manual Transcription',
+        'Supply Chain & Logistics Project Management',
+        'Business Project Management',
+        'Digital Project Mangement',
+        'Construction & Engineering Project Mangement',
+        'Development & IT Project Management',
+        'Healthcare Project Mangement',
+        'Quantitative Research',
+        'Market Research',
+        'General Research Services',
+        'Qualitative Research',
+        'Product Reviews',
+        'Web & Software Product Research',
+      ],
+    },
+    {
+      parent: 'Customer Service',
+      value: [
+        'Customer Onboarding',
+        'IT Support',
+        'Tech Support',
+        'Email, Phone & Chat Support',
+        'Visual Tagging & Processing',
+        'Community Management',
+        'Content Moderation',
+      ],
+    },
+    {
+      parent: 'Crypto & Web3',
+      value: [
+        'NFT Art',
+        'Coins Design & Tokenisation',
+        'Blockchain & NFT Development',
+        'Wallet Development',
+        'DEX/CEX Listing',
+        'Trading Bots Development',
+        'Smart Contracts Development',
+        'DAPPs Development',
+        'Security & Audit',
+        'KOLs Marketing',
+        'Consulting',
+        'Web3 PR',
+        'Shilling',
+        'Market Making',
+        'Trending',
+        'Buy Bots',
+        'CryptoBanner Ads',
+        'Reddit',
+        'Telegram Promotion',
+        'Token Launch',
+      ],
+    },
+    {
+      parent: 'Data Science & Analytics',
+      value: [
+        'Data Mining',
+        'Data Engineering',
+        'Data Extraction',
+        'Data Processing',
+        'Deep Learning',
+        'Knowledge Representation',
+        'AI Data Annotation & Labeling',
+        'Machine Learning',
+        'Generative AI Modeling',
+        'Data Visualization',
+        'Data Analytics',
+        'Experimentation & Testing',
+      ],
+    },
+    {
+      parent: 'Design & Creative',
+      value: [
+        'Brand Identity Design',
+        'Logo Design',
+        'Singing',
+        'Acting',
+        'Voice Talent',
+        'Music Performance',
+        'Visual Effects',
+        '2D Animation',
+        'Video Editing',
+        'Video Production',
+        'AI Video Generation & Editing',
+        'Motion Graphics',
+        'Videography',
+        '3D Animation',
+        'Packaging Design',
+        'Art Direction',
+        'Graphic Design',
+        'Image Editing',
+        'Presentation Design',
+        'Creative Direction',
+        'Editorial Design',
+        'AI Image Generation & Editing',
+        'Cartoons & Comics',
+        'Pattern Design',
+        'Fine Art',
+        'Portraits & Caricatures',
+        'Illustration',
+        'Songwriting & Music Composition',
+        'Music Production',
+        'Audio Editing',
+        'AI Speech & Audio Generation',
+        'Audio Production',
+        'Product & Industrial Design',
+        'Jewelry Design',
+        'Fashion Design',
+        'AR/VR Design',
+        'Game Art',
+        'Production Photography',
+        'Local Photography',
+        'Animated Explainers',
+      ],
+    },
+    {
+      parent: 'Engineering & Architecture',
+      value: [
+        'Structural Engineering',
+        'Building Information Modeling',
+        'Civil Engineering',
+        '3D Modeling & Rendering',
+        'CAD',
+        'Landscape Architecture',
+        'Architectural Design',
+        'Interior Design',
+        'Trade Show Design',
+        'Energy Engineering',
+        'Mechanical Engineering',
+        'Chemical & Process Engineering',
+        'Electronic Engineering',
+        'Electrical Engineering',
+        'STEM Tutoring',
+        'Physics',
+        'Mathematics',
+        'Biology',
+        'Chemistry',
+        'Logistics & Supply Chain Management',
+        'Sourcing & Procurement',
+      ],
+    },
+    {
+      parent: 'IT & Networking',
+      value: [
+        'Network Security',
+        'IT Compliance',
+        'Information Security',
+        'Database Administration',
+        'Cloud Engineering',
+        'Solution Architecture',
+        'DevOps Engineering',
+        'Business Applications Development',
+        'Systems Engineering',
+        'Network Administration',
+      ],
+    },
+    {
+      parent: 'Legal',
+      value: [
+        'Business & Corporate Law',
+        'Intellectual Property Law',
+        'Paralegal Services',
+        'Tax Law',
+        'Securities & Finance Law',
+        'Labor & Employment Law',
+        'Regulatory Law',
+        'International Law',
+        'Immigration Law',
+      ],
+    },
+    {
+      parent: 'Sales & Marketing',
+      value: [
+        'Public Relations',
+        'Social Media Strategy',
+        'Marketing Strategy',
+        'Content Strategy',
+        'Brand Strategy',
+        'Email Marketing',
+        'SEO',
+        'Social Media Marketing',
+        'Display Advertising',
+        'Campaign Management',
+        'Marketing Automation',
+        'Search Engine Marketing',
+        'Telemarketing',
+        'Lead Generation',
+        'Sales & Business Development',
+        'Book and Ebook Marketing',
+        'Podcast Marketing',
+        'Video Marketing',
+        'Influencer Marketing',
+        'Mobile App Marketing',
+        'Affiliate Marketing',
+      ],
+    },
+    {
+      parent: 'Translation',
+      value: [
+        'Sign Language Interpretation',
+        'Live Interpretation',
+        'Language Tutoring',
+        'Technical Document Translation',
+        'Legal Document Translation',
+        'Medical Document Translation',
+        'General Translation Services',
+        'Language Localization',
+      ],
+    },
+    {
+      parent: 'Web, Mobile & Software Development',
+      value: [
+        'Ecommerce Website Development',
+        'Desktop Software Development',
+        'Scripting & Automation',
+        'Manual Testing',
+        'Automation Testing',
+        'AI Chatbot Development',
+        'AI Integration',
+        'Prototyping',
+        'Mobile Design',
+        'Web Design',
+        'UX/UI Design',
+        'Mobile App Development',
+        'Mobile Game Development',
+        'Scrum Leadership',
+        'Product Management',
+        'Firmware Development',
+        'Emerging Tech',
+        'AR/VR Development',
+        'Coding Tutoring',
+        'Database Development',
+        'Back-End Development',
+        'Front-End Development',
+        'Full Stack Development',
+        'CMS Development',
+        'Video Game Development',
+      ],
+    },
+    {
+      parent: 'Writing',
+      value: [
+        'Sales Copywriting',
+        'Marketing Copywriting',
+        'Ad & Email Copywriting',
+        'Proofreading',
+        'Copy Editing',
+        'Grant Writing',
+        'Business & Proposal Writing',
+        'Resume & Cover Letter Writing',
+        'Medical Writing',
+        'Legal Writing',
+        'Academic & Research Writing',
+        'Technical Writing',
+        'Writing Tutoring',
+        'Scriptwriting',
+        'Ghostwriting',
+        'Creative Writing',
+        'Article & Blog Writing',
+        'Web & UX Writing',
+        'AI Content Writing',
+      ],
+    },
+  ];
+  const [currentCategory, setCurrentCategory] = useState('Accounting & Consulting');
+  const [currentSub, setCurrentSub] = useState('Personal Coaching');
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (tmp === null) {
@@ -349,26 +709,30 @@ const GigPosting = () => {
       ...prev,
       gigCategory: categories,
     }));
-    setOpen(false);
+    setOpenCategory(false);
   };
 
   return (
-    <div className='gig_posting'>
-      <h1 className='text-3xl md:text-4xl'>
-        Create a <span className='main_color'>New Gig</span> Post
-      </h1>
+    <div className='gig_posting flex min-h-screen w-full flex-col items-center py-10'>
+      <div className='flex w-full'>
+        <h1 className='mb-12 text-3xl md:text-4xl text-start'>Post a Gig</h1>
+      </div>    
       <Form {...form}>
-        <form className='max-w-lg'>
+        <form className='itmes-end rounded-2xl bg-[#10191D] p-[30px]'>
           <FormField
             name='gig_title'
             render={() => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
-                  {all_form_structure.title_label}
-                </FormLabel>
+                <h1 className='mb-4 text-2xl font-semibold'>Gig Title</h1>
+                <p className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.title_label1}
+                  <span className='font-bold'>{all_form_structure.title_label0}</span>
+                  {all_form_structure.title_label2}
+                </p>
                 <FormControl>
                   <Input
-                    className='rounded-full border-slate-500 bg-black px-6 py-6 text-base'
+                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base  outline-none disabled:opacity-50 placeholder:text-muted-foreground'
+                    // className='rounded-full flex h-11 w-full ml-3 bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50'
                     onChange={(e) => handleSetGigTitle(e)}
                     placeholder={all_form_structure.title_placeholder}
                     value={postData.gigTitle}
@@ -379,81 +743,212 @@ const GigPosting = () => {
               </FormItem>
             )}
           />
-          <FormField
+          <div className='mt-14 flex flex-col gap-2'>
+            <p className='mb-4 text-2xl text-[#F5F5F5]'>Category</p>
+            <p className='text-base text-[#96B0BD]'>
+              Choose the category and subcategory most suitable for your Gig
+            </p>
+            <div className='flex gap-3'>
+              <FormField
+                name='gigCategory'
+                render={() => (
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <Select
+                        onValueChange={(e) => {
+                          setCurrentCategory(e);
+                        }}
+                      >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Choose' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {categories_list.map((job_category) => (
+                              <SelectItem key={job_category.value} value={job_category.label}>
+                                {job_category.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name='subCategory'
+                render={() => (
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <Select
+                        onValueChange={(e) => {
+                          setCurrentSub(e);
+                        }}
+                      >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Choose' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {subcategory_list.map((subcat) => {
+                              if (subcat.parent === currentCategory) {
+                                return subcat.value.map((item, index) => (
+                                  <SelectItem key={index} value={item}>
+                                    {item} {/* Displaying the item instead of index */}
+                                  </SelectItem>
+                                ));
+                              }
+                              return null; // Return null if condition is not met
+                            })}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          {/* <FormField
             name='job_category'
             render={() => (
-              <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+              <FormItem className='mt-[60px]'>
+                <h1 className='text-2xl font-semibold mb-4'>
+                  Category
+                </h1>
+                <FormLabel className='text-lg text-slate-500'>
                   {all_form_structure.categories_label}
                 </FormLabel>
-                <FormControl className='w-full'>
-                  <Popover onOpenChange={setOpen} open={open}>
-                    <PopoverTrigger
-                      asChild
-                      className='w-full rounded-full border-slate-500 px-6 py-6 text-base'
-                    >
-                      <Button
-                        aria-expanded={open}
-                        className='w-full justify-between overflow-hidden'
-                        role='combobox'
-                        variant='outline'
+                <div className='w-full flex flex-row gap-4'>
+                  <FormControl className='w-full'>
+                    <Popover onOpenChange={setOpenCategory} open={openCategory}>
+                      <PopoverTrigger
+                        asChild
+                        className='w-full rounded-full border-slate-500 px-6 py-6 text-base bg-[#10191D]'
                       >
-                        {jobCategories.length
-                          ? all_form_structure.categories_list
-                              .filter((job_category) => jobCategories.includes(job_category.value))
-                              ?.map((data) => data.label)
-                              .join(', ')
-                          : all_form_structure.categories_placeholder}
-                        <GoChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className='w-screen max-w-lg p-0'>
-                      <Command>
-                        <CommandInput placeholder='Type or search...' />
-                        <CommandList>
-                          <CommandEmpty>No results found.</CommandEmpty>
-                          <CommandGroup>
-                            {all_form_structure.categories_list.map((job_category) => (
-                              <CommandItem
-                                key={job_category.value}
-                                onSelect={onSelectJobCatetory}
-                                value={job_category.value}
-                              >
-                                {job_category.label}
-                                <IoCheckmark
-                                  className={cn(
-                                    'ml-auto h-4 w-4',
-                                    jobCategories.includes(job_category.value)
-                                      ? 'opacity-100'
-                                      : 'opacity-0'
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                </FormControl>
+                        <Button
+                          aria-expanded={openCategory}
+                          className='w-full justify-between overflow-hidden'
+                          role='combobox'
+                          variant='outline'
+                        >
+                          {jobCategories.length
+                            ? all_form_structure.categories_list
+                                .filter((job_category) =>
+                                  jobCategories.includes(job_category.value)
+                                )
+                                ?.map((data) => data.label)
+                                .join(', ')
+                            : all_form_structure.categories_placeholder}
+                          <GoChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className='w-full p-0 bg-[#10191D]'>
+                        <Command>
+                          <CommandInput placeholder='Type or search...' />
+                          <CommandList>
+                            <CommandEmpty>No results found.</CommandEmpty>
+                            <CommandGroup>
+                              {all_form_structure.categories_list.map((job_category) => (
+                                <CommandItem
+                                  key={job_category.value}
+                                  onSelect={onSelectJobCatetory}
+                                  value={job_category.value}
+                                >
+                                  {job_category.label}
+                                  <IoCheckmark
+                                    className={cn(
+                                      'ml-auto h-4 w-4',
+                                      jobCategories.includes(job_category.value)
+                                        ? 'opacity-100'
+                                        : 'opacity-0'
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
+                  <FormControl className='w-full'>
+                    <Popover onOpenChange={setOpenSubCategory} open={openSubCategory}>
+                      <PopoverTrigger
+                        asChild
+                        className='w-full rounded-full border-slate-500 px-6 py-6 text-base bg-[#10191D]'
+                      >
+                        <Button
+                          aria-expanded={openSubCategory}
+                          className='w-full justify-between overflow-hidden'
+                          role='combobox'
+                          variant='outline'
+                        >
+                          {jobCategories.length
+                            ? all_form_structure.categories_list
+                                .filter((job_category) =>
+                                  jobCategories.includes(job_category.value)
+                                )
+                                ?.map((data) => data.label)
+                                .join(', ')
+                            : all_form_structure.categories_placeholder}
+                          <GoChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className='w-screen max-w-lg p-0 bg-[#10191D]'>
+                        <Command>
+                          <CommandInput placeholder='Type or search...' />
+                          <CommandList>
+                            <CommandEmpty>No results found.</CommandEmpty>
+                            <CommandGroup>
+                              {all_form_structure.categories_list.map((job_category) => (
+                                <CommandItem
+                                  key={job_category.value}
+                                  onSelect={onSelectJobCatetory}
+                                  value={job_category.value}
+                                >
+                                  {job_category.label}
+                                  <IoCheckmark
+                                    className={cn(
+                                      'ml-auto h-4 w-4',
+                                      jobCategories.includes(job_category.value)
+                                        ? 'opacity-100'
+                                        : 'opacity-0'
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
+                </div>
                 <FormDescription />
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           <FormField
             name='gig_skills'
             render={() => (
               <FormItem className='gig_skills mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl text-[#F5F5F5]'>
                   {all_form_structure.skills_label}
                 </FormLabel>
-                <FormControl className='w-full'>
+                <p className='mb-4 text-base text-[#96B0BD]'>
+                  Enter Skills. 5 tags maximum, use letters and numbers only
+                </p>
+                <FormControl className='w-full bg-[#10191D]'>
                   <Command>
                     <div className='mb-2 flex flex-wrap items-center gap-3'>
                       {skillSet.map((selectedSkill, selectedSkillIndex) => (
                         <div
-                          className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-white px-2 py-1 text-sm text-black'
+                          className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-[#28373E] px-2 py-1 text-sm text-[#F5F5F5]'
                           data-index={selectedSkillIndex}
                           key={selectedSkillIndex}
                           onClick={() => {
@@ -462,8 +957,8 @@ const GigPosting = () => {
                             setSkillSet(newSkillSet);
                           }}
                         >
+                          <IoIosCloseCircleOutline className='ml-2 mr-1 text-base' />
                           {selectedSkill}
-                          <GoTrash className='ml-2' />
                         </div>
                       ))}
                     </div>
@@ -503,10 +998,11 @@ const GigPosting = () => {
             name='gig_scope'
             render={({ field }) => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.scope_label}
                 </FormLabel>
-                <FormDescription className='text-base'>
+
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
                   {all_form_structure.scope_placeholder}
                 </FormDescription>
                 <RadioGroup
@@ -516,7 +1012,7 @@ const GigPosting = () => {
                 >
                   {all_form_structure.scope_options.map((single_option) => (
                     <div
-                      className='radio_item mb-4 flex w-full items-center space-x-2 md:w-1/2 md:pr-2'
+                      className='radio_item mb-4 flex w-full items-center space-x-2 md:w-1/2 md:pr-2 xl:w-1/4'
                       key={single_option.value}
                     >
                       <RadioGroupItem
@@ -546,27 +1042,31 @@ const GigPosting = () => {
             name='gig_experience'
             render={({ field }) => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.experience_label}
                 </FormLabel>
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.experience_description}
+                </FormDescription>
                 <RadioGroup
-                  className='flex flex-wrap gap-3 pt-3'
+                  className='radio_groups flex flex-col gap-[15px] pt-3 xl:flex-row'
                   defaultValue={all_form_structure.experience_options[0].value}
                   onValueChange={field.onChange}
                 >
-                  {all_form_structure.experience_options.map((experience_option) => (
+                  {all_form_structure.experience_options.map((experience_option, key) => (
                     <div
-                      className='flex w-full items-center gap-3 space-x-2 rounded-xl border border-slate-500 px-3 py-0'
+                      className={`radio_group flex w-full items-start gap-3 space-x-2 rounded-xl border border-slate-500 px-3 py-0 xl:w-1/3 ${selectedLevel == key && "bg-[#28373E] border-[#526872]"}`}
                       key={experience_option.value}
                     >
                       <RadioGroupItem
-                        className='h-6 w-6'
+                        className='mt-7 h-6 w-6'
                         id={experience_option.value}
                         onClick={() => {
                           setPostData((prev) => ({
                             ...prev,
                             experienceLevel: experience_option.indexNum,
                           }));
+                          setSelectedLevel(key);
                         }}
                         value={experience_option.value}
                       />
@@ -575,7 +1075,9 @@ const GigPosting = () => {
                         htmlFor={experience_option.value}
                       >
                         <span className='text-xl text-slate-300'>{experience_option.label}</span>
-                        <p className='text-base text-slate-500'>{experience_option.description}</p>
+                        <p className='mt-4 text-base text-slate-500'>
+                          {experience_option.description}
+                        </p>
                       </Label>
                     </div>
                   ))}
@@ -587,12 +1089,13 @@ const GigPosting = () => {
             name='location'
             render={() => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.location_label}
                 </FormLabel>
+
                 <FormControl>
                   <Input
-                    className='rounded-full border-slate-500 bg-black px-6 py-6 text-base'
+                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base  outline-none disabled:opacity-50 placeholder:text-muted-foreground'
                     onChange={(e) => {
                       setPostData((prev) => ({
                         ...prev,
@@ -612,12 +1115,9 @@ const GigPosting = () => {
             name='budget'
             render={({ field }) => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.budget_label}
                 </FormLabel>
-                <FormDescription className='text-base'>
-                  {all_form_structure.budget_placeholder}
-                </FormDescription>
                 <RadioGroup
                   className='flex flex-wrap gap-3 pt-3 md:flex-nowrap'
                   defaultValue={all_form_structure.budget_mode[0].value}
@@ -663,13 +1163,13 @@ const GigPosting = () => {
                 name='hourly_rate_from'
                 render={() => (
                   <FormItem className='mt-8 w-full'>
-                    <FormLabel className='text-lg uppercase text-slate-500'>
+                    <FormLabel className='text-base font-normal text-[#96B0BD]'>
                       {all_form_structure.gig_from_to.from_label}
                     </FormLabel>
                     <FormControl>
                       <div className='relative w-full pr-7'>
                         <Input
-                          className='rounded-full border-slate-400 bg-black px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                          className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                           min={0}
                           onChange={(e) =>
                             setPostData((prev) => ({
@@ -696,13 +1196,13 @@ const GigPosting = () => {
                 name='hourly_rate_to'
                 render={() => (
                   <FormItem className='mt-8 w-full'>
-                    <FormLabel className='text-lg uppercase text-slate-500'>
+                    <FormLabel className='text-base font-normal text-[#96B0BD]'>
                       {all_form_structure.gig_from_to.to_label}
                     </FormLabel>
                     <FormControl>
                       <div className='relative w-full pr-7'>
                         <Input
-                          className='rounded-full border-slate-400 bg-black px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                          className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                           min={0}
                           onChange={(e) => {
                             setPostData((prev) => ({
@@ -733,13 +1233,13 @@ const GigPosting = () => {
               name='fixed_price'
               render={() => (
                 <FormItem className='mt-8 w-full'>
-                  <FormLabel className='text-lg uppercase text-slate-500'>
+                  <FormLabel className='text-base font-normal text-[#96B0BD]'>
                     {all_form_structure.gig_fixed_label}
                   </FormLabel>
                   <FormControl>
                     <div className='relative w-full'>
                       <Input
-                        className='rounded-full border-slate-400 bg-black px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                        className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                         min={0}
                         onChange={(e) => {
                           setPostData((prev) => ({
@@ -766,12 +1266,15 @@ const GigPosting = () => {
             name='gig_description'
             render={() => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.gig_description_label}
                 </FormLabel>
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.git_description}
+                </FormDescription>
                 <FormControl>
-                  <Textarea
-                    className='rounded-xl border-slate-500 px-6 py-6 text-base'
+                  <Input
+                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base  outline-none disabled:opacity-50 placeholder:text-muted-foreground'
                     onChange={(e) => {
                       setPostData((prev) => ({
                         ...prev,
@@ -790,11 +1293,14 @@ const GigPosting = () => {
             name='attachemnts'
             render={() => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.upload_files_label}
                 </FormLabel>
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.upload_files_description}
+                </FormDescription>
                 <FormControl>
-                  <div className='rounded-xl border border-slate-500 p-4'>
+                  <div className='rounded-xl border border-slate-500'>
                     <FileUpload
                       body={<FileUploadBody />}
                       fileValue={files}
@@ -826,15 +1332,17 @@ const GigPosting = () => {
               </FormItem>
             )}
           />
+          <div className='flex justify-center md:justify-end '>
+            <Button
+              className='mt-8 w-1/5 rounded-full bg-[#DC4F13] text-white min-w-[220px]'
+              onClick={() => {
+                handlePublish();
+              }}
+            >
+              Publish Gig
+            </Button>
+          </div>
         </form>
-        <Button
-          className='mt-8 w-1/5 rounded-full bg-[#DC4F13] text-white'
-          onClick={() => {
-            handlePublish();
-          }}
-        >
-          Publish Gig
-        </Button>
       </Form>
     </div>
   );
