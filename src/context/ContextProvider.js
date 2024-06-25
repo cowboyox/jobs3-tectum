@@ -176,8 +176,17 @@ const ContextProvider = ({ children }) => {
     try {
       const { data } = await api.post('/api/v1/user/wallet/register', {
         acc_type: state.acc_type,
-        wallet,
+        wallet: wallet.toLowerCase(),
       });
+      localStorage.setItem(
+        'jobs_2024_token',
+        JSON.stringify({
+          data: {
+            ...data,
+            currentRole: data.user.role[0],
+          },
+        })
+      );
       const profileData = await api.get(
         `/api/v1/profile/get-profile/${data.user.email}/${data.user.role[0]}`
       );
@@ -222,6 +231,16 @@ const ContextProvider = ({ children }) => {
     // }
     try {
       const { data } = await api.post('/api/v1/user/wallet/login', { wallet });
+      console.log({data})
+      localStorage.setItem(
+        'jobs_2024_token',
+        JSON.stringify({
+          data: {
+            ...data,
+            currentRole: data.user.role[0],
+          },
+        })
+      );
       const profileData = await api.get(
         `/api/v1/profile/get-profile/${data.user.email}/${data.user.role[0]}`
       );
