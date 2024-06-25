@@ -327,7 +327,7 @@ const GigPosting = () => {
             gigDescription: postData.gigDescription,
             profileName: auth.user.name,
             profileType: 'Client',
-            imageURL: data?.data?.msg ? data.data.msg[0] : null
+            imageURL: auth?.currentProfile?.avatarURL != "" ? auth.currentProfile.avatarURL : null
           })
         })
         toast({
