@@ -32,9 +32,12 @@ const Ratings = () => {
     <div className='mt-10 flex flex-col gap-4'>
       <div className='flex justify-between'>
         <h1 className='text-2xl font-semibold'>Ratings</h1>
-        <p className='cursor-pointer'>Show more</p>
+        {/* <p className='cursor-pointer'>Show more</p> */}
       </div>
-      <div className='mt-2 grid gap-4 lg:grid-cols-3'>
+      <div className='flex justify-center items-center mt-50px text-2xl font-semibold'>
+        Not yet
+      </div>
+      {/* <div className='mt-2 grid gap-4 lg:grid-cols-3'>
         {ratings.length ? (
           ratings.map((rating, index) => (
             <div
@@ -61,18 +64,18 @@ const Ratings = () => {
                 <Image height={16} src={'/assets/icons/Vector.png'} width={16} />
               </div>
               <p className='mt-4'>{rating.description}</p>
-              {/* <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center justify-between gap-4">
                 <p className="text-medGray font-[400] text-lg">{rating.time}</p>
                 <div className="flex gap-1 items-center text-white border-2 border-white rounded-[6px] px-3">
                   <p className="p-[1px]">{rating.description}</p>
                 </div>
-              </div> */}
+              </div> 
             </div>
           ))
         ) : (
           <div className='text-center'>Not yet</div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
