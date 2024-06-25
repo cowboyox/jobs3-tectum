@@ -9,35 +9,54 @@ export const useGetAllClientGigsProposed = (profileId) => {
     queryFn: async () => {
       if (profileId) {
         try {
-          const { data } = await api.get(`/api/v1/client_gig/find_all_gigs_proposed/${profileId}`);
-          const infos = [];
+          const { data } = await api.get(`/api/v1/client_gig/find_all_gigs_of_client/${profileId}`);
+          const proposals = [];
+          const lives = [];
 
           if (data?.data) {
             data.data.map((d) => {
               d.bidInfos.map((info) => {
-                infos.push({
-                  creator: {
-                    fullName: info.fullName,
-                  },
-                  gigDescription: d.gigDescription,
-                  gigPostDate: d.gigPostDate,
-                  gigPrice: d.gigPrice
-                    ? `$${d.gigPrice}`
-                    : `$${d.minBudget}/hr ~ $${d.maxBudget}/hr`,
-                  gigTitle: d.gigTitle,
-                });
+                if (!info.hired) {
+                  proposals.push({
+                    creator: {
+                      fullName: info.fullName,
+                    },
+                    freelancerId: info.freelancerId,
+                    gigDescription: d.gigDescription,
+                    gigId: d._id,
+                    gigPostDate: d.gigPostDate,
+                    gigPrice: d.gigPrice
+                      ? `$${d.gigPrice}`
+                      : `$${d.minBudget}/hr ~ $${d.maxBudget}/hr`,
+                    gigTitle: d.gigTitle,
+                  });
+                } else {
+                  lives.push({
+                    creator: {
+                      fullName: info.fullName,
+                    },
+                    freelancerId: info.freelancerId,
+                    gigDescription: d.gigDescription,
+                    gigId: d._id,
+                    gigPostDate: d.gigPostDate,
+                    gigPrice: d.gigPrice
+                      ? `$${d.gigPrice}`
+                      : `$${d.minBudget}/hr ~ $${d.maxBudget}/hr`,
+                    gigTitle: d.gigTitle,
+                  });
+                }
               });
             });
           }
 
-          return infos;
+          return { lives, proposals };
         } catch (e) {
           console.error(e);
 
-          return [];
+          return null;
         }
       } else {
-        return [];
+        return null;
       }
     },
     queryKey: ['useGetAllClientGigsProposed', profileId],
