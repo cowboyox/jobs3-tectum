@@ -1,9 +1,11 @@
 'use client';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Image from 'next/image';
 import React from 'react';
 import { CgOptions } from 'react-icons/cg';
 import { CiSearch } from 'react-icons/ci';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
+import { RiRobot2Line } from 'react-icons/ri';
 
 const orders = [
   // {
@@ -44,38 +46,52 @@ const earnings = [
 
 const Stats = () => {
   return (
-    <div className='-mt-10 flex min-h-96 w-full flex-col font-roboto md:mt-10'>
-      <div className='flex h-16 items-center justify-between gap-6 rounded-2xl bg-deepGreen px-4'>
-        <div className='flex min-w-[400px] items-center gap-4'>
-          <CiSearch className='text-2xl text-medGray' />
+    <div className=' flex min-h-96 w-full flex-col font-roboto mt-10'>
+      <div className='flex items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4 md:h-16'>
+        <div className='flex items-center gap-4'>
+          <Select defaultValue='normal' className='outline-none'>
+            <SelectTrigger className='h-full w-20 rounded-xl bg-[#1B272C] outline-none mobile:w-14 mobile:p-2'>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='rounded-xl bg-[#1B272C]'>
+              <SelectGroup>
+                <SelectItem value='normal'>
+                  <CiSearch className='mobile:max-w-4' size={20} />
+                </SelectItem>
+                <SelectItem value='ai'>
+                  <RiRobot2Line className='mobile:max-w-4' size={20} />
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <input
             className='h-full w-full flex-1 border-none bg-transparent text-medGray outline-none'
             id='search'
             name='search'
-            placeholder='Search by job title, co...'
+            placeholder='Search by job title, company, keywords'
             type='text'
           />
         </div>
         <div className='flex h-16 min-w-28 items-center justify-center gap-4'>
-          <div className='hidden rounded-full bg-[#1BBF36] md:block'>
+          {/* <div className='hidden rounded-full bg-[#1BBF36] md:block'>
             <Image height={32} src={'/assets/icons/AIChatIcon.png'} width={32} />
-          </div>
-          <div className='flex items-center gap-2'>
+          </div> */}
+          <div className='flex items-center gap-4'>
             <HiOutlineLocationMarker className='text-2xl text-medGray' />
             <p className='hidden text-medGray md:block'>Anywhere</p>
           </div>
           <CgOptions className='text-2xl text-medGray' />
           <p className='hidden text-medGray md:block'>Filter</p>
-          <span className='flex size-6 items-center justify-center rounded-full bg-orange'>4</span>
+          {/* <span className='flex size-6 items-center justify-center rounded-full bg-orange'>4</span> */}
         </div>
       </div>
       <div className='mt-10 flex flex-col gap-4'>
-        <h1 className='text-2xl font-semibold'>Your Stats</h1>
+        {/* <h1 className='text-2xl font-semibold'>Your Stats</h1> */}
         <div className='mt-2 flex flex-col gap-4 md:flex-row'>
           <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[70%]'>
             <div className='flex h-1/6 items-center justify-between'>
               <h3 className='text-2xl font-semibold text-white'>Active Orders</h3>
-              <p className='text-medGray'>See All</p>
+              {/* <p className='text-medGray'>See All</p> */}
             </div>
             <div className='mt-6 flex flex-1 flex-col justify-between gap-2'>
               {orders.length ? (
@@ -112,14 +128,14 @@ const Stats = () => {
                   </div>
                 ))
               ) : (
-                <div className='mt-[20%] text-center'>Not yet</div>
+                <div className='mt-[20%] text-center text-2xl font-semibold'>Not yet</div>
               )}
             </div>
           </div>
           <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[30%]'>
             <div className='flex h-1/6 items-center justify-between'>
               <h3 className='text-2xl font-semibold text-white'>Earnings</h3>
-              <p className='text-medGray'>See All</p>
+              {/* <p className='text-medGray'>See All</p> */}
             </div>
             <div className='mt-6 flex-1'>
               {earnings.length ? (
@@ -133,7 +149,7 @@ const Stats = () => {
                   </div>
                 ))
               ) : (
-                <div className='mt-[50%] text-center'>Not yet</div>
+                <div className='mt-[50%] text-center text-2xl font-semibold'>Not yet</div>
               )}
             </div>
           </div>
