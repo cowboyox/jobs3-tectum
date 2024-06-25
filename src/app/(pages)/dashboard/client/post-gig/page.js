@@ -655,7 +655,6 @@ const GigPosting = () => {
       gigTitle: e.target.value,
     }));
   };
-
   const handlePublish = async () => {
     if (!postData.gigTitle) {
       return toast({
@@ -670,6 +669,7 @@ const GigPosting = () => {
     files2.map((file) => {
       formData.append('files', file);
     });
+    
     let tmp = localStorage.getItem('jobs_2024_token');
     const config = {
       headers: {
@@ -677,7 +677,7 @@ const GigPosting = () => {
         'Content-Type': 'multipart/form-data',
       },
     };
-    console.log("postData", postData);
+   
 
     await api
       .post('/api/v1/client_gig/post_gig', postData)
@@ -698,7 +698,7 @@ const GigPosting = () => {
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
-        router.push('./home');
+        // router.push('./home');
       })
       .catch((err) => {
         console.error('Error corrupted during posting gig', err);
@@ -731,7 +731,7 @@ const GigPosting = () => {
         <h1 className='mb-12 text-start text-3xl md:text-4xl'>Post a Gig</h1>
       </div>
       <Form {...form}>
-        <form className='itmes-end rounded-2xl bg-[#10191D] p-[30px]'>
+        <form className='itmes-end rounded-2xl bg-[#10191D] p-[30px]' onSubmit={(e)=>{e.preventDefault();handlePublish()}} >
           <FormField
             name='gig_title'
             render={() => (
@@ -1175,7 +1175,7 @@ const GigPosting = () => {
                           <FormField
                             name='hourly_rate_from'
                             render={() => (
-                              <FormItem className='mt-8 flex w-full flex-col xl:flex-row md:flex-row items-center gap-2 justify-end'>
+                              <FormItem className='mt-8 flex w-full flex-col xl:flex-row md:flex-row items-center gap-2 justify-between'>
                                 <FormLabel className='text-base font-normal text-[#96B0BD]'>
                                   {all_form_structure.gig_from_to.from_label}
                                 </FormLabel>
@@ -1208,7 +1208,7 @@ const GigPosting = () => {
                           <FormField
                             name='hourly_rate_to'
                             render={() => (
-                              <FormItem className='mt-8 flex w-full flex-col xl:flex-row md:flex-row items-center gap-2'>
+                              <FormItem className='mt-8 flex w-full flex-col xl:flex-row md:flex-row items-center gap-2 justify-between'>
                                 <FormLabel className='text-base font-normal text-[#96B0BD]'>
                                   {all_form_structure.gig_from_to.to_label}
                                 </FormLabel>
@@ -1355,9 +1355,7 @@ const GigPosting = () => {
           <div className='flex justify-center md:justify-end'>
             <Button
               className='mt-8 w-1/5 min-w-[220px] rounded-full bg-[#DC4F13] text-white'
-              onClick={() => {
-                handlePublish();
-              }}
+              type='submit'
             >
               Publish Gig
             </Button>
