@@ -95,6 +95,7 @@ const Stats = () => {
             </div>
             <div className='mt-6 flex flex-1 flex-col justify-between gap-2'>
               {orders.length ? (
+                
                 orders.map((spend, index) => (
                   <div
                     className='flex flex-1 items-center gap-1 rounded-2xl bg-darkGray px-3'
@@ -127,10 +128,12 @@ const Stats = () => {
                     </div>
                   </div>
                 ))
+                
               ) : (
-                <div className='mt-[20%] text-center text-2xl font-semibold'>Not yet</div>
+                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>Not yet</div>
               )}
-            </div>
+              </div>
+            
           </div>
           <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[30%]'>
             <div className='flex h-1/6 items-center justify-between'>
@@ -149,7 +152,7 @@ const Stats = () => {
                   </div>
                 ))
               ) : (
-                <div className='mt-[50%] text-center text-2xl font-semibold'>Not yet</div>
+                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>Not yet</div>
               )}
             </div>
           </div>
