@@ -43,14 +43,14 @@ import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import { cn } from '@/lib/utils';
 import api from '@/utils/api';
-import { PiExportThin } from "react-icons/pi";
+import { PiExportThin } from 'react-icons/pi';
 
 // Icons
 
 function FileUploadBody() {
   return (
-    <div className='flex w-full items-center justify-center rounded-xl border border-dashed pt-2 pb-2 border-slate-500'>
-      <PiExportThin className='h-[24px] w-[24px] text-[#A0B4C0] mr-2'/>
+    <div className='flex w-full items-center justify-center rounded-xl border border-dashed border-slate-500 pb-2 pt-2'>
+      <PiExportThin className='mr-2 h-[24px] w-[24px] text-[#A0B4C0]' />
       <p className='text-center'>
         <span className='text-base text-slate-500'>Upload</span>
       </p>
@@ -726,8 +726,8 @@ const GigPosting = () => {
   return (
     <div className='gig_posting flex min-h-screen w-full flex-col items-center py-10'>
       <div className='flex w-full'>
-        <h1 className='mb-12 text-3xl md:text-4xl text-start'>Post a Gig</h1>
-      </div>    
+        <h1 className='mb-12 text-start text-3xl md:text-4xl'>Post a Gig</h1>
+      </div>
       <Form {...form}>
         <form className='itmes-end rounded-2xl bg-[#10191D] p-[30px]'>
           <FormField
@@ -742,7 +742,7 @@ const GigPosting = () => {
                 </p>
                 <FormControl>
                   <Input
-                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base  outline-none disabled:opacity-50 placeholder:text-muted-foreground'
+                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'
                     // className='rounded-full flex h-11 w-full ml-3 bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50'
                     onChange={(e) => handleSetGigTitle(e)}
                     placeholder={all_form_structure.title_placeholder}
@@ -1066,7 +1066,7 @@ const GigPosting = () => {
                 >
                   {all_form_structure.experience_options.map((experience_option, key) => (
                     <div
-                      className={`radio_group flex w-full items-start gap-3 space-x-2 rounded-xl border border-slate-500 px-3 py-0 xl:w-1/3 ${selectedLevel == key && "bg-[#28373E] border-[#526872]"}`}
+                      className={`radio_group flex w-full items-start gap-3 space-x-2 rounded-xl border border-slate-500 px-3 py-0 xl:w-1/3 ${selectedLevel == key && 'border-[#526872] bg-[#28373E]'}`}
                       key={experience_option.value}
                     >
                       <RadioGroupItem
@@ -1106,7 +1106,7 @@ const GigPosting = () => {
 
                 <FormControl>
                   <Input
-                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base  outline-none disabled:opacity-50 placeholder:text-muted-foreground'
+                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'
                     onChange={(e) => {
                       setPostData((prev) => ({
                         ...prev,
@@ -1145,21 +1145,125 @@ const GigPosting = () => {
                   }}
                 >
                   {all_form_structure.budget_mode.map((budget_option) => (
-                    <div
-                      className='flex w-full items-center gap-2 space-x-2 rounded-xl border border-slate-500 px-3 py-0'
-                      key={budget_option.value}
-                    >
-                      <RadioGroupItem
-                        className='h-4 w-4'
-                        id={budget_option.value}
-                        value={budget_option.value}
-                      />
-                      <Label
-                        className='w-full cursor-pointer py-7 text-xl text-slate-300'
-                        htmlFor={budget_option.value}
+                    <div className='flex w-full flex-col items-center gap-2 space-x-2 rounded-xl border border-slate-500 px-0 py-0'>
+                      <div
+                        className={`flex w-full items-center gap-2 space-x-2  px-3 py-0 bg-[#28373E] rounded-xl `}
+                        key={budget_option.value}
                       >
-                        {budget_option.label}
-                      </Label>
+                        <RadioGroupItem
+                          className='h-4 w-4'
+                          id={budget_option.value}
+                          value={budget_option.value}
+                        />
+                        <Label
+                          className='w-full cursor-pointer py-7 text-xl text-slate-300'
+                          htmlFor={budget_option.value}
+                        >
+                          {budget_option.label}
+                        </Label>
+                      </div>
+                      {budgetMode == 'hourly' && budget_option.value ==  "hourly" && (
+                        <div className='flex gap-5 flex-col xl:flex-row mb-8'>
+                          <FormField
+                            name='hourly_rate_from'
+                            render={() => (
+                              <FormItem className='mt-8 flex w-full flex-col xl:flex-row md:flex-row items-center gap-2 justify-end'>
+                                <FormLabel className='text-base font-normal text-[#96B0BD]'>
+                                  {all_form_structure.gig_from_to.from_label}
+                                </FormLabel>
+                                <FormControl>
+                                  <div className='relative w-full pr-7'>
+                                    <Input
+                                      className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                      min={0}
+                                      onChange={(e) =>
+                                        setPostData((prev) => ({
+                                          ...prev,
+                                          minBudget: parseInt(e.target.value),
+                                        }))
+                                      }
+                                      placeholder={all_form_structure.gig_from_to.from_placeholder}
+                                      type='number'
+                                      value={postData.minBudget}
+                                    />
+                                    <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      $
+                                    </span>
+                                    <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      /hr
+                                    </span>
+                                  </div>
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            name='hourly_rate_to'
+                            render={() => (
+                              <FormItem className='mt-8 flex w-full flex-col xl:flex-row md:flex-row items-center gap-2'>
+                                <FormLabel className='text-base font-normal text-[#96B0BD]'>
+                                  {all_form_structure.gig_from_to.to_label}
+                                </FormLabel>
+                                <FormControl>
+                                  <div className='relative w-full pr-7'>
+                                    <Input
+                                      className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                      min={0}
+                                      onChange={(e) => {
+                                        setPostData((prev) => ({
+                                          ...prev,
+                                          maxBudget: parseInt(e.target.value),
+                                        }));
+                                      }}
+                                      placeholder={all_form_structure.gig_from_to.to_placeholder}
+                                      type='number'
+                                      value={postData.maxBudget}
+                                    />
+                                    <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      $
+                                    </span>
+                                    <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      /hr
+                                    </span>
+                                  </div>
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      )}
+                      {budgetMode == 'fixed' && budget_option.value ==  "fixed" && (
+                        <FormField
+                          name='fixed_price'
+                          render={() => (
+                            <FormItem className='mt-8 w-full flex pl-3 pr-5'>
+                              {/* <FormLabel className='text-base font-normal text-[#96B0BD]'>
+                                {all_form_structure.gig_fixed_label}
+                              </FormLabel> */}
+                              <FormControl>
+                                <div className='relative w-full mb-8'>
+                                  <Input
+                                    className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                    min={0}
+                                    onChange={(e) => {
+                                      setPostData((prev) => ({
+                                        ...prev,
+                                        gigPrice: parseInt(e.target.value),
+                                      }));
+                                    }}
+                                    placeholder={all_form_structure.gig_fixed_price}
+                                    type='number'
+                                    value={postData.gigPrice}
+                                  />
+                                  <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                    $
+                                  </span>
+                                </div>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      )}
                     </div>
                   ))}
                 </RadioGroup>
@@ -1168,109 +1272,8 @@ const GigPosting = () => {
           />
 
           {/* For Hourly Rate budget */}
-          {budgetMode == 'hourly' && (
-            <div className='flex gap-5'>
-              <FormField
-                name='hourly_rate_from'
-                render={() => (
-                  <FormItem className='mt-8 w-full'>
-                    <FormLabel className='text-base font-normal text-[#96B0BD]'>
-                      {all_form_structure.gig_from_to.from_label}
-                    </FormLabel>
-                    <FormControl>
-                      <div className='relative w-full pr-7'>
-                        <Input
-                          className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                          min={0}
-                          onChange={(e) =>
-                            setPostData((prev) => ({
-                              ...prev,
-                              minBudget: parseInt(e.target.value),
-                            }))
-                          }
-                          placeholder={all_form_structure.gig_from_to.from_placeholder}
-                          type='number'
-                          value={postData.minBudget}
-                        />
-                        <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
-                          $
-                        </span>
-                        <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
-                          /hr
-                        </span>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name='hourly_rate_to'
-                render={() => (
-                  <FormItem className='mt-8 w-full'>
-                    <FormLabel className='text-base font-normal text-[#96B0BD]'>
-                      {all_form_structure.gig_from_to.to_label}
-                    </FormLabel>
-                    <FormControl>
-                      <div className='relative w-full pr-7'>
-                        <Input
-                          className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                          min={0}
-                          onChange={(e) => {
-                            setPostData((prev) => ({
-                              ...prev,
-                              maxBudget: parseInt(e.target.value),
-                            }));
-                          }}
-                          placeholder={all_form_structure.gig_from_to.to_placeholder}
-                          type='number'
-                          value={postData.maxBudget}
-                        />
-                        <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
-                          $
-                        </span>
-                        <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
-                          /hr
-                        </span>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-          )}
+
           {/* For Hourly Rate budget */}
-          {budgetMode == 'fixed' && (
-            <FormField
-              name='fixed_price'
-              render={() => (
-                <FormItem className='mt-8 w-full'>
-                  <FormLabel className='text-base font-normal text-[#96B0BD]'>
-                    {all_form_structure.gig_fixed_label}
-                  </FormLabel>
-                  <FormControl>
-                    <div className='relative w-full'>
-                      <Input
-                        className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                        min={0}
-                        onChange={(e) => {
-                          setPostData((prev) => ({
-                            ...prev,
-                            gigPrice: parseInt(e.target.value),
-                          }));
-                        }}
-                        placeholder={all_form_structure.gig_fixed_price}
-                        type='number'
-                        value={postData.gigPrice}
-                      />
-                      <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
-                        $
-                      </span>
-                    </div>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          )}
 
           {/* Description */}
           <FormField
@@ -1285,7 +1288,7 @@ const GigPosting = () => {
                 </FormDescription>
                 <FormControl>
                   <Input
-                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base  outline-none disabled:opacity-50 placeholder:text-muted-foreground'
+                    className='mt-4 rounded-full bg-transparent px-6 py-6 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'
                     onChange={(e) => {
                       setPostData((prev) => ({
                         ...prev,
@@ -1343,9 +1346,9 @@ const GigPosting = () => {
               </FormItem>
             )}
           />
-          <div className='flex justify-center md:justify-end '>
+          <div className='flex justify-center md:justify-end'>
             <Button
-              className='mt-8 w-1/5 rounded-full bg-[#DC4F13] text-white min-w-[220px]'
+              className='mt-8 w-1/5 min-w-[220px] rounded-full bg-[#DC4F13] text-white'
               onClick={() => {
                 handlePublish();
               }}
