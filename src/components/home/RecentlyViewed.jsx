@@ -24,10 +24,10 @@ const RecentlyViewed = () => {
   return (
     <div className='mt-10 flex flex-col gap-4'>
       <div className='flex justify-between'>
-        <h1>Recently Viewed</h1>
+        <h1 className='text-2xl font-semibold'>Recently Viewed</h1>
         {/* <p className='cursor-pointer'>Show more</p> */}
       </div>
-      <div className='flex justify-center items-center mt-50px'>
+      <div className='flex justify-center items-center mt-50px text-2xl font-semibold'>
         Not yet
       </div>
       {/* <div className='grid gap-4 lg:grid-cols-3'>

@@ -71,7 +71,7 @@ const Gigs = () => {
 
   return (
     <div className='mt-10 flex flex-col gap-4'>
-      <h1>Sort Gigs</h1>
+      <h1 className='text-2xl font-semibold'>Sort Gigs</h1>
       <div className='flex flex-wrap items-center gap-2'>
         {gigOptions.map((gig, index) => (
           <div

@@ -86,7 +86,7 @@ const Stats = () => {
         </div>
       </div>
       <div className='mt-10 flex flex-col gap-4'>
-        <h1 className='text-2xl font-semibold'>Your Stats</h1>
+        {/* <h1 className='text-2xl font-semibold'>Your Stats</h1> */}
         <div className='mt-2 flex flex-col gap-4 md:flex-row'>
           <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[70%]'>
             <div className='flex h-1/6 items-center justify-between'>
@@ -128,7 +128,7 @@ const Stats = () => {
                   </div>
                 ))
               ) : (
-                <div className='mt-[20%] text-center'>Not yet</div>
+                <div className='mt-[20%] text-center text-2xl font-semibold'>Not yet</div>
               )}
             </div>
           </div>
@@ -149,7 +149,7 @@ const Stats = () => {
                   </div>
                 ))
               ) : (
-                <div className='mt-[50%] text-center'>Not yet</div>
+                <div className='mt-[50%] text-center text-2xl font-semibold'>Not yet</div>
               )}
             </div>
           </div>
