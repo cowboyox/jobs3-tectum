@@ -26,16 +26,6 @@
             } 
         } 
     } 
-    .radio_groups { 
-        .radio_group + input:checked{ 
-            
-                // border-color: var(--main-color) !important; 
-                background-color: #28373E;
-                border-color: #526872;
-            
-        } 
-    } 
-    
     .file_container { 
         .file_container {
             width: 100% !important;

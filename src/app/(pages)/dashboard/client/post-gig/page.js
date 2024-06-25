@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { FiPlus } from 'react-icons/fi';
 import { GoChevronDown, GoTrash } from 'react-icons/go';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
+import { IoIosClose } from "react-icons/io";
 import { IoCheckmark } from 'react-icons/io5';
 import {
   Select,
@@ -49,10 +50,10 @@ import { PiExportThin } from 'react-icons/pi';
 
 function FileUploadBody() {
   return (
-    <div className='flex w-full items-center justify-center rounded-xl border border-dashed border-slate-500 pb-2 pt-2'>
+    <div className='flex w-full items-center justify-center rounded-xl pb-2 pt-2'>
       <PiExportThin className='mr-2 h-[24px] w-[24px] text-[#A0B4C0]' />
       <p className='text-center'>
-        <span className='text-base text-slate-500'>Upload</span>
+        <span className='text-base text-[#A0B4C0]'>Upload</span>
       </p>
     </div>
   );
@@ -232,7 +233,7 @@ const all_form_structure = {
 
 const GigPosting = () => {
   const { toast } = useToast();
-  const auth = useCustomContext()
+  const auth = useCustomContext();
   const router = useRouter();
   const [openCategory, setOpenCategory] = useState(false);
   const [openSubCategory, setOpenSubCategory] = useState(false);
@@ -604,6 +605,7 @@ const GigPosting = () => {
       ],
     },
   ];
+  const [selectedSkill, setSelectedSkill] = useState('');
   const [currentCategory, setCurrentCategory] = useState('Accounting & Consulting');
   const [currentSub, setCurrentSub] = useState('Personal Coaching');
   useEffect(() => {
@@ -665,11 +667,15 @@ const GigPosting = () => {
         variant: 'default',
       });
     }
+    setPostData((prev) => ({
+      ...prev,
+      requiredSkills: skillSet,
+    }));
     const formData = new FormData();
     files2.map((file) => {
       formData.append('files', file);
     });
-    
+
     let tmp = localStorage.getItem('jobs_2024_token');
     const config = {
       headers: {
@@ -677,20 +683,26 @@ const GigPosting = () => {
         'Content-Type': 'multipart/form-data',
       },
     };
-   
 
     await api
       .post('/api/v1/client_gig/post_gig', postData)
       .then(async (data) => {
-        await api.post(`/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${data.data.gigId}`, formData, config).then(async (data) => {
-          console.log("Successfully uploaded", data.data.msg[0]);
-          await api.post('/api/v1/freelancer_gig/send_tg_bot', {
-            gigDescription: postData.gigDescription,
-            profileName: auth.user.name,
-            profileType: 'Client',
-            imageURL: auth?.currentProfile?.avatarURL != "" ? auth.currentProfile.avatarURL : null
-          })
-        })
+        await api
+          .post(
+            `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${data.data.gigId}`,
+            formData,
+            config
+          )
+          .then(async (data) => {
+            console.log('Successfully uploaded', data.data.msg[0]);
+            await api.post('/api/v1/freelancer_gig/send_tg_bot', {
+              gigDescription: postData.gigDescription,
+              profileName: auth.user.name,
+              profileType: 'Client',
+              imageURL:
+                auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
+            });
+          });
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -726,9 +738,15 @@ const GigPosting = () => {
   };
 
   return (
-    <div className='mb-4 flex justify-between rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-3'>
+    <div className='gig_posting mb-4 flex justify-between rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>
       <Form {...form}>
-        <form className='itmes-end rounded-2xl bg-[#10191D] p-[30px]' onSubmit={(e)=>{e.preventDefault();handlePublish()}} >
+        <form
+          className='itmes-end rounded-2xl bg-[#10191D] p-[30px] mobile:p-0'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handlePublish();
+          }}
+        >
           <FormField
             name='gig_title'
             render={() => (
@@ -740,13 +758,13 @@ const GigPosting = () => {
                   {all_form_structure.title_label2}
                 </p>
                 <FormControl>
-                  <div className='mt-4 rounded-2xl bg-transparent text-base outline-none p-5 placeholder:text-muted-foreground border border-[#526872] disabled:opacity-50'>
-                  <input
-                    className='bg-transparent box-border !p-0 text-[#96B0BD] outline-none'
-                    onChange={(e) => handleSetGigTitle(e)}
-                    placeholder={all_form_structure.title_placeholder}
-                    value={postData.gigTitle}
-                  />
+                  <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
+                    <input
+                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
+                      onChange={(e) => handleSetGigTitle(e)}
+                      placeholder={all_form_structure.title_placeholder}
+                      value={postData.gigTitle}
+                    />
                   </div>
                 </FormControl>
                 <FormDescription />
@@ -771,6 +789,7 @@ const GigPosting = () => {
                             ...prev,
                             gigCategory: [...prev.gigCategory, e],
                           }));
+                          setCurrentCategory(e);
                         }}
                       >
                         <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
@@ -841,27 +860,42 @@ const GigPosting = () => {
                 </p>
                 <FormControl className='w-full bg-[#10191D]'>
                   <Command>
-                    <div className='mb-2 flex flex-wrap items-center gap-3'>
-                      {skillSet.map((selectedSkill, selectedSkillIndex) => (
+                    <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
+                      <input
+                        className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
+                        onChange={(e) => setSelectedSkill(e.target.value)}
+                        placeholder={all_form_structure.skills_placeholder}
+                        value={selectedSkill}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            if (skillSet.length < 5) {
+                              setSkillSet((prevSkillSet) => [...prevSkillSet, selectedSkill]);
+                              
+                            }
+                            setSelectedSkill('');
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className='mt-8 flex flex-wrap items-center gap-3'>
+                      {skillSet.map((index, selectedSkillIndex) => (
                         <div
-                          className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-[#28373E] px-2 py-1 text-sm text-[#F5F5F5]'
+                          className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-[#28373E] px-5 py-1 text-sm text-[#F5F5F5]'
                           data-index={selectedSkillIndex}
                           key={selectedSkillIndex}
                           onClick={() => {
                             const newSkillSet = [...skillSet];
                             newSkillSet.splice(selectedSkillIndex, 1);
                             setSkillSet(newSkillSet);
+                            
                           }}
                         >
                           <IoIosCloseCircleOutline className='ml-2 mr-1 text-base' />
-                          {selectedSkill}
+                          {index}
                         </div>
                       ))}
                     </div>
-                    <div className='w-full mt-4 rounded-2xl bg-transparent text-base outline-none p-5 placeholder:text-muted-foreground border border-[#526872] disabled:opacity-50'>
-                      <CommandInput placeholder={all_form_structure.skills_placeholder} />
-                    </div>
-                    <CommandList>
+                    {/* <CommandList>
                       <CommandEmpty>No skills found.</CommandEmpty>
                       <CommandGroup>
                         <div className='suggested_skills mt-3 flex flex-wrap gap-3'>
@@ -884,7 +918,7 @@ const GigPosting = () => {
                           ))}
                         </div>
                       </CommandGroup>
-                    </CommandList>
+                    </CommandList> */}
                   </Command>
                 </FormControl>
               </FormItem>
@@ -923,7 +957,7 @@ const GigPosting = () => {
                         value={single_option.value}
                       />
                       <Label
-                        className='ml-0 w-full cursor-pointer rounded-full border border-slate-500 p-5 transition'
+                        className='ml-[4px] w-full cursor-pointer rounded-[15px] border border-slate-500 p-5 transition'
                         htmlFor={single_option.value}
                       >
                         {single_option.label}
@@ -945,13 +979,13 @@ const GigPosting = () => {
                   {all_form_structure.experience_description}
                 </FormDescription>
                 <RadioGroup
-                  className='radio_groups flex flex-col gap-[15px] pt-3 xl:flex-row'
+                  className='flex flex-col gap-[15px] pt-3 xl:flex-row'
                   defaultValue={all_form_structure.experience_options[0].value}
                   onValueChange={field.onChange}
                 >
                   {all_form_structure.experience_options.map((experience_option, key) => (
                     <div
-                      className={`radio_group flex w-full items-start gap-3 space-x-2 rounded-xl border border-slate-500 px-3 py-0 xl:w-1/3 ${selectedLevel == key && 'border-[#526872] bg-[#28373E]'}`}
+                      className={`flex w-full items-start gap-3 space-x-2 rounded-[15px] border border-slate-500 px-3 py-0 xl:w-1/3 ${selectedLevel == key && 'border-[#526872] bg-[#28373E]'}`}
                       key={key}
                     >
                       <RadioGroupItem
@@ -989,18 +1023,24 @@ const GigPosting = () => {
                   {all_form_structure.location_label}
                 </FormLabel>
                 <FormControl>
-                  <div className='mt-4 rounded-2xl bg-transparent text-base outline-none p-5 placeholder:text-muted-foreground border border-[#526872] disabled:opacity-50'>
-                  <input
-                    className='bg-transparent box-border !p-0 text-[#96B0BD] outline-none'
-                    value={postData.location}
-                    onChange={(e) => {
-                      setPostData((prev) => ({
-                        ...prev,
-                        location: e.target.value,
-                      }));
-                    }}
-                    placeholder={all_form_structure.location_placeholder}
-                  />
+                  <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50 flex'>
+                    <input
+                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
+                      value={postData.location}
+                      onChange={(e) => {
+                        setPostData((prev) => ({
+                          ...prev,
+                          location: e.target.value,
+                        }));
+                      }}
+                      placeholder={all_form_structure.location_placeholder}
+                    />
+                    <div className='justify-end cursor-pointer' onClick={() => setPostData((prev) =>({
+                      ...prev,
+                      location: ""
+                    }))}>
+                      <IoIosClose className='w-[30px] h-[30px]'/>
+                    </div>
                   </div>
                 </FormControl>
               </FormItem>
@@ -1031,10 +1071,9 @@ const GigPosting = () => {
                   }}
                 >
                   {all_form_structure.budget_mode.map((budget_option, key) => (
-                    <div className='flex w-full flex-col items-center gap-2 space-x-2 rounded-xl border border-slate-500 px-0 py-0' key={key}>
+                    <div className='items-centerspace-x-2 flex w-full flex-col px-0 py-0' key={key}>
                       <div
-                        className={`flex w-full items-center gap-2 space-x-2  px-3 py-0 bg-[#28373E] rounded-xl `}
-                        
+                        className={`flex w-full items-center gap-2 space-x-2 rounded-t-xl border border-slate-500 px-3 py-0 ${budgetMode !== budget_option.value ? 'rounded-xl' : 'bg-[#28373E]'}`}
                       >
                         <RadioGroupItem
                           className='h-4 w-4'
@@ -1048,12 +1087,15 @@ const GigPosting = () => {
                           {budget_option.label}
                         </Label>
                       </div>
-                      {budgetMode == 'hourly' && budget_option.value ==  "hourly" && (
-                        <div className='flex gap-5 flex-col xl:flex-row mb-8' key={key}>
+                      {budgetMode == 'hourly' && budget_option.value == 'hourly' && (
+                        <div
+                          className='flex w-full flex-col items-center justify-center gap-5 rounded-b-xl border border-[#526872] bg-[#1B272C] px-3 xl:flex-row'
+                          key={key}
+                        >
                           <FormField
                             name='hourly_rate_from'
                             render={() => (
-                              <FormItem className='mt-8 flex w-full flex-col xl:flex-row md:flex-row items-center gap-2 justify-between'>
+                              <FormItem className='my-3 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
                                 <FormLabel className='text-base font-normal text-[#96B0BD]'>
                                   {all_form_structure.gig_from_to.from_label}
                                 </FormLabel>
@@ -1086,7 +1128,7 @@ const GigPosting = () => {
                           <FormField
                             name='hourly_rate_to'
                             render={() => (
-                              <FormItem className='mt-8 flex w-full flex-col xl:flex-row md:flex-row items-center gap-2 justify-between'>
+                              <FormItem className='my-3 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
                                 <FormLabel className='text-base font-normal text-[#96B0BD]'>
                                   {all_form_structure.gig_from_to.to_label}
                                 </FormLabel>
@@ -1118,16 +1160,15 @@ const GigPosting = () => {
                           />
                         </div>
                       )}
-                      {budgetMode == 'fixed' && budget_option.value ==  "fixed" && (
+                      {budgetMode == 'fixed' && budget_option.value == 'fixed' && (
                         <FormField
                           name='fixed_price'
                           render={() => (
-                            <FormItem className='mt-8 w-full flex pl-3 pr-5'>
-                              
+                            <FormItem className='flex w-full rounded-b-xl border border-[#526872] bg-[#1B272C] pl-3 pr-5'>
                               <FormControl>
-                                <div className='relative w-full mb-8'>
+                                <div className='relative my-8 w-full'>
                                   <Input
-                                    className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                    className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                                     min={0}
                                     onChange={(e) => {
                                       setPostData((prev) => ({
@@ -1171,18 +1212,18 @@ const GigPosting = () => {
                   {all_form_structure.git_description}
                 </FormDescription>
                 <FormControl>
-                  <div className='mt-4 rounded-2xl bg-transparent text-base outline-none p-5 placeholder:text-muted-foreground border border-[#526872] disabled:opacity-50'>
-                  <input
-                    className='bg-transparent box-border !p-0 text-[#96B0BD] outline-none'
-                    value={postData.gigDescription}
-                    onChange={(e) => {
-                      setPostData((prev) => ({
-                        ...prev,
-                        gigDescription: e.target.value,
-                      }));
-                    }}
-                    placeholder={all_form_structure.gig_description_placeholder}
-                  />
+                  <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
+                    <input
+                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
+                      value={postData.gigDescription}
+                      onChange={(e) => {
+                        setPostData((prev) => ({
+                          ...prev,
+                          gigDescription: e.target.value,
+                        }));
+                      }}
+                      placeholder={all_form_structure.gig_description_placeholder}
+                    />
                   </div>
                 </FormControl>
               </FormItem>
@@ -1200,7 +1241,7 @@ const GigPosting = () => {
                   {all_form_structure.upload_files_description}
                 </FormDescription>
                 <FormControl>
-                  <div className='rounded-xl border border-slate-500'>
+                  <div className='rounded-xl border border-dashed border-slate-500'>
                     <FileUpload
                       body={<FileUploadBody />}
                       fileValue={files}
@@ -1234,7 +1275,7 @@ const GigPosting = () => {
           />
           <div className='flex justify-center md:justify-end'>
             <Button
-              className='mt-8 w-1/5 min-w-[220px] rounded-full bg-[#DC4F13] text-white'
+              className='mt-8 w-full min-w-[220px] rounded-xl bg-[#DC4F13] text-white md:w-1/5 xl:w-1/5'
               type='submit'
             >
               Publish Gig
