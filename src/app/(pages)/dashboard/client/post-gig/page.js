@@ -738,10 +738,10 @@ const GigPosting = () => {
   };
 
   return (
-    <div className='gig_posting mb-4 flex justify-between rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>
+    <div className='gig_posting mb-4 flex justify-center rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>
       <Form {...form}>
         <form
-          className='itmes-end rounded-2xl bg-[#10191D] p-[30px] mobile:p-0'
+          className='itmes-end justify-center rounded-2xl bg-[#10191D] p-[30px] mobile:p-0'
           onSubmit={(e) => {
             e.preventDefault();
             handlePublish();
@@ -1095,14 +1095,14 @@ const GigPosting = () => {
                           <FormField
                             name='hourly_rate_from'
                             render={() => (
-                              <FormItem className='my-3 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                              <FormItem className='mt-2 mb-4 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
                                 <FormLabel className='text-base font-normal text-[#96B0BD]'>
                                   {all_form_structure.gig_from_to.from_label}
                                 </FormLabel>
                                 <FormControl>
                                   <div className='relative w-full pr-7'>
                                     <Input
-                                      className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                      className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                                       min={0}
                                       onChange={(e) =>
                                         setPostData((prev) => ({
@@ -1128,14 +1128,14 @@ const GigPosting = () => {
                           <FormField
                             name='hourly_rate_to'
                             render={() => (
-                              <FormItem className='my-3 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                              <FormItem className='mt-2 mb-4 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
                                 <FormLabel className='text-base font-normal text-[#96B0BD]'>
                                   {all_form_structure.gig_from_to.to_label}
                                 </FormLabel>
                                 <FormControl>
                                   <div className='relative w-full pr-7'>
                                     <Input
-                                      className='rounded-full border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                      className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                                       min={0}
                                       onChange={(e) => {
                                         setPostData((prev) => ({
@@ -1166,7 +1166,7 @@ const GigPosting = () => {
                           render={() => (
                             <FormItem className='flex w-full rounded-b-xl border border-[#526872] bg-[#1B272C] pl-3 pr-5'>
                               <FormControl>
-                                <div className='relative my-8 w-full'>
+                                <div className='relative my-4 w-full'>
                                   <Input
                                     className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                                     min={0}
