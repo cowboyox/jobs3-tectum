@@ -548,7 +548,7 @@ const CreateGig = () => {
             gigDescription: values.gigDescription,
             profileName: auth.user.name,
             profileType: 'Freelancer',
-            imageURL: data?.data?.msg ? data.data.msg[0] : null
+            imageURL: auth?.currentProfile?.avatarURL != "" ? auth.currentProfile.avatarURL : null
           })
         })
         toast({
