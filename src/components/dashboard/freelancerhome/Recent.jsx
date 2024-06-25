@@ -272,7 +272,7 @@ const Recent = ({ search }) => {
             </div>
           ))
         ) : (
-          <div className='text-center'>Not yet</div>
+          <div className='text-center text-2xl font-semibold'>Not yet</div>
         )}
       </div>
       <div className='cursor-pointer rounded-2xl border border-lightGray py-3 text-center'>

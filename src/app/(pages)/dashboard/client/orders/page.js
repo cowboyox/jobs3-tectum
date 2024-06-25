@@ -63,37 +63,45 @@ const Orders = () => {
         creator: {
           fullName: 'Test User',
         },
-        gigDescription: 'Rust smart contract development',
+        gigDescription:
+          'Creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring that every user interaction is as enjoyable as it is efficient.',
         gigPostDate: new Date(),
         gigPrice: 200,
-        gitTitle: 'Smart contract Development',
+        gigTitle: 'Smart contract Development',
+        location: 'London, UK',
       },
       {
         creator: {
           fullName: 'Test User',
         },
-        gigDescription: 'Rust smart contract development',
+        gigDescription:
+          'Creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring that every user interaction is as enjoyable as it is efficient.',
         gigPostDate: new Date(),
         gigPrice: 200,
-        gitTitle: 'Smart contract Development',
+        gigTitle: 'Smart contract Development',
+        location: 'London, UK',
       },
       {
         creator: {
           fullName: 'Test User',
         },
-        gigDescription: 'Rust smart contract development',
+        gigDescription:
+          'Creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring that every user interaction is as enjoyable as it is efficient.',
         gigPostDate: new Date(),
         gigPrice: 200,
-        gitTitle: 'Smart contract Development',
+        gigTitle: 'Smart contract Development',
+        location: 'London, UK',
       },
       {
         creator: {
           fullName: 'Test User',
         },
-        gigDescription: 'Rust smart contract development',
+        gigDescription:
+          'Creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring that every user interaction is as enjoyable as it is efficient.',
         gigPostDate: new Date(),
         gigPrice: 200,
-        gitTitle: 'Smart contract Development',
+        gigTitle: 'Smart contract Development',
+        location: 'London, UK',
       },
     ]);
   }, []);
@@ -318,7 +326,7 @@ const Orders = () => {
         })}
         <span>Clear&nbsp;All</span>
       </div>
-      <div className='flex w-full items-center justify-center py-5'>
+      <div className='flex w-full items-center justify-center pb-5 pt-10'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
@@ -357,12 +365,14 @@ const Orders = () => {
                   <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                     {order.gigTitle}
                   </div>
-                  <div className='flex flex-none flex-row items-center gap-2'>
-                    <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
-                      15 H: 30 S
-                    </div>
-                    <div className='rounded-xl border border-[#1BBF36] p-1 px-3 text-[#1BBF36]'>
-                      Active
+                  <div className='flex flex-none flex-row items-center justify-between gap-2 mobile:w-full'>
+                    <div className='flex gap-2'>
+                      <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
+                        15 H: 30 S
+                      </div>
+                      <div className='rounded-xl border border-[#1BBF36] p-1 px-3 text-[#1BBF36]'>
+                        Active
+                      </div>
                     </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -540,7 +550,7 @@ const Orders = () => {
                     </DropdownMenu>
                   </div>
                 </div>
-                <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
+                <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                   <div className='flex flex-row items-center gap-2'>
                     <svg
                       fill='none'
@@ -550,82 +560,105 @@ const Orders = () => {
                       xmlns='http://www.w3.org/2000/svg'
                     >
                       <path
-                        d='M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z'
+                        d='M12.0009 13.4299C13.724 13.4299 15.1209 12.0331 15.1209 10.3099C15.1209 8.58681 13.724 7.18994 12.0009 7.18994C10.2777 7.18994 8.88086 8.58681 8.88086 10.3099C8.88086 12.0331 10.2777 13.4299 12.0009 13.4299Z'
                         stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
                         stroke-width='1.5'
                       />
                       <path
-                        d='M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977'
+                        d='M3.61971 8.49C5.58971 -0.169998 18.4197 -0.159997 20.3797 8.5C21.5297 13.58 18.3697 17.88 15.5997 20.54C13.5897 22.48 10.4097 22.48 8.38971 20.54C5.62971 17.88 2.46971 13.57 3.61971 8.49Z'
                         stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
                         stroke-width='1.5'
                       />
                     </svg>
-                    {formattedDate(order.gigPostDate)} - Present
+                    {order.location}
                   </div>
-                  <div className='flex flex-row items-center gap-2'>
-                    <svg
-                      fill='none'
-                      height='24'
-                      viewBox='0 0 24 24'
-                      width='24'
-                      xmlns='http://www.w3.org/2000/svg'
-                    >
-                      <path
-                        d='M22 6V8.42C22 10 21 11 19.42 11H16V4.01C16 2.9 16.91 2 18.02 2C19.11 2.01 20.11 2.45 20.83 3.17C21.55 3.9 22 4.9 22 6Z'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-miterlimit='10'
-                        stroke-width='1.5'
-                      />
-                      <path
-                        d='M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-miterlimit='10'
-                        stroke-width='1.5'
-                      />
-                      <path
-                        d='M9 13.0098H12'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-width='1.5'
-                      />
-                      <path
-                        d='M9 9.00977H12'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-width='1.5'
-                      />
-                      <path
-                        d='M5.99609 13H6.00508'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-width='1.5'
-                      />
-                      <path
-                        d='M5.99609 9H6.00508'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-width='1.5'
-                      />
-                    </svg>
-                    ${order.gigPrice}
+                  <div className='flex gap-2'>
+                    <div className='flex flex-row items-center gap-2'>
+                      <svg
+                        fill='none'
+                        height='24'
+                        viewBox='0 0 24 24'
+                        width='24'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path
+                          d='M22 6V8.42C22 10 21 11 19.42 11H16V4.01C16 2.9 16.91 2 18.02 2C19.11 2.01 20.11 2.45 20.83 3.17C21.55 3.9 22 4.9 22 6Z'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-miterlimit='10'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-miterlimit='10'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M9 13.0098H12'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M9 9.00977H12'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M5.99609 13H6.00508'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M5.99609 9H6.00508'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                      </svg>
+                      ${order.gigPrice}
+                    </div>
+                    <div className='flex flex-row items-center gap-2'>
+                      <svg
+                        fill='none'
+                        height='24'
+                        viewBox='0 0 24 24'
+                        width='24'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path
+                          d='M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                      </svg>
+                      {formattedDate(order.gigPostDate)} - Present
+                    </div>
                   </div>
                 </div>
                 <Separator className='my-4' />
-                {isSmallScreen && (
-                  <div className='text-left text-[#96B0BD]'>{order.gigDescription}</div>
-                )}
+                {/* {isSmallScreen && ( */}
+                <div className='text-left text-[#96B0BD]'>{order.gigDescription}</div>
+                {/* )} */}
                 <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
                   <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                     <div>
@@ -667,7 +700,7 @@ const Orders = () => {
           {proposals.map((proposal, index) => {
             return (
               <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                <div className='mt-1 flex items-start justify-between md:flex-row md:items-center'>
                   <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                     {proposal.gigTitle}
                   </div>
@@ -854,7 +887,7 @@ const Orders = () => {
                     </DropdownMenu>
                   </div>
                 </div>
-                <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
+                <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                   <div className='flex flex-row items-center gap-2'>
                     <svg
                       fill='none'
@@ -864,82 +897,105 @@ const Orders = () => {
                       xmlns='http://www.w3.org/2000/svg'
                     >
                       <path
-                        d='M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z'
+                        d='M12.0009 13.4299C13.724 13.4299 15.1209 12.0331 15.1209 10.3099C15.1209 8.58681 13.724 7.18994 12.0009 7.18994C10.2777 7.18994 8.88086 8.58681 8.88086 10.3099C8.88086 12.0331 10.2777 13.4299 12.0009 13.4299Z'
                         stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
                         stroke-width='1.5'
                       />
                       <path
-                        d='M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977'
+                        d='M3.61971 8.49C5.58971 -0.169998 18.4197 -0.159997 20.3797 8.5C21.5297 13.58 18.3697 17.88 15.5997 20.54C13.5897 22.48 10.4097 22.48 8.38971 20.54C5.62971 17.88 2.46971 13.57 3.61971 8.49Z'
                         stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
                         stroke-width='1.5'
                       />
                     </svg>
-                    {formattedDate(proposal.gigPostDate)} - Present
+                    {proposal.location}
                   </div>
-                  <div className='flex flex-row items-center gap-2'>
-                    <svg
-                      fill='none'
-                      height='24'
-                      viewBox='0 0 24 24'
-                      width='24'
-                      xmlns='http://www.w3.org/2000/svg'
-                    >
-                      <path
-                        d='M22 6V8.42C22 10 21 11 19.42 11H16V4.01C16 2.9 16.91 2 18.02 2C19.11 2.01 20.11 2.45 20.83 3.17C21.55 3.9 22 4.9 22 6Z'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-miterlimit='10'
-                        stroke-width='1.5'
-                      />
-                      <path
-                        d='M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-miterlimit='10'
-                        stroke-width='1.5'
-                      />
-                      <path
-                        d='M9 13.0098H12'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-width='1.5'
-                      />
-                      <path
-                        d='M9 9.00977H12'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-width='1.5'
-                      />
-                      <path
-                        d='M5.99609 13H6.00508'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-width='1.5'
-                      />
-                      <path
-                        d='M5.99609 9H6.00508'
-                        stroke='#96B0BD'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-width='1.5'
-                      />
-                    </svg>
-                    {proposal.gigPrice}
+                  <div className='flex gap-2'>
+                    <div className='flex flex-row items-center gap-2'>
+                      <svg
+                        fill='none'
+                        height='24'
+                        viewBox='0 0 24 24'
+                        width='24'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path
+                          d='M22 6V8.42C22 10 21 11 19.42 11H16V4.01C16 2.9 16.91 2 18.02 2C19.11 2.01 20.11 2.45 20.83 3.17C21.55 3.9 22 4.9 22 6Z'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-miterlimit='10'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-miterlimit='10'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M9 13.0098H12'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M9 9.00977H12'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M5.99609 13H6.00508'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M5.99609 9H6.00508'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                      </svg>
+                      {proposal.gigPrice}
+                    </div>
+                    <div className='flex flex-row items-center gap-2'>
+                      <svg
+                        fill='none'
+                        height='24'
+                        viewBox='0 0 24 24'
+                        width='24'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path
+                          d='M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                        <path
+                          d='M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977'
+                          stroke='#96B0BD'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          stroke-width='1.5'
+                        />
+                      </svg>
+                      {formattedDate(proposal.gigPostDate)} - Present
+                    </div>
                   </div>
                 </div>
                 <Separator className='my-4' />
-                {isSmallScreen && (
-                  <div className='text-left text-[#96B0BD]'>{proposal.gigDescription}</div>
-                )}
+                {/* {isSmallScreen && ( */}
+                <div className='text-left text-[#96B0BD]'>{proposal.gigDescription}</div>
+                {/* )} */}
                 <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
                   <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                     <div>

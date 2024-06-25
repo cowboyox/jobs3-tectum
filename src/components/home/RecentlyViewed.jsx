@@ -24,10 +24,13 @@ const RecentlyViewed = () => {
   return (
     <div className='mt-10 flex flex-col gap-4'>
       <div className='flex justify-between'>
-        <h1>Recently Viewed</h1>
-        <p className='cursor-pointer'>Show more</p>
+        <h1 className='text-2xl font-semibold'>Recently Viewed</h1>
+        {/* <p className='cursor-pointer'>Show more</p> */}
       </div>
-      <div className='grid gap-4 lg:grid-cols-3'>
+      <div className='flex justify-center items-center mt-50px text-2xl font-semibold'>
+        Not yet
+      </div>
+      {/* <div className='grid gap-4 lg:grid-cols-3'>
         {data?.map((recent, index) => (
           <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen p-5' key={index}>
             <div className='flex flex-1 items-center gap-4 border-b border-lightGray py-3'>
@@ -80,7 +83,7 @@ const RecentlyViewed = () => {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
