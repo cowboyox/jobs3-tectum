@@ -32,7 +32,7 @@ const Page = () => {
   const onApply = async () => {
     let values = {};
 
-    values.freelancerId = auth.user.id;
+    values.freelancerId = auth.currentProfile._id;
     values.fullName = auth.user.name;
     values.email = auth.user.email;
     values.proposal = coverLetter;

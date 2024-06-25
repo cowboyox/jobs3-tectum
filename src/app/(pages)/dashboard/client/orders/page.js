@@ -24,19 +24,19 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
 import { useCustomContext } from '@/context/use-custom';
-import api from '@/utils/api';
+import { useGetAllClientGigsProposed } from '@/hooks/useGetAllClientGigsProposed';
 
 const Orders = () => {
   const auth = useCustomContext();
 
   const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
   const [orders, setOrders] = useState([]);
-  const [proposals, setProposals] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const handleSearchTypeChange = (v) => setSearchType(v);
-  const [profile, setProfile] = useState(null);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
+  const { data: proposals } = useGetAllClientGigsProposed(auth?.currentProfile?._id);
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -56,26 +56,6 @@ const Orders = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  useEffect(() => {
-    if (auth.user) {
-      api.get(`/api/v1/profile/get-profile/${auth.user.email}/3`).then((data) => {
-        setProfile(data.data.profile);
-      });
-    }
-  }, [auth]);
-
-  // useEffect(() => {
-  //   if (profile) {
-  //     api.get(`/api/v1/freelancer_gig/find_all_gigs_proposed/${profile._id}`).then((data) => {
-  //       if (data.data.data) {
-  //         setOrders(data.data.data);
-  //       } else {
-  //         setOrders([]);
-  //       }
-  //     });
-  //   }
-  // }, [profile]);
 
   useEffect(() => {
     setOrders([
@@ -121,63 +101,6 @@ const Orders = () => {
         gigPostDate: new Date(),
         gigPrice: 200,
         gigTitle: 'Smart contract Development',
-        location: 'London, UK',
-      },
-    ]);
-    setProposals([
-      {
-        creator: {
-          fullName: 'web developer',
-        },
-        gigDescription:
-          'Creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring that every user interaction is as enjoyable as it is efficient.',
-        gigPostDate: new Date(),
-        gigPrice: 500,
-        gigTitle: 'Website Development',
-        location: 'London, UK',
-      },
-      {
-        creator: {
-          fullName: 'web developer',
-        },
-        gigDescription:
-          'Creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring that every user interaction is as enjoyable as it is efficient.',
-        gigPostDate: new Date(),
-        gigPrice: 500,
-        gigTitle: 'Website Development',
-        location: 'London, UK',
-      },
-      {
-        creator: {
-          fullName: 'web developer',
-        },
-        gigDescription:
-          'Creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring that every user interaction is as enjoyable as it is efficient.',
-        gigPostDate: new Date(),
-        gigPrice: 500,
-        gigTitle: 'Website Development',
-        location: 'London, UK',
-      },
-      {
-        creator: {
-          fullName: 'web developer',
-        },
-        gigDescription:
-          'Creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring that every user interaction is as enjoyable as it is efficient.',
-        gigPostDate: new Date(),
-        gigPrice: 500,
-        gigTitle: 'Website Development',
-        location: 'London, UK',
-      },
-      {
-        creator: {
-          fullName: 'web developer',
-        },
-        gigDescription:
-          'Creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring that every user interaction is as enjoyable as it is efficient.',
-        gigPostDate: new Date(),
-        gigPrice: 500,
-        gigTitle: 'Website Development',
         location: 'London, UK',
       },
     ]);
@@ -630,10 +553,10 @@ const Orders = () => {
                 <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                   <div className='flex flex-row items-center gap-2'>
                     <svg
-                      width='24'
+                      fill='none'
                       height='24'
                       viewBox='0 0 24 24'
-                      fill='none'
+                      width='24'
                       xmlns='http://www.w3.org/2000/svg'
                     >
                       <path
@@ -967,10 +890,10 @@ const Orders = () => {
                 <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                   <div className='flex flex-row items-center gap-2'>
                     <svg
-                      width='24'
+                      fill='none'
                       height='24'
                       viewBox='0 0 24 24'
-                      fill='none'
+                      width='24'
                       xmlns='http://www.w3.org/2000/svg'
                     >
                       <path
@@ -1040,7 +963,7 @@ const Orders = () => {
                           stroke-width='1.5'
                         />
                       </svg>
-                      ${proposal.gigPrice}
+                      {proposal.gigPrice}
                     </div>
                     <div className='flex flex-row items-center gap-2'>
                       <svg
