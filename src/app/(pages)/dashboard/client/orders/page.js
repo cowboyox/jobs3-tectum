@@ -24,19 +24,19 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
 import { useCustomContext } from '@/context/use-custom';
-import api from '@/utils/api';
+import { useGetAllClientGigsProposed } from '@/hooks/useGetAllClientGigsProposed';
 
 const Orders = () => {
   const auth = useCustomContext();
 
   const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
   const [orders, setOrders] = useState([]);
-  const [proposals, setProposals] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const handleSearchTypeChange = (v) => setSearchType(v);
-  const [profile, setProfile] = useState(null);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
+  const { data: proposals } = useGetAllClientGigsProposed(auth?.currentProfile?._id);
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -56,26 +56,6 @@ const Orders = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  useEffect(() => {
-    if (auth.user) {
-      api.get(`/api/v1/profile/get-profile/${auth.user.email}/3`).then((data) => {
-        setProfile(data.data.profile);
-      });
-    }
-  }, [auth]);
-
-  // useEffect(() => {
-  //   if (profile) {
-  //     api.get(`/api/v1/freelancer_gig/find_all_gigs_proposed/${profile._id}`).then((data) => {
-  //       if (data.data.data) {
-  //         setOrders(data.data.data);
-  //       } else {
-  //         setOrders([]);
-  //       }
-  //     });
-  //   }
-  // }, [profile]);
 
   useEffect(() => {
     setOrders([
@@ -114,53 +94,6 @@ const Orders = () => {
         gigPostDate: new Date(),
         gigPrice: 200,
         gitTitle: 'Smart contract Development',
-      },
-    ]);
-    setProposals([
-      {
-        creator: {
-          fullName: 'web developer',
-        },
-        gigDescription: 'Website Development',
-        gigPostDate: new Date(),
-        gigPrice: 500,
-        gitTitle: 'Website Development',
-      },
-      {
-        creator: {
-          fullName: 'web developer',
-        },
-        gigDescription: 'Website development',
-        gigPostDate: new Date(),
-        gigPrice: 500,
-        gitTitle: 'Website Development',
-      },
-      {
-        creator: {
-          fullName: 'web developer',
-        },
-        gigDescription: 'Website development',
-        gigPostDate: new Date(),
-        gigPrice: 500,
-        gitTitle: 'Website Development',
-      },
-      {
-        creator: {
-          fullName: 'web developer',
-        },
-        gigDescription: 'Website development',
-        gigPostDate: new Date(),
-        gigPrice: 500,
-        gitTitle: 'Website Development',
-      },
-      {
-        creator: {
-          fullName: 'web developer',
-        },
-        gigDescription: 'Website development',
-        gigPostDate: new Date(),
-        gigPrice: 500,
-        gitTitle: 'Website Development',
       },
     ]);
   }, []);
@@ -1000,7 +933,7 @@ const Orders = () => {
                         stroke-width='1.5'
                       />
                     </svg>
-                    ${proposal.gigPrice}
+                    {proposal.gigPrice}
                   </div>
                 </div>
                 <Separator className='my-4' />

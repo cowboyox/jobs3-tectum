@@ -32,6 +32,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
+import { useCustomContext } from '@/context/use-custom';
 import { cn } from '@/lib/utils';
 import api from '@/utils/api';
 
@@ -221,7 +222,7 @@ const all_form_structure = {
 
 const GigPosting = () => {
   const { toast } = useToast();
-
+  const auth = useCustomContext();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [jobCategories, setJobCategories] = useState([]);
@@ -241,8 +242,18 @@ const GigPosting = () => {
     location: '',
     maxBudget: 0,
     minBudget: 0,
+    profileId: null,
     requiredSkills: [],
   });
+
+  useEffect(() => {
+    if (auth) {
+      setPostData((prev) => ({
+        ...prev,
+        profileId: auth?.currentProfile?._id,
+      }));
+    }
+  }, [auth]);
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
