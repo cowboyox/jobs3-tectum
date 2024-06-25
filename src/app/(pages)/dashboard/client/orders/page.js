@@ -345,9 +345,9 @@ const Orders = () => {
       {mode == 'live' ? (
         <>
           {gigs && gigs.lives.length > 0 ? (
-            gigs?.lives.map((order, index) => {
-              return (
-                <>
+            <>
+              {gigs?.lives.map((order, index) => {
+                return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
                     <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
@@ -677,12 +677,12 @@ const Orders = () => {
                       </div>
                     </div>
                   </div>
-                  <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
-                    Load more +{' '}
-                  </button>
-                </>
-              );
-            })
+                );
+              })}
+              <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
+                Load more +{' '}
+              </button>
+            </>
           ) : (
             <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
@@ -693,9 +693,9 @@ const Orders = () => {
       ) : (
         <>
           {gigs && gigs.proposals.length > 0 ? (
-            gigs?.proposals.map((proposal, index) => {
-              return (
-                <>
+            <>
+              {gigs?.proposals.map((proposal, index) => {
+                return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
                     <div className='mt-1 flex items-start justify-between md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
@@ -1028,12 +1028,12 @@ const Orders = () => {
                       </div>
                     </div>
                   </div>
-                  <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
-                    Load more +{' '}
-                  </button>
-                </>
-              );
-            })
+                );
+              })}
+              <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
+                Load more +{' '}
+              </button>
+            </>
           ) : (
             <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
