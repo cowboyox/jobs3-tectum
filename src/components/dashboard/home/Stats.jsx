@@ -5,10 +5,16 @@ import React from 'react';
 import { CgOptions } from 'react-icons/cg';
 import { CiSearch } from 'react-icons/ci';
 import { MdVerified } from 'react-icons/md';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 import { RiRobot2Line } from 'react-icons/ri';
-
 
 const spendings = [
   {
@@ -62,11 +68,11 @@ const recentHires = [
 
 const Stats = ({ search, setSearch }) => {
   return (
-    <div className='flex min-h-55 w-full flex-col font-roboto mt-10'>
-       <div className='flex md:h-16 items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4'>
-        <div className='flex min-w-[400px] items-center gap-4'>
-        <Select defaultValue='normal' className="outline-none">
-            <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] h-full mobile:w-14 mobile:p-2 outline-none'>
+    <div className='min-h-55 mt-10 flex w-full flex-col font-roboto'>
+      <div className='flex items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4 md:h-16'>
+        <div className='flex items-center gap-4'>
+          <Select defaultValue='normal' className='outline-none'>
+            <SelectTrigger className='h-full w-20 rounded-xl bg-[#1B272C] outline-none mobile:w-14 mobile:p-2'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className='rounded-xl bg-[#1B272C]'>
@@ -89,27 +95,28 @@ const Stats = ({ search, setSearch }) => {
           />
         </div>
         <div className='flex h-16 min-w-28 items-center justify-center gap-4'>
-          <div className='hidden rounded-full bg-[#1BBF36] md:block'>
+          {/* <div className='hidden rounded-full bg-[#1BBF36] md:block'>
             <Image height={32} src={'/assets/icons/AIChatIcon.png'} width={32} />
-          </div>
+          </div> */}
           <div className='flex items-center gap-4'>
             <HiOutlineLocationMarker className='text-2xl text-medGray' />
             <p className='hidden text-medGray md:block'>Anywhere</p>
           </div>
           <CgOptions className='text-2xl text-medGray' />
           <p className='hidden text-medGray md:block'>Filter</p>
-          <span className='flex size-6 items-center justify-center rounded-full bg-orange'>4</span>
+          {/* <span className='flex size-6 items-center justify-center rounded-full bg-orange'>4</span> */}
         </div>
       </div>
-      {/* <div className='mt-10 flex flex-col gap-4'>
+      <div className='mt-10 flex flex-col gap-4'>
         <h1>Your Stats</h1>
         <div className='grid gap-4 lg:grid-cols-3'>
           <div className='flex h-full min-h-96 flex-col rounded-2xl bg-deepGreen p-5'>
             <div className='flex h-1/6 items-center justify-between'>
               <h3 className='text-2xl text-white'>Spendings</h3>
-              <p className='text-medGray'>See All</p>
+              {/* <p className='text-medGray'>See All</p> */}
             </div>
-            <div className='flex flex-1 flex-col justify-between gap-2'>
+            <div className='mt-[100px] flex items-center justify-center'>Not yet</div>
+            {/* <div className='flex flex-1 flex-col justify-between gap-2 item'>
               {spendings.map((spend, index) => (
                 <div
                   className='flex flex-1 items-center gap-1 rounded-2xl bg-darkGray px-3'
@@ -130,14 +137,17 @@ const Stats = ({ search, setSearch }) => {
                   </div>
                 </div>
               ))}
-            </div>
+              
+            </div> */}
           </div>
           <div className='flex h-full min-h-96 flex-col rounded-2xl bg-deepGreen p-5'>
             <div className='flex h-1/6 items-center justify-between'>
               <h3 className='text-2xl text-white'>Recent Hires</h3>
-              <p className='text-medGray'>See All</p>
+              {/* <p className='text-medGray'>See All</p> */}
             </div>
-            <div className='flex flex-1 flex-col justify-between gap-2'>
+            <div className='mt-[100px] flex items-center justify-center'>Not yet</div>
+
+            {/* <div className='flex flex-1 flex-col justify-between gap-2'>
               {recentHires.map((spend, index) => (
                 <div
                   className='flex flex-1 items-center gap-1 rounded-2xl bg-darkGray px-3'
@@ -165,14 +175,15 @@ const Stats = ({ search, setSearch }) => {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
           <div className='flex h-full min-h-96 flex-col rounded-2xl bg-deepGreen p-5'>
             <div className='flex h-1/6 items-center justify-between'>
               <h3 className='text-2xl text-white'>Applications</h3>
-              <p className='text-medGray'>See All</p>
+              {/* <p className='text-medGray'>See All</p> */}
             </div>
-            <div className='flex flex-1 flex-col justify-between gap-2'>
+            <div className='mt-[100px] flex items-center justify-center'>Not yet</div>
+            {/* <div className='flex flex-1 flex-col justify-between gap-2'>
               {recentHires.map((spend, index) => (
                 <div
                   className='flex flex-1 items-center gap-1 rounded-2xl bg-darkGray px-3'
@@ -200,10 +211,10 @@ const Stats = ({ search, setSearch }) => {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

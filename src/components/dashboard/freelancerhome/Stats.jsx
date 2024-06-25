@@ -47,10 +47,10 @@ const earnings = [
 const Stats = () => {
   return (
     <div className=' flex min-h-96 w-full flex-col font-roboto mt-10'>
-      <div className='flex md:h-16 items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4'>
-        <div className='flex min-w-[400px] items-center gap-4'>
-        <Select defaultValue='normal' className="outline-none">
-            <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] h-14 mobile:w-14 mobile:p-2 outline-none'>
+      <div className='flex items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4 md:h-16'>
+        <div className='flex items-center gap-4'>
+          <Select defaultValue='normal' className='outline-none'>
+            <SelectTrigger className='h-full w-20 rounded-xl bg-[#1B272C] outline-none mobile:w-14 mobile:p-2'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className='rounded-xl bg-[#1B272C]'>
@@ -91,7 +91,7 @@ const Stats = () => {
           <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[70%]'>
             <div className='flex h-1/6 items-center justify-between'>
               <h3 className='text-2xl font-semibold text-white'>Active Orders</h3>
-              <p className='text-medGray'>See All</p>
+              {/* <p className='text-medGray'>See All</p> */}
             </div>
             <div className='mt-6 flex flex-1 flex-col justify-between gap-2'>
               {orders.length ? (
@@ -135,7 +135,7 @@ const Stats = () => {
           <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[30%]'>
             <div className='flex h-1/6 items-center justify-between'>
               <h3 className='text-2xl font-semibold text-white'>Earnings</h3>
-              <p className='text-medGray'>See All</p>
+              {/* <p className='text-medGray'>See All</p> */}
             </div>
             <div className='mt-6 flex-1'>
               {earnings.length ? (
