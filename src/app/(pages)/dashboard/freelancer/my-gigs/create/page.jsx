@@ -543,11 +543,12 @@ const CreateGig = () => {
       .post('/api/v1/freelancer_gig/post_gig', values)
       .then(async (data) => {
         await api.post(`/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${data.data.gigId}`, formData, config).then(async (data) => {
-          console.log("Successfully uploaded", data);
+          console.log("Successfully uploaded", data.data.msg[0]);
           await api.post('/api/v1/freelancer_gig/send_tg_bot', {
             gigDescription: values.gigDescription,
             profileName: auth.user.name,
             profileType: 'Freelancer',
+            imageURL: data?.data?.msg ? data.data.msg[0] : null
           })
         })
         toast({

@@ -88,7 +88,7 @@ export const CustomContext = createContext({ undefined });
 
 const ContextProvider = ({ children }) => {
   const [currentRole, setCurrentRole] = useState(USER_ROLE.FREELANCER);
-  const [currentProfile, setCurrentProfile] = useState(null)
+  const [currentProfile, setCurrentProfile] = useState(null);
   // Context API States
   const [loading, setLoading] = useState(true);
   const [loadCompleted, setLoadCompleted] = useState(true);
@@ -117,7 +117,9 @@ const ContextProvider = ({ children }) => {
     const profileData = await api.get(`/api/v1/profile/get-profile/${user.email}/${user.role[0]}`);
     localStorage.setItem(
       'jobs_2024_token',
-      JSON.stringify({ data: { ...data, currentRole: user.role[0], currentProfile: profileData.data.profile } })
+      JSON.stringify({
+        data: { ...data, currentProfile: profileData.data.profile, currentRole: user.role[0] },
+      })
     );
     dispatch({
       payload: user,
@@ -156,7 +158,9 @@ const ContextProvider = ({ children }) => {
     const profileData = await api.get(`/api/v1/profile/get-profile/${user.email}/${user.role[0]}`);
     localStorage.setItem(
       'jobs_2024_token',
-      JSON.stringify({ data: { ...data, currentRole: user.role[0], currentProfile: profileData.data.profile } })
+      JSON.stringify({
+        data: { ...data, currentProfile: profileData.data.profile, currentRole: user.role[0] },
+      })
     );
     dispatch({
       payload: user,
@@ -174,14 +178,22 @@ const ContextProvider = ({ children }) => {
         acc_type: state.acc_type,
         wallet,
       });
-      const profileData = await api.get(`/api/v1/profile/get-profile/${data.user.email}/${data.user.role[0]}`);
+      const profileData = await api.get(
+        `/api/v1/profile/get-profile/${data.user.email}/${data.user.role[0]}`
+      );
       dispatch({
         payload: wallet,
         type: HANDLERS.SIGN_IN_WALLET,
       });
       localStorage.setItem(
         'jobs_2024_token',
-        JSON.stringify({ data: { ...data, currentRole: data.user.role[0], currentProfile: profileData.data.profile } })
+        JSON.stringify({
+          data: {
+            ...data,
+            currentProfile: profileData.data.profile,
+            currentRole: data.user.role[0],
+          },
+        })
       );
       let accountType = data.user.role[0];
       let accountTypeName;
@@ -210,14 +222,22 @@ const ContextProvider = ({ children }) => {
     // }
     try {
       const { data } = await api.post('/api/v1/user/wallet/login', { wallet });
-      const profileData = await api.get(`/api/v1/profile/get-profile/${data.user.email}/${data.user.role[0]}`);
+      const profileData = await api.get(
+        `/api/v1/profile/get-profile/${data.user.email}/${data.user.role[0]}`
+      );
       dispatch({
         payload: wallet,
         type: HANDLERS.SIGN_IN_WALLET,
       });
       localStorage.setItem(
         'jobs_2024_token',
-        JSON.stringify({ data: { ...data, currentRole: data.user.role[0], currentProfile: profileData.data.profile } })
+        JSON.stringify({
+          data: {
+            ...data,
+            currentProfile: profileData.data.profile,
+            currentRole: data.user.role[0],
+          },
+        })
       );
       let accountType = data.user.role[0];
       let accountTypeName;
@@ -259,7 +279,7 @@ const ContextProvider = ({ children }) => {
       if (data && typeof data === 'object') {
         const { user, token, currentRole, profileData } = data.data;
         setCurrentRole(currentRole);
-        setCurrentProfile(profileData)
+        setCurrentProfile(profileData);
         api.defaults.headers.common.Authorization = token;
         dispatch({
           payload: user,
@@ -284,8 +304,10 @@ const ContextProvider = ({ children }) => {
 
         if (pathname.includes('dashboard/freelancer')) {
           setCurrentRole(USER_ROLE.FREELANCER);
-          const profileData = await api.get(`/api/v1/profile/get-profile/${email}/${USER_ROLE.FREELANCER}`);
-          const profile = profileData.data.profile
+          const profileData = await api.get(
+            `/api/v1/profile/get-profile/${email}/${USER_ROLE.FREELANCER}`
+          );
+          const profile = profileData.data.profile;
           if (profile) {
             setCurrentProfile(profile);
             localStorage.setItem(
@@ -293,16 +315,18 @@ const ContextProvider = ({ children }) => {
               JSON.stringify({
                 data: {
                   ...data.data,
-                  currentRole: USER_ROLE.FREELANCER,
                   currentProfile: profile,
+                  currentRole: USER_ROLE.FREELANCER,
                 },
               })
             );
           }
         } else if (pathname.includes('dashboard/client')) {
           setCurrentRole(USER_ROLE.CLIENT);
-          const profileData = await api.get(`/api/v1/profile/get-profile/${email}/${USER_ROLE.CLIENT}`);
-          const profile = profileData.data.profile
+          const profileData = await api.get(
+            `/api/v1/profile/get-profile/${email}/${USER_ROLE.CLIENT}`
+          );
+          const profile = profileData.data.profile;
           if (profile) {
             setCurrentProfile(profile);
             localStorage.setItem(
@@ -310,8 +334,8 @@ const ContextProvider = ({ children }) => {
               JSON.stringify({
                 data: {
                   ...data.data,
-                  currentRole: USER_ROLE.CLIENT,
                   currentProfile: profile,
+                  currentRole: USER_ROLE.CLIENT,
                 },
               })
             );
@@ -330,8 +354,8 @@ const ContextProvider = ({ children }) => {
       value={{
         ...state,
         contextValue,
-        currentRole,
         currentProfile,
+        currentRole,
         dispatch,
         loader: [loadCompleted, setLoadCompleted],
         loading3D: [load3D, setLoad3D],
@@ -339,8 +363,8 @@ const ContextProvider = ({ children }) => {
         preloader: [loading, setLoading],
         register,
         scroll: [scrollPause, setScrollPause],
-        setCurrentRole,
         setCurrentProfile,
+        setCurrentRole,
         setRole,
         signInwithWallet,
         signOut,
