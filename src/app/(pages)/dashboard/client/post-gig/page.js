@@ -677,6 +677,7 @@ const GigPosting = () => {
         'Content-Type': 'multipart/form-data',
       },
     };
+    console.log("postData", postData);
 
     await api
       .post('/api/v1/client_gig/post_gig', postData)
@@ -768,7 +769,10 @@ const GigPosting = () => {
                     <FormControl>
                       <Select
                         onValueChange={(e) => {
-                          setCurrentCategory(e);
+                          setPostData((prev) => ({
+                            ...prev,
+                            gigCategory: [...prev.gigCategory, e],
+                          }));
                         }}
                       >
                         <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
@@ -796,7 +800,10 @@ const GigPosting = () => {
                     <FormControl>
                       <Select
                         onValueChange={(e) => {
-                          setCurrentSub(e);
+                          setPostData((prev) => ({
+                            ...prev,
+                            gigCategory: [...prev.gigCategory, e],
+                          }));
                         }}
                       >
                         <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
