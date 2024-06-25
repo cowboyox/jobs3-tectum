@@ -1075,7 +1075,7 @@ const GigPosting = () => {
                   {all_form_structure.experience_options.map((experience_option, key) => (
                     <div
                       className={`radio_group flex w-full items-start gap-3 space-x-2 rounded-xl border border-slate-500 px-3 py-0 xl:w-1/3 ${selectedLevel == key && 'border-[#526872] bg-[#28373E]'}`}
-                      key={experience_option.value}
+                      key={key}
                     >
                       <RadioGroupItem
                         className='mt-7 h-6 w-6'
@@ -1152,11 +1152,11 @@ const GigPosting = () => {
                     }));
                   }}
                 >
-                  {all_form_structure.budget_mode.map((budget_option) => (
-                    <div className='flex w-full flex-col items-center gap-2 space-x-2 rounded-xl border border-slate-500 px-0 py-0'>
+                  {all_form_structure.budget_mode.map((budget_option, key) => (
+                    <div className='flex w-full flex-col items-center gap-2 space-x-2 rounded-xl border border-slate-500 px-0 py-0' key={key}>
                       <div
                         className={`flex w-full items-center gap-2 space-x-2  px-3 py-0 bg-[#28373E] rounded-xl `}
-                        key={budget_option.value}
+                        
                       >
                         <RadioGroupItem
                           className='h-4 w-4'
@@ -1171,7 +1171,7 @@ const GigPosting = () => {
                         </Label>
                       </div>
                       {budgetMode == 'hourly' && budget_option.value ==  "hourly" && (
-                        <div className='flex gap-5 flex-col xl:flex-row mb-8'>
+                        <div className='flex gap-5 flex-col xl:flex-row mb-8' key={key}>
                           <FormField
                             name='hourly_rate_from'
                             render={() => (
@@ -1245,9 +1245,7 @@ const GigPosting = () => {
                           name='fixed_price'
                           render={() => (
                             <FormItem className='mt-8 w-full flex pl-3 pr-5'>
-                              {/* <FormLabel className='text-base font-normal text-[#96B0BD]'>
-                                {all_form_structure.gig_fixed_label}
-                              </FormLabel> */}
+                              
                               <FormControl>
                                 <div className='relative w-full mb-8'>
                                   <Input
