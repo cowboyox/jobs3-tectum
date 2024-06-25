@@ -38,7 +38,7 @@ const RecentlyViewed = () => {
 
         {/* <p className='cursor-pointer'>Show more</p> */}
       </div>
-      <div className='flex justify-center items-center mt-50px'>
+      <div className='flex justify-center items-center mt-50px text-2xl font-semibold'>
         Not yet
       </div>
       {/* <div className='mt-2 grid gap-4 lg:grid-cols-2'>
