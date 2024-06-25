@@ -40,6 +40,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
+import { useCustomContext } from '@/context/use-custom';
 import { cn } from '@/lib/utils';
 import api from '@/utils/api';
 import { PiExportThin } from "react-icons/pi";
@@ -231,7 +232,7 @@ const all_form_structure = {
 
 const GigPosting = () => {
   const { toast } = useToast();
-
+  const auth = useCustomContext();
   const router = useRouter();
   const [openCategory, setOpenCategory] = useState(false);
   const [openSubCategory, setOpenSubCategory] = useState(false);
@@ -253,6 +254,7 @@ const GigPosting = () => {
     location: '',
     maxBudget: 0,
     minBudget: 0,
+    profileId: null,
     requiredSkills: [],
   });
   const categories_list = [
@@ -604,6 +606,15 @@ const GigPosting = () => {
   ];
   const [currentCategory, setCurrentCategory] = useState('Accounting & Consulting');
   const [currentSub, setCurrentSub] = useState('Personal Coaching');
+  useEffect(() => {
+    if (auth) {
+      setPostData((prev) => ({
+        ...prev,
+        profileId: auth?.currentProfile?._id,
+      }));
+    }
+  }, [auth]);
+
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (tmp === null) {
