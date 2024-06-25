@@ -108,14 +108,14 @@ const Stats = ({ search, setSearch }) => {
         </div>
       </div>
       <div className='mt-10 flex flex-col gap-4'>
-        <h1>Your Stats</h1>
+        {/* <h1>Your Stats</h1> */}
         <div className='grid gap-4 lg:grid-cols-3'>
           <div className='flex h-full min-h-96 flex-col rounded-2xl bg-deepGreen p-5'>
             <div className='flex h-1/6 items-center justify-between'>
-              <h3 className='text-2xl text-white'>Spendings</h3>
+              <h3 className='text-2xl text-white font-semibold'>Spendings</h3>
               {/* <p className='text-medGray'>See All</p> */}
             </div>
-            <div className='mt-[100px] flex items-center justify-center'>Not yet</div>
+            <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>Not yet</div>
             {/* <div className='flex flex-1 flex-col justify-between gap-2 item'>
               {spendings.map((spend, index) => (
                 <div
@@ -142,10 +142,10 @@ const Stats = ({ search, setSearch }) => {
           </div>
           <div className='flex h-full min-h-96 flex-col rounded-2xl bg-deepGreen p-5'>
             <div className='flex h-1/6 items-center justify-between'>
-              <h3 className='text-2xl text-white'>Recent Hires</h3>
+              <h3 className='text-2xl text-white font-semibold'>Recent Hires</h3>
               {/* <p className='text-medGray'>See All</p> */}
             </div>
-            <div className='mt-[100px] flex items-center justify-center'>Not yet</div>
+            <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>Not yet</div>
 
             {/* <div className='flex flex-1 flex-col justify-between gap-2'>
               {recentHires.map((spend, index) => (
@@ -179,10 +179,10 @@ const Stats = ({ search, setSearch }) => {
           </div>
           <div className='flex h-full min-h-96 flex-col rounded-2xl bg-deepGreen p-5'>
             <div className='flex h-1/6 items-center justify-between'>
-              <h3 className='text-2xl text-white'>Applications</h3>
+              <h3 className='text-2xl text-white font-semibold'>Applications</h3>
               {/* <p className='text-medGray'>See All</p> */}
             </div>
-            <div className='mt-[100px] flex items-center justify-center'>Not yet</div>
+            <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>Not yet</div>
             {/* <div className='flex flex-1 flex-col justify-between gap-2'>
               {recentHires.map((spend, index) => (
                 <div
