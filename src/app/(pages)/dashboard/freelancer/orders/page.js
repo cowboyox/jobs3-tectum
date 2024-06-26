@@ -73,17 +73,17 @@ const Orders = () => {
       if (mode === 'live') {
         const filtered = gigs.lives.filter(
           (p) =>
-            p.creator.fullName.toLowerCase().includes(value) ||
-            p.gigTitle.toLowerCase().includes(value) ||
-            p.gigDescription.toLowerCase().includes(value)
+            p.creator.fullName?.toLowerCase().includes(value) ||
+            p.gigTitle?.toLowerCase().includes(value) ||
+            p.gigDescription?.toLowerCase().includes(value)
         );
         setLives(filtered);
       } else {
         const filtered = gigs.submissions.filter(
           (p) =>
-            p.creator.fullName.toLowerCase().includes(value) ||
-            p.gigTitle.toLowerCase().includes(value) ||
-            p.gigDescription.toLowerCase().includes(value)
+            p.creator.fullName?.toLowerCase().includes(value) ||
+            p.gigTitle?.toLowerCase().includes(value) ||
+            p.gigDescription?.toLowerCase().includes(value)
         );
         setSubmissions(filtered);
       }
