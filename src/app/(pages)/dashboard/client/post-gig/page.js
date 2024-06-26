@@ -6,8 +6,17 @@ import FileUpload from 'react-drag-n-drop-image';
 import { useForm } from 'react-hook-form';
 import { FiPlus } from 'react-icons/fi';
 import { GoChevronDown, GoTrash } from 'react-icons/go';
+import { IoIosCloseCircleOutline } from 'react-icons/io';
+import { IoIosClose } from 'react-icons/io';
 import { IoCheckmark } from 'react-icons/io5';
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -35,14 +44,16 @@ import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import { cn } from '@/lib/utils';
 import api from '@/utils/api';
+import { PiExportThin } from 'react-icons/pi';
 
 // Icons
 
 function FileUploadBody() {
   return (
-    <div className='flex h-52 w-full items-center justify-center rounded-xl border border-dashed border-slate-500 p-3'>
+    <div className='flex w-full items-center justify-center rounded-xl pb-2 pt-2'>
+      <PiExportThin className='mr-2 h-[24px] w-[24px] text-[#A0B4C0]' />
       <p className='text-center'>
-        <span className='text-lg text-slate-500'>Drag and drop or &nbsp; </span> browse files
+        <span className='text-base text-[#A0B4C0]'>Upload</span>
       </p>
     </div>
   );
@@ -54,7 +65,7 @@ function FileUploadBody() {
  * I just created it quickly to have an easier method to edit the info on the page
  */
 const all_form_structure = {
-  budget_label: 'Your Budget',
+  budget_label: 'Setup Price',
   budget_mode: [
     {
       label: 'Hourly Rate',
@@ -66,8 +77,8 @@ const all_form_structure = {
     },
   ],
 
-  budget_placeholder: 'Select the payment mode and min/max budget',
-  categories_label: 'JOB CATEGORY',
+  budget_placeholder: 'Choose',
+  categories_label: 'Choose the category and subcategory most suitable for your Gig',
   categories_list: [
     {
       label: 'Accounting & Consulting',
@@ -122,8 +133,9 @@ const all_form_structure = {
       value: 'category_13',
     },
   ],
-  categories_placeholder: 'Dropdown menu with categories list',
+  categories_placeholder: 'Choose',
   experience_label: 'Experience Requirements',
+  experience_description: 'Determine what skills you are looking for',
   experience_options: [
     {
       description: 'Looking for someone relatively new to this field',
@@ -143,16 +155,11 @@ const all_form_structure = {
       label: 'Expert',
       value: 'Expert',
     },
-    {
-      description: 'Looking for comprehensive and deep expertise in this field',
-      indexNum: 3,
-      label: 'Not Sure',
-      value: 'Not Sure',
-    },
   ],
 
-  gig_description_label: 'Description',
-  gig_description_placeholder: 'Write gig description',
+  gig_description_label: 'Briefly Describe Your Gig',
+  git_description: '80/1200 characters',
+  gig_description_placeholder: 'Type here',
   gig_fixed_label: 'Project Price',
 
   gig_fixed_price: '36.00',
@@ -168,7 +175,7 @@ const all_form_structure = {
   location_label: 'Location',
   location_placeholder: 'Budapest, Hungary',
 
-  scope_label: 'Scope',
+  scope_label: 'Estimate The Scope Of Your Work',
   scope_options: [
     {
       indexNum: 3,
@@ -191,7 +198,7 @@ const all_form_structure = {
       value: 'Less than a month',
     },
   ], // Default will be the first option
-  scope_placeholder: 'Estimate the scope of your work',
+  scope_placeholder: 'Choose the item',
 
   skills_label: 'Skills',
   skills_list: [
@@ -212,24 +219,30 @@ const all_form_structure = {
     },
   ],
 
-  skills_placeholder: 'Type or search...',
+  skills_placeholder: 'Add tags',
 
-  title_label: 'Title',
-  title_placeholder: 'Write a title for your job post',
+  title_label1: 'As your Gig storefront, ',
+  title_label2:
+    ' to include words that buyers  would likely use to search for a service like yours',
+  title_label0: 'Your Title Is The Most Important Place',
+  title_placeholder: 'Type the title here',
 
-  upload_files_label: 'Upload Files',
+  upload_files_label: 'Documents (Up To 2)',
+  upload_files_description: 'Upload files. Format: PDF',
 };
 
 const GigPosting = () => {
   const { toast } = useToast();
-  const auth = useCustomContext()
+  const auth = useCustomContext();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [openCategory, setOpenCategory] = useState(false);
+  const [openSubCategory, setOpenSubCategory] = useState(false);
   const [jobCategories, setJobCategories] = useState([]);
   const [skillSet, setSkillSet] = useState([]);
   const [budgetMode, setBudgetMode] = useState('hourly');
   const [files, setFiles] = useState([]);
   const [files2, setFiles2] = useState([]);
+  const [selectedLevel, setSelectedLevel] = useState(0);
   const [postData, setPostData] = useState({
     attachment: [],
     experienceLevel: 0,
@@ -245,7 +258,356 @@ const GigPosting = () => {
     profileId: null,
     requiredSkills: [],
   });
+  const categories_list = [
+    {
+      label: 'Accounting & Consulting',
+      value: 'category_1',
+    },
+    {
+      label: 'Admin Support',
+      value: 'category_2',
+    },
+    {
+      label: 'Customer Service',
+      value: 'category_3',
+    },
+    {
+      label: 'Crypto & Web3',
+      value: 'category_4',
+    },
+    {
+      label: 'Data Science & Analytics',
+      value: 'category_5',
+    },
+    {
+      label: 'Design & Creative',
+      value: 'category_6',
+    },
+    {
+      label: 'Engineering & Architecture',
+      value: 'category_7',
+    },
+    {
+      label: 'IT & Networking',
+      value: 'category_8',
+    },
+    {
+      label: 'Legal',
+      value: 'category_9',
+    },
+    {
+      label: 'Sales & Marketing',
+      value: 'category_10',
+    },
+    {
+      label: 'Translation',
+      value: 'category_11',
+    },
+    {
+      label: 'Web, Mobile & Software Development',
+      value: 'category_12',
+    },
+    {
+      label: 'Writing',
+      value: 'category_13',
+    },
+  ];
 
+  const subcategory_list = [
+    {
+      parent: 'Accounting & Consulting',
+      value: [
+        'Personal Coaching',
+        'Career Coaching',
+        'Business Analysis',
+        'Management Consulting',
+        'Instructional Design',
+        'HR Administration',
+        'Recruiting & Talent Sourcing',
+        'Training & Development',
+        'Tax Preparation',
+        'Bookkeeping',
+        'Accounting',
+        'Financial Management/CFO',
+        'Financial Analysis & Modeling',
+      ],
+    },
+    {
+      parent: 'Admin Support',
+      value: [
+        'Personal Virtual Assistance',
+        'Executive Virtual Assistance',
+        'Legal Virtual Assistance',
+        'Ecommerce Mangement',
+        'Medical Virtual Assistance',
+        'General Virtual Assistance',
+        'Data Entry',
+        'Manual Transcription',
+        'Supply Chain & Logistics Project Management',
+        'Business Project Management',
+        'Digital Project Mangement',
+        'Construction & Engineering Project Mangement',
+        'Development & IT Project Management',
+        'Healthcare Project Mangement',
+        'Quantitative Research',
+        'Market Research',
+        'General Research Services',
+        'Qualitative Research',
+        'Product Reviews',
+        'Web & Software Product Research',
+      ],
+    },
+    {
+      parent: 'Customer Service',
+      value: [
+        'Customer Onboarding',
+        'IT Support',
+        'Tech Support',
+        'Email, Phone & Chat Support',
+        'Visual Tagging & Processing',
+        'Community Management',
+        'Content Moderation',
+      ],
+    },
+    {
+      parent: 'Crypto & Web3',
+      value: [
+        'NFT Art',
+        'Coins Design & Tokenisation',
+        'Blockchain & NFT Development',
+        'Wallet Development',
+        'DEX/CEX Listing',
+        'Trading Bots Development',
+        'Smart Contracts Development',
+        'DAPPs Development',
+        'Security & Audit',
+        'KOLs Marketing',
+        'Consulting',
+        'Web3 PR',
+        'Shilling',
+        'Market Making',
+        'Trending',
+        'Buy Bots',
+        'CryptoBanner Ads',
+        'Reddit',
+        'Telegram Promotion',
+        'Token Launch',
+      ],
+    },
+    {
+      parent: 'Data Science & Analytics',
+      value: [
+        'Data Mining',
+        'Data Engineering',
+        'Data Extraction',
+        'Data Processing',
+        'Deep Learning',
+        'Knowledge Representation',
+        'AI Data Annotation & Labeling',
+        'Machine Learning',
+        'Generative AI Modeling',
+        'Data Visualization',
+        'Data Analytics',
+        'Experimentation & Testing',
+      ],
+    },
+    {
+      parent: 'Design & Creative',
+      value: [
+        'Brand Identity Design',
+        'Logo Design',
+        'Singing',
+        'Acting',
+        'Voice Talent',
+        'Music Performance',
+        'Visual Effects',
+        '2D Animation',
+        'Video Editing',
+        'Video Production',
+        'AI Video Generation & Editing',
+        'Motion Graphics',
+        'Videography',
+        '3D Animation',
+        'Packaging Design',
+        'Art Direction',
+        'Graphic Design',
+        'Image Editing',
+        'Presentation Design',
+        'Creative Direction',
+        'Editorial Design',
+        'AI Image Generation & Editing',
+        'Cartoons & Comics',
+        'Pattern Design',
+        'Fine Art',
+        'Portraits & Caricatures',
+        'Illustration',
+        'Songwriting & Music Composition',
+        'Music Production',
+        'Audio Editing',
+        'AI Speech & Audio Generation',
+        'Audio Production',
+        'Product & Industrial Design',
+        'Jewelry Design',
+        'Fashion Design',
+        'AR/VR Design',
+        'Game Art',
+        'Production Photography',
+        'Local Photography',
+        'Animated Explainers',
+      ],
+    },
+    {
+      parent: 'Engineering & Architecture',
+      value: [
+        'Structural Engineering',
+        'Building Information Modeling',
+        'Civil Engineering',
+        '3D Modeling & Rendering',
+        'CAD',
+        'Landscape Architecture',
+        'Architectural Design',
+        'Interior Design',
+        'Trade Show Design',
+        'Energy Engineering',
+        'Mechanical Engineering',
+        'Chemical & Process Engineering',
+        'Electronic Engineering',
+        'Electrical Engineering',
+        'STEM Tutoring',
+        'Physics',
+        'Mathematics',
+        'Biology',
+        'Chemistry',
+        'Logistics & Supply Chain Management',
+        'Sourcing & Procurement',
+      ],
+    },
+    {
+      parent: 'IT & Networking',
+      value: [
+        'Network Security',
+        'IT Compliance',
+        'Information Security',
+        'Database Administration',
+        'Cloud Engineering',
+        'Solution Architecture',
+        'DevOps Engineering',
+        'Business Applications Development',
+        'Systems Engineering',
+        'Network Administration',
+      ],
+    },
+    {
+      parent: 'Legal',
+      value: [
+        'Business & Corporate Law',
+        'Intellectual Property Law',
+        'Paralegal Services',
+        'Tax Law',
+        'Securities & Finance Law',
+        'Labor & Employment Law',
+        'Regulatory Law',
+        'International Law',
+        'Immigration Law',
+      ],
+    },
+    {
+      parent: 'Sales & Marketing',
+      value: [
+        'Public Relations',
+        'Social Media Strategy',
+        'Marketing Strategy',
+        'Content Strategy',
+        'Brand Strategy',
+        'Email Marketing',
+        'SEO',
+        'Social Media Marketing',
+        'Display Advertising',
+        'Campaign Management',
+        'Marketing Automation',
+        'Search Engine Marketing',
+        'Telemarketing',
+        'Lead Generation',
+        'Sales & Business Development',
+        'Book and Ebook Marketing',
+        'Podcast Marketing',
+        'Video Marketing',
+        'Influencer Marketing',
+        'Mobile App Marketing',
+        'Affiliate Marketing',
+      ],
+    },
+    {
+      parent: 'Translation',
+      value: [
+        'Sign Language Interpretation',
+        'Live Interpretation',
+        'Language Tutoring',
+        'Technical Document Translation',
+        'Legal Document Translation',
+        'Medical Document Translation',
+        'General Translation Services',
+        'Language Localization',
+      ],
+    },
+    {
+      parent: 'Web, Mobile & Software Development',
+      value: [
+        'Ecommerce Website Development',
+        'Desktop Software Development',
+        'Scripting & Automation',
+        'Manual Testing',
+        'Automation Testing',
+        'AI Chatbot Development',
+        'AI Integration',
+        'Prototyping',
+        'Mobile Design',
+        'Web Design',
+        'UX/UI Design',
+        'Mobile App Development',
+        'Mobile Game Development',
+        'Scrum Leadership',
+        'Product Management',
+        'Firmware Development',
+        'Emerging Tech',
+        'AR/VR Development',
+        'Coding Tutoring',
+        'Database Development',
+        'Back-End Development',
+        'Front-End Development',
+        'Full Stack Development',
+        'CMS Development',
+        'Video Game Development',
+      ],
+    },
+    {
+      parent: 'Writing',
+      value: [
+        'Sales Copywriting',
+        'Marketing Copywriting',
+        'Ad & Email Copywriting',
+        'Proofreading',
+        'Copy Editing',
+        'Grant Writing',
+        'Business & Proposal Writing',
+        'Resume & Cover Letter Writing',
+        'Medical Writing',
+        'Legal Writing',
+        'Academic & Research Writing',
+        'Technical Writing',
+        'Writing Tutoring',
+        'Scriptwriting',
+        'Ghostwriting',
+        'Creative Writing',
+        'Article & Blog Writing',
+        'Web & UX Writing',
+        'AI Content Writing',
+      ],
+    },
+  ];
+  const [selectedSkill, setSelectedSkill] = useState('');
+  const [currentCategory, setCurrentCategory] = useState('Accounting & Consulting');
+  const [currentSub, setCurrentSub] = useState('Personal Coaching');
   useEffect(() => {
     if (auth) {
       setPostData((prev) => ({
@@ -295,21 +657,25 @@ const GigPosting = () => {
       gigTitle: e.target.value,
     }));
   };
-
   const handlePublish = async () => {
-    if (!postData.gigTitle) {
+    if (!postData.gigTitle || !postData.gigDescription) {
       return toast({
         className:
           'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3 className='text-center'>Input Gig Title</h3>,
+        description: <h3 className='text-center'>Input Gig Title and Description</h3>,
         title: <h1 className='text-center'>Warning</h1>,
         variant: 'default',
       });
     }
+    setPostData((prev) => ({
+      ...prev,
+      requiredSkills: skillSet,
+    }));
     const formData = new FormData();
     files2.map((file) => {
       formData.append('files', file);
     });
+
     let tmp = localStorage.getItem('jobs_2024_token');
     const config = {
       headers: {
@@ -320,16 +686,24 @@ const GigPosting = () => {
 
     await api
       .post('/api/v1/client_gig/post_gig', postData)
-      .then(async (data) => {
-        await api.post(`/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${data.data.gigId}`, formData, config).then(async (data) => {
-          console.log("Successfully uploaded", data.data.msg[0]);
-          await api.post('/api/v1/freelancer_gig/send_tg_bot', {
-            gigDescription: postData.gigDescription,
-            profileName: auth.user.name,
-            profileType: 'Client',
-            imageURL: auth?.currentProfile?.avatarURL != "" ? auth.currentProfile.avatarURL : null
-          })
-        })
+      .then(async (gigData) => {
+        await api
+          .post(
+            `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${gigData.data.gigId}`,
+            formData,
+            config
+          )
+          .then(async (data) => {
+            console.log('Successfully uploaded', data.data.msg[0]);
+            await api.post('/api/v1/freelancer_gig/send_tg_bot', {
+              gigDescription: postData.gigDescription,
+              profileName: auth.user.name,
+              profileType: 'Client',
+              imageURL:
+                auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
+              gigId: gigData.data.gigId,
+            });
+          });
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -361,111 +735,152 @@ const GigPosting = () => {
       ...prev,
       gigCategory: categories,
     }));
-    setOpen(false);
+    setOpenCategory(false);
   };
 
   return (
-    <div className='gig_posting'>
-      <h1 className='text-3xl md:text-4xl'>
-        Create a <span className='main_color'>New Gig</span> Post
-      </h1>
+    <div className='gig_posting mb-4 flex justify-center rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>
       <Form {...form}>
-        <form className='max-w-lg'>
+        <form
+          className='itmes-end justify-center rounded-2xl bg-[#10191D] p-[30px] mobile:p-0'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handlePublish();
+          }}
+        >
           <FormField
             name='gig_title'
             render={() => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
-                  {all_form_structure.title_label}
-                </FormLabel>
+                <h1 className='mb-4 text-2xl font-semibold'>Gig Title</h1>
+                <p className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.title_label1}
+                  <span className='font-bold'>{all_form_structure.title_label0}</span>
+                  {all_form_structure.title_label2}
+                </p>
                 <FormControl>
-                  <Input
-                    className='rounded-full border-slate-500 bg-black px-6 py-6 text-base'
-                    onChange={(e) => handleSetGigTitle(e)}
-                    placeholder={all_form_structure.title_placeholder}
-                    value={postData.gigTitle}
-                  />
+                  <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
+                    <input
+                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
+                      onChange={(e) => handleSetGigTitle(e)}
+                      placeholder={all_form_structure.title_placeholder}
+                      value={postData.gigTitle}
+                    />
+                  </div>
                 </FormControl>
                 <FormDescription />
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            name='job_category'
-            render={() => (
-              <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
-                  {all_form_structure.categories_label}
-                </FormLabel>
-                <FormControl className='w-full'>
-                  <Popover onOpenChange={setOpen} open={open}>
-                    <PopoverTrigger
-                      asChild
-                      className='w-full rounded-full border-slate-500 px-6 py-6 text-base'
-                    >
-                      <Button
-                        aria-expanded={open}
-                        className='w-full justify-between overflow-hidden'
-                        role='combobox'
-                        variant='outline'
+          <div className='mt-14 flex flex-col gap-2'>
+            <p className='mb-4 text-2xl text-[#F5F5F5]'>Category</p>
+            <p className='text-base text-[#96B0BD]'>
+              Choose the category and subcategory most suitable for your Gig
+            </p>
+            <div className='flex gap-3'>
+              <FormField
+                name='gigCategory'
+                render={() => (
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <Select
+                        onValueChange={(e) => {
+                          setPostData((prev) => ({
+                            ...prev,
+                            gigCategory: [...prev.gigCategory, e],
+                          }));
+                          setCurrentCategory(e);
+                        }}
                       >
-                        {jobCategories.length
-                          ? all_form_structure.categories_list
-                              .filter((job_category) => jobCategories.includes(job_category.value))
-                              ?.map((data) => data.label)
-                              .join(', ')
-                          : all_form_structure.categories_placeholder}
-                        <GoChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className='w-screen max-w-lg p-0'>
-                      <Command>
-                        <CommandInput placeholder='Type or search...' />
-                        <CommandList>
-                          <CommandEmpty>No results found.</CommandEmpty>
-                          <CommandGroup>
-                            {all_form_structure.categories_list.map((job_category) => (
-                              <CommandItem
-                                key={job_category.value}
-                                onSelect={onSelectJobCatetory}
-                                value={job_category.value}
-                              >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Choose' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {categories_list.map((job_category) => (
+                              <SelectItem key={job_category.value} value={job_category.label}>
                                 {job_category.label}
-                                <IoCheckmark
-                                  className={cn(
-                                    'ml-auto h-4 w-4',
-                                    jobCategories.includes(job_category.value)
-                                      ? 'opacity-100'
-                                      : 'opacity-0'
-                                  )}
-                                />
-                              </CommandItem>
+                              </SelectItem>
                             ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                </FormControl>
-                <FormDescription />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name='subCategory'
+                render={() => (
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <Select
+                        onValueChange={(e) => {
+                          setPostData((prev) => ({
+                            ...prev,
+                            gigCategory: [...prev.gigCategory, e],
+                          }));
+                        }}
+                      >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Choose' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {subcategory_list.map((subcat) => {
+                              if (subcat.parent === currentCategory) {
+                                return subcat.value.map((item, index) => (
+                                  <SelectItem key={index} value={item}>
+                                    {item} {/* Displaying the item instead of index */}
+                                  </SelectItem>
+                                ));
+                              }
+                              return null; // Return null if condition is not met
+                            })}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
           <FormField
             name='gig_skills'
             render={() => (
               <FormItem className='gig_skills mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl text-[#F5F5F5]'>
                   {all_form_structure.skills_label}
                 </FormLabel>
-                <FormControl className='w-full'>
+                <p className='mb-4 text-base text-[#96B0BD]'>
+                  Enter Skills. 5 tags maximum, use letters and numbers only
+                </p>
+                <FormControl className='w-full bg-[#10191D]'>
                   <Command>
-                    <div className='mb-2 flex flex-wrap items-center gap-3'>
-                      {skillSet.map((selectedSkill, selectedSkillIndex) => (
+                    <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
+                      <input
+                        className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
+                        onChange={(e) => setSelectedSkill(e.target.value)}
+                        placeholder={all_form_structure.skills_placeholder}
+                        value={selectedSkill}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            if (skillSet.length < 5) {
+                              setSkillSet((prevSkillSet) => [...prevSkillSet, selectedSkill]);
+                            }
+                            setSelectedSkill('');
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className='mt-8 flex flex-wrap items-center gap-3'>
+                      {skillSet.map((index, selectedSkillIndex) => (
                         <div
-                          className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-white px-2 py-1 text-sm text-black'
+                          className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-[#28373E] px-5 py-1 text-sm text-[#F5F5F5]'
                           data-index={selectedSkillIndex}
                           key={selectedSkillIndex}
                           onClick={() => {
@@ -474,15 +889,12 @@ const GigPosting = () => {
                             setSkillSet(newSkillSet);
                           }}
                         >
-                          {selectedSkill}
-                          <GoTrash className='ml-2' />
+                          <IoIosCloseCircleOutline className='ml-2 mr-1 text-base' />
+                          {index}
                         </div>
                       ))}
                     </div>
-                    <div className='w-full rounded-full border border-slate-500 px-6 py-3 text-base'>
-                      <CommandInput placeholder={all_form_structure.skills_placeholder} />
-                    </div>
-                    <CommandList>
+                    {/* <CommandList>
                       <CommandEmpty>No skills found.</CommandEmpty>
                       <CommandGroup>
                         <div className='suggested_skills mt-3 flex flex-wrap gap-3'>
@@ -505,7 +917,7 @@ const GigPosting = () => {
                           ))}
                         </div>
                       </CommandGroup>
-                    </CommandList>
+                    </CommandList> */}
                   </Command>
                 </FormControl>
               </FormItem>
@@ -515,10 +927,11 @@ const GigPosting = () => {
             name='gig_scope'
             render={({ field }) => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.scope_label}
                 </FormLabel>
-                <FormDescription className='text-base'>
+
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
                   {all_form_structure.scope_placeholder}
                 </FormDescription>
                 <RadioGroup
@@ -528,7 +941,7 @@ const GigPosting = () => {
                 >
                   {all_form_structure.scope_options.map((single_option) => (
                     <div
-                      className='radio_item mb-4 flex w-full items-center space-x-2 md:w-1/2 md:pr-2'
+                      className='radio_item mb-4 flex w-full items-center space-x-2 md:w-1/2 md:pr-2 xl:w-1/4'
                       key={single_option.value}
                     >
                       <RadioGroupItem
@@ -543,7 +956,7 @@ const GigPosting = () => {
                         value={single_option.value}
                       />
                       <Label
-                        className='ml-0 w-full cursor-pointer rounded-full border border-slate-500 p-5 transition'
+                        className='ml-[4px] w-full cursor-pointer rounded-[15px] border border-slate-500 p-5 transition'
                         htmlFor={single_option.value}
                       >
                         {single_option.label}
@@ -558,27 +971,31 @@ const GigPosting = () => {
             name='gig_experience'
             render={({ field }) => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.experience_label}
                 </FormLabel>
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.experience_description}
+                </FormDescription>
                 <RadioGroup
-                  className='flex flex-wrap gap-3 pt-3'
+                  className='flex flex-col gap-[15px] pt-3 xl:flex-row'
                   defaultValue={all_form_structure.experience_options[0].value}
                   onValueChange={field.onChange}
                 >
-                  {all_form_structure.experience_options.map((experience_option) => (
+                  {all_form_structure.experience_options.map((experience_option, key) => (
                     <div
-                      className='flex w-full items-center gap-3 space-x-2 rounded-xl border border-slate-500 px-3 py-0'
-                      key={experience_option.value}
+                      className={`flex w-full items-start gap-3 space-x-2 rounded-[15px] border border-slate-500 px-3 py-0 xl:w-1/3 ${selectedLevel == key && 'border-[#526872] bg-[#28373E]'}`}
+                      key={key}
                     >
                       <RadioGroupItem
-                        className='h-6 w-6'
+                        className='mt-7 h-6 w-6'
                         id={experience_option.value}
                         onClick={() => {
                           setPostData((prev) => ({
                             ...prev,
                             experienceLevel: experience_option.indexNum,
                           }));
+                          setSelectedLevel(key);
                         }}
                         value={experience_option.value}
                       />
@@ -587,7 +1004,9 @@ const GigPosting = () => {
                         htmlFor={experience_option.value}
                       >
                         <span className='text-xl text-slate-300'>{experience_option.label}</span>
-                        <p className='text-base text-slate-500'>{experience_option.description}</p>
+                        <p className='mt-4 text-base text-slate-500'>
+                          {experience_option.description}
+                        </p>
                       </Label>
                     </div>
                   ))}
@@ -599,21 +1018,34 @@ const GigPosting = () => {
             name='location'
             render={() => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.location_label}
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    className='rounded-full border-slate-500 bg-black px-6 py-6 text-base'
-                    onChange={(e) => {
-                      setPostData((prev) => ({
-                        ...prev,
-                        location: e.target.value,
-                      }));
-                    }}
-                    placeholder={all_form_structure.location_placeholder}
-                    value={postData.location}
-                  />
+                  <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50 flex'>
+                    <input
+                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
+                      value={postData.location}
+                      onChange={(e) => {
+                        setPostData((prev) => ({
+                          ...prev,
+                          location: e.target.value,
+                        }));
+                      }}
+                      placeholder={all_form_structure.location_placeholder}
+                    />
+                    <div
+                      className='cursor-pointer justify-end'
+                      onClick={() =>
+                        setPostData((prev) => ({
+                          ...prev,
+                          location: '',
+                        }))
+                      }
+                    >
+                      <IoIosClose className='h-[30px] w-[30px]' />
+                    </div>
+                  </div>
                 </FormControl>
               </FormItem>
             )}
@@ -624,12 +1056,9 @@ const GigPosting = () => {
             name='budget'
             render={({ field }) => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.budget_label}
                 </FormLabel>
-                <FormDescription className='text-base'>
-                  {all_form_structure.budget_placeholder}
-                </FormDescription>
                 <RadioGroup
                   className='flex flex-wrap gap-3 pt-3 md:flex-nowrap'
                   defaultValue={all_form_structure.budget_mode[0].value}
@@ -645,22 +1074,125 @@ const GigPosting = () => {
                     }));
                   }}
                 >
-                  {all_form_structure.budget_mode.map((budget_option) => (
-                    <div
-                      className='flex w-full items-center gap-2 space-x-2 rounded-xl border border-slate-500 px-3 py-0'
-                      key={budget_option.value}
-                    >
-                      <RadioGroupItem
-                        className='h-4 w-4'
-                        id={budget_option.value}
-                        value={budget_option.value}
-                      />
-                      <Label
-                        className='w-full cursor-pointer py-7 text-xl text-slate-300'
-                        htmlFor={budget_option.value}
+                  {all_form_structure.budget_mode.map((budget_option, key) => (
+                    <div className='items-centerspace-x-2 flex w-full flex-col px-0 py-0' key={key}>
+                      <div
+                        className={`flex w-full items-center gap-2 space-x-2 rounded-t-xl border border-slate-500 px-3 py-0 ${budgetMode !== budget_option.value ? 'rounded-xl' : 'bg-[#28373E]'}`}
                       >
-                        {budget_option.label}
-                      </Label>
+                        <RadioGroupItem
+                          className='h-4 w-4'
+                          id={budget_option.value}
+                          value={budget_option.value}
+                        />
+                        <Label
+                          className='w-full cursor-pointer py-7 text-xl text-slate-300'
+                          htmlFor={budget_option.value}
+                        >
+                          {budget_option.label}
+                        </Label>
+                      </div>
+                      {budgetMode == 'hourly' && budget_option.value == 'hourly' && (
+                        <div
+                          className='flex w-full flex-col items-center justify-center gap-5 rounded-b-xl border border-[#526872] bg-[#1B272C] px-3 xl:flex-row'
+                          key={key}
+                        >
+                          <FormField
+                            name='hourly_rate_from'
+                            render={() => (
+                              <FormItem className='mt-2 mb-4 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                                <FormLabel className='text-base font-normal text-[#96B0BD]'>
+                                  {all_form_structure.gig_from_to.from_label}
+                                </FormLabel>
+                                <FormControl>
+                                  <div className='relative w-full pr-7'>
+                                    <Input
+                                      className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                      min={0}
+                                      onChange={(e) =>
+                                        setPostData((prev) => ({
+                                          ...prev,
+                                          minBudget: parseInt(e.target.value),
+                                        }))
+                                      }
+                                      placeholder={all_form_structure.gig_from_to.from_placeholder}
+                                      type='number'
+                                      value={postData.minBudget}
+                                    />
+                                    <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      $
+                                    </span>
+                                    <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      /hr
+                                    </span>
+                                  </div>
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            name='hourly_rate_to'
+                            render={() => (
+                              <FormItem className='mt-2 mb-4 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                                <FormLabel className='text-base font-normal text-[#96B0BD]'>
+                                  {all_form_structure.gig_from_to.to_label}
+                                </FormLabel>
+                                <FormControl>
+                                  <div className='relative w-full pr-7'>
+                                    <Input
+                                      className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                      min={0}
+                                      onChange={(e) => {
+                                        setPostData((prev) => ({
+                                          ...prev,
+                                          maxBudget: parseInt(e.target.value),
+                                        }));
+                                      }}
+                                      placeholder={all_form_structure.gig_from_to.to_placeholder}
+                                      type='number'
+                                      value={postData.maxBudget}
+                                    />
+                                    <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      $
+                                    </span>
+                                    <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      /hr
+                                    </span>
+                                  </div>
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      )}
+                      {budgetMode == 'fixed' && budget_option.value == 'fixed' && (
+                        <FormField
+                          name='fixed_price'
+                          render={() => (
+                            <FormItem className='flex w-full rounded-b-xl border border-[#526872] bg-[#1B272C] pl-3 pr-5'>
+                              <FormControl>
+                                <div className='relative my-4 w-full'>
+                                  <Input
+                                    className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                    min={0}
+                                    onChange={(e) => {
+                                      setPostData((prev) => ({
+                                        ...prev,
+                                        gigPrice: parseInt(e.target.value),
+                                      }));
+                                    }}
+                                    placeholder={all_form_structure.gig_fixed_price}
+                                    type='number'
+                                    value={postData.gigPrice}
+                                  />
+                                  <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                    $
+                                  </span>
+                                </div>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      )}
                     </div>
                   ))}
                 </RadioGroup>
@@ -669,130 +1201,34 @@ const GigPosting = () => {
           />
 
           {/* For Hourly Rate budget */}
-          {budgetMode == 'hourly' && (
-            <div className='flex gap-5'>
-              <FormField
-                name='hourly_rate_from'
-                render={() => (
-                  <FormItem className='mt-8 w-full'>
-                    <FormLabel className='text-lg uppercase text-slate-500'>
-                      {all_form_structure.gig_from_to.from_label}
-                    </FormLabel>
-                    <FormControl>
-                      <div className='relative w-full pr-7'>
-                        <Input
-                          className='rounded-full border-slate-400 bg-black px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                          min={0}
-                          onChange={(e) =>
-                            setPostData((prev) => ({
-                              ...prev,
-                              minBudget: parseInt(e.target.value),
-                            }))
-                          }
-                          placeholder={all_form_structure.gig_from_to.from_placeholder}
-                          type='number'
-                          value={postData.minBudget}
-                        />
-                        <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
-                          $
-                        </span>
-                        <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
-                          /hr
-                        </span>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name='hourly_rate_to'
-                render={() => (
-                  <FormItem className='mt-8 w-full'>
-                    <FormLabel className='text-lg uppercase text-slate-500'>
-                      {all_form_structure.gig_from_to.to_label}
-                    </FormLabel>
-                    <FormControl>
-                      <div className='relative w-full pr-7'>
-                        <Input
-                          className='rounded-full border-slate-400 bg-black px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                          min={0}
-                          onChange={(e) => {
-                            setPostData((prev) => ({
-                              ...prev,
-                              maxBudget: parseInt(e.target.value),
-                            }));
-                          }}
-                          placeholder={all_form_structure.gig_from_to.to_placeholder}
-                          type='number'
-                          value={postData.maxBudget}
-                        />
-                        <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
-                          $
-                        </span>
-                        <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
-                          /hr
-                        </span>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-          )}
+
           {/* For Hourly Rate budget */}
-          {budgetMode == 'fixed' && (
-            <FormField
-              name='fixed_price'
-              render={() => (
-                <FormItem className='mt-8 w-full'>
-                  <FormLabel className='text-lg uppercase text-slate-500'>
-                    {all_form_structure.gig_fixed_label}
-                  </FormLabel>
-                  <FormControl>
-                    <div className='relative w-full'>
-                      <Input
-                        className='rounded-full border-slate-400 bg-black px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                        min={0}
-                        onChange={(e) => {
-                          setPostData((prev) => ({
-                            ...prev,
-                            gigPrice: parseInt(e.target.value),
-                          }));
-                        }}
-                        placeholder={all_form_structure.gig_fixed_price}
-                        type='number'
-                        value={postData.gigPrice}
-                      />
-                      <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
-                        $
-                      </span>
-                    </div>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          )}
 
           {/* Description */}
           <FormField
             name='gig_description'
             render={() => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.gig_description_label}
                 </FormLabel>
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.git_description}
+                </FormDescription>
                 <FormControl>
-                  <Textarea
-                    className='rounded-xl border-slate-500 px-6 py-6 text-base'
-                    onChange={(e) => {
-                      setPostData((prev) => ({
-                        ...prev,
-                        gigDescription: e.target.value,
-                      }));
-                    }}
-                    placeholder={all_form_structure.gig_description_placeholder}
-                    value={postData.gigDescription}
-                  />
+                  <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
+                    <input
+                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
+                      value={postData.gigDescription}
+                      onChange={(e) => {
+                        setPostData((prev) => ({
+                          ...prev,
+                          gigDescription: e.target.value,
+                        }));
+                      }}
+                      placeholder={all_form_structure.gig_description_placeholder}
+                    />
+                  </div>
                 </FormControl>
               </FormItem>
             )}
@@ -802,11 +1238,14 @@ const GigPosting = () => {
             name='attachemnts'
             render={() => (
               <FormItem className='mt-8'>
-                <FormLabel className='text-lg uppercase text-slate-500'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
                   {all_form_structure.upload_files_label}
                 </FormLabel>
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.upload_files_description}
+                </FormDescription>
                 <FormControl>
-                  <div className='rounded-xl border border-slate-500 p-4'>
+                  <div className='rounded-xl border border-dashed border-slate-500'>
                     <FileUpload
                       body={<FileUploadBody />}
                       fileValue={files}
@@ -838,15 +1277,15 @@ const GigPosting = () => {
               </FormItem>
             )}
           />
+          <div className='flex justify-center md:justify-end'>
+            <Button
+              className='mt-8 w-full min-w-[220px] rounded-xl bg-[#DC4F13] text-white md:w-1/5 xl:w-1/5'
+              type='submit'
+            >
+              Publish Gig
+            </Button>
+          </div>
         </form>
-        <Button
-          className='mt-8 w-1/5 rounded-full bg-[#DC4F13] text-white'
-          onClick={() => {
-            handlePublish();
-          }}
-        >
-          Publish Gig
-        </Button>
       </Form>
     </div>
   );

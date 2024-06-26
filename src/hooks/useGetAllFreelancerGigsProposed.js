@@ -2,26 +2,29 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetAllClientGigsProposed = (profileId) => {
+export const useGetAllFreelancerGigsProposed = (profileId) => {
   return useQuery({
     cacheTime: Infinity,
     enabled: !!profileId,
     queryFn: async () => {
       if (profileId) {
         try {
-          const { data } = await api.get(`/api/v1/client_gig/find_all_gigs_of_client/${profileId}`);
-          const proposals = [];
+          const { data } = await api.get(
+            `/api/v1/freelancer_gig/find_all_gigs_of_freelancer/${profileId}`
+          );
+
+          const submissions = [];
           const lives = [];
 
           if (data?.data) {
             data.data.map((d) => {
               d.bidInfos.map((info) => {
                 if (!info.hired) {
-                  proposals.push({
+                  submissions.push({
+                    clientId: info.clientId,
                     creator: {
                       fullName: info.fullName,
                     },
-                    freelancerId: info.freelancerId,
                     gigDescription: d.gigDescription,
                     gigId: d._id,
                     gigPostDate: d.gigPostDate,
@@ -32,10 +35,10 @@ export const useGetAllClientGigsProposed = (profileId) => {
                   });
                 } else {
                   lives.push({
+                    clientId: info.clientId,
                     creator: {
                       fullName: info.fullName,
                     },
-                    freelancerId: info.freelancerId,
                     gigDescription: d.gigDescription,
                     gigId: d._id,
                     gigPostDate: d.gigPostDate,
@@ -49,7 +52,7 @@ export const useGetAllClientGigsProposed = (profileId) => {
             });
           }
 
-          return { lives, proposals };
+          return { lives, submissions };
         } catch (e) {
           console.error(e);
 
@@ -59,7 +62,7 @@ export const useGetAllClientGigsProposed = (profileId) => {
         return null;
       }
     },
-    queryKey: ['useGetAllClientGigsProposed', profileId],
+    queryKey: ['useGetAllFreelancerGigsProposed', profileId],
     staleTime: Infinity,
   });
 };

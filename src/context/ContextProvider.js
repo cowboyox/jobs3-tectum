@@ -176,8 +176,17 @@ const ContextProvider = ({ children }) => {
     try {
       const { data } = await api.post('/api/v1/user/wallet/register', {
         acc_type: state.acc_type,
-        wallet,
+        wallet: wallet.toLowerCase(),
       });
+      localStorage.setItem(
+        'jobs_2024_token',
+        JSON.stringify({
+          data: {
+            ...data,
+            currentRole: data.user.role[0],
+          },
+        })
+      );
       const profileData = await api.get(
         `/api/v1/profile/get-profile/${data.user.email}/${data.user.role[0]}`
       );
@@ -208,8 +217,22 @@ const ContextProvider = ({ children }) => {
           accountTypeName = 'client';
           break;
       }
-      router.push(`/dashboard/${accountTypeName}/`);
-      // router.push('/jobs')
+      const url = window.location.href
+      // Create an anchor element to parse the URL
+      const parser = document.createElement('a');
+      parser.href = url;
+
+      // Extract the pathname and search parameters
+      const { pathname, search } = parser;
+
+      // Parse the search parameters to get the 'redirect' value
+      const params = new URLSearchParams(search);
+      const redirectPath = params.get('redirect');
+      // Get the value of the 'redirect' parameter
+      if(redirectPath)
+        router.push(redirectPath)
+      else
+        router.push(`/dashboard/${accountTypeName}/home`);
     } catch (err) {
       console.error(err);
     }
@@ -221,7 +244,17 @@ const ContextProvider = ({ children }) => {
     //   return;
     // }
     try {
-      const { data } = await api.post('/api/v1/user/wallet/login', { wallet });
+      const { data } = await api.post('/api/v1/user/wallet/login', { wallet: wallet.toLowerCase() });
+      console.log({data})
+      localStorage.setItem(
+        'jobs_2024_token',
+        JSON.stringify({
+          data: {
+            ...data,
+            currentRole: data.user.role[0],
+          },
+        })
+      );
       const profileData = await api.get(
         `/api/v1/profile/get-profile/${data.user.email}/${data.user.role[0]}`
       );
@@ -252,7 +285,23 @@ const ContextProvider = ({ children }) => {
           accountTypeName = 'client';
           break;
       }
-      router.push(`/dashboard/${accountTypeName}/`);
+    
+      const url = window.location.href
+      // Create an anchor element to parse the URL
+      const parser = document.createElement('a');
+      parser.href = url;
+
+      // Extract the pathname and search parameters
+      const { pathname, search } = parser;
+
+      // Parse the search parameters to get the 'redirect' value
+      const params = new URLSearchParams(search);
+      const redirectPath = params.get('redirect');
+      // Get the value of the 'redirect' parameter
+      if(redirectPath)
+        router.push(redirectPath)
+      else
+        router.push(`/dashboard/${accountTypeName}/home`);
     } catch (err) {
       console.error(err);
     }

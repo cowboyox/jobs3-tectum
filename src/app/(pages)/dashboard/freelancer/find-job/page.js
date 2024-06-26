@@ -23,11 +23,15 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
+import { useToast } from '@/components/ui/use-toast';
+import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
 
 const FindJob = () => {
   const router = useRouter();
+  const auth = useCustomContext();
+  const { toast } = useToast();
   const [sortOrder, setSortOrder] = useState('');
   const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
 
@@ -36,8 +40,10 @@ const FindJob = () => {
   const [searchType, setSearchType] = useState('normal');
   const [searchKeyWords, setSearchKeyWords] = useState('');
   const [filteredGigList, setFilteredGigList] = useState([]);
+  const [filteredGigShowModeList, setFilteredGigShowModeList] = useState([]);
 
   const [isSmallScreen, setIsSmallScree] = useState(false);
+  const descriptionTextMaxLength = 320;
 
   useEffect(() => {
     api
@@ -45,6 +51,7 @@ const FindJob = () => {
       .then((data) => {
         setGigList(data.data.data);
         setFilteredGigList(data.data.data);
+        setFilteredGigShowModeList(new Array(data.data.data.length).fill(false));
       })
       .catch((err) => {
         console.error('Error corrupted while getting all gigs: ', err);
@@ -88,6 +95,7 @@ const FindJob = () => {
             .includes(e.target.value.toLowerCase())
       );
       setFilteredGigList(filtered);
+      setFilteredGigShowModeList(new Array(filtered.length).fill(false));
     }
   };
 
@@ -100,6 +108,7 @@ const FindJob = () => {
       sorted.sort((a, b) => new Date(b.gigPostDate) - new Date(a.gigPostDate));
     }
     setFilteredGigList(sorted);
+    setFilteredGigShowModeList(new Array(sorted.length).fill(false));
   };
 
   const aiSearch = () => {
@@ -110,6 +119,7 @@ const FindJob = () => {
         .map((id) => gigList.find((gig) => gig._id.toString() === id))
         .filter((gig) => gig != undefined);
       setFilteredGigList(ai_filtered);
+      setFilteredGigShowModeList(new Array(ai_filtered.length).fill(false));
     });
   };
 
@@ -119,10 +129,45 @@ const FindJob = () => {
     }
   };
 
+  const handleLikeUnlikeGig = async (gigId, index, like) => {
+    try {
+      const updatedGig = await api.put(`/api/v1/client_gig/like-unlike-gig/${gigId}`, { like });
+      
+      const tempFilteredGigList = filteredGigList.map((gig, i) => {
+        if (i == index) {
+          return {
+            ...gig,
+            likeUsers: updatedGig.data.likeUsers
+          };
+        }
+
+        return gig;
+      });
+
+      setFilteredGigList(tempFilteredGigList);
+      toast({
+        className:
+          'bg-green-500 border-none rounded-xl absolute top-[-94vh] xl:w-[15vw] md:w-[30vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>{`Successfully ${like ? "added" : "removed"} like to the gig!`}</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
+      });     
+    } catch (error) {
+      console.log(`Error while updating like/unlike for the gigId ${gigId}`, error);
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+  };
+
   return loaded ? (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-4 rounded-xl bg-[#10191D] mobile:gap-0'>
-        <div className='m-3 flex flex-1 items-center gap-3'>
+        <div className='flex items-center flex-1 gap-3 m-3'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -166,7 +211,7 @@ const FindJob = () => {
           )}
         </div>
         {(!isSmallScreen || (isSmallScreen && searchType === 'normal')) && (
-          <div className='m-3 flex flex-none flex-row items-center gap-2'>
+          <div className='flex flex-row items-center flex-none gap-2 m-3'>
             <button className='flex flex-row items-center justify-center gap-3'>
               {!isSmallScreen ? (
                 <>
@@ -296,7 +341,7 @@ const FindJob = () => {
           </div>
         )}
         {!isSmallScreen && (
-          <div className='m-3 flex flex-row items-center justify-center gap-2'>
+          <div className='flex flex-row items-center justify-center gap-2 m-3'>
             <div>Sort by</div>
             <div>
               <Select onValueChange={(value) => setOrder(value)}>
@@ -353,23 +398,44 @@ const FindJob = () => {
                   </div>
                   {isSmallScreen && (
                     <div className='flex flex-row items-center gap-2'>
-                      <svg
-                        fill='none'
-                        height='22'
-                        viewBox='0 0 22 22'
-                        width='22'
-                        xmlns='http://www.w3.org/2000/svg'
-                      >
-                        <path
-                          d='M10.4138 5.33525L11.0143 6.13794L11.6149 5.33525C12.4058 4.27806 13.6725 3.5918 15.0843 3.5918C17.4808 3.5918 19.431 5.54417 19.431 7.96596C19.431 8.97523 19.2701 9.90575 18.9907 10.7693L18.9892 10.7741C18.3187 12.8959 16.941 14.616 15.44 15.9061C13.9356 17.199 12.3503 18.0225 11.3411 18.3659L11.3411 18.3659L11.333 18.3687C11.2824 18.3866 11.167 18.4085 11.0143 18.4085C10.8617 18.4085 10.7462 18.3866 10.6956 18.3687L10.6956 18.3687L10.6876 18.3659C9.6783 18.0225 8.09307 17.199 6.58869 15.9061C5.0876 14.616 3.70993 12.8959 3.03947 10.7741L3.03948 10.7741L3.03791 10.7693C2.75853 9.90575 2.59766 8.97523 2.59766 7.96596C2.59766 5.54417 4.54787 3.5918 6.94432 3.5918C8.35613 3.5918 9.62285 4.27806 10.4138 5.33525Z'
-                          stroke='#96B0BD'
-                          stroke-width='1.5'
-                        />
-                      </svg>
+                      {
+                        !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()) ? 
+                        <svg
+                          className='cursor-pointer'
+                          onClick={() => handleLikeUnlikeGig(gig._id, index, !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()))}
+                          width="32" 
+                          height="32" 
+                          viewBox="0 0 32 32" 
+                          fill="none" 
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path 
+                            d="M15.4138 11.3348L16.0143 12.1375L16.6149 11.3348C17.4058 10.2776 18.6725 9.59131 20.0843 9.59131C22.4808 9.59131 24.431 11.5437 24.431 13.9655C24.431 14.9747 24.2701 15.9053 23.9907 16.7688L23.9892 16.7737C23.3187 18.8954 21.941 20.6156 20.44 21.9056C18.9356 23.1985 17.3503 24.022 16.3411 24.3654L16.3411 24.3654L16.333 24.3682C16.2824 24.3861 16.167 24.408 16.0143 24.408C15.8617 24.408 15.7462 24.3861 15.6956 24.3682L15.6956 24.3682L15.6876 24.3654C14.6783 24.022 13.0931 23.1985 11.5887 21.9056C10.0876 20.6156 8.70993 18.8954 8.03947 16.7737L8.03948 16.7737L8.03791 16.7688C7.75853 15.9053 7.59766 14.9747 7.59766 13.9655C7.59766 11.5437 9.54787 9.59131 11.9443 9.59131C13.3561 9.59131 14.6229 10.2776 15.4138 11.3348Z" 
+                            stroke="#96B0BD" 
+                            stroke-width="1.5"
+                          />
+                        </svg>
+                        :
+                          <svg
+                            className='cursor-pointer'
+                            onClick={() => handleLikeUnlikeGig(gig._id, index, !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()))}
+                            width="32" 
+                            height="32" 
+                            viewBox="0 0 32 32" 
+                            fill="none" 
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M15.4138 11.8348L16.0143 12.6375L16.6149 11.8348C17.4058 10.7776 18.6725 10.0913 20.0843 10.0913C22.4808 10.0913 24.431 12.0437 24.431 14.4655C24.431 15.4747 24.2701 16.4053 23.9907 17.2688L23.9892 17.2737C23.3187 19.3954 21.941 21.1156 20.44 22.4056C18.9356 23.6985 17.3503 24.522 16.3411 24.8654L16.3411 24.8654L16.333 24.8682C16.2824 24.8861 16.167 24.908 16.0143 24.908C15.8617 24.908 15.7462 24.8861 15.6956 24.8682L15.6956 24.8682L15.6876 24.8654C14.6783 24.522 13.0931 23.6985 11.5887 22.4056C10.0876 21.1156 8.70993 19.3954 8.03947 17.2737L8.03948 17.2737L8.03791 17.2688C7.75853 16.4053 7.59766 15.4747 7.59766 14.4655C7.59766 12.0437 9.54787 10.0913 11.9443 10.0913C13.3561 10.0913 14.6229 10.7776 15.4138 11.8348Z" 
+                              fill="#96B0BD" 
+                              stroke="#96B0BD" 
+                              stroke-width="1.5"
+                            />
+                          </svg>
+                      }
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
-                            className='border-none bg-transparent hover:bg-transparent'
+                            className='bg-transparent border-none hover:bg-transparent'
                             variant='outline'
                           >
                             <FaEllipsis />
@@ -415,7 +481,7 @@ const FindJob = () => {
                           <DropdownMenuCheckboxItem
                             // checked={showActivityBar}
                             // onCheckedChange={setShowActivityBar}
-                            className='mt-1 gap-2 rounded-xl hover:bg-white'
+                            className='gap-2 mt-1 rounded-xl hover:bg-white'
                           >
                             <svg
                               fill='none'
@@ -474,7 +540,7 @@ const FindJob = () => {
                           <DropdownMenuCheckboxItem
                             // checked={showPanel}
                             // onCheckedChange={setShowPanel}
-                            className='mt-1 gap-2 rounded-xl hover:bg-white'
+                            className='gap-2 mt-1 rounded-xl hover:bg-white'
                           >
                             <svg
                               fill='none'
@@ -510,7 +576,7 @@ const FindJob = () => {
                           <DropdownMenuCheckboxItem
                             // checked={showPanel}
                             // onCheckedChange={setShowPanel}
-                            className='mt-1 gap-2 rounded-xl hover:bg-white'
+                            className='gap-2 mt-1 rounded-xl hover:bg-white'
                           >
                             <svg
                               fill='none'
@@ -543,29 +609,49 @@ const FindJob = () => {
                     </div>
                   )}
                   {!isSmallScreen && (
-                    <div className='flex w-full flex-col justify-between'>
-                      <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                    <div className='flex flex-col justify-between w-full'>
+                      <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
                         <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                           {gig.gigTitle}
                         </div>
-                        <div className='flex flex-none flex-row items-center gap-2'>
-                          <svg
-                            fill='none'
-                            height='22'
-                            viewBox='0 0 22 22'
-                            width='22'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              d='M10.4138 5.33525L11.0143 6.13794L11.6149 5.33525C12.4058 4.27806 13.6725 3.5918 15.0843 3.5918C17.4808 3.5918 19.431 5.54417 19.431 7.96596C19.431 8.97523 19.2701 9.90575 18.9907 10.7693L18.9892 10.7741C18.3187 12.8959 16.941 14.616 15.44 15.9061C13.9356 17.199 12.3503 18.0225 11.3411 18.3659L11.3411 18.3659L11.333 18.3687C11.2824 18.3866 11.167 18.4085 11.0143 18.4085C10.8617 18.4085 10.7462 18.3866 10.6956 18.3687L10.6956 18.3687L10.6876 18.3659C9.6783 18.0225 8.09307 17.199 6.58869 15.9061C5.0876 14.616 3.70993 12.8959 3.03947 10.7741L3.03948 10.7741L3.03791 10.7693C2.75853 9.90575 2.59766 8.97523 2.59766 7.96596C2.59766 5.54417 4.54787 3.5918 6.94432 3.5918C8.35613 3.5918 9.62285 4.27806 10.4138 5.33525Z'
-                              stroke='#96B0BD'
-                              stroke-width='1.5'
-                            />
-                          </svg>
+                        <div className='flex flex-row items-center flex-none gap-2'>
+                        {
+                          !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()) ? 
+                            <svg
+                              className='cursor-pointer'
+                              onClick={() => handleLikeUnlikeGig(gig._id, index, !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()))}
+                              width="32" 
+                              height="32" 
+                              viewBox="0 0 32 32" 
+                              fill="none" 
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path 
+                                d="M15.4138 11.3348L16.0143 12.1375L16.6149 11.3348C17.4058 10.2776 18.6725 9.59131 20.0843 9.59131C22.4808 9.59131 24.431 11.5437 24.431 13.9655C24.431 14.9747 24.2701 15.9053 23.9907 16.7688L23.9892 16.7737C23.3187 18.8954 21.941 20.6156 20.44 21.9056C18.9356 23.1985 17.3503 24.022 16.3411 24.3654L16.3411 24.3654L16.333 24.3682C16.2824 24.3861 16.167 24.408 16.0143 24.408C15.8617 24.408 15.7462 24.3861 15.6956 24.3682L15.6956 24.3682L15.6876 24.3654C14.6783 24.022 13.0931 23.1985 11.5887 21.9056C10.0876 20.6156 8.70993 18.8954 8.03947 16.7737L8.03948 16.7737L8.03791 16.7688C7.75853 15.9053 7.59766 14.9747 7.59766 13.9655C7.59766 11.5437 9.54787 9.59131 11.9443 9.59131C13.3561 9.59131 14.6229 10.2776 15.4138 11.3348Z" 
+                                stroke="#96B0BD" 
+                                stroke-width="1.5"
+                              />
+                            </svg> :
+                            <svg
+                              className='cursor-pointer'
+                              onClick={() => handleLikeUnlikeGig(gig._id, index, !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()))}
+                              width="32" 
+                              height="32" 
+                              viewBox="0 0 32 32" 
+                              fill="none" 
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M15.4138 11.8348L16.0143 12.6375L16.6149 11.8348C17.4058 10.7776 18.6725 10.0913 20.0843 10.0913C22.4808 10.0913 24.431 12.0437 24.431 14.4655C24.431 15.4747 24.2701 16.4053 23.9907 17.2688L23.9892 17.2737C23.3187 19.3954 21.941 21.1156 20.44 22.4056C18.9356 23.6985 17.3503 24.522 16.3411 24.8654L16.3411 24.8654L16.333 24.8682C16.2824 24.8861 16.167 24.908 16.0143 24.908C15.8617 24.908 15.7462 24.8861 15.6956 24.8682L15.6956 24.8682L15.6876 24.8654C14.6783 24.522 13.0931 23.6985 11.5887 22.4056C10.0876 21.1156 8.70993 19.3954 8.03947 17.2737L8.03948 17.2737L8.03791 17.2688C7.75853 16.4053 7.59766 15.4747 7.59766 14.4655C7.59766 12.0437 9.54787 10.0913 11.9443 10.0913C13.3561 10.0913 14.6229 10.7776 15.4138 11.8348Z" 
+                                fill="#96B0BD" 
+                                stroke="#96B0BD" 
+                                stroke-width="1.5"
+                              />
+                            </svg>
+                        }
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button
-                                className='border-none bg-transparent hover:bg-transparent'
+                                className='bg-transparent border-none hover:bg-transparent'
                                 variant='outline'
                               >
                                 <FaEllipsis />
@@ -611,7 +697,7 @@ const FindJob = () => {
                               <DropdownMenuCheckboxItem
                                 // checked={showActivityBar}
                                 // onCheckedChange={setShowActivityBar}
-                                className='mt-1 gap-2 rounded-xl hover:bg-white'
+                                className='gap-2 mt-1 rounded-xl hover:bg-white'
                               >
                                 <svg
                                   fill='none'
@@ -670,7 +756,7 @@ const FindJob = () => {
                               <DropdownMenuCheckboxItem
                                 // checked={showPanel}
                                 // onCheckedChange={setShowPanel}
-                                className='mt-1 gap-2 rounded-xl hover:bg-white'
+                                className='gap-2 mt-1 rounded-xl hover:bg-white'
                               >
                                 <svg
                                   fill='none'
@@ -706,7 +792,7 @@ const FindJob = () => {
                               <DropdownMenuCheckboxItem
                                 // checked={showPanel}
                                 // onCheckedChange={setShowPanel}
-                                className='mt-1 gap-2 rounded-xl hover:bg-white'
+                                className='gap-2 mt-1 rounded-xl hover:bg-white'
                               >
                                 <svg
                                   fill='none'
@@ -738,7 +824,7 @@ const FindJob = () => {
                           </DropdownMenu>
                         </div>
                       </div>
-                      <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
+                      <div className='flex flex-row-reverse items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
                         <div className='flex flex-row items-center gap-2'>
                           <svg
                             fill='none'
@@ -850,13 +936,13 @@ const FindJob = () => {
                   )}
                 </div>
                 {isSmallScreen && (
-                  <div className='flex w-full flex-col justify-between'>
-                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                  <div className='flex flex-col justify-between w-full'>
+                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {gig.gigTitle}
                       </div>
                     </div>
-                    <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
+                    <div className='flex flex-row-reverse items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -904,7 +990,7 @@ const FindJob = () => {
                         {gig.location}
                       </div>
                     </div>
-                    <div className='mt-3 flex items-start justify-between gap-6 md:flex-row md:justify-start'>
+                    <div className='flex items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -969,9 +1055,49 @@ const FindJob = () => {
                   </div>
                 )}
                 <Separator className='my-4' />
-                <div className='text-left text-[#96B0BD]'>{gig.gigDescription}</div>
+                <div className='text-left text-[#96B0BD]'>
+                  {gig.gigDescription.length < descriptionTextMaxLength
+                    ? gig.gigDescription
+                    : filteredGigShowModeList[index]
+                      ? gig.gigDescription
+                      : gig.gigDescription.slice(0, descriptionTextMaxLength) + '...'}
+                </div>
                 <div className='mt-3 text-left'>
-                  <button>Show more</button>
+                  {gig.gigDescription.length < descriptionTextMaxLength ? (
+                    <></>
+                  ) : !filteredGigShowModeList[index] ? (
+                    <button
+                      onClick={() => {
+                        const tempShowModeList = filteredGigShowModeList.map((item, i) => {
+                          if (i == index) {
+                            return true;
+                          } else {
+                            return item;
+                          }
+                        });
+
+                        setFilteredGigShowModeList(tempShowModeList);
+                      }}
+                    >
+                      Show more
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        const tempShowModeList = filteredGigShowModeList.map((item, i) => {
+                          if (i == index) {
+                            return false;
+                          } else {
+                            return item;
+                          }
+                        });
+
+                        setFilteredGigShowModeList(tempShowModeList);
+                      }}
+                    >
+                      Show less
+                    </button>
+                  )}
                 </div>
                 <div className='flex flex-col justify-between md:flex-row md:items-center'>
                   <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
