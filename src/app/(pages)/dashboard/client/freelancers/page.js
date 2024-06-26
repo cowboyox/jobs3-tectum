@@ -416,7 +416,7 @@ const Freelancers = () => {
               <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
                 <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                   <div>
-                    <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
+                    <img height={40} src={freelancer.avatarURL? freelancer.avatarURL : '/assets/images/Rectangle 273.png'} width={40}  className='rounded-full aspect-square object-cover'/>
                   </div>
                   <div className='flex flex-col gap-1 text-left'>
                     <div className='flex flex-row items-center gap-1 font-bold'>
