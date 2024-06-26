@@ -153,7 +153,7 @@ const Orders = () => {
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>No seller's pubkey provided!</h3>,
+        description: <h3>No seller pubkey provided!</h3>,
         title: <h1 className='text-center'>Error</h1>,
         variant: 'destructive',
       });
