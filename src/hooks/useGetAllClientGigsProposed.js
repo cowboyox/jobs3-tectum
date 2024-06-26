@@ -25,10 +25,11 @@ export const useGetAllClientGigsProposed = (profileId) => {
                     gigDescription: d.gigDescription,
                     gigId: d._id,
                     gigPostDate: d.gigPostDate,
-                    gigPrice: d.gigPrice
-                      ? `$${d.gigPrice}`
-                      : `$${d.minBudget}/hr ~ $${d.maxBudget}/hr`,
+                    gigPrice: d.gigPrice,
+                    minBudget : d.minBudget,
+                    maxBudget: d.maxBudget,
                     gigTitle: d.gigTitle,
+                    walletPubkey: info?.walletPubkey
                   });
                 } else {
                   lives.push({
