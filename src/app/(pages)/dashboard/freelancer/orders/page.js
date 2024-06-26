@@ -28,6 +28,7 @@ import api from '@/utils/api';
 const Orders = () => {
   const auth = useCustomContext();
   const { toast } = useToast();
+  const [search, setSearch] = useState('');
   const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
   const [submissions, setSubmissions] = useState([]);
   const [lives, setLives] = useState([]);
@@ -68,22 +69,24 @@ const Orders = () => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
 
-    if (mode === 'live') {
-      const filtered = lives.filter(
-        (p) =>
-          p.creator.fullName.toLowerCase().includes(value) ||
-          p.gigTitle.toLowerCase().includes(value) ||
-          p.gigDescription.toLowerCase().includes(value)
-      );
-      setLives(filtered);
-    } else {
-      const filtered = submissions.filter(
-        (p) =>
-          p.creator.fullName.toLowerCase().includes(value) ||
-          p.gigTitle.toLowerCase().includes(value) ||
-          p.gigDescription.toLowerCase().includes(value)
-      );
-      setSubmissions(filtered);
+    if (gigs) {
+      if (mode === 'live') {
+        const filtered = gigs.lives.filter(
+          (p) =>
+            p.creator.fullName?.toLowerCase().includes(value) ||
+            p.gigTitle?.toLowerCase().includes(value) ||
+            p.gigDescription?.toLowerCase().includes(value)
+        );
+        setLives(filtered);
+      } else {
+        const filtered = gigs.submissions.filter(
+          (p) =>
+            p.creator.fullName?.toLowerCase().includes(value) ||
+            p.gigTitle?.toLowerCase().includes(value) ||
+            p.gigDescription?.toLowerCase().includes(value)
+        );
+        setSubmissions(filtered);
+      }
     }
   };
 
@@ -149,9 +152,10 @@ const Orders = () => {
           </button>
           <input
             className='w-full bg-transparent outline-none'
-            onChange={(e) => handleSearch(e)}
+            onChange={handleSearch}
             placeholder={isSmallScreen ? 'Search' : 'Search by Order title...'}
             type='text'
+            value={search}
           />
           {isSmallScreen && (
             <button>
