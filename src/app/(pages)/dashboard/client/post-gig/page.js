@@ -702,6 +702,7 @@ const GigPosting = () => {
               imageURL:
                 auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
               gigId: gigData.data.gigId,
+              gigTitle: postData.gigTitle
             });
           });
         toast({
