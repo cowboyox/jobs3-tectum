@@ -83,7 +83,7 @@ const MyGigs = () => {
         setMyGigs(data.data.data);
       });
     }
-  }, [])
+  }, [router, pathname])
 
   return (
     <div className='flex flex-col gap-8'>

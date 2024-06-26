@@ -15,7 +15,7 @@ const Page = async ({ params }) => {
     if(!tmp){
       router.push(`/?redirect=${pathname}`);
     }
-  }, [])
+  }, [router, pathname])
 
   const gigData = await getGigById(params.gigId);
   const { gigTitle, gigPostDate, gigPrice, creator: freelancer } = gigData.data.data;

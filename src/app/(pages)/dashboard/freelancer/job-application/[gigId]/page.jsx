@@ -22,7 +22,7 @@ const Page = () => {
     if(!tmp){
       router.push(`/?redirect=${pathname}`);
     }
-  }, [])
+  }, [router, pathname])
 
   const { data: gigInfo } = useGetClientGigById(gigId);
 
