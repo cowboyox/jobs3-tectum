@@ -1,6 +1,6 @@
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import { useAccount } from 'wagmi';
@@ -45,20 +45,35 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
       try {
         auth.signUpwithWallet(address);
         onClose();
-        let accountType = auth.acc_type[0];
-        let accountTypeName;
-        switch (accountType) {
-          case 0:
-            accountTypeName = 'freelancer';
-            break;
-          case 3:
-            accountTypeName = 'client';
-            break;
-          default:
-            accountTypeName = 'client';
-            break;
-        }
-        router.push(`/dashboard/${accountTypeName}/`);
+        // let accountType = auth.acc_type[0];
+        // let accountTypeName;
+        // switch (accountType) {
+        //   case 0:
+        //     accountTypeName = 'freelancer';
+        //     break;
+        //   case 3:
+        //     accountTypeName = 'client';
+        //     break;
+        //   default:
+        //     accountTypeName = 'client';
+        //     break;
+        // }
+        // const url = window.location.href
+        // // Create an anchor element to parse the URL
+        // const parser = document.createElement('a');
+        // parser.href = url;
+
+        // // Extract the pathname and search parameters
+        // const { pathname, search } = parser;
+
+        // // Parse the search parameters to get the 'redirect' value
+        // const params = new URLSearchParams(search);
+        // const redirectPath = params.get('redirect');
+        // // Get the value of the 'redirect' parameter
+        // if(redirectPath)
+        //   router.push(redirectPath)
+        // else
+        //   router.push(`/dashboard/${accountTypeName}/home`);
       } catch (err) {
         console.error(err);
         // router.replace('/')
@@ -219,7 +234,22 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
             accountTypeName = 'client';
             break;
         }
-        router.push(`/dashboard/${accountTypeName}/`);
+        const url = window.location.href
+        // Create an anchor element to parse the URL
+        const parser = document.createElement('a');
+        parser.href = url;
+
+        // Extract the pathname and search parameters
+        const { pathname, search } = parser;
+
+        // Parse the search parameters to get the 'redirect' value
+        const params = new URLSearchParams(search);
+        const redirectPath = params.get('redirect');
+        // Get the value of the 'redirect' parameter
+        if(redirectPath)
+          router.push(redirectPath)
+        else
+          router.push(`/dashboard/${accountTypeName}/home`);
       }
     } catch (err) {
       console.error(err);
@@ -451,7 +481,22 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
             accountTypeName = 'client';
             break;
         }
-        router.push(`/dashboard/${accountTypeName}/home`);
+        const url = window.location.href
+        // Create an anchor element to parse the URL
+        const parser = document.createElement('a');
+        parser.href = url;
+
+        // Extract the pathname and search parameters
+        const { pathname, search } = parser;
+
+        // Parse the search parameters to get the 'redirect' value
+        const params = new URLSearchParams(search);
+        const redirectPath = params.get('redirect');
+        // Get the value of the 'redirect' parameter
+        if(redirectPath)
+          router.push(redirectPath)
+        else
+          router.push(`/dashboard/${accountTypeName}/home`);
       });
       // Dynamic redirect
     } catch (err) {
@@ -750,7 +795,22 @@ export function VerificationPopup({ onClose }) {
           accountTypeName = 'client';
           break;
       }
-      router.push(`/dashboard/${accountTypeName}/profile`);
+      const url = window.location.href
+        // Create an anchor element to parse the URL
+        const parser = document.createElement('a');
+        parser.href = url;
+
+        // Extract the pathname and search parameters
+        const { pathname, search } = parser;
+
+        // Parse the search parameters to get the 'redirect' value
+        const params = new URLSearchParams(search);
+        const redirectPath = params.get('redirect');
+        // Get the value of the 'redirect' parameter
+        if(redirectPath)
+          router.push(redirectPath)
+        else
+          router.push(`/dashboard/${accountTypeName}/profile`);
     } catch (err) {
       console.error('error', err);
     }

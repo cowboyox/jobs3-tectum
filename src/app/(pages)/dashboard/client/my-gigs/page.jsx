@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { CiClock2, CiFilter, CiReceipt } from 'react-icons/ci';
@@ -72,6 +73,8 @@ const GigCard = ({ gig }) => {
 };
 
 const MyGigs = () => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [myGigs, setMyGigs] = useState([]);
   const [searchType, setSearchType] = useState('normal');
   const [searchKeywords, setSearchKeyWords] = useState('');
@@ -99,11 +102,16 @@ const MyGigs = () => {
   }, []);
 
   useEffect(() => {
-    api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
-      setMyGigs(data.data.data);
-      setFilteredGigList(data.data.data);
-    });
-  }, []);
+    let tmp = localStorage.getItem('jobs_2024_token');
+    if (!tmp) {
+      router.push(`/?redirect=${pathname}`);
+    } else {
+      api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
+        setMyGigs(data.data.data);
+        setFilteredGigList(data.data.data);
+      });
+    }
+  }, [router, pathname]);
 
   const onChangeType = (e) => {
     setSearchType(e);

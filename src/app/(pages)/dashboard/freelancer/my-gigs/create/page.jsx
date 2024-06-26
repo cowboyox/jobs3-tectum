@@ -512,11 +512,11 @@ const CreateGig = () => {
     //   values.creator = profile._id;
     // }
 
-    if (!values.gigTitle) {
+    if (!values.gigTitle || !values.gigDescription) {
       return toast({
         className:
           'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3 className='text-center'>Input Gig Title</h3>,
+        description: <h3 className='text-center'>Input Gig Title and Description</h3>,
         title: <h1 className='text-center'>Warning</h1>,
         variant: 'default',
       });
@@ -541,14 +541,15 @@ const CreateGig = () => {
     };
     await api
       .post('/api/v1/freelancer_gig/post_gig', values)
-      .then(async (data) => {
-        await api.post(`/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${data.data.gigId}`, formData, config).then(async (data) => {
+      .then(async (gigData) => {
+        await api.post(`/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${gigData.data.gigId}`, formData, config).then(async (data) => {
           console.log("Successfully uploaded", data.data.msg[0]);
           await api.post('/api/v1/freelancer_gig/send_tg_bot', {
             gigDescription: values.gigDescription,
             profileName: auth.user.name,
             profileType: 'Freelancer',
-            imageURL: auth?.currentProfile?.avatarURL != "" ? auth.currentProfile.avatarURL : null
+            imageURL: auth?.currentProfile?.avatarURL != "" ? auth.currentProfile.avatarURL : null,
+            gigId: gigData.data.gigId
           })
         })
         toast({
