@@ -15,7 +15,7 @@
 	position: unset;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	align-items: center; 
 	& > img.post_thumb {
 		max-height: 569px;
 		width: 100%;
@@ -397,6 +397,31 @@
 				li {
 					line-height: 1.8em;
 				}
+			}
+		}
+	}
+}
+.post_page {
+	.post_content {
+		img {
+			margin: 50px 0;
+			width: 100%;
+			border-radius: 10px;
+		}
+		h1,h2,h3,h4,h5,h6 {
+			margin-bottom: 30px;
+		}
+		& > p {
+			margin-bottom: 20px;
+			& > b {
+				font-size: 1.4em;
+				& + a {
+					font-size: 1.4em;
+				}
+			}
+			& > a {
+				color: #DC4F13;
+				font-size: 1em;
 			}
 		}
 	}

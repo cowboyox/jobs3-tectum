@@ -1,39 +1,56 @@
-import React from 'react';
+'use client';
+import React, { useState, useEffect, useCallback } from 'react';
 
 // Components
 import Layout from '@/components/layout/Layout';
 import PostsList from '@/components/pages/blog/PostsList';
+import useFetchThis from '@/hooks/useFetchThis';  
 
-async function getData() {
-  try {
-    const res = await fetch(
-      `https://main.jobs3.io/wp-json/wp/v2/posts?_embed&per_page=8&orderby=id&order=desc`
-    );
+const Blog = () => {
+  const contentfulConfig = {
+    baseUrl: 'https://cdn.contentful.com',
+    spaceId: 'b4r65ixxe2is',
+    environmentId: 'master',
+    accessToken: '8Pyn9Y824lo8aUGkUzm2v2W5Rv8ROcAZs6jW_Q5asBg',
+    requiredContentType: 'jobs3Blog'
+  };
 
-    if (!res.ok) {
-      throw new Error('Failed to fetch Posts');
+  const [blogPostsData, loading, error] = useFetchThis(`${contentfulConfig.baseUrl}/spaces/${contentfulConfig.spaceId}/environments/${contentfulConfig.environmentId}/entries?access_token=${contentfulConfig.accessToken}&content_type=${contentfulConfig.requiredContentType}`);
+  console.log(blogPostsData)
+  const [assetUrls, setAssetUrls] = useState({}); 
+
+  const fetchAssetUrl = useCallback(async (assetId) => {
+    if (assetUrls[assetId]) {
+      return assetUrls[assetId];
     }
+    try {
+      const response = await fetch(`${contentfulConfig.baseUrl}/spaces/${contentfulConfig.spaceId}/environments/${contentfulConfig.environmentId}/assets/${assetId}?access_token=${contentfulConfig.accessToken}`);
+      const data = await response.json();
+      const url = `https:${data.fields.file.url}`;
+      setAssetUrls(prevState => ({ ...prevState, [assetId]: url }));
+      return url;
+    } catch (error) {
+      console.error('Failed to fetch asset:', error);
+      return null;
+    }
+  }, [assetUrls, contentfulConfig]);
 
-    const posts = await res.json();
-    return posts;
-  } catch (error) {
-    console.error('Error fetching Posts:', error);
-    return null;
-  }
-}
+  useEffect(() => {
+    if (blogPostsData && blogPostsData.items) {
+      blogPostsData.items.forEach(post => {
+        if (post.fields.postThumbnail && post.fields.postThumbnail.sys) {
+          fetchAssetUrl(post.fields.postThumbnail.sys.id);
+        }
+      });
+    }
+  }, [blogPostsData, fetchAssetUrl]);
 
-const Blog = async () => {
-  const posts = await getData();
+  if (loading) return <h2>Loading...</h2>;
+  if (error) return <p>Could not load the Blog Posts! Try refreshing the page.</p>;  
 
   return (
     <Layout>
-      {posts ? (
-        <PostsList posts={posts} />
-      ) : (
-        <div className='flex min-h-screen items-center justify-center'>
-          Error fetching posts. Please try again later.
-        </div>
-      )}
+      {blogPostsData && <PostsList posts={blogPostsData.items} assetUrls={assetUrls} />}
     </Layout>
   );
 };

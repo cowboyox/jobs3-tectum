@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@contentful/react-apps-toolkit": "^1.2.16",
+    "@contentful/rich-text-react-renderer": "^15.21.2",
+    "@contentful/rich-text-types": "^16.5.2",
     "@gitbook/api": "^0.51.0",
     "@gsap/react": "^2.1.1",
     "@hookform/resolvers": "^3.6.0",
