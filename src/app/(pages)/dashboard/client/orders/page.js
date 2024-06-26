@@ -63,8 +63,10 @@ const Orders = () => {
   }, []);
 
   useEffect(() => {
-    setFilteredLiveList(gigs.lives);
-    setFilteredProposalsList(gigs.proposals);
+    if (gigs) {
+      setFilteredLiveList(gigs.lives);
+      setFilteredProposalsList(gigs.proposals);
+    }
   }, [gigs]);
 
   const formattedDate = (dateString) => {
