@@ -3,10 +3,37 @@
 import React, { useEffect, useState } from 'react';
 import { FaEllipsis, FaX } from 'react-icons/fa6';
 
+import {
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+} from "@solana/wallet-adapter-react";
+import {
+  Program,
+  AnchorProvider,
+  setProvider,
+  getProvider,
+  utils,
+  BN,
+} from "@project-serum/anchor";
+import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
+
+import {
+  TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  getAssociatedTokenAddressSync,
+} from "@solana/spl-token";
+import { v4 as uuid } from "uuid";
+import IDL from "@/idl/gig_basic_contract.json";
+import {
+  PROGRAM_ID,
+  CONTRACT_SEED,
+  PAYTOKEN_MINT,
+} from "@/utils/constants";
+
 import searchOptions from '../freelancers/searchOptions';
 
 import { Button } from '@/components/ui/button';
-import CustomIconDropdown from '@/components/ui/dropdown';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -31,15 +58,22 @@ import api from '@/utils/api';
 const Orders = () => {
   const auth = useCustomContext();
 
+  const wallet = useAnchorWallet();
+  const { sendTransaction } = useWallet();
+  const { connection } = useConnection();
+
+  const [program, setProgram] = useState();
   const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
-  const [searchType, setSearchType] = useState(searchOptions[0]);
-  const handleSearchTypeChange = (v) => setSearchType(v);
+  const [searchType, setSearchType] = useState('normal');
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllClientGigsProposed(
     auth?.currentProfile?._id
   );
   const { toast } = useToast();
+  const [searchKeywords, setSearchKeyWords] = useState('');
+  const [filteredLiveList, setFilteredLiveList] = useState([]);
+  const [filteredProposalsList, setFilteredProposalsList] = useState([]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -61,6 +95,34 @@ const Orders = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (gigs) {
+      setFilteredLiveList(gigs.lives);
+      setFilteredProposalsList(gigs.proposals);
+    }
+  }, [gigs]);
+
+  useEffect(() => {
+    if (wallet) {
+      (async function () {
+        let provider;
+        try {
+          provider = getProvider();
+        } catch {
+          provider = new AnchorProvider(connection, wallet, {});
+          setProvider(provider);
+        }
+
+        try {
+          const program = new Program(IDL, PROGRAM_ID);
+          setProgram(program);
+
+          console.log("programId", program.programId, program)
+        } catch (err) {}
+      })();
+    }
+  }, [wallet, connection]);
+
   const formattedDate = (dateString) => {
     const date = new Date(dateString);
 
@@ -75,46 +137,187 @@ const Orders = () => {
     return formattedDate;
   };
 
-  const onAccept = async (gigId, freelancerId) => {
-    await api
-      .put(`/api/v1/client_gig/accept_freelancer/${gigId}`, JSON.stringify({ freelancerId }))
-      .then(async () => {
-        toast({
-          className:
-            'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Successfully accepted!</h3>,
-          title: <h1 className='text-center'>Success</h1>,
-          variant: 'default',
-        });
-      })
-      .catch((err) => {
-        console.error('Error corrupted during applying gig', err);
+  const onAccept = async (gigId, freelancerId, gigPrice, sellerPubkey) => {
+    if (!wallet || !program) {
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Please connect your wallet!</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!sellerPubkey) {
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>No seller pubkey provided!</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const seller = new PublicKey(sellerPubkey);
+      const contractId = uuid().slice(0, 8);
+      const amount = new BN(gigPrice * Math.pow(10, 6));
+      const dispute = new BN(0.5 * Math.pow(10, 6));
+      const deadline = Math.floor(Date.now() / 1000) + (10 * 24 * 60 * 60); 
+
+      const [contract, bump] = await PublicKey.findProgramAddressSync(
+        [
+          Buffer.from(utils.bytes.utf8.encode(CONTRACT_SEED)),
+          Buffer.from(utils.bytes.utf8.encode(contractId)),
+        ],
+        program.programId
+      );
+
+      const buyerAta = getAssociatedTokenAddressSync(
+        PAYTOKEN_MINT,
+        wallet?.publicKey,
+      );
+
+      // Get the token balance
+      const info = await connection.getTokenAccountBalance(buyerAta);
+
+      if (info.value.uiAmount < Number(gigPrice)) {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
+          description: <h3>{`You don't have enough token. Need at least ${gigPrice} USDC!`}</h3>,
           title: <h1 className='text-center'>Error</h1>,
           variant: 'destructive',
         });
+        return;
+      }
+      
+      const contractAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, contract, true);
+
+      const transaction = await program.methods
+        .startContract(contractId, amount, dispute, deadline)
+        .accounts({
+          buyer: wallet.publicKey,
+          contract,
+          seller,
+          payTokenMint: PAYTOKEN_MINT,
+          buyerAta,
+          contractAta,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          rent: SYSVAR_RENT_PUBKEY,
+        })
+        .transaction();
+      console.log(transaction, connection)
+
+      const signature = await sendTransaction(transaction, connection, { skipPreflight: true });
+
+      console.log("Your transaction signature for creating a new contract", signature);
+
+      await connection.confirmTransaction(signature, "confirmed");
+
+
+      await api.put(`/api/v1/client_gig/accept_freelancer/${gigId}`, JSON.stringify({ freelancerId, contractId }));
+  
+      toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully accepted!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
       });
 
-    await refetchAllGigsProposed();
+      await refetchAllGigsProposed();
+    } catch (err) {
+      console.error('Error corrupted during applying gig', err);
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const setKey = (e) => {
+    setSearchKeyWords(e.target.value);
+    if (searchType == 'normal') {
+      if (mode === 'live') {
+        const filtered = gigs.lives.filter(
+          (gig) =>
+            gig.creator.fullName?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigPostDate?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigPrice?.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+        setFilteredLiveList(filtered);
+      } else {
+        const filtered = gigs.proposals.filter(
+          (gig) =>
+            gig.creator.fullName?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigPostDate?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigPrice?.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+        setFilteredProposalsList(filtered);
+      }
+    }
+  };
+
+  const aiSearch = () => {
+    api.get(`/api/v1/freelancer_gig/ai-search/${searchKeywords}`).then((data) => {
+      let ai_ids = [];
+      if (data.data.profileIDs) ai_ids = data.data.profileIDs;
+      if (mode === 'live') {
+        const ai_filtered = ai_ids
+          .map((id) => gigs.lives.find((gig) => gig.gigId.toString() === id))
+          .filter((gig) => gig != undefined);
+        setFilteredLiveList(ai_filtered);
+      } else {
+        const ai_filtered = ai_ids
+          .map((id) => gigs.proposals.find((gig) => gig.gigId.toString() === id))
+          .filter((gig) => gig != undefined);
+        setFilteredProposalsList(ai_filtered);
+      }
+    });
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && searchType === 'ai') {
+      aiSearch();
+    }
+  };
+
+  const onChangeType = (e) => {
+    setSearchType(e);
   };
 
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex flex-row items-center justify-between gap-5 rounded-xl bg-[#10191D] p-3'>
-        <div className='ml-3 flex flex-1 items-center gap-3'>
-          <CustomIconDropdown
-            onChange={handleSearchTypeChange}
-            optionLabel='icon'
-            options={searchOptions}
-            value={searchType}
-          />
+        <div className='flex items-center flex-1 gap-3 ml-3'>
+          <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
+            <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='rounded-xl bg-[#1B272C]'>
+              <SelectGroup>
+                <SelectItem value='normal'>{searchOptions[0].icon}</SelectItem>
+                <SelectItem value='ai'>{searchOptions[1].icon}</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <input
             className='w-full bg-transparent outline-none'
+            onChange={(e) => setKey(e)}
+            onKeyDown={handleKeyDown}
             placeholder={isSmallScreen ? '' : 'Search by Order title...'}
-            type='text'
           />
           {isSmallScreen && (
             <button>
@@ -139,7 +342,7 @@ const Orders = () => {
             </button>
           )}
         </div>
-        <div className='flex flex-none flex-row items-center gap-2'>
+        <div className='flex flex-row items-center flex-none gap-2'>
           <button className='flex flex-row items-center justify-center gap-3'>
             {!isSmallScreen ? (
               <>
@@ -286,13 +489,12 @@ const Orders = () => {
       </div>
       {mode == 'live' ? (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{gigs ? gigs.lives.length : ''}</span>{' '}
+          You have <span className='font-bold text-[#DC4F13]'>{filteredLiveList.length}</span>{' '}
           Orders😊
         </div>
       ) : (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have{' '}
-          <span className='font-bold text-[#DC4F13]'>{gigs ? gigs.proposals.length : ''}</span>{' '}
+          You have <span className='font-bold text-[#DC4F13]'>{filteredProposalsList.length}</span>{' '}
           Proposals😊
         </div>
       )}
@@ -310,14 +512,14 @@ const Orders = () => {
         })}
         <span>Clear&nbsp;All</span>
       </div>
-      <div className='flex w-full items-center justify-center pb-5 pt-10'>
+      <div className='flex items-center justify-center w-full pt-10 pb-5'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
+              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
                 {gigs ? gigs.lives.length : ''}
               </span>
               &nbsp; Live
@@ -332,7 +534,7 @@ const Orders = () => {
         >
           {mode == 'proposal' ? (
             <h1>
-              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
+              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
                 {gigs ? gigs.proposals.length : ''}
               </span>
               &nbsp; Proposals
@@ -344,16 +546,16 @@ const Orders = () => {
       </div>
       {mode == 'live' ? (
         <>
-          {gigs && gigs.lives.length > 0 ? (
+          {filteredLiveList.length > 0 ? (
             <>
-              {gigs?.lives.map((order, index) => {
+              {filteredLiveList.map((order, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {order.gigTitle}
                       </div>
-                      <div className='flex flex-none flex-row items-center justify-between gap-2 mobile:w-full'>
+                      <div className='flex flex-row items-center justify-between flex-none gap-2 mobile:w-full'>
                         <div className='flex gap-2'>
                           <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                             15 H: 30 S
@@ -365,7 +567,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='border-none bg-transparent hover:bg-transparent'
+                              className='bg-transparent border-none hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -411,7 +613,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -470,7 +672,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -506,7 +708,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -538,7 +740,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -647,8 +849,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{order.gigDescription}</div>
                     {/* )} */}
-                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
-                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
+                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
+                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -684,7 +886,7 @@ const Orders = () => {
               </button>
             </>
           ) : (
-            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Live proposals will be here</p>
             </div>
@@ -692,16 +894,16 @@ const Orders = () => {
         </>
       ) : (
         <>
-          {gigs && gigs.proposals.length > 0 ? (
+          {filteredProposalsList.length > 0 ? (
             <>
-              {gigs?.proposals.map((proposal, index) => {
+              {filteredProposalsList.map((proposal, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='mt-1 flex items-start justify-between md:flex-row md:items-center'>
+                    <div className='flex items-start justify-between mt-1 md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {proposal.gigTitle}
                       </div>
-                      <div className='flex flex-none flex-row items-center gap-2'>
+                      <div className='flex flex-row items-center flex-none gap-2'>
                         {/* <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                         15 H: 30 S
                       </div>
@@ -711,7 +913,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='border-none bg-transparent hover:bg-transparent'
+                              className='bg-transparent border-none hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -757,7 +959,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -816,7 +1018,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -852,7 +1054,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -884,7 +1086,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -960,7 +1162,7 @@ const Orders = () => {
                               stroke-width='1.5'
                             />
                           </svg>
-                          {proposal.gigPrice}
+                          ${proposal.gigPrice}
                         </div>
                         <div className='flex flex-row items-center gap-2'>
                           <svg
@@ -993,8 +1195,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{proposal.gigDescription}</div>
                     {/* )} */}
-                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
-                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
+                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
+                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -1021,7 +1223,7 @@ const Orders = () => {
                         <button className='p-4 px-8 md:p-5'>Message</button>
                         <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
-                          onClick={() => onAccept(proposal.gigId, proposal.freelancerId)}
+                          onClick={() => onAccept(proposal.gigId, proposal.freelancerId, proposal.gigPrice, proposal.walletPubkey)}
                         >
                           Accept
                         </button>
@@ -1035,7 +1237,7 @@ const Orders = () => {
               </button>
             </>
           ) : (
-            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Freelancer proposals will be here</p>
             </div>
