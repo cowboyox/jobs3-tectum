@@ -6,7 +6,6 @@ import { FaEllipsis, FaX } from 'react-icons/fa6';
 import searchOptions from '../freelancers/searchOptions';
 
 import { Button } from '@/components/ui/button';
-import CustomIconDropdown from '@/components/ui/dropdown';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -32,14 +31,16 @@ const Orders = () => {
   const auth = useCustomContext();
 
   const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
-  const [searchType, setSearchType] = useState(searchOptions[0]);
-  const handleSearchTypeChange = (v) => setSearchType(v);
+  const [searchType, setSearchType] = useState('normal');
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllClientGigsProposed(
     auth?.currentProfile?._id
   );
   const { toast } = useToast();
+  const [searchKeywords, setSearchKeyWords] = useState('');
+  const [filteredLiveList, setFilteredLiveList] = useState([]);
+  const [filteredProposalsList, setFilteredProposalsList] = useState([]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,6 +61,11 @@ const Orders = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    setFilteredLiveList(gigs.lives);
+    setFilteredProposalsList(gigs.proposals);
+  }, [gigs]);
 
   const formattedDate = (dateString) => {
     const date = new Date(dateString);
@@ -101,20 +107,81 @@ const Orders = () => {
     await refetchAllGigsProposed();
   };
 
+  const setKey = (e) => {
+    setSearchKeyWords(e.target.value);
+    if (searchType == 'normal') {
+      if (mode === 'live') {
+        const filtered = gigs.lives.filter(
+          (gig) =>
+            gig.creator.fullName?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigPostDate?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigPrice?.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+        setFilteredLiveList(filtered);
+      } else {
+        const filtered = gigs.proposals.filter(
+          (gig) =>
+            gig.creator.fullName?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigPostDate?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigPrice?.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
+            gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+        setFilteredProposalsList(filtered);
+      }
+    }
+  };
+
+  const aiSearch = () => {
+    api.get(`/api/v1/freelancer_gig/ai-search/${searchKeywords}`).then((data) => {
+      let ai_ids = [];
+      if (data.data.profileIDs) ai_ids = data.data.profileIDs;
+      if (mode === 'live') {
+        const ai_filtered = ai_ids
+          .map((id) => gigs.lives.find((gig) => gig.gigId.toString() === id))
+          .filter((gig) => gig != undefined);
+        setFilteredLiveList(ai_filtered);
+      } else {
+        const ai_filtered = ai_ids
+          .map((id) => gigs.proposals.find((gig) => gig.gigId.toString() === id))
+          .filter((gig) => gig != undefined);
+        setFilteredProposalsList(ai_filtered);
+      }
+    });
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && searchType === 'ai') {
+      aiSearch();
+    }
+  };
+
+  const onChangeType = (e) => {
+    setSearchType(e);
+  };
+
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex flex-row items-center justify-between gap-5 rounded-xl bg-[#10191D] p-3'>
         <div className='ml-3 flex flex-1 items-center gap-3'>
-          <CustomIconDropdown
-            onChange={handleSearchTypeChange}
-            optionLabel='icon'
-            options={searchOptions}
-            value={searchType}
-          />
+          <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
+            <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='rounded-xl bg-[#1B272C]'>
+              <SelectGroup>
+                <SelectItem value='normal'>{searchOptions[0].icon}</SelectItem>
+                <SelectItem value='ai'>{searchOptions[1].icon}</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <input
             className='w-full bg-transparent outline-none'
+            onChange={(e) => setKey(e)}
+            onKeyDown={handleKeyDown}
             placeholder={isSmallScreen ? '' : 'Search by Order title...'}
-            type='text'
           />
           {isSmallScreen && (
             <button>
@@ -286,13 +353,12 @@ const Orders = () => {
       </div>
       {mode == 'live' ? (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{gigs ? gigs.lives.length : ''}</span>{' '}
+          You have <span className='font-bold text-[#DC4F13]'>{filteredLiveList.length}</span>{' '}
           Orders😊
         </div>
       ) : (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have{' '}
-          <span className='font-bold text-[#DC4F13]'>{gigs ? gigs.proposals.length : ''}</span>{' '}
+          You have <span className='font-bold text-[#DC4F13]'>{filteredProposalsList.length}</span>{' '}
           Proposals😊
         </div>
       )}
@@ -344,9 +410,9 @@ const Orders = () => {
       </div>
       {mode == 'live' ? (
         <>
-          {gigs && gigs.lives.length > 0 ? (
+          {filteredLiveList.length > 0 ? (
             <>
-              {gigs?.lives.map((order, index) => {
+              {filteredLiveList.map((order, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
                     <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
@@ -692,9 +758,9 @@ const Orders = () => {
         </>
       ) : (
         <>
-          {gigs && gigs.proposals.length > 0 ? (
+          {filteredProposalsList.length > 0 ? (
             <>
-              {gigs?.proposals.map((proposal, index) => {
+              {filteredProposalsList.map((proposal, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
                     <div className='mt-1 flex items-start justify-between md:flex-row md:items-center'>
