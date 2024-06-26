@@ -100,12 +100,12 @@ export const formatDate = (dateString) => {
   return `${month} ${day}, ${year}`;
 };
 export const getReadTime = (content) => {
-  const contentText = JSON.stringify(content); 
-  const charCount = contentText.length;
+  const contentText = JSON.stringify(content);
+  const charCount = contentText?.length;
   const wordsCount = Math.ceil(charCount / 5);
   const readTime = Math.ceil(wordsCount / 200);
   return readTime;
-}
+};
 
 export const isEnglish = (text) => {
   var englishRegex = /^[a-zA-Z\s!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]+$/;
