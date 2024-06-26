@@ -1,33 +1,30 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
+import { useGetFreelancerGigById } from '@/hooks/useGetFreelancerGigById';
 import api from '@/utils/api';
 
 const Payment = ({ coverLetter }) => {
-  console.warn(coverLetter);
-  const [profileData, setProfileData] = useState();
   const auth = useCustomContext();
   const { gigId } = useParams();
   const { toast } = useToast();
+  const { data: gigInfo } = useGetFreelancerGigById(gigId);
 
-  useEffect(() => {
-    const func = async () => {
-      if (auth.user) {
-        const data = await api.get(`/api/v1/profile/get-profile/${auth.user.email}/3`);
-
-        setProfileData(data.data.profile);
-      }
-    };
-
-    func();
-  }, [auth]);
   const onApply = async () => {
+    let values = {};
+
+    values.clientId = auth.currentProfile._id;
+    values.fullName = auth.user.name;
+    values.email = auth.user.email;
+    values.proposal = coverLetter;
+    values.connects = gigInfo.connects;
+
     await api
-      .post(`/api/v1/bidding/${gigId}/confirm_and_pay`, { clientProfileId: profileData._id })
+      .post(`/api/v1/bidding/${gigId}/confirm_and_pay`, values)
       .then(async () => {
         toast({
           className:
