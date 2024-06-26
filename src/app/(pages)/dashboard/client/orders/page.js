@@ -165,9 +165,9 @@ const Orders = () => {
     }
 
     try {
-      const seller = new PublicKey("At1PNJxjhr9NrThvDGCkNA17Q57ceWZqXe6pdbYb15T5");
+      const seller = new PublicKey(sellerPubkey);
       const contractId = uuid().slice(0, 8);
-      const amount = new BN(1 * Math.pow(10, 6));
+      const amount = new BN(gigPrice * Math.pow(10, 6));
       const dispute = new BN(0.5 * Math.pow(10, 6));
       const deadline = Math.floor(Date.now() / 1000) + (10 * 24 * 60 * 60); 
 
