@@ -1,7 +1,7 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { useParams, usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 import Job from '@/components/dashboard/jobapplication/Job';
 import { useToast } from '@/components/ui/use-toast';
@@ -15,6 +15,15 @@ const Page = () => {
   const { toast } = useToast();
   const [coverLetter, setCoverLetter] = useState();
   const auth = useCustomContext();
+  const pathname = usePathname()
+
+  useEffect(() => {
+    let tmp = localStorage.getItem('jobs_2024_token')
+    if(!tmp){
+      router.push(`/?redirect=${pathname}`);
+    }
+  }, [])
+
   const { data: gigInfo } = useGetClientGigById(gigId);
 
   const onChangeCoverletter = (e) => {
