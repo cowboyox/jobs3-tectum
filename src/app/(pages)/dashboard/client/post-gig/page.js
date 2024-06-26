@@ -712,7 +712,7 @@ const GigPosting = () => {
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
-        router.push('./home');
+        router.push('./my-gigs');
       })
       .catch((err) => {
         console.error('Error corrupted during posting gig', err);
