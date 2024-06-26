@@ -13,10 +13,8 @@ import {
   AnchorProvider,
   setProvider,
   getProvider,
-  Idl,
   utils,
   BN,
-  Provider,
 } from "@project-serum/anchor";
 import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 
@@ -29,10 +27,8 @@ import { v4 as uuid } from "uuid";
 import IDL from "@/idl/gig_basic_contract.json";
 import {
   PROGRAM_ID,
-  ADMIN_ADDRESS,
   CONTRACT_SEED,
   PAYTOKEN_MINT,
-  DECIMALS,
 } from "@/utils/constants";
 
 import searchOptions from '../freelancers/searchOptions';
@@ -125,7 +121,7 @@ const Orders = () => {
         } catch (err) {}
       })();
     }
-  }, [wallet]);
+  }, [wallet, connection]);
 
   const formattedDate = (dateString) => {
     const date = new Date(dateString);
