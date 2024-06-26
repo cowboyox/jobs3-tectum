@@ -1217,8 +1217,8 @@ const GigPosting = () => {
                 </FormDescription>
                 <FormControl>
                   <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
-                    <input
-                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
+                    <textarea
+                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none resize-none'
                       value={postData.gigDescription}
                       onChange={(e) => {
                         setPostData((prev) => ({
