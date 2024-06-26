@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { FiPlus } from 'react-icons/fi';
 import { GoChevronDown, GoTrash } from 'react-icons/go';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
-import { IoIosClose } from "react-icons/io";
+import { IoIosClose } from 'react-icons/io';
 import { IoCheckmark } from 'react-icons/io5';
 import {
   Select,
@@ -658,11 +658,11 @@ const GigPosting = () => {
     }));
   };
   const handlePublish = async () => {
-    if (!postData.gigTitle) {
+    if (!postData.gigTitle || !postData.gigDescription) {
       return toast({
         className:
           'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3 className='text-center'>Input Gig Title</h3>,
+        description: <h3 className='text-center'>Input Gig Title and Description</h3>,
         title: <h1 className='text-center'>Warning</h1>,
         variant: 'default',
       });
@@ -686,10 +686,10 @@ const GigPosting = () => {
 
     await api
       .post('/api/v1/client_gig/post_gig', postData)
-      .then(async (data) => {
+      .then(async (gigData) => {
         await api
           .post(
-            `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${data.data.gigId}`,
+            `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${gigData.data.gigId}`,
             formData,
             config
           )
@@ -701,6 +701,7 @@ const GigPosting = () => {
               profileType: 'Client',
               imageURL:
                 auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
+              gigId: gigData.data.gigId,
             });
           });
         toast({
@@ -870,7 +871,6 @@ const GigPosting = () => {
                           if (e.key === 'Enter') {
                             if (skillSet.length < 5) {
                               setSkillSet((prevSkillSet) => [...prevSkillSet, selectedSkill]);
-                              
                             }
                             setSelectedSkill('');
                           }
@@ -887,7 +887,6 @@ const GigPosting = () => {
                             const newSkillSet = [...skillSet];
                             newSkillSet.splice(selectedSkillIndex, 1);
                             setSkillSet(newSkillSet);
-                            
                           }}
                         >
                           <IoIosCloseCircleOutline className='ml-2 mr-1 text-base' />
@@ -1035,11 +1034,16 @@ const GigPosting = () => {
                       }}
                       placeholder={all_form_structure.location_placeholder}
                     />
-                    <div className='justify-end cursor-pointer' onClick={() => setPostData((prev) =>({
-                      ...prev,
-                      location: ""
-                    }))}>
-                      <IoIosClose className='w-[30px] h-[30px]'/>
+                    <div
+                      className='cursor-pointer justify-end'
+                      onClick={() =>
+                        setPostData((prev) => ({
+                          ...prev,
+                          location: '',
+                        }))
+                      }
+                    >
+                      <IoIosClose className='h-[30px] w-[30px]' />
                     </div>
                   </div>
                 </FormControl>

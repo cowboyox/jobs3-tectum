@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
+import { usePathname, useRouter } from 'next/navigation';
 
 const Status = ({ status }) => {
   const getStatusStyles = () => {
@@ -70,12 +71,19 @@ const GigCard = ({ gig }) => {
 };
 
 const MyGigs = () => {
+  const router = useRouter()
+  const pathname = usePathname()
   const [myGigs, setMyGigs] = useState([]);
   useEffect(() => {
-    api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
-      setMyGigs(data.data.data);
-    });
-  }, []);
+    let tmp = localStorage.getItem('jobs_2024_token')
+    if(!tmp){
+      router.push(`/?redirect=${pathname}`);
+    }else{
+      api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
+        setMyGigs(data.data.data);
+      });
+    }
+  }, [router, pathname])
 
   return (
     <div className='flex flex-col gap-8'>
