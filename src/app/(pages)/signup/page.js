@@ -19,7 +19,7 @@ import {
   InputOTPSlot,
 } from '@/components/ui/input-otp';
 
-const signup = () => {
+const Signup = () => {
   const router = useRouter();
   const [postData, setPostData] = useState({
     fullName: '',
@@ -36,7 +36,7 @@ const signup = () => {
   const { data: isExists } = useVerifyUsername(debouncedUsername);
   const ref = useRef(null);
   const auth = useCustomContext();
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(0);
   const [referrer, setReferrer] = useState('');
   const [otp_value, setOTPValue] = useState('');
 
@@ -453,4 +453,4 @@ const signup = () => {
   );
 };
 
-export default signup;
+export default Signup;
