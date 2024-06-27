@@ -202,21 +202,21 @@ const Stats = ({ search, setSearch }) => {
               {clientInfo?.proposals?.length > 0 ? (
                 clientInfo?.proposals?.map((proposal, index) => (
                   <div
-                    className='flex items-center gap-1 rounded-2xl bg-darkGray px-3 py-2'
+                    className='flex items-center gap-2 rounded-2xl bg-darkGray px-3 py-2'
                     key={index}
                   >
-                    <div className='flex flex-1 items-center justify-center'>
-                      <div className='flex h-10 w-[90%] items-center justify-center border-none outline-none'>
+                    <div className='flex items-center justify-center'>
+                      <div className='flex h-10 items-center justify-center border-none outline-none'>
                         <Image
                           alt='pic'
-                          className='h-full w-full object-contain'
+                          className='h-full w-full rounded-full'
                           height={1000}
-                          src={'/assets/images/placeholder.jpeg'}
+                          src={'/assets/images/users/user-5.png'}
                           width={1000}
                         />
                       </div>
                     </div>
-                    <div className='w-[70%]'>
+                    <div className=''>
                       <div className='flex items-center gap-2'>
                         <h3 className='truncate text-lg text-white'>{proposal.flFullName}</h3>
                         <MdVerified className='text-[#0A75C2]' />
