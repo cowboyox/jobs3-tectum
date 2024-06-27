@@ -1,16 +1,18 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import api from '@/utils/api';
+import { USER_ROLE } from '@/utils/constants';
+
 
 const InfoPanel = (props) => {
   const { toast } = useToast();
 
   const saveToDB = (data) => {
     api
-      .put(`/api/v1/profile/update-profileinfo/${props.email}`, data)
+      .put(`/api/v1/profile/update-profileinfo/${props.email}/${USER_ROLE.CLIENT}`, data)
       .then(() => {
         return toast({
           className:
@@ -49,22 +51,31 @@ const InfoPanel = (props) => {
     }
   };
   const [editMode, setEditMode] = useState(false);
+  useEffect(() => {
+    if(props.viewMode == 'preview'){
+      setEditMode(false);
+    }
+  }, [props.viewMode])
   return (
     <div
       className='flex flex-col gap-4 bg-[#10191D] px-3 py-4 md:rounded-xl md:p-8'
       key={props.index}
     >
       {/* Content */}
+
       <div className='flex w-full justify-between'>
         <p className='text-[18px] font-medium text-[#96B0BD]'>{props.title}</p>
-        <img
-          className='w-5 cursor-pointer'
-          onClick={() => {
-            setEditMode(true);
-          }}
-          src='/assets/images/icons/edit-pen.svg'
-        />
+        {props.viewMode === 'edit' && (
+          <img
+            className='w-5 cursor-pointer'
+            onClick={() => {
+              setEditMode(true);
+            }}
+            src='/assets/images/icons/edit-pen.svg'
+          />
+        )}
       </div>
+
       <form>
         {' '}
         {/* After the form is submitted the user data should be saved in the backend */}

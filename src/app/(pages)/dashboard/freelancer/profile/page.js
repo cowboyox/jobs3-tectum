@@ -257,7 +257,7 @@ const FreelancerProfile = () => {
 
   const saveToDB = (tmp) => {
     api
-      .put(`/api/v1/profile/update-profileinfo/${user.email}`, tmp)
+      .put(`/api/v1/profile/update-profileinfo/${user.email}/${USER_ROLE.FREELANCER}`, tmp)
       .then(() => {
         return toast({
           className:
