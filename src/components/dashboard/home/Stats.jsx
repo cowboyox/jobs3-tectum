@@ -170,7 +170,7 @@ const Stats = ({ search, setSearch }) => {
                           alt='pic'
                           className='h-full w-full rounded-full object-contain'
                           height={1000}
-                          src={'/assets/images/users/user-5.png'}
+                          src={hired.avatarUrl || '/assets/images/users/user-5.png'}
                           width={1000}
                         />
                       </div>
@@ -211,7 +211,7 @@ const Stats = ({ search, setSearch }) => {
                           alt='pic'
                           className='h-full w-full rounded-full'
                           height={1000}
-                          src={'/assets/images/users/user-5.png'}
+                          src={proposal.avatarUrl || '/assets/images/users/user-5.png'}
                           width={1000}
                         />
                       </div>

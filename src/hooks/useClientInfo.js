@@ -17,6 +17,7 @@ export const useClientInfo = (profileId) => {
             data.data.map((d) => {
               d.bidInfos.map((info) => {
                 proposals.push({
+                  avatarUrl: info.freelancerId.avatarURL ?? '',
                   flFullName: info.fullName,
                   flId: info.freelancerId,
                   gigDescription: d.gigDescription,
@@ -31,6 +32,7 @@ export const useClientInfo = (profileId) => {
 
                 if (info.hired && info.spend > 0) {
                   recentHires.push({
+                    avatarUrl: info.freelancerId.avatarURL ?? '',
                     flFullName: info.fullName,
                     flId: info.freelancerId,
                     gigDescription: d.gigDescription,
