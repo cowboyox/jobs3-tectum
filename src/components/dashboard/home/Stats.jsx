@@ -4,7 +4,10 @@ import Image from 'next/image';
 import React from 'react';
 import { CgOptions } from 'react-icons/cg';
 import { CiSearch } from 'react-icons/ci';
+import { HiOutlineLocationMarker } from 'react-icons/hi';
 import { MdVerified } from 'react-icons/md';
+import { RiRobot2Line } from 'react-icons/ri';
+
 import {
   Select,
   SelectContent,
@@ -13,8 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { HiOutlineLocationMarker } from 'react-icons/hi';
-import { RiRobot2Line } from 'react-icons/ri';
+import { useCustomContext } from '@/context/use-custom';
+import { useClientInfo } from '@/hooks/useClientInfo';
 
 const spendings = [
   {
@@ -67,11 +70,14 @@ const recentHires = [
 ];
 
 const Stats = ({ search, setSearch }) => {
+  const auth = useCustomContext();
+  const { data: clientInfo } = useClientInfo(auth?.currentProfile?._id);
+
   return (
     <div className='min-h-55 mt-10 flex w-full flex-col font-roboto'>
       <div className='flex items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4 md:h-16'>
         <div className='flex items-center gap-4'>
-          <Select defaultValue='normal' className='outline-none'>
+          <Select className='outline-none' defaultValue='normal'>
             <SelectTrigger className='h-full w-20 rounded-xl bg-[#1B272C] outline-none mobile:w-14 mobile:p-2'>
               <SelectValue />
             </SelectTrigger>
@@ -112,106 +118,121 @@ const Stats = ({ search, setSearch }) => {
         <div className='grid gap-4 lg:grid-cols-3'>
           <div className='flex h-full min-h-96 flex-col rounded-2xl bg-deepGreen p-5'>
             <div className='flex h-1/6 items-center justify-between'>
-              <h3 className='text-2xl text-white font-semibold'>Spendings</h3>
-              {/* <p className='text-medGray'>See All</p> */}
+              <h3 className='text-2xl font-semibold text-white'>Spendings</h3>
+              {clientInfo?.recentHires?.length > 0 && <p className='text-medGray'>See All</p>}
             </div>
-            <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>Not yet</div>
-            {/* <div className='flex flex-1 flex-col justify-between gap-2 item'>
-              {spendings.map((spend, index) => (
-                <div
-                  className='flex flex-1 items-center gap-1 rounded-2xl bg-darkGray px-3'
-                  key={index}
-                >
-                  <div className='w-[70%]'>
-                    <h3 className='truncate text-lg text-white'>{spend.title}</h3>
-                    <div className='flex items-center gap-1 text-medGray'>
-                      <p className='text-medGray'>{spend.desc}</p>
-                      <div className='size-1 rounded-full bg-medGray' />
-                      <span>{spend.daysAgo}</span>
+            <div className='item flex flex-1 flex-col justify-between gap-2'>
+              {clientInfo?.recentHires?.length > 0 ? (
+                clientInfo?.recentHires?.map((hired, index) => (
+                  <div
+                    className='flex items-center gap-1 rounded-2xl bg-darkGray px-3 py-2'
+                    key={index}
+                  >
+                    <div className='w-[70%]'>
+                      <h3 className='truncate text-lg text-white'>{hired.gigTitle}</h3>
+                      <div className='flex items-center gap-1 text-medGray'>
+                        <p className='text-medGray'>{hired.gigDescription}</p>
+                        {/* <div className='size-1 rounded-full bg-medGray' /> */}
+                        {/* <span>{spend.daysAgo}</span> */}
+                      </div>
+                    </div>
+                    <div className='flex flex-1 items-center justify-center'>
+                      <div className='flex h-8 w-[90%] items-center justify-center gap-2 rounded-[8px] border-none text-red-600 outline-none'>
+                        <span>-</span>
+                        {hired.spends}
+                      </div>
                     </div>
                   </div>
-                  <div className='flex flex-1 items-center justify-center'>
-                    <div className='flex h-8 w-[90%] items-center text-red-600 justify-center gap-2 rounded-[8px] border-none  outline-none'>
-                      <span>-</span>{spend.price}
-                    </div>
-                  </div>
+                ))
+              ) : (
+                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
+                  Not yet
                 </div>
-              ))}
-              
-            </div> */}
+              )}
+            </div>
           </div>
           <div className='flex h-full min-h-96 flex-col rounded-2xl bg-deepGreen p-5'>
             <div className='flex h-1/6 items-center justify-between'>
-              <h3 className='text-2xl text-white font-semibold'>Recent Hires</h3>
-              {/* <p className='text-medGray'>See All</p> */}
+              <h3 className='text-2xl font-semibold text-white'>Recent Hires</h3>
+              {clientInfo?.recentHires?.length > 0 && <p className='text-medGray'>See All</p>}
             </div>
-            <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>Not yet</div>
 
-            {/* <div className='flex flex-1 flex-col justify-between gap-2'>
-              {recentHires.map((spend, index) => (
-                <div
-                  className='flex flex-1 items-center gap-1 rounded-2xl bg-darkGray px-3'
-                  key={index}
-                >
-                  <div className='flex flex-1 items-center justify-center'>
-                    <div className='flex h-10 w-[90%] items-center justify-center border-none outline-none'>
-                      <Image
-                        alt='pic'
-                        className='h-full w-full object-contain'
-                        height={1000}
-                        src={spend.pic}
-                        width={1000}
-                      />
+            <div className='flex flex-1 flex-col justify-between gap-2'>
+              {clientInfo?.recentHires?.length > 0 ? (
+                clientInfo?.recentHires?.map((hired, index) => (
+                  <div
+                    className='flex items-center gap-2 rounded-2xl bg-darkGray px-3 py-2'
+                    key={index}
+                  >
+                    <div className='flex items-center justify-center'>
+                      <div className='flex h-10 items-center justify-center border-none outline-none'>
+                        <Image
+                          alt='pic'
+                          className='h-full w-full rounded-full object-contain'
+                          height={1000}
+                          src={hired.avatarUrl || '/assets/images/users/user-5.png'}
+                          width={1000}
+                        />
+                      </div>
+                    </div>
+                    <div className=''>
+                      <div className='flex items-center gap-2'>
+                        <h3 className='truncate text-lg text-white'>{hired.flFullName}</h3>
+                        <MdVerified className='text-[#0A75C2]' />
+                      </div>
+                      <div className='flex items-center gap-1 text-medGray'>
+                        <p className='text-medGray'>Freelancer</p>
+                      </div>
                     </div>
                   </div>
-                  <div className='w-[70%]'>
-                    <div className='flex items-center gap-2'>
-                      <h3 className='truncate text-lg text-white'>{spend.name}</h3>
-                      <MdVerified className='text-[#0A75C2]' />
-                    </div>
-                    <div className='flex items-center gap-1 text-medGray'>
-                      <p className='text-medGray'>{spend.desg}</p>
-                    </div>
-                  </div>
+                ))
+              ) : (
+                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
+                  Not yet
                 </div>
-              ))}
-            </div> */}
+              )}
+            </div>
           </div>
           <div className='flex h-full min-h-96 flex-col rounded-2xl bg-deepGreen p-5'>
             <div className='flex h-1/6 items-center justify-between'>
-              <h3 className='text-2xl text-white font-semibold'>Applications</h3>
-              {/* <p className='text-medGray'>See All</p> */}
+              <h3 className='text-2xl font-semibold text-white'>Applications</h3>
+              {clientInfo?.proposals?.length > 0 && <p className='text-medGray'>See All</p>}
             </div>
-            <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>Not yet</div>
-            {/* <div className='flex flex-1 flex-col justify-between gap-2'>
-              {recentHires.map((spend, index) => (
-                <div
-                  className='flex flex-1 items-center gap-1 rounded-2xl bg-darkGray px-3'
-                  key={index}
-                >
-                  <div className='flex flex-1 items-center justify-center'>
-                    <div className='flex h-10 w-[90%] items-center justify-center border-none outline-none'>
-                      <Image
-                        alt='pic'
-                        className='h-full w-full object-contain'
-                        height={1000}
-                        src={spend.pic}
-                        width={1000}
-                      />
+            <div className='flex flex-1 flex-col justify-between gap-2'>
+              {clientInfo?.proposals?.length > 0 ? (
+                clientInfo?.proposals?.map((proposal, index) => (
+                  <div
+                    className='flex items-center gap-2 rounded-2xl bg-darkGray px-3 py-2'
+                    key={index}
+                  >
+                    <div className='flex items-center justify-center'>
+                      <div className='flex h-10 items-center justify-center border-none outline-none'>
+                        <Image
+                          alt='pic'
+                          className='h-full w-full rounded-full'
+                          height={1000}
+                          src={proposal.avatarUrl || '/assets/images/users/user-5.png'}
+                          width={1000}
+                        />
+                      </div>
+                    </div>
+                    <div className=''>
+                      <div className='flex items-center gap-2'>
+                        <h3 className='truncate text-lg text-white'>{proposal.flFullName}</h3>
+                        <MdVerified className='text-[#0A75C2]' />
+                      </div>
+                      <div className='flex items-center gap-1 text-medGray'>
+                        <p className='text-medGray'>{proposal.gigTitle}</p>
+                      </div>
                     </div>
                   </div>
-                  <div className='w-[70%]'>
-                    <div className='flex items-center gap-2'>
-                      <h3 className='truncate text-lg text-white'>{spend.name}</h3>
-                      <MdVerified className='text-[#0A75C2]' />
-                    </div>
-                    <div className='flex items-center gap-1 text-medGray'>
-                      <p className='text-medGray'>{spend.desg}</p>
-                    </div>
-                  </div>
+                ))
+              ) : (
+                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
+                  Not yet
                 </div>
-              ))}
-            </div> */}
+              )}
+            </div>
           </div>
         </div>
       </div>
