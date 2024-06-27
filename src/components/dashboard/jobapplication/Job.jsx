@@ -94,7 +94,11 @@ const Job = ({ gigData }) => {
           </div>
         </div>
       </div>
-      <p className='text-sm text-medGray'>{gigData.data.data.gigDescription}</p>
+      <p className='text-sm text-medGray'>
+        <pre className='whitespace-pre-wrap font-roboto text-base'>
+          {gigData.data.data.gigDescription}
+        </pre>
+      </p>
       <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>Skills</h3>
       <div className='flex flex-wrap gap-2'>
         {gigData.data.data.requiredSkills.map((skill, skillIndex) => (
