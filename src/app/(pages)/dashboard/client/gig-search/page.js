@@ -25,7 +25,7 @@ import api from '@/utils/api';
 
 const DropdownItem = (props) => {
   return (
-    <div className='flex cursor-pointer items-center gap-4 p-0'>
+    <div className='flex items-center gap-4 p-0 cursor-pointer'>
       <Checkbox id={props.category_id} />
       <label className='cursor-pointer text-sm text-[#96B0BD]' htmlFor={props.category_id}>
         {props.category_name}
@@ -51,26 +51,26 @@ const GigCard = (props) => {
       <div className='relative w-[400px] max-w-full'>
         <img
           alt='Gig Image'
-          className='aspect-video w-full rounded-xl object-cover'
+          className='object-cover w-full aspect-video rounded-xl'
           src='/assets/images/portfolio_works/portfolio.jpeg'
         />
-        <div className='absolute left-2 top-2 flex gap-2'>
-          <div className='flex items-center gap-2 rounded-full bg-gray-800 px-2 py-1 text-white'>
+        <div className='absolute flex gap-2 left-2 top-2'>
+          <div className='flex items-center gap-2 px-2 py-1 text-white bg-gray-800 rounded-full'>
             <FaStar fill='#DC4F13' size={16} />
             <p className='flex gap-1 text-[14px] text-[#E0F0F9]'>
               5.5
               <span className='text-[#96b0be]'>(921)</span>
             </p>
           </div>
-          <div className='flex items-center gap-2 rounded-full bg-gray-800 px-2 py-1 text-white'>
+          <div className='flex items-center gap-2 px-2 py-1 text-white bg-gray-800 rounded-full'>
             <PiShootingStarLight className='text-blue-500' />
             <span className='text-[#96b0be]'>Top Rated</span>
           </div>
         </div>
       </div>
-      <div className='flex flex-grow flex-col gap-2'>
+      <div className='flex flex-col flex-grow gap-2'>
         <h3 className='text-2xl font-semibold text-[#F5F5F5]'>{props.info.gigTitle}</h3>
-        <div className='mt-2 flex items-center gap-5 text-gray-400'>
+        <div className='flex items-center gap-5 mt-2 text-gray-400'>
           <div className='flex items-center gap-2'>
             <FaClock size={24} />
             <span className='text-base'>{props.info.gigPrice}</span>
@@ -198,7 +198,7 @@ const GigSearch = () => {
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex gap-2 rounded-xl bg-[#10191d]'>
-        <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
+        <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -211,7 +211,7 @@ const GigSearch = () => {
             </SelectContent>
           </Select>
           <input
-            className='w-full bg-transparent text-white outline-none mobile:text-sm'
+            className='w-full text-white bg-transparent outline-none mobile:text-sm'
             onChange={(e) => setKey(e)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
@@ -310,7 +310,7 @@ const GigSearch = () => {
         </Popover>
       </div>
       <div className='flex items-center justify-center rounded-xl bg-[#10191d] px-3 py-6 text-lg'>
-        Wow! <span className='main_color px-2'>{filteredGigList.length}</span> projects available 😀
+        Wow! <span className='px-2 main_color'>{filteredGigList.length}</span> projects available 😀
       </div>
       {/*
        * These should be dynamic, you can pass all the data you need through attributes and retrieve it on the component
