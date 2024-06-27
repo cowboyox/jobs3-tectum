@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import api from '@/utils/api';
 import { USER_ROLE } from '@/utils/constants';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const ClientDashboard = () => {
   const { toast } = useToast();
@@ -60,6 +61,8 @@ const ClientDashboard = () => {
   const [isLoading, setLoading] = useState(true);
   const [fetchBanner, setFetchBanner] = useState('');
   const [fetchAvatar, setFetchAvatar] = useState('');
+  const [viewMode, setViewMode] = useState('preview');
+
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (tmp === null) {
@@ -124,50 +127,53 @@ const ClientDashboard = () => {
     }
   }, [router, toast]);
 
-  const handleBannerUpload = useCallback( async (event) => {
-    if (event.target.files?.length) {
-      const image = event.target.files[0];
-      const formData = new FormData();
-      formData.append('file', image);
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
+  const handleBannerUpload = useCallback(
+    async (event) => {
+      if (event.target.files?.length) {
+        const image = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', image);
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        };
 
-      try {
-        const res = await api.post(
-          `/api/v1/profile/upload-client-banner/${profileData._id}`,
-          formData,
-          config
-        );
+        try {
+          const res = await api.post(
+            `/api/v1/profile/upload-client-banner/${profileData._id}`,
+            formData,
+            config
+          );
 
-        if (res.status === 200) {
-          setProfileData((prev) => ({
-            ...prev,
-            clientBannerURL: res.data.data,
-          }));
+          if (res.status === 200) {
+            setProfileData((prev) => ({
+              ...prev,
+              clientBannerURL: res.data.data,
+            }));
+            toast({
+              className:
+                'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+              description: <h3>Successfully updated Client Profile</h3>,
+              title: <h1 className='text-center'>Success</h1>,
+              variant: 'default',
+            });
+          }
+        } catch (error) {
+          setLoading(false);
+          console.error('Error uploading image:', error);
           toast({
             className:
-              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-            description: <h3>Successfully updated Client Profile</h3>,
-            title: <h1 className='text-center'>Success</h1>,
-            variant: 'default',
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
           });
         }
-      } catch (error) {
-        setLoading(false);
-        console.error('Error uploading image:', error);
-        toast({
-          className:
-            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
-          title: <h1 className='text-center'>Error</h1>,
-          variant: 'destructive',
-        });
       }
-    }
-  }, [profileData._id, toast]);
+    },
+    [profileData._id, toast]
+  );
 
   const onDropHandleBannerUpload = useCallback(
     async (acceptedFiles) => {
@@ -179,50 +185,53 @@ const ClientDashboard = () => {
     [handleBannerUpload]
   );
 
-  const handleAvatarUpload = useCallback( async (event) => {
-    if (event.target.files?.length) {
-      const image = event.target.files[0];
-      const formData = new FormData();
-      formData.append('file', image);
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
+  const handleAvatarUpload = useCallback(
+    async (event) => {
+      if (event.target.files?.length) {
+        const image = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', image);
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        };
 
-      try {
-        const res = await api.post(
-          `/api/v1/profile/upload-client-avatar/${profileData._id}`,
-          formData,
-          config
-        );
+        try {
+          const res = await api.post(
+            `/api/v1/profile/upload-client-avatar/${profileData._id}`,
+            formData,
+            config
+          );
 
-        if (res.status === 200) {
-          setProfileData((prev) => ({
-            ...prev,
-            avatarURL: res.data.data,
-          }));
+          if (res.status === 200) {
+            setProfileData((prev) => ({
+              ...prev,
+              avatarURL: res.data.data,
+            }));
+            toast({
+              className:
+                'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+              description: <h3>Successfully updated Client Profile</h3>,
+              title: <h1 className='text-center'>Success</h1>,
+              variant: 'default',
+            });
+          }
+        } catch (error) {
+          setLoading(false);
+          console.error('Error uploading image:', error);
           toast({
             className:
-              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-            description: <h3>Successfully updated Client Profile</h3>,
-            title: <h1 className='text-center'>Success</h1>,
-            variant: 'default',
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
           });
         }
-      } catch (error) {
-        setLoading(false);
-        console.error('Error uploading image:', error);
-        toast({
-          className:
-            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
-          title: <h1 className='text-center'>Error</h1>,
-          variant: 'destructive',
-        });
       }
-    }
-  }, [profileData._id, toast]);
+    },
+    [profileData._id, toast]
+  );
 
   const onDropHandleAvatarUpload = useCallback(
     async (acceptedFiles) => {
@@ -242,6 +251,38 @@ const ClientDashboard = () => {
     onDrop: onDropHandleAvatarUpload,
   });
 
+
+  const saveToDB = (data) => {
+    api
+      .put(`/api/v1/profile/update-profileinfo/${profileData.email}`, data)
+      .then(() => {
+        return toast({
+          className:
+            'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>Successfully updated Client Profile</h3>,
+          title: <h1 className='text-center'>Success</h1>,
+          variant: 'default',
+        });
+      })
+      .catch(() => {
+        toast({
+          className:
+            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>Internal Server Error</h3>,
+          title: <h1 className='text-center'>Error</h1>,
+          variant: 'destructive',
+        });
+      });
+  };
+
+  const saveProfileData = () => {
+    const tmp = {
+      email: profileData.email,
+      location: profileData.location,
+      fullName: profileData.fullName
+    };
+    saveToDB(tmp);
+  }
   return !isLoading ? (
     <div className='p-0'>
       <div className='group relative cursor-pointer' {...getBannerRootProps()}>
@@ -253,7 +294,11 @@ const ClientDashboard = () => {
           <img
             alt='banner'
             className='h-64 w-full rounded-b-2xl object-cover transition group-hover:opacity-75'
-            src={profileData?.clientBannerURL ? profileData.clientBannerURL : '/assets/images/placeholder.jpeg'}
+            src={
+              profileData?.clientBannerURL
+                ? profileData.clientBannerURL
+                : '/assets/images/placeholder.jpeg'
+            }
           />
           <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
             <IoCameraOutline className='h-6 w-6' />
@@ -269,70 +314,119 @@ const ClientDashboard = () => {
         />
       </div>
       <div className='mx-auto flex max-w-7xl -translate-y-8 flex-col gap-3 px-0 md:px-8'>
-        <div className='flex items-start gap-4 rounded-t-xl bg-[#10191D] px-3 py-4 md:items-center md:gap-7 md:rounded-xl md:p-8'>
-          <div className='relative w-20 md:h-24 md:w-24'>
-            <div
-              className='group relative aspect-square h-full w-full cursor-pointer rounded-full'
-              {...getAvatarRootProps()}
-            >
-              <label
-                className='w-full hover:cursor-pointer'
-                htmlFor='dropzone-avatar'
-                onClick={(e) => e.stopPropagation()}
+        <div className='flex flex-col md:flex-row md:justify-between rounded-t-xl bg-[#10191D] px-3 py-4 md:items-center md:gap-7 md:rounded-xl md:p-8'>
+          <div className='flex items-start gap-4 md:items-center md:gap-7'>
+            <div className='relative w-20 md:h-24 md:w-24'>
+              <div
+                className='group relative aspect-square h-full w-full cursor-pointer rounded-full'
+                {...getAvatarRootProps()}
               >
-                <img
-                  alt='banner'
-                  className='aspect-square h-full w-full rounded-full group-hover:opacity-75'
-                  src={profileData?.avatarURL ? profileData.avatarURL : '/assets/images/users/user-5.png'}
+                <label
+                  className='w-full hover:cursor-pointer'
+                  htmlFor='dropzone-avatar'
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <img
+                    alt='banner'
+                    className='aspect-square h-full w-full rounded-full group-hover:opacity-75'
+                    src={
+                      profileData?.avatarURL
+                        ? profileData.avatarURL
+                        : '/assets/images/users/user-5.png'
+                    }
+                  />
+                  <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
+                    <IoCameraOutline className='h-6 w-6' />
+                  </div>
+                </label>
+                <Input
+                  {...getAvatarInputProps()}
+                  accept='image/png, image/jpeg'
+                  className='hidden'
+                  id='dropzone-avatar'
+                  onChange={(e) => handleAvatarUpload(e)}
+                  type='file'
                 />
-                <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
-                  <IoCameraOutline className='h-6 w-6' />
+              </div>
+              {/* Change background color depending on user online status */}
+              <div className='absolute bottom-1 right-1 h-4 w-4 rounded-full bg-green-500' />
+            </div>
+            <div className='flex flex-col gap-4'>
+              <div className='flex items-center gap-4'>
+                {
+                  viewMode === 'edit' ? (
+                    <input className='inline-block w-[200px] border-b bg-transparent pb-2  font-medium text-white outline-none  focus:border-white  md:font-medium [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none text-2xl md:text-3xl'
+                          onChange={  
+                            (e) => {
+                              setProfileData((prev) => ({
+                               ...prev,
+                                fullName: e.target.value,
+                              }));
+                            }
+                          }
+                          value={profileData.fullName}
+                        />
+                  ) : (
+                    <h2 className='text-2xl md:text-3xl'>{profileData.fullName}</h2>
+                  )
+                }
+                
+                <img className='h-5 w-5' src='/assets/images/icons/checkmark.svg' />
+              </div>
+              <div className='flex flex-col gap-2 xl:flex-row xl:gap-4'>
+                <div className='flex items-center gap-2'>
+                  <img
+                    className='h-6 w-6 object-contain object-center'
+                    src='/assets/images/icons/location.svg'
+                  />
+                  {
+                    viewMode === 'edit' ? (
+                        <input className='inline-block w-[170px] border-b bg-transparent pb-2 text-lg font-medium text-white outline-none [appearance:textfield] focus:border-white md:text-[18px] md:font-medium [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                          onChange={
+                            (e) => {
+                              setProfileData((prev) => ({
+                               ...prev,
+                                location: e.target.value,
+                              }));
+                            }
+                          }
+                          value={profileData.location}
+                        />
+                    ) :
+                    (
+                      <p className='text-lg text-white'>{profileData.location}</p>
+                    )
+                  }
                 </div>
-              </label>
-              <Input
-                {...getAvatarInputProps()}
-                accept='image/png, image/jpeg'
-                className='hidden'
-                id='dropzone-avatar'
-                onChange={(e) => handleAvatarUpload(e)}
-                type='file'
-              />
+
+                <div className='flex items-center gap-2'>
+                  <img
+                    className='h-6 w-6 object-contain object-center'
+                    src='/assets/images/icons/clocks.svg'
+                  />
+                  <p className='text-lg text-white'>
+                    {lastLogin &&
+                      new Intl.DateTimeFormat('en-US', {
+                        day: 'numeric',
+                        hour: 'numeric',
+                        hour12: true, // Use 12-hour clock
+                        minute: 'numeric',
+                        month: 'short',
+                        timeZoneName: 'short', // Include the timezone name
+                        year: 'numeric',
+                      }).format(new Date(lastLogin))}
+                  </p>
+                </div>
+              </div>
             </div>
-            {/* Change background color depending on user online status */}
-            <div className='absolute bottom-1 right-1 h-4 w-4 rounded-full bg-green-500' />
           </div>
-          <div className='flex flex-col gap-4'>
-            <div className='flex items-center gap-4'>
-              <h2 className='text-2xl md:text-3xl'>{profileData.fullName}</h2>
-              <img className='h-5 w-5' src='/assets/images/icons/checkmark.svg' />
-            </div>
-            <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
-              <div className='flex items-center gap-2'>
-                <img
-                  className='h-6 w-6 object-contain object-center'
-                  src='/assets/images/icons/location.svg'
-                />
-                <p className='text-lg text-white'>{profileData.location}</p>
-              </div>
-              <div className='flex items-center gap-2'>
-                <img
-                  className='h-6 w-6 object-contain object-center'
-                  src='/assets/images/icons/clocks.svg'
-                />
-                <p className='text-lg text-white'>
-                  {lastLogin &&
-                    new Intl.DateTimeFormat('en-US', {
-                      day: 'numeric',
-                      hour: 'numeric',
-                      hour12: true, // Use 12-hour clock
-                      minute: 'numeric',
-                      month: 'short',
-                      timeZoneName: 'short', // Include the timezone name
-                      year: 'numeric',
-                    }).format(new Date(lastLogin))}
-                </p>
-              </div>
-            </div>
+          <div className='flex bg-[#28373E] rounded-xl px-1 py-1 w-full md:w-1/4 text-base md:flex-col lg:flex-row lg:py-1 md:py-2'>
+            <button className={`w-1/2 md:w-full lg:w-1/2 text-center cursor-pointer ${viewMode === 'preview' && 'bg-[#DC4F13] border roudned-xl py-[10px]'}`} onClick={() => {setViewMode('preview'); saveProfileData();}}>
+              {viewMode === 'edit' ? 'Save' : 'Preview'}
+            </button>
+            <button className={`w-1/2 md:w-full lg:w-1/2 text-center cursor-pointer ${viewMode === 'edit' && 'bg-[#DC4F13] border roudned-xl py-[10px]'}`} onClick={() => setViewMode('edit')}>
+                Edit
+            </button>
           </div>
         </div>
         <div className='flex flex-col gap-4 md:flex-row md:gap-0'>
@@ -371,6 +465,7 @@ const ClientDashboard = () => {
               editAction='editPersonalInfo'
               email={user.email}
               index={-1}
+              viewMode={viewMode}
               information_data={[
                 {
                   id: 0,
@@ -402,6 +497,7 @@ const ClientDashboard = () => {
                   editAction='companyDetails'
                   email={user.email}
                   index={index}
+                  viewMode={viewMode}
                   information_data={[
                     { id: 0, idName: 'country', label: 'Country', value: `${company.country}` },
                     {
