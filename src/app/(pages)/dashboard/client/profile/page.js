@@ -254,7 +254,7 @@ const ClientDashboard = () => {
 
   const saveToDB = (data) => {
     api
-      .put(`/api/v1/profile/update-profileinfo/${profileData.email}`, data)
+      .put(`/api/v1/profile/update-profileinfo/${profileData.email}/${USER_ROLE.CLIENT}`, data)
       .then(() => {
         return toast({
           className:
@@ -422,7 +422,7 @@ const ClientDashboard = () => {
           </div>
           <div className='flex bg-[#28373E] rounded-xl px-1 py-1 w-full md:w-1/4 text-base md:flex-col lg:flex-row lg:py-1 md:py-2'>
             <button className={`w-1/2 md:w-full lg:w-1/2 text-center cursor-pointer ${viewMode === 'preview' && 'bg-[#DC4F13] border roudned-xl py-[10px]'}`} onClick={() => {setViewMode('preview'); saveProfileData();}}>
-              {viewMode === 'edit' ? 'Save' : 'Preview'}
+              Preview
             </button>
             <button className={`w-1/2 md:w-full lg:w-1/2 text-center cursor-pointer ${viewMode === 'edit' && 'bg-[#DC4F13] border roudned-xl py-[10px]'}`} onClick={() => setViewMode('edit')}>
                 Edit

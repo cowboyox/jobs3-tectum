@@ -4,13 +4,15 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import api from '@/utils/api';
+import { USER_ROLE } from '@/utils/constants';
+
 
 const InfoPanel = (props) => {
   const { toast } = useToast();
 
   const saveToDB = (data) => {
     api
-      .put(`/api/v1/profile/update-profileinfo/${props.email}`, data)
+      .put(`/api/v1/profile/update-profileinfo/${props.email}/${USER_ROLE.CLIENT}`, data)
       .then(() => {
         return toast({
           className:
