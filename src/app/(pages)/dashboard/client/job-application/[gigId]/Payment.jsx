@@ -169,8 +169,14 @@ const Payment = ({ coverLetter, gigPrice, walletPubkey }) => {
         title: <h1 className='text-center'>Success</h1>,
         variant: 'default',
       });
-    } catch (error) {
+    } catch (err) {
       console.error('Error corrupted during applying gig', err);
+      
+      if (err.message == "User rejected the request.") {
+        // In this case, don't need to show error toast.
+        return;
+      }
+
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
