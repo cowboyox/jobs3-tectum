@@ -53,7 +53,7 @@ const SideBar = () => {
       name: 'Home',
     },
     {
-      href: `/dashboard/freelancer/profile/${auth.currentProfile?.userId}`,
+      href: `/dashboard/freelancer/profile/${auth.currentProfile?._id}`,
       icon: (
         <svg
           fill='none'
