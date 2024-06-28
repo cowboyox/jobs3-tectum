@@ -247,6 +247,19 @@ const Signup = () => {
         console.error('error', err);
       }
   }
+  const { open } = useWeb3Modal();
+  const { address, isConnected } = useAccount();
+
+  useEffect(() => {
+    if (isConnected) {
+      try {
+        auth.signInwithWallet(address);
+      } catch (err) {
+        console.error(err);
+        // router.replace('/')
+      }
+    }
+  }, [isConnected, address, auth]);
   return (
     <div className='mx-[30px] mt-[70px] flex h-full flex-col items-center justify-center gap-[30px] xxs:mx-0 lg:ml-[500px]'>
       <div className='flex w-full items-center justify-center gap-1 xxs:gap-7 lg:hidden'>
@@ -417,13 +430,13 @@ const Signup = () => {
             >
               Sign Up
             </button>
-            <button className='w-full border border-[#DC4F13] px-[30px] py-5 text-center text-[#F5F5F5]'>
+            <button className='w-full border border-[#DC4F13] px-[30px] py-5 text-center text-[#F5F5F5]' onClick={() => open()}>
               Continue With Wallet
             </button>
           </div>
           <div className='mt-[40px] text-base text-white'>
             <a>Already Have Account?</a>
-            <span className='text-[#DC4F13] ml-2'>Sign In</span>
+            <span className='text-[#DC4F13] ml-2 cursor-pointer' onClick={() => router.push('/signin')}>Sign In</span>
           </div>
         </>
       )}
