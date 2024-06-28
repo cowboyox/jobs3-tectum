@@ -37,7 +37,7 @@ const MessagesArea = ()=> {
             </span>
           </div>
         </div>
-        <textarea className='border border-[#526872] p-5 h-80 bg-transparent rounded-2xl text-white' placeholder='Type your message here...'></textarea>
+        <textarea className='border border-[#526872] p-5 h-80 bg-transparent rounded-2xl text-white' placeholder='Type your message here...'/>
         <div className="flex gap-3 p-2 rounded-2xl bg-[#1B272C]">
           <div className="w-full rounded-2xl  text-white py-5 mobile:py-3 text-center hover:bg-white hover:text-black transition cursor-pointer">
             Back
@@ -138,7 +138,7 @@ const OrderPage = ({ params }) => {
                           </div>
                         </div>
                       </div>
-                      <div className="border-t border-[#28373E] w-full"></div>
+                      <div className="border-t border-[#28373E] w-full"/>
                       <div className="p-4 bg-[#10191D] rounded-xl flex justify-between">
                         <span className='text-base text-white font-bold'>Total</span>
                         <span className='text-base text-white font-bold'>$400</span>
@@ -158,7 +158,7 @@ const OrderPage = ({ params }) => {
                       <span className='text-2xl mobile:text-xl text-white font-bold mobile:font-normal'>
                         Brief about the project
                       </span>
-                      <textarea className='border border-[#526872] p-5 h-80 bg-transparent rounded-2xl text-white'></textarea>
+                      <textarea className='border border-[#526872] p-5 h-80 bg-transparent rounded-2xl text-white'/>
                       <div className='text-3xl text-[#F5F5F5] mobile:text-xl mt-5'>
                         Drag and drop your files here or
                         <span className='main_color'> browse</span> to upload
