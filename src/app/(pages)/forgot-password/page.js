@@ -96,7 +96,7 @@ const ForgotPassword = () => {
       return toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3 className='text-center'>Please enter the code to verify.</h3>,
+        description: <h3 className='text-center'>Please enter password correctly.</h3>,
         title: <h1 className='text-center'>Error</h1>,
         variant: 'destructive',
       });
@@ -135,6 +135,19 @@ const ForgotPassword = () => {
       console.error('error', err);
     }
   };
+  const onKeyDown = (e) => {
+    if (e.key == 'Enter') {
+      if(step === 0){
+        sendMail();
+      }
+      else if(step === 1){
+        handleOTPCode();
+      }
+      else if(step === 2){
+        handleChangePassword();
+      }
+    }
+  };
 
   return (
     <div className='mx-[30px] mt-[70px] flex h-full flex-col items-center justify-center gap-[30px] xxs:mx-0 lg:ml-[500px]'>
@@ -155,6 +168,9 @@ const ForgotPassword = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type='text'
+              onKeyDown={(e) => {
+                onKeyDown(e);
+              }}
             />
             {!validateEmail(email) && email && (
               <span className='text-[14px] text-[#ef3f26]'>
@@ -176,7 +192,9 @@ const ForgotPassword = () => {
             <p className='text-2xl text-[#F5F5F5]'>Verification</p>
             <p className=''>Enter your code to confirm your account</p>
           </div>
-          <InputOTP maxLength={4} value={otp_value} onChange={(value) => setOTPValue(value)}>
+          <InputOTP maxLength={4} value={otp_value} onChange={(value) => setOTPValue(value)} onKeyDown={(e) => {
+            onKeyDown(e);
+          }}>
             <InputOTPGroup className='gap-6'>
               <InputOTPSlot index={0} className='rounded-xl border border-[#526872]' />
               <InputOTPSlot index={1} className='rounded-xl border border-[#526872]' />
@@ -205,6 +223,9 @@ const ForgotPassword = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type='password'
+              onKeyDown={(e) => {
+                onKeyDown(e);
+              }}
             />
             {password.length < 8 && password && (
               <span className='text-[14px] text-[#ef3f26] w-full'>
@@ -219,6 +240,9 @@ const ForgotPassword = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               type='password'
+              onKeyDown={(e) => {
+                onKeyDown(e);
+              }}
             />
             {(confirmPassword.length < 8 || confirmPassword !== password) && confirmPassword && (
               <span className='text-[14px] text-[#ef3f26] w-full'>
