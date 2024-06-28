@@ -1,6 +1,6 @@
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import Image from 'next/image';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import { useAccount } from 'wagmi';
@@ -234,7 +234,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
             accountTypeName = 'client';
             break;
         }
-        const url = window.location.href
+        const url = window.location.href;
         // Create an anchor element to parse the URL
         const parser = document.createElement('a');
         parser.href = url;
@@ -246,10 +246,8 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         const params = new URLSearchParams(search);
         const redirectPath = params.get('redirect');
         // Get the value of the 'redirect' parameter
-        if(redirectPath)
-          router.push(redirectPath)
-        else
-          router.push(`/dashboard/${accountTypeName}/home`);
+        if (redirectPath) router.push(redirectPath);
+        else router.push(`/dashboard/${accountTypeName}/home`);
       }
     } catch (err) {
       console.error(err);
@@ -481,7 +479,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
             accountTypeName = 'client';
             break;
         }
-        const url = window.location.href
+        const url = window.location.href;
         // Create an anchor element to parse the URL
         const parser = document.createElement('a');
         parser.href = url;
@@ -493,10 +491,8 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
         const params = new URLSearchParams(search);
         const redirectPath = params.get('redirect');
         // Get the value of the 'redirect' parameter
-        if(redirectPath)
-          router.push(redirectPath)
-        else
-          router.push(`/dashboard/${accountTypeName}/home`);
+        if (redirectPath) router.push(redirectPath);
+        else router.push(`/dashboard/${accountTypeName}/home`);
       });
       // Dynamic redirect
     } catch (err) {
@@ -795,22 +791,20 @@ export function VerificationPopup({ onClose }) {
           accountTypeName = 'client';
           break;
       }
-      const url = window.location.href
-        // Create an anchor element to parse the URL
-        const parser = document.createElement('a');
-        parser.href = url;
+      const url = window.location.href;
+      // Create an anchor element to parse the URL
+      const parser = document.createElement('a');
+      parser.href = url;
 
-        // Extract the pathname and search parameters
-        const { pathname, search } = parser;
+      // Extract the pathname and search parameters
+      const { pathname, search } = parser;
 
-        // Parse the search parameters to get the 'redirect' value
-        const params = new URLSearchParams(search);
-        const redirectPath = params.get('redirect');
-        // Get the value of the 'redirect' parameter
-        if(redirectPath)
-          router.push(redirectPath)
-        else
-          router.push(`/dashboard/${accountTypeName}/profile`);
+      // Parse the search parameters to get the 'redirect' value
+      const params = new URLSearchParams(search);
+      const redirectPath = params.get('redirect');
+      // Get the value of the 'redirect' parameter
+      if (redirectPath) router.push(redirectPath);
+      else router.push(`/dashboard/${accountTypeName}/profile/${auth?.currentProfile?._id}`);
     } catch (err) {
       console.error('error', err);
     }
@@ -929,7 +923,7 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
         variant: 'destructive',
       });
     }
-    console.log("chosen -> ", choosen_account_types);
+    console.log('chosen -> ', choosen_account_types);
     auth.setRole(choosen_account_types);
     // onClose()
     onSwitchPopup('SignUp');
