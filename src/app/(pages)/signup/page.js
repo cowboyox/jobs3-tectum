@@ -1,34 +1,27 @@
 'use client';
 
 import { useWeb3Modal } from '@web3modal/wagmi/react';
-import Image from 'next/image';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { FaCheck } from 'react-icons/fa';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAccount } from 'wagmi';
 
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useVerifyUsername } from '@/hooks/useVerifyUsername';
 import { USER_ROLE } from '@/utils/constants';
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from '@/components/ui/input-otp';
 
 const Signup = () => {
   const router = useRouter();
   const [postData, setPostData] = useState({
-    fullName: '',
-    userName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    referralUser: '',
     acceptPolicy: false,
+    confirmPassword: '',
+    email: '',
+    fullName: '',
+    password: '',
+    referralUser: '',
+    userName: '',
   });
   const { toast } = useToast();
   const searchParams = useSearchParams();
@@ -143,23 +136,23 @@ const Signup = () => {
   const accountType = [
     {
       avatar: 'assets/icons/signup/freelancer.png',
-      title: 'Freelancer',
       description: 'Freelancers who work on the basis of a gig',
+      title: 'Freelancer',
     },
     {
       avatar: 'assets/icons/signup/employee.png',
-      title: 'Employee',
       description: 'People looking for a long-term job and apply on the Jobs Board',
+      title: 'Employee',
     },
     {
       avatar: 'assets/icons/signup/employer.png',
-      title: 'Employer',
       description: 'Companies that can post jobs on the Jobs Board',
+      title: 'Employer',
     },
     {
       avatar: 'assets/icons/signup/client.png',
-      title: 'Client',
       description: 'Users who hire people on the basis of a gig',
+      title: 'Client',
     },
   ];
   const [choosen_account_types, setChoosenAccountType] = useState([]);
@@ -240,7 +233,7 @@ const Signup = () => {
       const redirectPath = params.get('redirect');
       // Get the value of the 'redirect' parameter
       if (redirectPath) router.push(redirectPath);
-      else router.push(`/dashboard/${accountTypeName}/profile`);
+      else router.push(`/dashboard/${accountTypeName}/profile/${auth?.currentProfile?._id}`);
     } catch (err) {
       console.error('error', err);
     }
@@ -264,13 +257,13 @@ const Signup = () => {
     }
   };
   return (
-    <div className='mx-[30px] mt-[70px] flex h-full flex-col items-center justify-center gap-[30px] xxs:mx-0 lg:ml-[500px]'>
-      <div className='flex w-full items-center justify-center gap-1 xxs:gap-7 lg:hidden'>
+    <div className='xxs:mx-0 mx-[30px] mt-[70px] flex h-full flex-col items-center justify-center gap-[30px] lg:ml-[500px]'>
+      <div className='xxs:gap-7 flex w-full items-center justify-center gap-1 lg:hidden'>
         <h1 className='text-[24px] text-[#F5F5F5]'>Welcome to</h1>
         <img src='assets/images/LOGO1.png' />
       </div>
       {step === 0 && (
-        <div className='mt-[20px] flex w-full flex-col items-center justify-center gap-[30px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD] xxs:w-[400px] lg:mt-[50px]'>
+        <div className='xxs:w-[400px] mt-[20px] flex w-full flex-col items-center justify-center gap-[30px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD] lg:mt-[50px]'>
           <div className='flex flex-col items-center justify-center gap-4'>
             <p className='text-2xl text-[#F5F5F5]'>Type of Account</p>
             <p className=''>Select which account you want to create</p>
@@ -283,7 +276,7 @@ const Signup = () => {
                 handleAccounType(key);
               }}
             >
-              <img src={item.avatar} alt='accountType' className='h-[24px] w-[24px]' />
+              <img alt='accountType' className='h-[24px] w-[24px]' src={item.avatar} />
               <div className='flex flex-col gap-1'>
                 <p className='text-[18px]'>{item.title}</p>
                 <p className='text-[14px] opacity-50'>{item.description}</p>
@@ -300,15 +293,13 @@ const Signup = () => {
       )}
       {step === 1 && (
         <>
-          <div className='signup_page flex w-full flex-col items-center justify-center gap-[15px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD] xxs:w-[400px]'>
+          <div className='signup_page xxs:w-[400px] flex w-full flex-col items-center justify-center gap-[15px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD]'>
             <div className='flex flex-col items-center justify-center gap-4'>
               <p className='text-2xl text-[#F5F5F5]'>Sign Up</p>
               <p className=''>Enter Details Below</p>
             </div>
             <input
               className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
-              placeholder='Full name'
-              value={postData.fullName}
               onChange={(e) =>
                 setPostData((prev) => ({
                   ...prev,
@@ -318,12 +309,12 @@ const Signup = () => {
               onKeyDown={(e) => {
                 onKeyDown(e);
               }}
+              placeholder='Full name'
+              value={postData.fullName}
             />
             <div className='flex w-full flex-col'>
               <input
                 className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
-                placeholder='Username'
-                value={postData.userName}
                 onChange={(e) =>
                   setPostData((prev) => ({
                     ...prev,
@@ -333,6 +324,8 @@ const Signup = () => {
                 onKeyDown={(e) => {
                   onKeyDown(e);
                 }}
+                placeholder='Username'
+                value={postData.userName}
               />
               {!postData.userName.match(/^[a-z0-9_-]+$/) && postData.userName ? (
                 <span className='text-[14px] text-[#ef3f26]'>
@@ -348,8 +341,6 @@ const Signup = () => {
             <div className='flex w-full flex-col'>
               <input
                 className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
-                placeholder='Email address'
-                value={postData.email}
                 onChange={(e) =>
                   setPostData((prev) => ({
                     ...prev,
@@ -359,6 +350,8 @@ const Signup = () => {
                 onKeyDown={(e) => {
                   onKeyDown(e);
                 }}
+                placeholder='Email address'
+                value={postData.email}
               />
               {!validateEmail(postData.email) && postData.email && (
                 <span className='text-[14px] text-[#ef3f26]'>
@@ -369,18 +362,18 @@ const Signup = () => {
             <div className='flex w-full flex-col'>
               <input
                 className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
-                placeholder='Create password'
-                value={postData.password}
                 onChange={(e) =>
                   setPostData((prev) => ({
                     ...prev,
                     password: e.target.value,
                   }))
                 }
-                type='password'
                 onKeyDown={(e) => {
                   onKeyDown(e);
                 }}
+                placeholder='Create password'
+                type='password'
+                value={postData.password}
               />
               {postData.password.length < 8 && postData.password && (
                 <span className='text-[14px] text-[#ef3f26]'>
@@ -391,18 +384,18 @@ const Signup = () => {
             <div className='flex w-full flex-col'>
               <input
                 className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
-                placeholder='Confirm password'
-                value={postData.confirmPassword}
                 onChange={(e) =>
                   setPostData((prev) => ({
                     ...prev,
                     confirmPassword: e.target.value,
                   }))
                 }
-                type='password'
                 onKeyDown={(e) => {
                   onKeyDown(e);
                 }}
+                placeholder='Confirm password'
+                type='password'
+                value={postData.confirmPassword}
               />
               {(postData.confirmPassword.length < 8 ||
                 postData.confirmPassword !== postData.password) &&
@@ -416,8 +409,6 @@ const Signup = () => {
             {!referrer && (
               <input
                 className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
-                placeholder='Referral user'
-                value={postData.referralUser}
                 onChange={(e) =>
                   setPostData((prev) => ({
                     ...prev,
@@ -427,22 +418,24 @@ const Signup = () => {
                 onKeyDown={(e) => {
                   onKeyDown(e);
                 }}
+                placeholder='Referral user'
+                value={postData.referralUser}
               />
             )}
 
             <div className='w-full'>
               <input
+                className='accent-[#DC4F13]'
                 onChange={(ev) =>
                   setPostData((prev) => ({
                     ...prev,
                     acceptPolicy: ev.target.checked,
                   }))
                 }
-                type='checkbox'
-                className='accent-[#DC4F13]'
                 onKeyDown={(e) => {
                   onKeyDown(e);
                 }}
+                type='checkbox'
               />
               <span className='ml-2 text-[14px] text-[#F5F5F5]'>
                 By creating an account you agree to Privacy Policy
@@ -473,17 +466,17 @@ const Signup = () => {
         </>
       )}
       {step === 2 && (
-        <div className='mt-[200px] flex w-full flex-col items-center justify-center gap-[15px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD] xxs:w-[400px]'>
+        <div className='xxs:w-[400px] mt-[200px] flex w-full flex-col items-center justify-center gap-[15px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD]'>
           <div className='flex flex-col items-center justify-center gap-4'>
             <p className='text-2xl text-[#F5F5F5]'>Verification</p>
             <p className=''>Enter your code to confirm your account</p>
           </div>
-          <InputOTP maxLength={4} value={otp_value} onChange={(value) => setOTPValue(value)}>
+          <InputOTP maxLength={4} onChange={(value) => setOTPValue(value)} value={otp_value}>
             <InputOTPGroup className='gap-6'>
-              <InputOTPSlot index={0} className='rounded-xl border border-[#526872]' />
-              <InputOTPSlot index={1} className='rounded-xl border border-[#526872]' />
-              <InputOTPSlot index={2} className='rounded-xl border border-[#526872]' />
-              <InputOTPSlot index={3} className='rounded-xl border border-[#526872]' />
+              <InputOTPSlot className='rounded-xl border border-[#526872]' index={0} />
+              <InputOTPSlot className='rounded-xl border border-[#526872]' index={1} />
+              <InputOTPSlot className='rounded-xl border border-[#526872]' index={2} />
+              <InputOTPSlot className='rounded-xl border border-[#526872]' index={3} />
             </InputOTPGroup>
           </InputOTP>
           <button
