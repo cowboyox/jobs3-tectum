@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaArrowRight, FaX } from 'react-icons/fa6';
 
@@ -21,6 +23,7 @@ import api from '@/utils/api';
 const Freelancers = () => {
   const filterCategory = ['English', 'Developer', 'Blockchain', 'Web3'];
   const [freelancers, setFreelancers] = useState([]);
+  const router = useRouter();
   const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const [isSmallScreen, setIsSmallScree] = useState(false);
@@ -309,9 +312,11 @@ const Freelancers = () => {
               key={`freelancers_${index}`}
             >
               <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
-                <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
-                  Front-End Developer
-                </div>
+                <Link href={`/dashboard/freelancer/profile/${freelancer._id}`}>
+                  <div className='mt-3 flex-1 text-left text-[20px] hover:underline md:mt-0 md:text-2xl'>
+                    {freelancer.freelancerBio}
+                  </div>
+                </Link>
               </div>
               <div className='mt-3 flex flex-col items-start justify-between gap-6 md:flex-row md:justify-start'>
                 <div className='flex flex-row items-center gap-2'>
@@ -416,7 +421,16 @@ const Freelancers = () => {
               <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
                 <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                   <div>
-                    <img height={40} src={freelancer.avatarURL? freelancer.avatarURL : '/assets/images/Rectangle 273.png'} width={40}  className='rounded-full aspect-square object-cover'/>
+                    <img
+                      className='aspect-square rounded-full object-cover'
+                      height={40}
+                      src={
+                        freelancer.avatarURL
+                          ? freelancer.avatarURL
+                          : '/assets/images/Rectangle 273.png'
+                      }
+                      width={40}
+                    />
                   </div>
                   <div className='flex flex-col gap-1 text-left'>
                     <div className='flex flex-row items-center gap-1 font-bold'>
