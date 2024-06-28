@@ -32,6 +32,7 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
                       ? `$${d.gigPrice}`
                       : `$${d.minBudget}/hr ~ $${d.maxBudget}/hr`,
                     gigTitle: d.gigTitle,
+                    contractId: info?.contractId,
                   });
                 } else {
                   lives.push({
