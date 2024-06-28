@@ -929,6 +929,7 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
         variant: 'destructive',
       });
     }
+    console.log("chosen -> ", choosen_account_types);
     auth.setRole(choosen_account_types);
     // onClose()
     onSwitchPopup('SignUp');
