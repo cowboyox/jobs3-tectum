@@ -208,7 +208,7 @@ const Signin = () => {
         <span className='mr-2 text-[#DC4F13]'>
           <a href='#'>Forgot Password</a>
         </span>
-        Don't Have Account?
+        {'Don\'t Have Account?'}
         <span className='ml-2 cursor-pointer text-[#DC4F13]' onClick={() => router.push('/signup')}>
           Sign Up
         </span>
