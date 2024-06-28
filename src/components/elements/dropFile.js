@@ -16,7 +16,9 @@ const DropFile = ({ className, inputName, placeHolderPlusIconSize, acceptOnly, o
   });
 
   const previewPhoto = (file) => {
-    onFileUpload(file.files);
+    if(onFileUpload) {
+      onFileUpload(file.files);
+    }
     const fileType = file.files[0].type.split('/')[0];
     const fileUrl = URL.createObjectURL(file.files[0]);
     const fileName = file.files[0].name;
