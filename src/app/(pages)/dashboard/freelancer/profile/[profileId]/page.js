@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { GoChevronDown } from 'react-icons/go';
@@ -15,8 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
 import api from '@/utils/api';
-import { languages, skillSets } from '@/utils/constants';
-import { USER_ROLE } from '@/utils/constants';
+import { languages, skillSets, USER_ROLE } from '@/utils/constants';
 
 import 'swiper/css';
 // import './remove_horizontal_padding.css';
@@ -80,7 +79,7 @@ const reviews = [];
 const FreelancerProfile = () => {
   const [uploadedImagePath, setUploadedImagePath] = useState([]);
   const [uploadedGigPath, setUploadedGigPath] = useState([]);
-  const [viewMode, setViewMode] = useState('edit');
+  const [viewMode, setViewMode] = useState('preview');
 
   const { toast } = useToast();
   const [user, setUser] = useState({
@@ -92,6 +91,7 @@ const FreelancerProfile = () => {
   const [isEditBio, setStatusBio] = useState(true);
   const [isLoading, setLoading] = useState(true);
   const [fetchBanner, setFetchBanner] = useState('');
+  const [isAuth, setIsAuth] = useState(false);
   const [fetchAvatar, setFetchAvatar] = useState('');
   const [isEditProfileInfo, setEditProfileInfo] = useState(false);
   const [isEditSkills, setEditSkills] = useState(false);
@@ -100,6 +100,7 @@ const FreelancerProfile = () => {
   const [bio, setBio] = useState('Please input your bio here.');
   const [previewBio, setPreviewBio] = useState('');
   const [expandedBio, setExpandedBio] = useState('');
+  const { profileId } = useParams();
   const [profileData, setProfileData] = useState({
     avatar: null,
     avgResponseTime: '',
@@ -124,6 +125,16 @@ const FreelancerProfile = () => {
   const router = useRouter();
 
   useEffect(() => {
+    if (profileData._id === profileId) {
+      setIsAuth(true);
+      setViewMode('edit');
+    } else {
+      setIsAuth(false);
+      setViewMode('preview');
+    }
+  }, [profileData, profileId]);
+
+  useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (tmp === null) {
       toast({
@@ -143,7 +154,9 @@ const FreelancerProfile = () => {
           let email = JSON.parse(tmp).data.user.email;
           setUser(JSON.parse(tmp).data.user);
 
-          const data = await api.get(`/api/v1/profile/get-profile/${email}/${USER_ROLE.FREELANCER}`);
+          const data = await api.get(
+            `/api/v1/profile/get-profile/${email}/${USER_ROLE.FREELANCER}`
+          );
           setProfileData(data.data.profile);
 
           if (data.data.profile.freelancerBio) {
@@ -305,50 +318,53 @@ const FreelancerProfile = () => {
     }
   };
 
-  const handleBannerUpload = useCallback(async (event) => {
-    if (event.target.files?.length) {
-      const image = event.target.files[0];
-      const formData = new FormData();
-      formData.append('file', image);
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
+  const handleBannerUpload = useCallback(
+    async (event) => {
+      if (event.target.files?.length) {
+        const image = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', image);
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        };
 
-      try {
-        const res = await api.post(
-          `/api/v1/profile/upload-client-banner/${profileData._id}`,
-          formData,
-          config
-        );
+        try {
+          const res = await api.post(
+            `/api/v1/profile/upload-client-banner/${profileData._id}`,
+            formData,
+            config
+          );
 
-        if (res.status === 200) {
-          setProfileData((prev) => ({
-            ...prev,
-            clientBannerURL: res.data.data,
-          }));
+          if (res.status === 200) {
+            setProfileData((prev) => ({
+              ...prev,
+              clientBannerURL: res.data.data,
+            }));
+            toast({
+              className:
+                'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+              description: <h3>Successfully updated Freelancer Profile</h3>,
+              title: <h1 className='text-center'>Success</h1>,
+              variant: 'default',
+            });
+          }
+        } catch (error) {
+          setLoading(false);
+          console.error('Error uploading image:', error);
           toast({
             className:
-              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-            description: <h3>Successfully updated Freelancer Profile</h3>,
-            title: <h1 className='text-center'>Success</h1>,
-            variant: 'default',
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
           });
         }
-      } catch (error) {
-        setLoading(false);
-        console.error('Error uploading image:', error);
-        toast({
-          className:
-            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
-          title: <h1 className='text-center'>Error</h1>,
-          variant: 'destructive',
-        });
       }
-    }
-  }, [profileData._id, toast]);
+    },
+    [profileData._id, toast]
+  );
 
   const onDropHandleBannerUpload = useCallback(
     async (acceptedFiles) => {
@@ -360,55 +376,58 @@ const FreelancerProfile = () => {
     [handleBannerUpload]
   );
 
-  const handleAvatarUpload = useCallback(async (event) => {
-    if (event.target.files?.length) {
-      const image = event.target.files[0];
-      const formData = new FormData();
-      formData.append('file', image);
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-      let imageName = 'clientAvatar' + image.type.split('/')[1];
+  const handleAvatarUpload = useCallback(
+    async (event) => {
+      if (event.target.files?.length) {
+        const image = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', image);
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        };
+        let imageName = 'clientAvatar' + image.type.split('/')[1];
 
-      try {
-        // const res = await uploadImageToCloudinary(formData, onUploadProgress);
-        const res = await api.post(
-          `/api/v1/profile/upload-client-avatar/${profileData._id}`,
-          formData,
-          config
-        );
+        try {
+          // const res = await uploadImageToCloudinary(formData, onUploadProgress);
+          const res = await api.post(
+            `/api/v1/profile/upload-client-avatar/${profileData._id}`,
+            formData,
+            config
+          );
 
-        if (res.status === 200) {
-          // setUploadedImagePath(URL.createObjectURL(image));
-          // setFetchAvatar(URL.createObjectURL(image));
-          // let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
-          setProfileData((prev) => ({
-            ...prev,
-            avatarURL: res.data.data,
-          }));
+          if (res.status === 200) {
+            // setUploadedImagePath(URL.createObjectURL(image));
+            // setFetchAvatar(URL.createObjectURL(image));
+            // let tmp = `/images/uploads/${user.email}/clientProfile/${imageName}`;
+            setProfileData((prev) => ({
+              ...prev,
+              avatarURL: res.data.data,
+            }));
+            toast({
+              className:
+                'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+              description: <h3>Successfully updated Freelancer Profile</h3>,
+              title: <h1 className='text-center'>Success</h1>,
+              variant: 'default',
+            });
+          }
+        } catch (error) {
+          setLoading(false);
+          console.error('Error uploading image:', error);
           toast({
             className:
-              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-            description: <h3>Successfully updated Freelancer Profile</h3>,
-            title: <h1 className='text-center'>Success</h1>,
-            variant: 'default',
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
           });
         }
-      } catch (error) {
-        setLoading(false);
-        console.error('Error uploading image:', error);
-        toast({
-          className:
-            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
-          title: <h1 className='text-center'>Error</h1>,
-          variant: 'destructive',
-        });
       }
-    }
-  }, [profileData._id, toast]);
+    },
+    [profileData._id, toast]
+  );
 
   const onDropHandleAvatarUpload = useCallback(
     async (acceptedFiles) => {
@@ -439,7 +458,11 @@ const FreelancerProfile = () => {
           <img
             alt='banner'
             className='h-64 w-full rounded-b-2xl object-cover transition group-hover:opacity-75'
-            src={profileData?.clientBannerURL ? profileData.clientBannerURL : '/assets/images/freelancer-image.jpeg'}
+            src={
+              profileData?.clientBannerURL
+                ? profileData.clientBannerURL
+                : '/assets/images/freelancer-image.jpeg'
+            }
           />
           <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
             <IoCameraOutline className='h-6 w-6' />
@@ -471,7 +494,11 @@ const FreelancerProfile = () => {
                     <img
                       alt='banner'
                       className='aspect-square h-full w-full rounded-full group-hover:opacity-75'
-                      src={profileData?.avatarURL ? profileData.avatarURL : '/assets/images/users/user-5.png'}
+                      src={
+                        profileData?.avatarURL
+                          ? profileData.avatarURL
+                          : '/assets/images/users/user-5.png'
+                      }
                     />
                     <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
                       <IoCameraOutline className='h-6 w-6' />
@@ -512,24 +539,26 @@ const FreelancerProfile = () => {
                 </div>
               </div>
             </div>
-            <div className='flex w-full items-center justify-end md:w-1/4'>
-              <TabsList className='w-full rounded-xl md:w-auto'>
-                <TabsTrigger
-                  className='w-full rounded-xl px-6 data-[state=active]:bg-[#dc4f14]'
-                  onClick={() => setViewMode('preview')}
-                  value='preview'
-                >
-                  Preview
-                </TabsTrigger>
-                <TabsTrigger
-                  className='w-full rounded-xl px-6 data-[state=active]:bg-[#dc4f14]'
-                  onClick={() => setViewMode('edit')}
-                  value='edit-profile'
-                >
-                  Edit profile
-                </TabsTrigger>
-              </TabsList>
-            </div>
+            {isAuth && (
+              <div className='flex w-full items-center justify-end md:w-1/4'>
+                <TabsList className='w-full rounded-xl md:w-auto'>
+                  <TabsTrigger
+                    className='w-full rounded-xl px-6 data-[state=active]:bg-[#dc4f14]'
+                    onClick={() => setViewMode('preview')}
+                    value='preview'
+                  >
+                    Preview
+                  </TabsTrigger>
+                  <TabsTrigger
+                    className='w-full rounded-xl px-6 data-[state=active]:bg-[#dc4f14]'
+                    onClick={() => setViewMode('edit')}
+                    value='edit-profile'
+                  >
+                    Edit profile
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+            )}
           </div>
           <div className='mt-5 flex flex-col md:flex-row'>
             {/* Sidebar */}
@@ -538,7 +567,7 @@ const FreelancerProfile = () => {
                 <div className='flex flex-col gap-3 border-b border-[#28373e] bg-[#10191d] p-6'>
                   <div className='flex flex-row justify-between'>
                     <div className='text-lg text-[#96B0BD]'>Profile info</div>
-                    {viewMode === 'edit' && (
+                    {isAuth && viewMode === 'edit' && (
                       <div className='text-xl text-[#96B0BD]'>
                         {isEditProfileInfo ? (
                           <img
@@ -600,7 +629,7 @@ const FreelancerProfile = () => {
                 <div className='flex flex-col gap-3 border-b border-[#28373e] bg-[#10191d] p-6'>
                   <div className='flex flex-row justify-between'>
                     <p className='text-lg text-[#96B0BD]'>Price</p>
-                    {viewMode === 'edit' && (
+                    {isAuth && viewMode === 'edit' && (
                       <div className='text-xl text-[#96B0BD]'>
                         {isEditPrice ? (
                           <img
@@ -641,7 +670,7 @@ const FreelancerProfile = () => {
                 <div className='flex flex-col gap-3 border-b bg-[#10191d] p-6'>
                   <div className='flex flex-row justify-between'>
                     <p className='text-lg text-[#96B0BD]'>Skills</p>
-                    {viewMode === 'edit' && (
+                    {isAuth && viewMode === 'edit' && (
                       <div className='text-xl text-[#96B0BD]'>
                         {isEditSkills ? (
                           <img
@@ -710,7 +739,7 @@ const FreelancerProfile = () => {
                 <div className='flex flex-col gap-3 border-b bg-[#10191d] p-6'>
                   <div className='flex flex-row justify-between'>
                     <p className='text-lg text-[#96B0BD]'>Languages</p>
-                    {viewMode === 'edit' && (
+                    {isAuth && viewMode === 'edit' && (
                       <div className='text-xl text-[#96B0BD]'>
                         {isEditLang ? (
                           <img
@@ -758,7 +787,7 @@ const FreelancerProfile = () => {
                       );
                     })}
                   </div>
-                  {isEditLang && (
+                  {isAuth && isEditLang && (
                     <div className='flex flex-wrap gap-2'>
                       {languages.map((lang, index) => {
                         return (
@@ -948,23 +977,25 @@ const FreelancerProfile = () => {
                   <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
                     <div className='flex flex-row justify-between'>
                       <div className='text-xl text-[#96B0BD]'>About</div>
-                      <div className='text-xl text-[#96B0BD]'>
-                        {isEditBio ? (
-                          <img
-                            className='cursor-pointer'
-                            height={25}
-                            onClick={() => handleEditBio()}
-                            src='/assets/images/icons/save.png'
-                            width={25}
-                          />
-                        ) : (
-                          <img
-                            className='cursor-pointer'
-                            onClick={() => handleEditBio()}
-                            src='/assets/images/icons/edit-pen.svg'
-                          />
-                        )}
-                      </div>
+                      {isAuth && (
+                        <div className='text-xl text-[#96B0BD]'>
+                          {isEditBio ? (
+                            <img
+                              className='cursor-pointer'
+                              height={25}
+                              onClick={() => handleEditBio()}
+                              src='/assets/images/icons/save.png'
+                              width={25}
+                            />
+                          ) : (
+                            <img
+                              className='cursor-pointer'
+                              onClick={() => handleEditBio()}
+                              src='/assets/images/icons/edit-pen.svg'
+                            />
+                          )}
+                        </div>
+                      )}
                     </div>
                     <CollapsibleText
                       bio={bio}
@@ -987,13 +1018,15 @@ const FreelancerProfile = () => {
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      <div className='ml-auto flex items-center gap-3 md:gap-4'>
-                        <p className='cursor-pointer text-sm text-white underline'>Active</p>
-                        <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
-                          Drafts
-                        </p>
-                        <img className='cursor-pointer' src='/assets/images/icons/edit-pen.svg' />
-                      </div>
+                      {isAuth && (
+                        <div className='ml-auto flex items-center gap-3 md:gap-4'>
+                          <p className='cursor-pointer text-sm text-white underline'>Active</p>
+                          <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
+                            Drafts
+                          </p>
+                          <img className='cursor-pointer' src='/assets/images/icons/edit-pen.svg' />
+                        </div>
+                      )}
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
                       {profileData.portfolio.length > 0 &&
@@ -1004,7 +1037,7 @@ const FreelancerProfile = () => {
                             key={index}
                             setProfileData={setProfileData}
                             setUploadedImagePath={setUploadedImagePath}
-                            viewMode={'edit'}
+                            viewMode={isAuth ? 'edit' : 'preview'}
                           />
                         ))}
                       <Portfolio
@@ -1013,7 +1046,7 @@ const FreelancerProfile = () => {
                         key={`extra-${uploadedImagePath.length}`}
                         setProfileData={setProfileData}
                         setUploadedImagePath={setUploadedImagePath}
-                        viewMode={'edit'}
+                        viewMode={isAuth ? 'edit' : 'preview'}
                       />
                     </div>
                     <div className='md:hidden'>
@@ -1049,13 +1082,15 @@ const FreelancerProfile = () => {
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      <div className='ml-auto flex items-center gap-3 md:gap-4'>
-                        <p className='cursor-pointer text-sm text-white underline'>Active</p>
-                        <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
-                          Drafts
-                        </p>
-                        <img className='cursor-pointer' src='/assets/images/icons/edit-pen.svg' />
-                      </div>
+                      {isAuth && (
+                        <div className='ml-auto flex items-center gap-3 md:gap-4'>
+                          <p className='cursor-pointer text-sm text-white underline'>Active</p>
+                          <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
+                            Drafts
+                          </p>
+                          <img className='cursor-pointer' src='/assets/images/icons/edit-pen.svg' />
+                        </div>
+                      )}
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
                       {profileData.myGigs.length > 0 &&
@@ -1066,7 +1101,7 @@ const FreelancerProfile = () => {
                             key={index}
                             setProfileData={setProfileData}
                             setUploadedGigPath={setUploadedGigPath}
-                            viewMode={'edit'}
+                            viewMode={isAuth ? 'edit' : 'preview'}
                           />
                         ))}
                       <MyGigs
@@ -1075,7 +1110,7 @@ const FreelancerProfile = () => {
                         key={`extra-${uploadedGigPath.length}`}
                         setProfileData={setProfileData}
                         setUploadedGigPath={setUploadedGigPath}
-                        viewMode={'edit'}
+                        viewMode={isAuth ? 'edit' : 'preview'}
                       />
                     </div>
                     <div className='md:hidden'>
