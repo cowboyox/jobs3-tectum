@@ -134,6 +134,8 @@ const FreelancerProfile = () => {
     }
   }, [profileData, profileId]);
 
+  console.log(profileData);
+
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (tmp === null) {
@@ -150,13 +152,9 @@ const FreelancerProfile = () => {
       (async () => {
         try {
           setLoading(true);
-
-          let email = JSON.parse(tmp).data.user.email;
           setUser(JSON.parse(tmp).data.user);
 
-          const data = await api.get(
-            `/api/v1/profile/get-profile/${email}/${USER_ROLE.FREELANCER}`
-          );
+          const data = await api.get(`/api/v1/profile/get_profile_by_id/${profileId}`);
           setProfileData(data.data.profile);
 
           if (data.data.profile.freelancerBio) {
@@ -209,7 +207,7 @@ const FreelancerProfile = () => {
         }
       })();
     }
-  }, [router, toast]);
+  }, [router, toast, profileId]);
 
   useEffect(() => {
     const lines = bio.split(/\r\n|\r|\n/).length;
@@ -518,7 +516,7 @@ const FreelancerProfile = () => {
               </div>
               <div className='flex flex-col gap-4'>
                 <div className='flex items-center gap-4'>
-                  <h2 className='text-2xl md:text-3xl'>{user.name}</h2>
+                  <h2 className='text-2xl md:text-3xl'>{profileData.fullName}</h2>
                   <img className='h-5 w-5' src='/assets/images/icons/checkmark.svg' />
                 </div>
                 <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
