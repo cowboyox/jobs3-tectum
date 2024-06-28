@@ -82,12 +82,6 @@ const FreelancerProfile = () => {
   const [viewMode, setViewMode] = useState('preview');
 
   const { toast } = useToast();
-  const [user, setUser] = useState({
-    email: '',
-    name: '',
-    role: [0],
-    verified: false,
-  });
   const [isEditBio, setStatusBio] = useState(true);
   const [isLoading, setLoading] = useState(true);
   const [fetchBanner, setFetchBanner] = useState('');
@@ -135,81 +129,63 @@ const FreelancerProfile = () => {
   }, [profileData, profileId]);
 
   useEffect(() => {
-    let tmp = localStorage.getItem('jobs_2024_token');
-    if (tmp === null) {
-      toast({
-        className:
-          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Please Login First</h3>,
-        title: <h1 className='text-center'>Error</h1>,
-        variant: 'destructive',
-      });
-      alert('Please Login First');
-      router.push('/');
-    } else {
-      (async () => {
-        try {
-          setLoading(true);
+    (async () => {
+      try {
+        setLoading(true);
 
-          let email = JSON.parse(tmp).data.user.email;
-          setUser(JSON.parse(tmp).data.user);
+        const data = await api.get(`/api/v1/profile/get_profile_by_id/${profileId}`);
+        setProfileData(data.data.profile);
 
-          const data = await api.get(
-            `/api/v1/profile/get-profile/${email}/${USER_ROLE.FREELANCER}`
-          );
-          setProfileData(data.data.profile);
+        if (data.data.profile.freelancerBio) {
+          const lines = data.data.profile.freelancerBio.split(/\r\n|\r|\n/).length;
+          if (lines > 4) {
+            let tmp = data.data.profile.freelancerBio.split(/\r\n|\r|\n/);
+            let previewText = '';
+            let expandedText = '';
 
-          if (data.data.profile.freelancerBio) {
-            const lines = data.data.profile.freelancerBio.split(/\r\n|\r|\n/).length;
-            if (lines > 4) {
-              let tmp = data.data.profile.freelancerBio.split(/\r\n|\r|\n/);
-              let previewText = '';
-              let expandedText = '';
+            tmp.forEach((item, index) => {
+              if (index <= 4) {
+                previewText += item + '\n'; // Add a line break for each item
+              } else {
+                expandedText += item + '\n'; // Add a line break for each item
+              }
+            });
 
-              tmp.forEach((item, index) => {
-                if (index <= 4) {
-                  previewText += item + '\n'; // Add a line break for each item
-                } else {
-                  expandedText += item + '\n'; // Add a line break for each item
-                }
-              });
-
-              setPreviewBio(previewText); // Update previewBio with the formatted text
-              setExpandedBio(expandedText); // Update expandedBio with the formatted text
-            } else {
-              setPreviewBio(data.data.profile.freelancerBio); // If the text is less than or equal to 4 lines, set previewBio to the original text
-            }
+            setPreviewBio(previewText); // Update previewBio with the formatted text
+            setExpandedBio(expandedText); // Update expandedBio with the formatted text
+          } else {
+            setPreviewBio(data.data.profile.freelancerBio); // If the text is less than or equal to 4 lines, set previewBio to the original text
           }
-
-          if (data.data.profile.clientBanner) {
-            // Convert the data to a Blob
-            const binaryData = new Uint8Array(data.data.profile.clientBanner.data);
-            const blob = new Blob([binaryData], { type: 'image/png' });
-
-            // Create a URL for the Blob
-            const fetchBannerUrl = URL.createObjectURL(blob);
-
-            setFetchBanner(fetchBannerUrl);
-          }
-
-          if (data.data.profile?.avatar) {
-            // Convert the data to a Blob
-            const binaryData = new Uint8Array(data.data.profile?.avatar?.data);
-            const blob = new Blob([binaryData], { type: 'image/png' });
-
-            // Create a URL for the Blob
-            const fetchAvatarUrl = URL.createObjectURL(blob);
-
-            setFetchAvatar(fetchAvatarUrl);
-          }
-        } catch (error) {
-          console.error('Error while fetching user profile data:', error);
-        } finally {
-          setLoading(false);
         }
-      })();
-    }
-  }, [router, toast]);
+
+        if (data.data.profile.clientBanner) {
+          // Convert the data to a Blob
+          const binaryData = new Uint8Array(data.data.profile.clientBanner.data);
+          const blob = new Blob([binaryData], { type: 'image/png' });
+
+          // Create a URL for the Blob
+          const fetchBannerUrl = URL.createObjectURL(blob);
+
+          setFetchBanner(fetchBannerUrl);
+        }
+
+        if (data.data.profile?.avatar) {
+          // Convert the data to a Blob
+          const binaryData = new Uint8Array(data.data.profile?.avatar?.data);
+          const blob = new Blob([binaryData], { type: 'image/png' });
+
+          // Create a URL for the Blob
+          const fetchAvatarUrl = URL.createObjectURL(blob);
+
+          setFetchAvatar(fetchAvatarUrl);
+        }
+      } catch (error) {
+        console.error('Error while fetching user profile data:', error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [router, toast, profileId]);
 
   useEffect(() => {
     const lines = bio.split(/\r\n|\r|\n/).length;
@@ -236,7 +212,7 @@ const FreelancerProfile = () => {
   const handleEditBio = () => {
     if (isEditBio) {
       api
-        .put(`/api/v1/profile/update-freelancer-bio/${user.email}`, {
+        .put(`/api/v1/profile/update-freelancer-bio/${profileData.email}`, {
           freelancerBio: bio,
         })
         .then(() => {
@@ -270,7 +246,7 @@ const FreelancerProfile = () => {
 
   const saveToDB = (tmp) => {
     api
-      .put(`/api/v1/profile/update-profileinfo/${user.email}/${USER_ROLE.FREELANCER}`, tmp)
+      .put(`/api/v1/profile/update-profileinfo/${profileData.email}/${USER_ROLE.FREELANCER}`, tmp)
       .then(() => {
         return toast({
           className:
@@ -518,7 +494,7 @@ const FreelancerProfile = () => {
               </div>
               <div className='flex flex-col gap-4'>
                 <div className='flex items-center gap-4'>
-                  <h2 className='text-2xl md:text-3xl'>{user.name}</h2>
+                  <h2 className='text-2xl md:text-3xl'>{profileData.fullName}</h2>
                   <img className='h-5 w-5' src='/assets/images/icons/checkmark.svg' />
                 </div>
                 <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
@@ -852,7 +828,7 @@ const FreelancerProfile = () => {
                       {profileData.portfolio.length > 0 &&
                         profileData.portfolio.map((imagePath, index) => (
                           <Portfolio
-                            email={user.email}
+                            email={profileData.email}
                             imagePath={imagePath}
                             key={index}
                             setProfileData={setProfileData}
@@ -905,7 +881,7 @@ const FreelancerProfile = () => {
                       {profileData.myGigs.length > 0 &&
                         profileData.myGigs.map((imagePath, index) => (
                           <MyGigs
-                            email={user.email}
+                            email={profileData.email}
                             imagePath={imagePath}
                             key={index}
                             setProfileData={setProfileData}
@@ -1032,7 +1008,7 @@ const FreelancerProfile = () => {
                       {profileData.portfolio.length > 0 &&
                         profileData.portfolio.map((imagePath, index) => (
                           <Portfolio
-                            email={user.email}
+                            email={profileData.email}
                             imagePath={imagePath}
                             key={index}
                             setProfileData={setProfileData}
@@ -1041,7 +1017,7 @@ const FreelancerProfile = () => {
                           />
                         ))}
                       <Portfolio
-                        email={user.email}
+                        email={profileData.email}
                         imagePath=''
                         key={`extra-${uploadedImagePath.length}`}
                         setProfileData={setProfileData}
@@ -1096,7 +1072,7 @@ const FreelancerProfile = () => {
                       {profileData.myGigs.length > 0 &&
                         profileData.myGigs.map((imagePath, index) => (
                           <MyGigs
-                            email={user.email}
+                            email={profileData.email}
                             imagePath={imagePath}
                             key={index}
                             setProfileData={setProfileData}
@@ -1105,7 +1081,7 @@ const FreelancerProfile = () => {
                           />
                         ))}
                       <MyGigs
-                        email={user.email}
+                        email={profileData.email}
                         imagePath=''
                         key={`extra-${uploadedGigPath.length}`}
                         setProfileData={setProfileData}
