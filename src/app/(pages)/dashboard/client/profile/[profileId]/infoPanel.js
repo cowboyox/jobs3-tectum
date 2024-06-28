@@ -64,7 +64,7 @@ const InfoPanel = (props) => {
 
       <div className='flex w-full justify-between'>
         <p className='text-[18px] font-medium text-[#96B0BD]'>{props.title}</p>
-        {props.viewMode === 'edit' && (
+        {props.isAuth && props.viewMode === 'edit' && (
           <img
             className='w-5 cursor-pointer'
             onClick={() => {
@@ -83,7 +83,7 @@ const InfoPanel = (props) => {
             return (
               <div className='flex flex-col gap-1' key={cntNum}>
                 <p className='text-base text-[#96B0BD]'>{singleInfo.label}</p>
-                {editMode ? (
+                {props.isAuth && editMode ? (
                   <input
                     className='border-b bg-transparent pb-2 text-sm font-medium text-white outline-none [appearance:textfield] focus:border-white md:text-[18px] md:font-medium [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                     onChange={(e) => {
@@ -113,7 +113,7 @@ const InfoPanel = (props) => {
             );
           })}
         </div>
-        {editMode && (
+        {props.isAuth && editMode && (
           <Button
             className='mt-9 w-1/4 rounded-xl'
             onClick={() => {
