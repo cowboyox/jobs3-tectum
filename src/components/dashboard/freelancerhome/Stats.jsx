@@ -1,11 +1,20 @@
 'use client';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Image from 'next/image';
 import React from 'react';
 import { CgOptions } from 'react-icons/cg';
 import { CiSearch } from 'react-icons/ci';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 import { RiRobot2Line } from 'react-icons/ri';
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useCustomContext } from '@/context/use-custom';
+import { useFreelancerInfo } from '@/hooks/useFreelancerInfo';
 
 const orders = [
   // {
@@ -45,11 +54,14 @@ const earnings = [
 ];
 
 const Stats = () => {
+  const auth = useCustomContext();
+  const { data: flInfo } = useFreelancerInfo(auth?.currentProfile?._id);
+
   return (
-    <div className=' flex min-h-96 w-full flex-col font-roboto mt-10'>
+    <div className='mt-10 flex min-h-96 w-full flex-col font-roboto'>
       <div className='flex items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4 md:h-16'>
         <div className='flex items-center gap-4'>
-          <Select defaultValue='normal' className='outline-none'>
+          <Select className='outline-none' defaultValue='normal'>
             <SelectTrigger className='h-full w-20 rounded-xl bg-[#1B272C] outline-none mobile:w-14 mobile:p-2'>
               <SelectValue />
             </SelectTrigger>
@@ -94,46 +106,45 @@ const Stats = () => {
               {/* <p className='text-medGray'>See All</p> */}
             </div>
             <div className='mt-6 flex flex-1 flex-col justify-between gap-2'>
-              {orders.length ? (
-                
-                orders.map((spend, index) => (
+              {flInfo?.activeOrders?.length ? (
+                flInfo?.activeOrders?.map((order, index) => (
                   <div
                     className='flex flex-1 items-center gap-1 rounded-2xl bg-darkGray px-3'
                     key={index}
                   >
-                    <Image
+                    {/* <Image
                       className='md:hidden'
                       height={45}
                       src={'/assets/icons/ActiveOrder.png'}
                       width={45}
-                    />
+                    /> */}
                     <div className='flex flex-1 flex-col items-center justify-between md:flex-row'>
                       <div className='flex items-center gap-4'>
-                        <Image
+                        {/* <Image
                           className='hidden md:block'
                           height={45}
                           src={'/assets/icons/ActiveOrder.png'}
                           width={45}
-                        />
+                        /> */}
                         <h3 className='text-md whitespace-nowrap font-semibold text-white md:text-xl'>
-                          {spend.title}
+                          {order.gigTitle}
                         </h3>
                       </div>
                       <div className='flex w-full items-center justify-between gap-4 px-4 md:w-auto md:px-0'>
-                        <p className='text-xl font-[500] text-medGray'>{spend.price}</p>
-                        <div className='flex items-center gap-1 rounded-[6px] border-2 border-white px-3 text-white'>
+                        <p className='text-xl font-[500] text-medGray'>{order.gigPrice}</p>
+                        {/* <div className='flex items-center gap-1 rounded-[6px] border-2 border-white px-3 text-white'>
                           <p>{spend.daysAgo}</p>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
                 ))
-                
               ) : (
-                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>Not yet</div>
+                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
+                  Not yet
+                </div>
               )}
-              </div>
-            
+            </div>
           </div>
           <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[30%]'>
             <div className='flex h-1/6 items-center justify-between'>
@@ -141,18 +152,22 @@ const Stats = () => {
               {/* <p className='text-medGray'>See All</p> */}
             </div>
             <div className='mt-6 flex-1'>
-              {earnings.length ? (
-                earnings.map((earning, index) => (
+              {flInfo?.earnings?.length ? (
+                flInfo?.earnings?.map((earning, index) => (
                   <div
                     className='mb-2 flex h-[45px] flex-1 items-center justify-between gap-1 rounded-xl bg-darkGray px-3'
                     key={index}
                   >
-                    <p className='text-xl font-[500] text-white'>{earning.month}</p>
-                    <p className='text-xl font-[500] text-medGray'>{earning.price}</p>
+                    <p className='text-xl font-[500] text-white'>
+                      {new Date(earning.timestamp).getMonth() + 1}
+                    </p>
+                    <p className='text-xl font-[500] text-medGray'>{earning.amount}</p>
                   </div>
                 ))
               ) : (
-                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>Not yet</div>
+                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
+                  Not yet
+                </div>
               )}
             </div>
           </div>
