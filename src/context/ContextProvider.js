@@ -168,6 +168,16 @@ const ContextProvider = ({ children }) => {
     });
   };
 
+  const verifyOTPPassword = async (credential) => {
+    const { data } = await api.post('/api/v1/user/verifyForgotPassword', {
+      otp: credential,
+      user_id: verify_id,
+    });
+    console.log("data ", data);
+    if(data === "success") return true;
+    else return false;
+  }
+
   const signUpwithWallet = async (wallet) => {
     if (state.acc_type === null) {
       alert('Please select account type');
@@ -237,6 +247,16 @@ const ContextProvider = ({ children }) => {
       console.error(err);
     }
   };
+
+  const sendOTP = async (email) => {
+    const { data } = await api.post('api/v1/user/send-opcode-forgot-password', {
+      email: email
+    });
+    const {user_id, role} = data;
+    localStorage.setItem('jobs_2024_token', JSON.stringify({ data }));
+    setVerify(user_id);
+    setRole(role);
+  }
 
   const signInwithWallet = async (wallet) => {
     // if (state.acc_type === null) {
@@ -318,6 +338,32 @@ const ContextProvider = ({ children }) => {
     dispatch({
       payload: role,
       type: HANDLERS.ACCOUNT_TYPE,
+    });
+  };
+
+  const changePassword = async (credentials) => {
+    if (state.acc_type === null) {
+      alert('Please select account type');
+      return;
+    }
+    const {data} = await api.post('/api/v1/user/change-password', {
+      ...credentials,
+      user_id: verify_id,
+      acc_type: state.acc_type
+    });    
+    const { user, token } = data;
+    api.defaults.headers.common.Authorization = token;
+    setCurrentRole(user.role[0]);
+    const profileData = await api.get(`/api/v1/profile/get-profile/${user.email}/${user.role[0]}`);
+    localStorage.setItem(
+      'jobs_2024_token',
+      JSON.stringify({
+        data: { ...data, currentProfile: profileData.data.profile, currentRole: user.role[0] },
+      })
+    );
+    dispatch({
+      payload: user,
+      type: HANDLERS.SIGN_IN,
     });
   };
 
@@ -419,6 +465,9 @@ const ContextProvider = ({ children }) => {
         signOut,
         signUpwithWallet,
         verifyOTP,
+        sendOTP,
+        verifyOTPPassword,
+        changePassword
       }}
     >
       {children}
