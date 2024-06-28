@@ -239,6 +239,18 @@ const Orders = () => {
         return;
       }
 
+      if (err.message == "failed to get token account balance: Invalid param: could not find account") {
+        toast({
+          className:
+            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>You should have USDC in your wallet!</h3>,
+          title: <h1 className='text-center'>Error</h1>,
+          variant: 'destructive',
+        });
+
+        return;
+      }
+      
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
