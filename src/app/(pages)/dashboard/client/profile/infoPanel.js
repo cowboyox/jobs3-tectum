@@ -1,11 +1,10 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import api from '@/utils/api';
 import { USER_ROLE } from '@/utils/constants';
-
 
 const InfoPanel = (props) => {
   const { toast } = useToast();
@@ -52,10 +51,10 @@ const InfoPanel = (props) => {
   };
   const [editMode, setEditMode] = useState(false);
   useEffect(() => {
-    if(props.viewMode == 'preview'){
+    if (props.viewMode == 'preview') {
       setEditMode(false);
     }
-  }, [props.viewMode])
+  }, [props.viewMode]);
   return (
     <div
       className='flex flex-col gap-4 bg-[#10191D] px-3 py-4 md:rounded-xl md:p-8'

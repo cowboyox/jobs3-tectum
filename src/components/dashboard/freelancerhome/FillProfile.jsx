@@ -20,7 +20,7 @@ const FillProfile = () => {
       </div>
       <div className='flex w-full flex-row items-center justify-center gap-2 md:w-1/5 md:flex-col'>
         <Link
-          href={`/dashboard/${auth.currentRole === USER_ROLE.FREELANCER ? 'freelancer' : auth.currentRole === USER_ROLE.CLIENT ? 'client' : 'none'}/profile/${auth.currentProfile._id}`}
+          href={`/dashboard/${auth?.currentRole === USER_ROLE.FREELANCER ? 'freelancer' : auth?.currentRole === USER_ROLE.CLIENT ? 'client' : 'none'}/profile/${auth?.currentProfile?._id}`}
         >
           <Button
             className={`w-full rounded-xl bg-[#DC4F13] px-10 py-8 text-white hover:bg-[#DC4F13] md:w-[170px]`}
