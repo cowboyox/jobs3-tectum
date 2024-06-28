@@ -5,6 +5,7 @@ import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useCustomContext } from '@/context/use-custom';
+import { USER_ROLE } from '@/utils/constants';
 
 const FillProfile = () => {
   const auth = useCustomContext();
