@@ -199,54 +199,52 @@ const Signup = () => {
     auth.setRole(choosen_account_types);
     setStep(1);
   };
-  
+
   const handleOTPCode = async () => {
-      if (!otp_value || otp_value.length < 1) {
-        return toast({
-          className:
-            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3 className='text-center'>Please enter the code to verify.</h3>,
-          title: <h1 className='text-center'>Error</h1>,
-          variant: 'destructive',
-        });
+    if (!otp_value || otp_value.length < 1) {
+      return toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3 className='text-center'>Please enter the code to verify.</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+    try {
+      console.log('otp_value', otp_value);
+      await auth.verifyOTP(otp_value);
+      console.log('arrived here!!!');
+      let accountType = auth.acc_type[0];
+      let accountTypeName;
+      switch (accountType) {
+        case USER_ROLE.FREELANCER:
+          accountTypeName = 'freelancer';
+          break;
+        case USER_ROLE.CLIENT:
+          accountTypeName = 'client';
+          break;
+        default:
+          accountTypeName = 'client';
+          break;
       }
-      try {
-        console.log("otp_value", otp_value);
-        await auth.verifyOTP(otp_value);
-        console.log("arrived here!!!");
-        let accountType = auth.acc_type[0];
-        let accountTypeName;
-        switch (accountType) {
-          case USER_ROLE.FREELANCER:
-            accountTypeName = 'freelancer';
-            break;
-          case USER_ROLE.CLIENT:
-            accountTypeName = 'client';
-            break;
-          default:
-            accountTypeName = 'client';
-            break;
-        }
-        const url = window.location.href
-          // Create an anchor element to parse the URL
-          const parser = document.createElement('a');
-          parser.href = url;
-  
-          // Extract the pathname and search parameters
-          const { pathname, search } = parser;
-  
-          // Parse the search parameters to get the 'redirect' value
-          const params = new URLSearchParams(search);
-          const redirectPath = params.get('redirect');
-          // Get the value of the 'redirect' parameter
-          if(redirectPath)
-            router.push(redirectPath)
-          else
-            router.push(`/dashboard/${accountTypeName}/profile`);
-      } catch (err) {
-        console.error('error', err);
-      }
-  }
+      const url = window.location.href;
+      // Create an anchor element to parse the URL
+      const parser = document.createElement('a');
+      parser.href = url;
+
+      // Extract the pathname and search parameters
+      const { pathname, search } = parser;
+
+      // Parse the search parameters to get the 'redirect' value
+      const params = new URLSearchParams(search);
+      const redirectPath = params.get('redirect');
+      // Get the value of the 'redirect' parameter
+      if (redirectPath) router.push(redirectPath);
+      else router.push(`/dashboard/${accountTypeName}/profile`);
+    } catch (err) {
+      console.error('error', err);
+    }
+  };
   const { open } = useWeb3Modal();
   const { address, isConnected } = useAccount();
 
@@ -260,6 +258,11 @@ const Signup = () => {
       }
     }
   }, [isConnected, address, auth]);
+  const onKeyDown = (e) => {
+    if (e.key == 'Enter') {
+      onRegisterSubmit();
+    }
+  };
   return (
     <div className='mx-[30px] mt-[70px] flex h-full flex-col items-center justify-center gap-[30px] xxs:mx-0 lg:ml-[500px]'>
       <div className='flex w-full items-center justify-center gap-1 xxs:gap-7 lg:hidden'>
@@ -312,6 +315,9 @@ const Signup = () => {
                   fullName: e.target.value,
                 }))
               }
+              onKeyDown={(e) => {
+                onKeyDown(e);
+              }}
             />
             <div className='flex w-full flex-col'>
               <input
@@ -324,6 +330,9 @@ const Signup = () => {
                     userName: e.target.value,
                   }))
                 }
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
               />
               {!postData.userName.match(/^[a-z0-9_-]+$/) && postData.userName ? (
                 <span className='text-[14px] text-[#ef3f26]'>
@@ -347,6 +356,9 @@ const Signup = () => {
                     email: e.target.value,
                   }))
                 }
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
               />
               {!validateEmail(postData.email) && postData.email && (
                 <span className='text-[14px] text-[#ef3f26]'>
@@ -366,6 +378,9 @@ const Signup = () => {
                   }))
                 }
                 type='password'
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
               />
               {postData.password.length < 8 && postData.password && (
                 <span className='text-[14px] text-[#ef3f26]'>
@@ -385,6 +400,9 @@ const Signup = () => {
                   }))
                 }
                 type='password'
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
               />
               {(postData.confirmPassword.length < 8 ||
                 postData.confirmPassword !== postData.password) &&
@@ -406,6 +424,9 @@ const Signup = () => {
                     referralUser: e.target.value,
                   }))
                 }
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
               />
             )}
 
@@ -419,6 +440,9 @@ const Signup = () => {
                 }
                 type='checkbox'
                 className='accent-[#DC4F13]'
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
               />
               <span className='ml-2 text-[14px] text-[#F5F5F5]'>
                 By creating an account you agree to Privacy Policy
@@ -430,28 +454,36 @@ const Signup = () => {
             >
               Sign Up
             </button>
-            <button className='w-full border border-[#DC4F13] px-[30px] py-5 text-center text-[#F5F5F5]' onClick={() => open()}>
+            <button
+              className='w-full border border-[#DC4F13] px-[30px] py-5 text-center text-[#F5F5F5]'
+              onClick={() => open()}
+            >
               Continue With Wallet
             </button>
           </div>
           <div className='mt-[40px] text-base text-white'>
             <a>Already Have Account?</a>
-            <span className='text-[#DC4F13] ml-2 cursor-pointer' onClick={() => router.push('/signin')}>Sign In</span>
+            <span
+              className='ml-2 cursor-pointer text-[#DC4F13]'
+              onClick={() => router.push('/signin')}
+            >
+              Sign In
+            </span>
           </div>
         </>
       )}
       {step === 2 && (
-        <div className='flex w-full flex-col items-center justify-center gap-[15px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD] xxs:w-[400px] mt-[200px]'>
+        <div className='mt-[200px] flex w-full flex-col items-center justify-center gap-[15px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD] xxs:w-[400px]'>
           <div className='flex flex-col items-center justify-center gap-4'>
             <p className='text-2xl text-[#F5F5F5]'>Verification</p>
             <p className=''>Enter your code to confirm your account</p>
           </div>
           <InputOTP maxLength={4} value={otp_value} onChange={(value) => setOTPValue(value)}>
             <InputOTPGroup className='gap-6'>
-              <InputOTPSlot index={0} className='border border-[#526872] rounded-xl' />
-              <InputOTPSlot index={1} className=' border border-[#526872] rounded-xl' />
-              <InputOTPSlot index={2} className=' border border-[#526872] rounded-xl' />
-              <InputOTPSlot index={3} className=' border border-[#526872] rounded-xl' />
+              <InputOTPSlot index={0} className='rounded-xl border border-[#526872]' />
+              <InputOTPSlot index={1} className='rounded-xl border border-[#526872]' />
+              <InputOTPSlot index={2} className='rounded-xl border border-[#526872]' />
+              <InputOTPSlot index={3} className='rounded-xl border border-[#526872]' />
             </InputOTPGroup>
           </InputOTP>
           <button
