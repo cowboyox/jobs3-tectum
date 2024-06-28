@@ -44,7 +44,12 @@ const Signin = () => {
   }, [isConnected, address, auth]);
 
   const handleLogin = async () => {
-    if (!postData.email || !postData.password || postData.password.length < 8 || !validateEmail(email)) {
+    if (
+      !postData.email ||
+      !postData.password ||
+      postData.password.length < 8 ||
+      !validateEmail(email)
+    ) {
       return toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -55,7 +60,7 @@ const Signin = () => {
     }
 
     try {
-      await auth.login({ email:postData.email, password:postData.password }).then((data) => {
+      await auth.login({ email: postData.email, password: postData.password }).then((data) => {
         let accountType = data.role[0];
         let accountTypeName;
         switch (accountType) {
@@ -69,7 +74,7 @@ const Signin = () => {
             accountTypeName = 'client';
             break;
         }
-        const url = window.location.href
+        const url = window.location.href;
         // Create an anchor element to parse the URL
         const parser = document.createElement('a');
         parser.href = url;
@@ -81,10 +86,8 @@ const Signin = () => {
         const params = new URLSearchParams(search);
         const redirectPath = params.get('redirect');
         // Get the value of the 'redirect' parameter
-        if(redirectPath)
-          router.push(redirectPath)
-        else
-          router.push(`/dashboard/${accountTypeName}/home`);
+        if (redirectPath) router.push(redirectPath);
+        else router.push(`/dashboard/${accountTypeName}/home`);
       });
       // Dynamic redirect
     } catch (err) {
@@ -176,31 +179,38 @@ const Signin = () => {
           />
           <span className='ml-2 text-[14px] text-[#F5F5F5]'>Keep me logged in</span>
         </div>
-        <button className='w-full border border-[#DC4F13] px-[30px] py-5 text-center text-[#F5F5F5]' onClick={() => open()}>
+        <button
+          className='w-full border border-[#DC4F13] px-[30px] py-5 text-center text-[#F5F5F5]'
+          onClick={() => open()}
+        >
           Continue With Wallet
         </button>
-        <div className='flex flex-row gap-3 w-full items-center'>
-          <div className='border-b  border-[#28373E] w-full'></div>
-          <p className='w-full'>
-            or Sign In With
-          </p>
-          <div className='border-b  border-[#28373E] w-full'></div>
+        <div className='flex w-full flex-row items-center gap-3'>
+          <hr className='w-full text-[#28373E]' />
+          <p className='w-full'>or Sign In With</p>
+          <hr className='w-full text-[#28373E]' />
         </div>
         <div className='flex w-full items-center justify-center gap-[19px]'>
-          <img src='assets/icons/signin/google.png' alt='google' className='h-6 w-6 cursor-pointer' />
-          <img src='assets/icons/signin/facebook.png' alt='facebook' className='h-6 w-6 cursor-pointer' />
+          <img
+            src='assets/icons/signin/google.png'
+            alt='google'
+            className='h-6 w-6 cursor-pointer'
+          />
+          <img
+            src='assets/icons/signin/facebook.png'
+            alt='facebook'
+            className='h-6 w-6 cursor-pointer'
+          />
         </div>
       </div>
 
       <div className='mt-[40px] text-base text-white'>
         <span className='mr-2 text-[#DC4F13]'>
-            <a href='#'>
-                Forgot Password
-            </a>
+          <a href='#'>Forgot Password</a>
         </span>
-        <a>Don't Have Account?</a>
-        <span className='ml-2 text-[#DC4F13] cursor-pointer' onClick={() => router.push('/signup')}>
-                Sign Up
+        Don't Have Account?
+        <span className='ml-2 cursor-pointer text-[#DC4F13]' onClick={() => router.push('/signup')}>
+          Sign Up
         </span>
       </div>
     </div>
