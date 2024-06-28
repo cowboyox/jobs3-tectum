@@ -10,7 +10,7 @@ import Payment from './Payment';
 
 import { minutesDifference } from '@/utils/Helpers';
 
-const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelancerLocation }) => {
+const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelancerLocation, walletPubkey }) => {
   const [coverLetter, setCoverLetter] = useState('');
 
   const handleChange = (value) => {
@@ -19,15 +19,15 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
   return (
     <div className='flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-center'>
       <div className='w-full md:w-[65%] md:max-w-[690px]'>
-        <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
-          <div className='flex flex-col gap-4 border-b border-lightGray pb-5'>
+        <div className='flex flex-col gap-4 px-6 py-6 text-white rounded-2xl bg-deepGreen'>
+          <div className='flex flex-col gap-4 pb-5 border-b border-lightGray'>
             <img
               alt='Gig Image'
-              className='aspect-video w-full rounded-xl object-cover'
+              className='object-cover w-full aspect-video rounded-xl'
               src='/assets/images/portfolio_works/portfolio.jpeg'
             />
             <div className='flex items-center'>
-              <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
+              <h3 className='hidden text-xl font-semibold text-white whitespace-nowrap md:block'>
                 {gigTitle}
               </h3>
             </div>
@@ -125,15 +125,15 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
           <div className='flex items-start gap-4 rounded-t-xl bg-[#10191D] md:items-center md:gap-4 md:rounded-xl'>
             <div className='relative w-10 md:h-10 md:w-10'>
               <img
-                className='aspect-square h-full w-full rounded-full'
+                className='w-full h-full rounded-full aspect-square'
                 src='/assets/images/users/user-5.png'
               />
               <div className='absolute bottom-0.5 right-0.5 h-2 w-2 rounded-full bg-green-500' />
             </div>
             <div className='flex flex-col gap-0'>
               <div className='flex items-center gap-1'>
-                <h2 className='text-md md:text-md font-bold'>{freelancerFullName}</h2>
-                <img className='h-4 w-4' src='/assets/images/icons/checkmark.svg' />
+                <h2 className='font-bold text-md md:text-md'>{freelancerFullName}</h2>
+                <img className='w-4 h-4' src='/assets/images/icons/checkmark.svg' />
               </div>
               <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
                 <p className='text-md text-medGray'>{freelancerLocation}</p>
@@ -141,18 +141,18 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
             </div>
           </div>
         </div>
-        <div className='mt-4 flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
+        <div className='flex flex-col gap-4 px-6 py-6 mt-4 text-white rounded-2xl bg-deepGreen'>
           <div className='flex flex-col gap-4'>
-            <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
+            <h3 className='hidden text-xl font-semibold text-white whitespace-nowrap md:block'>
               Single order ($20)
             </h3>
             <p className='text-medGray'>Specify the quantity of services</p>
-            <div className='flex flex-1 items-center gap-1 rounded-2xl bg-darkGray'>
-              <div className='flex flex-1 flex-col items-center justify-between px-8 py-8 md:flex-row'>
+            <div className='flex items-center flex-1 gap-1 rounded-2xl bg-darkGray'>
+              <div className='flex flex-col items-center justify-between flex-1 px-8 py-8 md:flex-row'>
                 <div className='flex items-center gap-4'>
                   <h3 className='whitespace-nowrap text-medGray'>Gig Quantity</h3>
                 </div>
-                <div className='flex w-full items-center justify-between gap-4 md:w-auto'>
+                <div className='flex items-center justify-between w-full gap-4 md:w-auto'>
                   <button class='flex h-10 w-10 items-center justify-center rounded-full bg-orange text-lg text-white'>
                     -
                   </button>
@@ -165,7 +165,7 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
             </div>
           </div>
           <div className='flex flex-col gap-4'>
-            <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
+            <h3 className='hidden text-xl font-semibold text-white whitespace-nowrap md:block'>
               Documents (up to 2)
             </h3>
             <p className='text-medGray'>
@@ -179,7 +179,7 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
                     htmlFor='dropzone-file'
                   >
                     <div className='text-center'>
-                      <div className='mx-auto max-w-min rounded-md p-2'>
+                      <div className='p-2 mx-auto rounded-md max-w-min'>
                         <GoPlus size='2.6em' />
                       </div>
                     </div>
@@ -193,7 +193,7 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
                     htmlFor='dropzone-file'
                   >
                     <div className='text-center'>
-                      <div className='mx-auto max-w-min rounded-md p-2'>
+                      <div className='p-2 mx-auto rounded-md max-w-min'>
                         <GoPlus size='2.6em' />
                       </div>
                     </div>
@@ -206,7 +206,7 @@ const GigPage = ({ gigTitle, gigPostDate, gigPrice, freelancerFullName, freelanc
         </div>
       </div>
       <div className='w-full md:w-[35%] md:max-w-[420px]'>
-        <Payment coverLetter={coverLetter} />
+        <Payment coverLetter={coverLetter} gigPrice={gigPrice} walletPubkey={walletPubkey}/>
       </div>
     </div>
   );
