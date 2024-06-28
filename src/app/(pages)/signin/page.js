@@ -48,7 +48,7 @@ const Signin = () => {
       !postData.email ||
       !postData.password ||
       postData.password.length < 8 ||
-      !validateEmail(email)
+      !validateEmail(postData.email)
     ) {
       return toast({
         className:
@@ -162,7 +162,7 @@ const Signin = () => {
         </div>
         <button
           className='w-full bg-[#DC4F13] px-[30px] py-5 text-center text-[#F5F5F5]'
-          onClick={() => handleLogin}
+          onClick={() => handleLogin()}
         >
           Log In
         </button>
