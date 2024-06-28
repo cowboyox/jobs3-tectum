@@ -251,6 +251,11 @@ const Signup = () => {
       }
     }
   }, [isConnected, address, auth]);
+  const onKeyDown = (e) => {
+    if (e.key == 'Enter') {
+      onRegisterSubmit();
+    }
+  };
   return (
     <div className='xxs:mx-0 mx-[30px] mt-[70px] flex h-full flex-col items-center justify-center gap-[30px] lg:ml-[500px]'>
       <div className='xxs:gap-7 flex w-full items-center justify-center gap-1 lg:hidden'>
@@ -301,6 +306,9 @@ const Signup = () => {
                   fullName: e.target.value,
                 }))
               }
+              onKeyDown={(e) => {
+                onKeyDown(e);
+              }}
               placeholder='Full name'
               value={postData.fullName}
             />
@@ -313,6 +321,9 @@ const Signup = () => {
                     userName: e.target.value,
                   }))
                 }
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
                 placeholder='Username'
                 value={postData.userName}
               />
@@ -336,6 +347,9 @@ const Signup = () => {
                     email: e.target.value,
                   }))
                 }
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
                 placeholder='Email address'
                 value={postData.email}
               />
@@ -354,6 +368,9 @@ const Signup = () => {
                     password: e.target.value,
                   }))
                 }
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
                 placeholder='Create password'
                 type='password'
                 value={postData.password}
@@ -373,6 +390,9 @@ const Signup = () => {
                     confirmPassword: e.target.value,
                   }))
                 }
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
                 placeholder='Confirm password'
                 type='password'
                 value={postData.confirmPassword}
@@ -395,6 +415,9 @@ const Signup = () => {
                     referralUser: e.target.value,
                   }))
                 }
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
                 placeholder='Referral user'
                 value={postData.referralUser}
               />
@@ -409,6 +432,9 @@ const Signup = () => {
                     acceptPolicy: ev.target.checked,
                   }))
                 }
+                onKeyDown={(e) => {
+                  onKeyDown(e);
+                }}
                 type='checkbox'
               />
               <span className='ml-2 text-[14px] text-[#F5F5F5]'>
