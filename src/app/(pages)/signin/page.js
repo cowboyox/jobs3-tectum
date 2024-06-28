@@ -43,6 +43,61 @@ const Signin = () => {
     }
   }, [isConnected, address, auth]);
 
+  const handleLogin = async () => {
+    if (!postData.email || !postData.password || postData.password.length < 8 || !validateEmail(email)) {
+      return toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3 className='text-center'>Please check your infomation.</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+
+    try {
+      await auth.login({ email:postData.email, password:postData.password }).then((data) => {
+        let accountType = data.role[0];
+        let accountTypeName;
+        switch (accountType) {
+          case 0:
+            accountTypeName = 'freelancer';
+            break;
+          case 3:
+            accountTypeName = 'client';
+            break;
+          default:
+            accountTypeName = 'client';
+            break;
+        }
+        const url = window.location.href
+        // Create an anchor element to parse the URL
+        const parser = document.createElement('a');
+        parser.href = url;
+
+        // Extract the pathname and search parameters
+        const { pathname, search } = parser;
+
+        // Parse the search parameters to get the 'redirect' value
+        const params = new URLSearchParams(search);
+        const redirectPath = params.get('redirect');
+        // Get the value of the 'redirect' parameter
+        if(redirectPath)
+          router.push(redirectPath)
+        else
+          router.push(`/dashboard/${accountTypeName}/home`);
+      });
+      // Dynamic redirect
+    } catch (err) {
+      return toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3 className='text-center'>Please sign up first.</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <div className='mx-[30px] mt-[70px] flex h-full flex-col items-center justify-center gap-[30px] xxs:mx-0 lg:ml-[500px]'>
       <div className='flex w-full items-center justify-center gap-1 xxs:gap-7 lg:hidden'>
@@ -104,7 +159,7 @@ const Signin = () => {
         </div>
         <button
           className='w-full bg-[#DC4F13] px-[30px] py-5 text-center text-[#F5F5F5]'
-          onClick={() => {}}
+          onClick={() => handleLogin}
         >
           Log In
         </button>
