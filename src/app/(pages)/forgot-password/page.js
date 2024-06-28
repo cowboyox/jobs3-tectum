@@ -23,7 +23,7 @@ const ForgotPassword = () => {
   const router = useRouter();
   const { toast } = useToast();
   const auth = useCustomContext();
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(0);
   const [referrer, setReferrer] = useState('');
   const [otp_value, setOTPValue] = useState('');
   const [email, setEmail] = useState('');
