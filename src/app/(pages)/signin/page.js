@@ -14,6 +14,7 @@ import { useVerifyUsername } from '@/hooks/useVerifyUsername';
 import { USER_ROLE } from '@/utils/constants';
 
 const Signin = () => {
+  const { toast } = useToast();
   const router = useRouter();
   const [postData, setPostData] = useState({
     fullName: '',
@@ -44,6 +45,7 @@ const Signin = () => {
   }, [isConnected, address, auth]);
 
   const handleLogin = async () => {
+    console.log(postData.email, postData.password, postData.fullName);
     if (
       !postData.email ||
       !postData.password ||
@@ -100,6 +102,11 @@ const Signin = () => {
       });
     }
   };
+  const onKeyDown = (e) => {
+    if (e.key == 'Enter') {
+      handleLogin();
+    }
+  };
 
   return (
     <div className='mx-[30px] mt-[70px] flex h-full flex-col items-center justify-center gap-[30px] xxs:mx-0 lg:ml-[500px]'>
@@ -122,6 +129,9 @@ const Signin = () => {
               fullName: e.target.value,
             }))
           }
+          onKeyDown={(e) => {
+            onKeyDown(e);
+          }}
         />
         <div className='flex w-full flex-col'>
           <input
@@ -134,6 +144,9 @@ const Signin = () => {
                 email: e.target.value,
               }))
             }
+            onKeyDown={(e) => {
+              onKeyDown(e);
+            }}
           />
           {!validateEmail(postData.email) && postData.email && (
             <span className='text-[14px] text-[#ef3f26]'>
@@ -153,6 +166,9 @@ const Signin = () => {
               }))
             }
             type='password'
+            onKeyDown={(e) => {
+              onKeyDown(e);
+            }}
           />
           {postData.password.length < 8 && postData.password && (
             <span className='text-[14px] text-[#ef3f26]'>
@@ -175,6 +191,9 @@ const Signin = () => {
               }))
             }
             type='checkbox'
+            onKeyDown={(e) => {
+              onKeyDown(e);
+            }}
             className='accent-[#DC4F13]'
           />
           <span className='ml-2 text-[14px] text-[#F5F5F5]'>Keep me logged in</span>
@@ -206,7 +225,7 @@ const Signin = () => {
 
       <div className='mt-[40px] text-base text-white'>
         <span className='mr-2 text-[#DC4F13]'>
-          <a href='#'>Forgot Password</a>
+          <a href='/forgot-password'>Forgot Password</a>
         </span>
         {'Don\'t Have Account?'}
         <span className='ml-2 cursor-pointer text-[#DC4F13]' onClick={() => router.push('/signup')}>
