@@ -453,7 +453,7 @@ const Freelancers = () => {
                 </div>
                 <div className='mt-2 flex-1 rounded-xl bg-[#1B272C] p-1 md:mt-0 md:flex-none'>
                   <button className='p-4 px-8 md:p-5'>Message</button>
-                  <button className='bg-[#DC4F13] p-4 px-8 md:p-5'>Invite to job</button>
+                  <button className='bg-[#DC4F13] p-4 px-8 md:p-5'>Invite to Gig</button>
                 </div>
               </div>
             </div>
