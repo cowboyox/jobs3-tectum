@@ -164,7 +164,7 @@ const Orders = () => {
       const seller = new PublicKey(sellerPubkey);
       const contractId = uuid().slice(0, 8);
       const amount = new BN(gigPrice * Math.pow(10, 6));
-      const dispute = new BN(0.5 * Math.pow(10, 6));
+      const dispute = new BN(0.5 * Math.pow(10, 6)); // 0.5 USDC for dispute fee
       const deadline = Math.floor(Date.now() / 1000) + (10 * 24 * 60 * 60); 
 
       const [contract, bump] = await PublicKey.findProgramAddressSync(
@@ -183,11 +183,11 @@ const Orders = () => {
       // Get the token balance
       const info = await connection.getTokenAccountBalance(buyerAta);
 
-      if (info.value.uiAmount < Number(gigPrice)) {
+      if (info.value.uiAmount < Number(gigPrice) + 0.5) {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>{`You don't have enough token. Need at least ${gigPrice} USDC!`}</h3>,
+          description: <h3>{`You don't have enough token. Need at least ${gigPrice + 0.5} USDC!`}</h3>,
           title: <h1 className='text-center'>Error</h1>,
           variant: 'destructive',
         });
@@ -233,6 +233,24 @@ const Orders = () => {
       await refetchAllGigsProposed();
     } catch (err) {
       console.error('Error corrupted during applying gig', err);
+
+      if (err.message == "User rejected the request.") {
+        // In this case, don't need to show error toast.
+        return;
+      }
+
+      if (err.message == "failed to get token account balance: Invalid param: could not find account") {
+        toast({
+          className:
+            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>You should have USDC in your wallet!</h3>,
+          title: <h1 className='text-center'>Error</h1>,
+          variant: 'destructive',
+        });
+
+        return;
+      }
+      
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',

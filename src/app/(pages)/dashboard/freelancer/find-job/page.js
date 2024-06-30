@@ -132,12 +132,12 @@ const FindJob = () => {
   const handleLikeUnlikeGig = async (gigId, index, like) => {
     try {
       const updatedGig = await api.put(`/api/v1/client_gig/like-unlike-gig/${gigId}`, { like });
-      
+
       const tempFilteredGigList = filteredGigList.map((gig, i) => {
         if (i == index) {
           return {
             ...gig,
-            likeUsers: updatedGig.data.likeUsers
+            likeUsers: updatedGig.data.likeUsers,
           };
         }
 
@@ -148,10 +148,10 @@ const FindJob = () => {
       toast({
         className:
           'bg-green-500 border-none rounded-xl absolute top-[-94vh] xl:w-[15vw] md:w-[30vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>{`Successfully ${like ? "added" : "removed"} like to the gig!`}</h3>,
+        description: <h3>{`Successfully ${like ? 'added' : 'removed'} like to the gig!`}</h3>,
         title: <h1 className='text-center'>Success</h1>,
         variant: 'default',
-      });     
+      });
     } catch (error) {
       console.log(`Error while updating like/unlike for the gigId ${gigId}`, error);
       toast({
@@ -167,7 +167,7 @@ const FindJob = () => {
   return loaded ? (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-4 rounded-xl bg-[#10191D] mobile:gap-0'>
-        <div className='flex items-center flex-1 gap-3 m-3'>
+        <div className='m-3 flex flex-1 items-center gap-3'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -211,7 +211,7 @@ const FindJob = () => {
           )}
         </div>
         {(!isSmallScreen || (isSmallScreen && searchType === 'normal')) && (
-          <div className='flex flex-row items-center flex-none gap-2 m-3'>
+          <div className='m-3 flex flex-none flex-row items-center gap-2'>
             <button className='flex flex-row items-center justify-center gap-3'>
               {!isSmallScreen ? (
                 <>
@@ -341,7 +341,7 @@ const FindJob = () => {
           </div>
         )}
         {!isSmallScreen && (
-          <div className='flex flex-row items-center justify-center gap-2 m-3'>
+          <div className='m-3 flex flex-row items-center justify-center gap-2'>
             <div>Sort by</div>
             <div>
               <Select onValueChange={(value) => setOrder(value)}>
@@ -398,44 +398,56 @@ const FindJob = () => {
                   </div>
                   {isSmallScreen && (
                     <div className='flex flex-row items-center gap-2'>
-                      {
-                        !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()) ? 
+                      {!gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()) ? (
                         <svg
                           className='cursor-pointer'
-                          onClick={() => handleLikeUnlikeGig(gig._id, index, !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()))}
-                          width="32" 
-                          height="32" 
-                          viewBox="0 0 32 32" 
-                          fill="none" 
-                          xmlns="http://www.w3.org/2000/svg"
+                          fill='none'
+                          height='32'
+                          onClick={() =>
+                            handleLikeUnlikeGig(
+                              gig._id,
+                              index,
+                              !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString())
+                            )
+                          }
+                          viewBox='0 0 32 32'
+                          width='32'
+                          xmlns='http://www.w3.org/2000/svg'
                         >
-                          <path 
-                            d="M15.4138 11.3348L16.0143 12.1375L16.6149 11.3348C17.4058 10.2776 18.6725 9.59131 20.0843 9.59131C22.4808 9.59131 24.431 11.5437 24.431 13.9655C24.431 14.9747 24.2701 15.9053 23.9907 16.7688L23.9892 16.7737C23.3187 18.8954 21.941 20.6156 20.44 21.9056C18.9356 23.1985 17.3503 24.022 16.3411 24.3654L16.3411 24.3654L16.333 24.3682C16.2824 24.3861 16.167 24.408 16.0143 24.408C15.8617 24.408 15.7462 24.3861 15.6956 24.3682L15.6956 24.3682L15.6876 24.3654C14.6783 24.022 13.0931 23.1985 11.5887 21.9056C10.0876 20.6156 8.70993 18.8954 8.03947 16.7737L8.03948 16.7737L8.03791 16.7688C7.75853 15.9053 7.59766 14.9747 7.59766 13.9655C7.59766 11.5437 9.54787 9.59131 11.9443 9.59131C13.3561 9.59131 14.6229 10.2776 15.4138 11.3348Z" 
-                            stroke="#96B0BD" 
-                            stroke-width="1.5"
+                          <path
+                            d='M15.4138 11.3348L16.0143 12.1375L16.6149 11.3348C17.4058 10.2776 18.6725 9.59131 20.0843 9.59131C22.4808 9.59131 24.431 11.5437 24.431 13.9655C24.431 14.9747 24.2701 15.9053 23.9907 16.7688L23.9892 16.7737C23.3187 18.8954 21.941 20.6156 20.44 21.9056C18.9356 23.1985 17.3503 24.022 16.3411 24.3654L16.3411 24.3654L16.333 24.3682C16.2824 24.3861 16.167 24.408 16.0143 24.408C15.8617 24.408 15.7462 24.3861 15.6956 24.3682L15.6956 24.3682L15.6876 24.3654C14.6783 24.022 13.0931 23.1985 11.5887 21.9056C10.0876 20.6156 8.70993 18.8954 8.03947 16.7737L8.03948 16.7737L8.03791 16.7688C7.75853 15.9053 7.59766 14.9747 7.59766 13.9655C7.59766 11.5437 9.54787 9.59131 11.9443 9.59131C13.3561 9.59131 14.6229 10.2776 15.4138 11.3348Z'
+                            stroke='#96B0BD'
+                            stroke-width='1.5'
                           />
                         </svg>
-                        :
-                          <svg
-                            className='cursor-pointer'
-                            onClick={() => handleLikeUnlikeGig(gig._id, index, !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()))}
-                            width="32" 
-                            height="32" 
-                            viewBox="0 0 32 32" 
-                            fill="none" 
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path d="M15.4138 11.8348L16.0143 12.6375L16.6149 11.8348C17.4058 10.7776 18.6725 10.0913 20.0843 10.0913C22.4808 10.0913 24.431 12.0437 24.431 14.4655C24.431 15.4747 24.2701 16.4053 23.9907 17.2688L23.9892 17.2737C23.3187 19.3954 21.941 21.1156 20.44 22.4056C18.9356 23.6985 17.3503 24.522 16.3411 24.8654L16.3411 24.8654L16.333 24.8682C16.2824 24.8861 16.167 24.908 16.0143 24.908C15.8617 24.908 15.7462 24.8861 15.6956 24.8682L15.6956 24.8682L15.6876 24.8654C14.6783 24.522 13.0931 23.6985 11.5887 22.4056C10.0876 21.1156 8.70993 19.3954 8.03947 17.2737L8.03948 17.2737L8.03791 17.2688C7.75853 16.4053 7.59766 15.4747 7.59766 14.4655C7.59766 12.0437 9.54787 10.0913 11.9443 10.0913C13.3561 10.0913 14.6229 10.7776 15.4138 11.8348Z" 
-                              fill="#96B0BD" 
-                              stroke="#96B0BD" 
-                              stroke-width="1.5"
-                            />
-                          </svg>
-                      }
+                      ) : (
+                        <svg
+                          className='cursor-pointer'
+                          fill='none'
+                          height='32'
+                          onClick={() =>
+                            handleLikeUnlikeGig(
+                              gig._id,
+                              index,
+                              !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString())
+                            )
+                          }
+                          viewBox='0 0 32 32'
+                          width='32'
+                          xmlns='http://www.w3.org/2000/svg'
+                        >
+                          <path
+                            d='M15.4138 11.8348L16.0143 12.6375L16.6149 11.8348C17.4058 10.7776 18.6725 10.0913 20.0843 10.0913C22.4808 10.0913 24.431 12.0437 24.431 14.4655C24.431 15.4747 24.2701 16.4053 23.9907 17.2688L23.9892 17.2737C23.3187 19.3954 21.941 21.1156 20.44 22.4056C18.9356 23.6985 17.3503 24.522 16.3411 24.8654L16.3411 24.8654L16.333 24.8682C16.2824 24.8861 16.167 24.908 16.0143 24.908C15.8617 24.908 15.7462 24.8861 15.6956 24.8682L15.6956 24.8682L15.6876 24.8654C14.6783 24.522 13.0931 23.6985 11.5887 22.4056C10.0876 21.1156 8.70993 19.3954 8.03947 17.2737L8.03948 17.2737L8.03791 17.2688C7.75853 16.4053 7.59766 15.4747 7.59766 14.4655C7.59766 12.0437 9.54787 10.0913 11.9443 10.0913C13.3561 10.0913 14.6229 10.7776 15.4138 11.8348Z'
+                            fill='#96B0BD'
+                            stroke='#96B0BD'
+                            stroke-width='1.5'
+                          />
+                        </svg>
+                      )}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
-                            className='bg-transparent border-none hover:bg-transparent'
+                            className='border-none bg-transparent hover:bg-transparent'
                             variant='outline'
                           >
                             <FaEllipsis />
@@ -481,7 +493,7 @@ const FindJob = () => {
                           <DropdownMenuCheckboxItem
                             // checked={showActivityBar}
                             // onCheckedChange={setShowActivityBar}
-                            className='gap-2 mt-1 rounded-xl hover:bg-white'
+                            className='mt-1 gap-2 rounded-xl hover:bg-white'
                           >
                             <svg
                               fill='none'
@@ -540,7 +552,7 @@ const FindJob = () => {
                           <DropdownMenuCheckboxItem
                             // checked={showPanel}
                             // onCheckedChange={setShowPanel}
-                            className='gap-2 mt-1 rounded-xl hover:bg-white'
+                            className='mt-1 gap-2 rounded-xl hover:bg-white'
                           >
                             <svg
                               fill='none'
@@ -576,7 +588,7 @@ const FindJob = () => {
                           <DropdownMenuCheckboxItem
                             // checked={showPanel}
                             // onCheckedChange={setShowPanel}
-                            className='gap-2 mt-1 rounded-xl hover:bg-white'
+                            className='mt-1 gap-2 rounded-xl hover:bg-white'
                           >
                             <svg
                               fill='none'
@@ -609,49 +621,66 @@ const FindJob = () => {
                     </div>
                   )}
                   {!isSmallScreen && (
-                    <div className='flex flex-col justify-between w-full'>
-                      <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
+                    <div className='flex w-full flex-col justify-between'>
+                      <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
                         <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                           {gig.gigTitle}
                         </div>
-                        <div className='flex flex-row items-center flex-none gap-2'>
-                        {
-                          !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()) ? 
+                        <div className='flex flex-none flex-row items-center gap-2'>
+                          {!gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()) ? (
                             <svg
                               className='cursor-pointer'
-                              onClick={() => handleLikeUnlikeGig(gig._id, index, !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()))}
-                              width="32" 
-                              height="32" 
-                              viewBox="0 0 32 32" 
-                              fill="none" 
-                              xmlns="http://www.w3.org/2000/svg"
+                              fill='none'
+                              height='32'
+                              onClick={() =>
+                                handleLikeUnlikeGig(
+                                  gig._id,
+                                  index,
+                                  !gig?.likeUsers?.includes(
+                                    auth?.currentProfile?.userId?.toString()
+                                  )
+                                )
+                              }
+                              viewBox='0 0 32 32'
+                              width='32'
+                              xmlns='http://www.w3.org/2000/svg'
                             >
-                              <path 
-                                d="M15.4138 11.3348L16.0143 12.1375L16.6149 11.3348C17.4058 10.2776 18.6725 9.59131 20.0843 9.59131C22.4808 9.59131 24.431 11.5437 24.431 13.9655C24.431 14.9747 24.2701 15.9053 23.9907 16.7688L23.9892 16.7737C23.3187 18.8954 21.941 20.6156 20.44 21.9056C18.9356 23.1985 17.3503 24.022 16.3411 24.3654L16.3411 24.3654L16.333 24.3682C16.2824 24.3861 16.167 24.408 16.0143 24.408C15.8617 24.408 15.7462 24.3861 15.6956 24.3682L15.6956 24.3682L15.6876 24.3654C14.6783 24.022 13.0931 23.1985 11.5887 21.9056C10.0876 20.6156 8.70993 18.8954 8.03947 16.7737L8.03948 16.7737L8.03791 16.7688C7.75853 15.9053 7.59766 14.9747 7.59766 13.9655C7.59766 11.5437 9.54787 9.59131 11.9443 9.59131C13.3561 9.59131 14.6229 10.2776 15.4138 11.3348Z" 
-                                stroke="#96B0BD" 
-                                stroke-width="1.5"
-                              />
-                            </svg> :
-                            <svg
-                              className='cursor-pointer'
-                              onClick={() => handleLikeUnlikeGig(gig._id, index, !gig?.likeUsers?.includes(auth?.currentProfile?.userId?.toString()))}
-                              width="32" 
-                              height="32" 
-                              viewBox="0 0 32 32" 
-                              fill="none" 
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path d="M15.4138 11.8348L16.0143 12.6375L16.6149 11.8348C17.4058 10.7776 18.6725 10.0913 20.0843 10.0913C22.4808 10.0913 24.431 12.0437 24.431 14.4655C24.431 15.4747 24.2701 16.4053 23.9907 17.2688L23.9892 17.2737C23.3187 19.3954 21.941 21.1156 20.44 22.4056C18.9356 23.6985 17.3503 24.522 16.3411 24.8654L16.3411 24.8654L16.333 24.8682C16.2824 24.8861 16.167 24.908 16.0143 24.908C15.8617 24.908 15.7462 24.8861 15.6956 24.8682L15.6956 24.8682L15.6876 24.8654C14.6783 24.522 13.0931 23.6985 11.5887 22.4056C10.0876 21.1156 8.70993 19.3954 8.03947 17.2737L8.03948 17.2737L8.03791 17.2688C7.75853 16.4053 7.59766 15.4747 7.59766 14.4655C7.59766 12.0437 9.54787 10.0913 11.9443 10.0913C13.3561 10.0913 14.6229 10.7776 15.4138 11.8348Z" 
-                                fill="#96B0BD" 
-                                stroke="#96B0BD" 
-                                stroke-width="1.5"
+                              <path
+                                d='M15.4138 11.3348L16.0143 12.1375L16.6149 11.3348C17.4058 10.2776 18.6725 9.59131 20.0843 9.59131C22.4808 9.59131 24.431 11.5437 24.431 13.9655C24.431 14.9747 24.2701 15.9053 23.9907 16.7688L23.9892 16.7737C23.3187 18.8954 21.941 20.6156 20.44 21.9056C18.9356 23.1985 17.3503 24.022 16.3411 24.3654L16.3411 24.3654L16.333 24.3682C16.2824 24.3861 16.167 24.408 16.0143 24.408C15.8617 24.408 15.7462 24.3861 15.6956 24.3682L15.6956 24.3682L15.6876 24.3654C14.6783 24.022 13.0931 23.1985 11.5887 21.9056C10.0876 20.6156 8.70993 18.8954 8.03947 16.7737L8.03948 16.7737L8.03791 16.7688C7.75853 15.9053 7.59766 14.9747 7.59766 13.9655C7.59766 11.5437 9.54787 9.59131 11.9443 9.59131C13.3561 9.59131 14.6229 10.2776 15.4138 11.3348Z'
+                                stroke='#96B0BD'
+                                stroke-width='1.5'
                               />
                             </svg>
-                        }
+                          ) : (
+                            <svg
+                              className='cursor-pointer'
+                              fill='none'
+                              height='32'
+                              onClick={() =>
+                                handleLikeUnlikeGig(
+                                  gig._id,
+                                  index,
+                                  !gig?.likeUsers?.includes(
+                                    auth?.currentProfile?.userId?.toString()
+                                  )
+                                )
+                              }
+                              viewBox='0 0 32 32'
+                              width='32'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                d='M15.4138 11.8348L16.0143 12.6375L16.6149 11.8348C17.4058 10.7776 18.6725 10.0913 20.0843 10.0913C22.4808 10.0913 24.431 12.0437 24.431 14.4655C24.431 15.4747 24.2701 16.4053 23.9907 17.2688L23.9892 17.2737C23.3187 19.3954 21.941 21.1156 20.44 22.4056C18.9356 23.6985 17.3503 24.522 16.3411 24.8654L16.3411 24.8654L16.333 24.8682C16.2824 24.8861 16.167 24.908 16.0143 24.908C15.8617 24.908 15.7462 24.8861 15.6956 24.8682L15.6956 24.8682L15.6876 24.8654C14.6783 24.522 13.0931 23.6985 11.5887 22.4056C10.0876 21.1156 8.70993 19.3954 8.03947 17.2737L8.03948 17.2737L8.03791 17.2688C7.75853 16.4053 7.59766 15.4747 7.59766 14.4655C7.59766 12.0437 9.54787 10.0913 11.9443 10.0913C13.3561 10.0913 14.6229 10.7776 15.4138 11.8348Z'
+                                fill='#96B0BD'
+                                stroke='#96B0BD'
+                                stroke-width='1.5'
+                              />
+                            </svg>
+                          )}
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button
-                                className='bg-transparent border-none hover:bg-transparent'
+                                className='border-none bg-transparent hover:bg-transparent'
                                 variant='outline'
                               >
                                 <FaEllipsis />
@@ -697,7 +726,7 @@ const FindJob = () => {
                               <DropdownMenuCheckboxItem
                                 // checked={showActivityBar}
                                 // onCheckedChange={setShowActivityBar}
-                                className='gap-2 mt-1 rounded-xl hover:bg-white'
+                                className='mt-1 gap-2 rounded-xl hover:bg-white'
                               >
                                 <svg
                                   fill='none'
@@ -756,7 +785,7 @@ const FindJob = () => {
                               <DropdownMenuCheckboxItem
                                 // checked={showPanel}
                                 // onCheckedChange={setShowPanel}
-                                className='gap-2 mt-1 rounded-xl hover:bg-white'
+                                className='mt-1 gap-2 rounded-xl hover:bg-white'
                               >
                                 <svg
                                   fill='none'
@@ -792,7 +821,7 @@ const FindJob = () => {
                               <DropdownMenuCheckboxItem
                                 // checked={showPanel}
                                 // onCheckedChange={setShowPanel}
-                                className='gap-2 mt-1 rounded-xl hover:bg-white'
+                                className='mt-1 gap-2 rounded-xl hover:bg-white'
                               >
                                 <svg
                                   fill='none'
@@ -824,7 +853,7 @@ const FindJob = () => {
                           </DropdownMenu>
                         </div>
                       </div>
-                      <div className='flex flex-row-reverse items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
+                      <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
                         <div className='flex flex-row items-center gap-2'>
                           <svg
                             fill='none'
@@ -936,13 +965,13 @@ const FindJob = () => {
                   )}
                 </div>
                 {isSmallScreen && (
-                  <div className='flex flex-col justify-between w-full'>
-                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
+                  <div className='flex w-full flex-col justify-between'>
+                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {gig.gigTitle}
                       </div>
                     </div>
-                    <div className='flex flex-row-reverse items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
+                    <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -990,7 +1019,7 @@ const FindJob = () => {
                         {gig.location}
                       </div>
                     </div>
-                    <div className='flex items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
+                    <div className='mt-3 flex items-start justify-between gap-6 md:flex-row md:justify-start'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -1056,11 +1085,13 @@ const FindJob = () => {
                 )}
                 <Separator className='my-4' />
                 <div className='text-left text-[#96B0BD]'>
-                  {gig.gigDescription.length < descriptionTextMaxLength
-                    ? gig.gigDescription
-                    : filteredGigShowModeList[index]
+                  <pre className='whitespace-pre-wrap font-roboto'>
+                    {gig.gigDescription.length < descriptionTextMaxLength
                       ? gig.gigDescription
-                      : gig.gigDescription.slice(0, descriptionTextMaxLength) + '...'}
+                      : filteredGigShowModeList[index]
+                        ? gig.gigDescription
+                        : gig.gigDescription.slice(0, descriptionTextMaxLength) + '...'}
+                  </pre>
                 </div>
                 <div className='mt-3 text-left'>
                   {gig.gigDescription.length < descriptionTextMaxLength ? (

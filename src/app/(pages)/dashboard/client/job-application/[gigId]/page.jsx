@@ -18,7 +18,7 @@ const Page = async ({ params }) => {
   }, [router, pathname])
 
   const gigData = await getGigById(params.gigId);
-  const { gigTitle, gigPostDate, gigPrice, creator: freelancer } = gigData.data.data;
+  const { gigTitle, gigPostDate, gigPrice, creator: freelancer, walletPubkey } = gigData.data.data;
 
   return (
     <GigPage
@@ -27,6 +27,7 @@ const Page = async ({ params }) => {
       gigPostDate={gigPostDate}
       gigPrice={gigPrice}
       gigTitle={gigTitle}
+      walletPubkey={walletPubkey}
     />
   );
 };

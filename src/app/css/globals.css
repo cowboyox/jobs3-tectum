@@ -10127,6 +10127,8 @@ body {
 .message_popup.error_message svg path {
   fill: #c292eb;
 }
+
+
 .message_popup svg {
   width: 39px;
   margin-bottom: -10px;

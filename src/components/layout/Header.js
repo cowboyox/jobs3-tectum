@@ -89,8 +89,7 @@ const Header = () => {
             {!auth?.isAuthenticated ? (
               <Link
                 className='btn_classified ml-10 whitespace-nowrap'
-                href={'#sign-out'}
-                onClick={() => openPopup('TypeOfAccount')}
+                href={'/signup'}
               >
                 Sign Up
               </Link>
@@ -107,8 +106,7 @@ const Header = () => {
               <div>
                 <Link
                   className='btn_classified whitespace-nowrap'
-                  href={'#sign-out'}
-                  onClick={() => openPopup('SignIn')}
+                  href={'signin'}
                 >
                   Launch App
                 </Link>
