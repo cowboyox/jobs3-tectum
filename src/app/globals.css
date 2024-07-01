@@ -78,3 +78,26 @@ button {
     @apply bg-background text-foreground;
   }
 }
+
+.wallet-adapter-button {
+  border-radius: 12px !important;
+}
+
+.wallet-adapter-button-trigger {
+  background-color: transparent;
+  border-color: rgb(27 39 44);
+  border-width: 1px;
+  border-style: solid;
+}
+
+.wallet-adapter-dropdown-list {
+  /* @apply bg-gray-700; */
+  background-color: rgb(16 25 29);
+  border-color: rgb(40 55 62);
+  border-width: 1px;
+  border-style: solid;
+}
+
+/* .wallet-adapter-dropdown-list > .wallet-adapter-dropdown-list-item {
+  @apply hover:bg-sky-700;
+} */
