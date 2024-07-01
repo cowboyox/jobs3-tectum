@@ -50,7 +50,6 @@ const DashboardHeader = () => {
   }, []);
 
   const handleTap = (item) => {
-    console.log("item", item, auth)
     if (!item) {
       return 'Freelancer';
     } else if (item === 1) {
@@ -95,8 +94,7 @@ const DashboardHeader = () => {
       <header
         className='flex flex-wrap items-center justify-end h-28 md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
         id='header_container'
-      >
-      </header>
+      />
     );
   }
 
