@@ -10,11 +10,20 @@ module.exports = {
   plugins: [require('tailwindcss-animate')],
   prefix: '',
   theme: {
+    screens: {
+      xs: "320px",
+      "xxs": "480px",
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+    },
     container: {
       center: true,
       padding: '2rem',
       screens: {
-        '2xl': '1400px',
+        "2xl": "1400px",
       },
     },
     extend: {
@@ -89,14 +98,6 @@ module.exports = {
     fontFamily: {
       roboto: ['Roboto', 'sans-serif'],
     },
-    screens: {
-      '2xl': '1536px',
-      lg: '1024px',
-      md: '768px',
-      sm: '640px',
-      xl: '1280px',
-      xs: '320px',
-      xxs: '480px',
-    },
+    
   },
 };
