@@ -98,14 +98,18 @@ const DashboardHeader = () => {
       <div className='w-full md:hidden'>
         <img className='h-6' src='/assets/images/logo.svg' />
       </div>
-      <div className='flex w-full items-center gap-3 md:w-auto md:gap-4'>
+      <div className='flex items-center w-full gap-3 md:w-auto md:gap-4'>
         <LuAlignLeft
           className='w-5 h-5 mr-auto md:hidden'
           onClick={() => {
             OpenSideBar();
           }}
         />
-        <DropdownMenu>
+        <div className='flex items-center gap-2'>
+          {/* <span className='text-lg uppercase'>{handleTap(auth?.currentRole)}</span> */}
+          {renderWalletButton()}
+        </div>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger className='py-2 px-4 min-w-20 w-auto rounded-xl border border-[#1B272C] gap-3 flex items-center mobile:p-2'>
             <img src="/assets/images/icons/metamask.png" className='bg-[#10191D] h-7 w-7 rounded-full object-contain p-1' />
             <span className='text-sm'>0x907a...Ac62e2</span>
@@ -116,17 +120,17 @@ const DashboardHeader = () => {
               <span className='text-sm'>0x907a...Ac62e2</span>
               <FaRegCopy className='ml-3 cursor-pointer' />
             </DropdownMenuItem>
-            <DropdownMenuItem className='flex gap-2 rounded-xl cursor-pointer py-3'>
+            <DropdownMenuItem className='flex gap-2 py-3 cursor-pointer rounded-xl'>
               <RxReload className='w-5 stroke-[#96b0be]' />
               <span className='text-[15px]'>Change wallet</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='flex gap-2 rounded-xl cursor-pointer py-3'>
+            <DropdownMenuItem className='flex gap-2 py-3 cursor-pointer rounded-xl'>
               <IoIosLogOut className='w-5 stroke-[#96b0be]' />
               <span className='text-[15px]'>Disconnect</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
         <Select defaultValue='Client'>
           <SelectTrigger className='min-w-20 w-auto rounded-xl bg-[#10191D] gap-1 flex mobile:p-2 py-5 mobile:hidden'>
             <SelectValue />
@@ -139,20 +143,20 @@ const DashboardHeader = () => {
           </SelectContent>
         </Select>
         <div className='p-[10px] rounded-xl bg-[#10191D] cursor-pointer mobile:hidden'> 
-          <AiOutlineQuestion className='object-contain h-6 w-6 cursor-pointer' />
+          <AiOutlineQuestion className='object-contain w-6 h-6 cursor-pointer' />
         </div>
         <div className='p-2 rounded-xl bg-[#10191D] cursor-pointer'> 
-          <CiBellOn className='object-contain h-6 w-6 cursor-pointer' />
+          <CiBellOn className='object-contain w-6 h-6 cursor-pointer' />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger className='mobile:hidden'>
             <div className='relative w-20 md:h-12 md:w-12'>
               <img
-                className='aspect-square h-full w-full rounded-full'
+                className='w-full h-full rounded-full aspect-square'
                 src='/assets/images/users/user-5.png'
               />
               {/* Change background color depending on user online status */}
-              <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
+              <div className='absolute w-2 h-2 bg-green-500 rounded-full bottom-1 right-1' />
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent sideOffset={10} className='w-52 flex flex-col gap-0 rounded-xl border-2 border-[#28373e] bg-[#10191d]' align='end'>
