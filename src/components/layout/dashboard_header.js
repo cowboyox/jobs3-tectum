@@ -5,6 +5,7 @@ import { AiOutlineQuestion } from 'react-icons/ai';
 import { CiBellOn } from 'react-icons/ci';
 import { LuAlignLeft } from 'react-icons/lu';
 import { useDisconnect } from 'wagmi';
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 import { usePopupFunctions } from '../../components/popups/popups';
 
@@ -82,9 +83,15 @@ const DashboardHeader = () => {
     location.href = '/';
   };
 
+  const renderWalletButton = () => {
+    return (
+        <WalletMultiButton className="bg-secondary hover:bg-[#15539a]" />
+    );
+};
+
   return (
     <header
-      className='flex h-28 flex-wrap items-center justify-end md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
+      className='flex flex-wrap items-center justify-end h-28 md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
       id='header_container'
     >
       {renderPopup()}
@@ -93,7 +100,7 @@ const DashboardHeader = () => {
       </div>
       <div className='flex w-full items-center gap-3 md:w-auto md:gap-4'>
         <LuAlignLeft
-          className='mr-auto h-5 w-5 md:hidden'
+          className='w-5 h-5 mr-auto md:hidden'
           onClick={() => {
             OpenSideBar();
           }}
@@ -147,6 +154,18 @@ const DashboardHeader = () => {
               {/* Change background color depending on user online status */}
               <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
             </div>
+//         <div className='flex items-center gap-2'>
+//           <span className='text-lg uppercase'>{handleTap(auth?.currentRole)}</span>
+//           {renderWalletButton()}
+//         </div>
+//         <AiOutlineQuestion className='w-6 h-6 cursor-pointer' />
+//         <CiBellOn className='w-6 h-6 cursor-pointer' />
+//         <DropdownMenu>
+//           <DropdownMenuTrigger className='hidden md:flex'>
+//             <img
+//               className='object-cover object-center w-10 h-10 rounded-full cursor-pointer aspect-square'
+//               src='/assets/images/user_img.png'
+//             />
           </DropdownMenuTrigger>
           <DropdownMenuContent sideOffset={10} className='w-52 flex flex-col gap-0 rounded-xl border-2 border-[#28373e] bg-[#10191d]' align='end'>
             <DropdownMenuLabel className='uppercase'>
