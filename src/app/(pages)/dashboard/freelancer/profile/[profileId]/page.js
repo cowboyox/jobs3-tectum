@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
+import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 import { languages, skillSets, USER_ROLE } from '@/utils/constants';
 
@@ -95,6 +96,7 @@ const FreelancerProfile = () => {
   const [previewBio, setPreviewBio] = useState('');
   const [expandedBio, setExpandedBio] = useState('');
   const { profileId } = useParams();
+  const auth = useCustomContext();
   const [profileData, setProfileData] = useState({
     avatar: null,
     avgResponseTime: '',
@@ -119,14 +121,14 @@ const FreelancerProfile = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (profileData._id === profileId) {
+    if (auth?.currentProfile?._id === profileId) {
       setIsAuth(true);
       setViewMode('edit');
     } else {
       setIsAuth(false);
       setViewMode('preview');
     }
-  }, [profileData, profileId]);
+  }, [auth, profileId]);
 
   useEffect(() => {
     (async () => {
