@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { CiFilter, CiReceipt } from 'react-icons/ci';
 import { FaClock, FaStar } from 'react-icons/fa';
-import { FaArrowRight } from 'react-icons/fa6';
+import { FaArrowRight, FaX } from 'react-icons/fa6';
 import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
 import { PiShootingStarLight } from 'react-icons/pi';
 
@@ -23,10 +23,14 @@ import {
 } from '@/components/ui/select';
 import api from '@/utils/api';
 
-const DropdownItem = (props) => {
+const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
-    <div className='flex items-center gap-4 p-0 cursor-pointer'>
-      <Checkbox id={props.category_id} />
+    <div className='flex cursor-pointer items-center gap-4 p-0'>
+      <Checkbox
+        className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
+        id={props.category_id}
+        onCheckedChange={onCheckedChange}
+      />
       <label className='cursor-pointer text-sm text-[#96B0BD]' htmlFor={props.category_id}>
         {props.category_name}
       </label>
@@ -51,26 +55,26 @@ const GigCard = (props) => {
       <div className='relative w-[400px] max-w-full'>
         <img
           alt='Gig Image'
-          className='object-cover w-full aspect-video rounded-xl'
+          className='aspect-video w-full rounded-xl object-cover'
           src='/assets/images/portfolio_works/portfolio.jpeg'
         />
-        <div className='absolute flex gap-2 left-2 top-2'>
-          <div className='flex items-center gap-2 px-2 py-1 text-white bg-gray-800 rounded-full'>
+        <div className='absolute left-2 top-2 flex gap-2'>
+          <div className='flex items-center gap-2 rounded-full bg-gray-800 px-2 py-1 text-white'>
             <FaStar fill='#DC4F13' size={16} />
             <p className='flex gap-1 text-[14px] text-[#E0F0F9]'>
               5.5
               <span className='text-[#96b0be]'>(921)</span>
             </p>
           </div>
-          <div className='flex items-center gap-2 px-2 py-1 text-white bg-gray-800 rounded-full'>
+          <div className='flex items-center gap-2 rounded-full bg-gray-800 px-2 py-1 text-white'>
             <PiShootingStarLight className='text-blue-500' />
             <span className='text-[#96b0be]'>Top Rated</span>
           </div>
         </div>
       </div>
-      <div className='flex flex-col flex-grow gap-2'>
+      <div className='flex flex-grow flex-col gap-2'>
         <h3 className='text-2xl font-semibold text-[#F5F5F5]'>{props.info.gigTitle}</h3>
-        <div className='flex items-center gap-5 mt-2 text-gray-400'>
+        <div className='mt-2 flex items-center gap-5 text-gray-400'>
           <div className='flex items-center gap-2'>
             <FaClock size={24} />
             <span className='text-base'>{props.info.gigPrice}</span>
@@ -123,6 +127,84 @@ const GigSearch = () => {
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [filteredGigList, setFilteredGigList] = useState([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [filters, setFilters] = useState([]);
+  const filterItems = [
+    {
+      content: [
+        { category_id: 'any_amount', category_name: 'Any Amount' },
+        { category_id: 'over_1_earned', category_name: '$1+ Earned' },
+        { category_id: 'over_100_earned', category_name: '$100+ Earned' },
+        { category_id: 'over_1k_earned', category_name: '$1k+ Earned' },
+        { category_id: 'over_10k_earned', category_name: '$10k+ Earned' },
+        { category_id: 'no_earning_yet', category_name: 'No Earning Yet' },
+      ],
+      title: 'Earned Amount',
+    },
+    {
+      content: [
+        { category_id: 'any_job_success', category_name: 'Any Job Success' },
+        { category_id: '80_up', category_name: '80% & UP' },
+        { category_id: '90_up', category_name: '90% & UP' },
+        { category_id: 'top_rated', category_name: 'Top Rated' },
+        { category_id: 'rising_talent', category_name: 'Rising Talent' },
+      ],
+      title: 'Job Success',
+    },
+    {
+      content: [
+        { category_id: 'any_hourly_rate', category_name: 'Any Hourly Rate' },
+        { category_id: '10_below', category_name: '$10 and Below' },
+        { category_id: '10_30', category_name: '$10 - $30' },
+        { category_id: '30_60', category_name: '$30 - $60' },
+        { category_id: '60_above', category_name: '$60 and Above' },
+      ],
+      title: 'Hourly rate',
+    },
+    {
+      content: [
+        { category_id: 'over_1_hour', category_name: '1+ Hours Billed' },
+        { category_id: 'over_100_hour', category_name: '100+ Hours Billed' },
+        { category_id: 'over_1000_hour', category_name: '1000+ Hours Billed' },
+      ],
+      title: 'Hours billed',
+    },
+    {
+      content: [
+        { category_id: 'any_category', category_name: 'Any Category' },
+        { category_id: 'customer_service', category_name: 'Customer Service' },
+        { category_id: 'design_creative', category_name: 'Design And Creative' },
+        { category_id: 'web_mobile_software', category_name: 'Web, Mobile & Software' },
+      ],
+      title: 'Category',
+    },
+    {
+      content: [
+        { category_id: 'any_level', category_name: 'Any Level' },
+        { category_id: 'basic', category_name: 'Basic' },
+        { category_id: 'conversational', category_name: 'Conversational' },
+        { category_id: 'fluent', category_name: 'Fluent' },
+        { category_id: 'native_bilingual', category_name: 'Native Or Bilingual' },
+      ],
+      title: 'English Level',
+    },
+    {
+      content: [
+        { category_id: 'freelancers_agencies', category_name: 'Freelancers & Agencies' },
+        { category_id: 'freelancers', category_name: 'Freelancers' },
+        { category_id: 'agencies', category_name: 'Agencies' },
+      ],
+      title: 'Talent Type',
+    },
+    {
+      content: [
+        { category_id: 'any_time', category_name: 'Any Time' },
+        { category_id: '2_weeks', category_name: 'Within 2 Weeks' },
+        { category_id: '1_month', category_name: 'Within 1 Month' },
+        { category_id: '2_month', category_name: 'Within 2 Month' },
+      ],
+      title: 'Notice Period',
+    },
+  ];
 
   useEffect(() => {
     const handleResize = () => {
@@ -195,10 +277,18 @@ const GigSearch = () => {
     }
   };
 
+  const onCheckedChange = (value, id, name) => {
+    if (value) {
+      setFilters((prev) => [...prev, name]);
+    } else {
+      setFilters((prev) => prev.filter((item) => item !== name));
+    }
+  };
+
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex gap-2 rounded-xl bg-[#10191d]'>
-        <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
+        <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -211,7 +301,7 @@ const GigSearch = () => {
             </SelectContent>
           </Select>
           <input
-            className='w-full text-white bg-transparent outline-none mobile:text-sm'
+            className='w-full bg-transparent text-white outline-none mobile:text-sm'
             onChange={(e) => setKey(e)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
@@ -222,13 +312,43 @@ const GigSearch = () => {
           <span className='text-[#96B0BD]'>Anywhere</span>
         </div>
         {(!isSmallScreen || searchType === 'normal') && (
-          <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:m-1'>
-            <CiFilter className='mobile:max-w-4' fill='#96B0BD' size={20} />
-            <span className='text-[#96B0BD] mobile:text-sm'>Filter</span>
-            <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
-              4
-            </span>
-          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
+                <CiFilter className='mobile:max-w-4' fill='#96B0BD' size={20} />
+                <span className='text-[#96B0BD] mobile:text-sm'>Filter</span>
+                <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
+                  4
+                </span>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent
+              align='end'
+              className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
+            >
+              <div className='grid grid-cols-4 gap-4'>
+                {filterItems.map((item, index) => {
+                  return (
+                    <div className='flex flex-col gap-2' key={index}>
+                      <div>{item.title}</div>
+                      {item.content.map((con, i) => {
+                        return (
+                          <DropdownItem
+                            category_id={con.category_id}
+                            category_name={con.category_name}
+                            key={i}
+                            onCheckedChange={(value) =>
+                              onCheckedChange(value, con.category_id, con.category_name)
+                            }
+                          />
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+            </PopoverContent>
+          </Popover>
         )}
         {searchType === 'ai' && (
           <div className='flex'>
@@ -241,76 +361,30 @@ const GigSearch = () => {
           </div>
         )}
       </div>
-      <div className='flex gap-3 mobile:flex-col'>
-        <Popover>
-          <DropDownTrigger text='Open' />
-          <PopoverContent
-            align='start'
-            className='flex flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
-          >
-            <DropdownItem category_id='all_categories' category_name='All Categories' />
-            <DropdownItem category_id='social_media_design' category_name='Social Media Design' />
-            <DropdownItem category_id='analyst' category_name='Analyst' />
-            <DropdownItem category_id='logo_design' category_name='Logo Design' />
-            <DropdownItem category_id='web_mobile_design' category_name='Web & Mobile Design' />
-            <DropdownItem category_id='animation' category_name='Animation' />
-          </PopoverContent>
-        </Popover>
-        <Popover>
-          <DropDownTrigger text='Project Attributes' />
-          <PopoverContent
-            align='start'
-            className='flex flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
-          >
-            <DropdownItem category_id='attribute_1' category_name='Option 1' />
-            <DropdownItem category_id='attribute_2' category_name='Option 2' />
-          </PopoverContent>
-        </Popover>
-        <Popover>
-          <DropDownTrigger text='Price' />
-          <PopoverContent
-            align='start'
-            className='flex flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
-          >
-            <DropdownItem category_id='100-200' category_name='$100 - $200' />
-            <DropdownItem category_id='200-300' category_name='$200 - $300' />
-            <DropdownItem category_id='300-400' category_name='$300 - $400' />
-            <DropdownItem category_id='300-400' category_name='$400 - $500' />
-            <DropdownItem category_id='1000-3000' category_name='$1000 - $3000' />
-            <DropdownItem category_id='5000-10000' category_name='$5000 - $10 000' />
-            <DropdownItem category_id='5000-10000' category_name='+ $2000' />
-          </PopoverContent>
-        </Popover>
-        <Popover>
-          <DropDownTrigger text='Choose Category' />
-          <PopoverContent
-            align='start'
-            className='flex flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
-          >
-            {Array.from({ length: 10 }, (_, i) => (
-              <DropdownItem
-                category_id=''
-                category_name={i + 1 + ` day${i + 1 > 1 ? 's' : ''}`}
-                key={i + 1}
-              />
-            ))}
-            <DropdownItem category_id='2_months' category_name='+ 14 days' />
-          </PopoverContent>
-        </Popover>
-        <Popover>
-          <DropDownTrigger text='Talent Details' />
-          <PopoverContent
-            align='end'
-            className='flex flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
-          >
-            <DropdownItem category_id='option_1' category_name='Option 1' />
-            <DropdownItem category_id='option_2' category_name='Option 2' />
-            <DropdownItem category_id='option_3' category_name='Option 3' />
-          </PopoverContent>
-        </Popover>
-      </div>
+      {filters.length > 0 && (
+        <div className='flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
+          {filters.map((item, index) => {
+            return (
+              <span
+                className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
+                key={index}
+              >
+                <FaX
+                  className='rounded-full bg-[#3E525B] p-[2px]'
+                  onClick={() => setFilters((prev) => prev.filter((_item) => _item !== item))}
+                />
+                {item}
+              </span>
+            );
+          })}
+
+          <span className='cursor-pointer' onClick={() => setFilters([])}>
+            Clear&nbsp;All
+          </span>
+        </div>
+      )}
       <div className='flex items-center justify-center rounded-xl bg-[#10191d] px-3 py-6 text-lg'>
-        Wow! <span className='px-2 main_color'>{filteredGigList.length}</span> projects available 😀
+        Wow! <span className='main_color px-2'>{filteredGigList.length}</span> projects available 😀
       </div>
       {/*
        * These should be dynamic, you can pass all the data you need through attributes and retrieve it on the component
