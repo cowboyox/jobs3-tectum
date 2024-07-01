@@ -14,16 +14,14 @@ import {
   setProvider,
   getProvider,
   utils,
-  BN,
 } from "@project-serum/anchor";
-import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
+import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 
 import {
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
-import { v4 as uuid } from "uuid";
 import IDL from "@/idl/gig_basic_contract.json";
 import {
   PROGRAM_ID,
@@ -160,7 +158,6 @@ const Orders = () => {
   };
 
   const onAccept = async (gigId, clientId, contractId) => {
-    console.log(gigId, clientId, contractId)
     if (!wallet || !program) {
       toast({
         className:
@@ -180,7 +177,6 @@ const Orders = () => {
           ],
           program.programId
       );
-      console.log(contract)
 
       const sellerAta = getAssociatedTokenAddressSync(
           PAYTOKEN_MINT,

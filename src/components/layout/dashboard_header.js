@@ -153,7 +153,7 @@ const DashboardHeader = () => {
             <div className='relative w-20 md:h-12 md:w-12'>
               <img
                 className='w-full h-full rounded-full aspect-square'
-                src='/assets/images/users/user-5.png'
+                src={auth?.currentProfile?.avatarURL ? auth?.currentProfile?.avatarURL : '/assets/images/users/user-5.png'}
               />
               {/* Change background color depending on user online status */}
               <div className='absolute w-2 h-2 bg-green-500 rounded-full bottom-1 right-1' />
