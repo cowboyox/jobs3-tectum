@@ -50,6 +50,7 @@ const DashboardHeader = () => {
   }, []);
 
   const handleTap = (item) => {
+    console.log("item", item, auth)
     if (!item) {
       return 'Freelancer';
     } else if (item === 1) {
@@ -87,7 +88,17 @@ const DashboardHeader = () => {
     return (
         <WalletMultiButton className="bg-secondary hover:bg-[#15539a]" />
     );
-};
+  };
+
+  if (!auth?.currentProfile) {
+    return (
+      <header
+        className='flex flex-wrap items-center justify-end h-28 md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
+        id='header_container'
+      >
+      </header>
+    );
+  }
 
   return (
     <header
@@ -131,14 +142,14 @@ const DashboardHeader = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu> */}
-        <Select defaultValue='Client'>
+        <Select defaultValue={handleTap(auth?.currentRole)}>
           <SelectTrigger className='min-w-20 w-auto rounded-xl bg-[#10191D] gap-1 flex mobile:p-2 py-5 mobile:hidden'>
             <SelectValue />
           </SelectTrigger>
           <SelectContent className='rounded-xl bg-[#10191D] p-1' align='end'>
             <SelectGroup className='flex flex-col gap-2'>
-              <SelectItem className='rounded bg-[#1B272C] cursor-pointer' value={handleTap(auth?.currentRole)}>{handleTap(auth?.currentRole)} </SelectItem>
-              <SelectItem className='rounded bg-[#1B272C] cursor-pointer' value='freelancer'>Freelancer </SelectItem>
+              <SelectItem className='rounded bg-[#1B272C] cursor-pointer' value="Client">Client</SelectItem>
+              <SelectItem className='rounded bg-[#1B272C] cursor-pointer' value="Freelancer">Freelancer</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
