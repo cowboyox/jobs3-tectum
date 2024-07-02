@@ -103,13 +103,13 @@ const OrderPage = ({ params }) => {
                     <div className='relative w-12 h-12 mobile:h-8 mobile:w-8'>
                       <img
                         className='object-cover w-full h-full rounded-full aspect-square'
-                        src={contractInfo?.proposer?.avatarURL ? contractInfo?.proposer?.avatarURL : '/assets/images/users/user-3.png'}
+                        src={contractInfo?.gigOwner?.avatarURL ? contractInfo?.gigOwner?.avatarURL : '/assets/images/users/user-3.png'}
                       /> 
                       <div className='absolute w-3 h-3 bg-green-500 rounded-full bottom-1 mobile:bottom-0 right-1 mobile:right-0 mobile:h-3 mobile:w-3' />
                     </div>
                     <div className='flex flex-col gap-4'>
                       <div className='flex items-center gap-2'>
-                        <h2 className='text-xl mobile:text-xs'>{contractInfo?.proposer?.fullName}</h2>
+                        <h2 className='text-xl mobile:text-xs'>{contractInfo?.gigOwner?.fullName}</h2>
                         <img className='w-4 h-4 mobile:h-3 mobile:w-3' src='/assets/images/icons/checkmark.svg' />
                       </div>
                     </div>

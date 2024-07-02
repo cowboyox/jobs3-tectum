@@ -5,6 +5,14 @@ const skillSets = ['UI/UX', 'Design', 'Webdesign', 'Prototyping', 'Wireframing',
 
 const languages = ['English', 'Germany', 'Russian', 'Spanish', 'Portugues'];
 
+const ContractStatus = {
+  STARTED: 'Started',
+  ACTIVE: 'Active',
+  PENDING: 'Pending',
+  CANCELLED: 'Cancelled',
+  COMPLETED: 'Completed'
+};
+
 const PROGRAM_ID = 'GuqgMVMCLi9daQMHyhnLRGTpgpwNGU4yZXs9GK4SYrbS'; // devnet and mainnet
 const CONTRACT_SEED = 'gig_contract';
 const ADMIN_ADDRESS = new PublicKey('CxMudY9Vyw4p5fx1ZY173GHH2Q1ewZFo2YWmd8sozquQ');
@@ -22,6 +30,7 @@ const PAYTOKEN_MINT = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1
 export {
   skillSets,
   languages,
+  ContractStatus,
   RPC_ENDPOINT,
   PROGRAM_ID,
   CONTRACT_SEED,
