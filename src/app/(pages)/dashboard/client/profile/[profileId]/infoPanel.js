@@ -1,16 +1,17 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import api from '@/utils/api';
+import { USER_ROLE } from '@/utils/constants';
 
 const InfoPanel = (props) => {
   const { toast } = useToast();
 
   const saveToDB = (data) => {
     api
-      .put(`/api/v1/profile/update-profileinfo/${props.email}`, data)
+      .put(`/api/v1/profile/update-profileinfo/${props.email}/${USER_ROLE.CLIENT}`, data)
       .then(() => {
         return toast({
           className:
@@ -49,22 +50,31 @@ const InfoPanel = (props) => {
     }
   };
   const [editMode, setEditMode] = useState(false);
+  useEffect(() => {
+    if (props.viewMode == 'preview') {
+      setEditMode(false);
+    }
+  }, [props.viewMode]);
   return (
     <div
       className='flex flex-col gap-4 bg-[#10191D] px-3 py-4 md:rounded-xl md:p-8'
       key={props.index}
     >
       {/* Content */}
+
       <div className='flex w-full justify-between'>
         <p className='text-[18px] font-medium text-[#96B0BD]'>{props.title}</p>
-        <img
-          className='w-5 cursor-pointer'
-          onClick={() => {
-            setEditMode(true);
-          }}
-          src='/assets/images/icons/edit-pen.svg'
-        />
+        {props.isAuth && props.viewMode === 'edit' && (
+          <img
+            className='w-5 cursor-pointer'
+            onClick={() => {
+              setEditMode(true);
+            }}
+            src='/assets/images/icons/edit-pen.svg'
+          />
+        )}
       </div>
+
       <form>
         {' '}
         {/* After the form is submitted the user data should be saved in the backend */}
@@ -73,7 +83,7 @@ const InfoPanel = (props) => {
             return (
               <div className='flex flex-col gap-1' key={cntNum}>
                 <p className='text-base text-[#96B0BD]'>{singleInfo.label}</p>
-                {editMode ? (
+                {props.isAuth && editMode ? (
                   <input
                     className='border-b bg-transparent pb-2 text-sm font-medium text-white outline-none [appearance:textfield] focus:border-white md:text-[18px] md:font-medium [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                     onChange={(e) => {
@@ -103,7 +113,7 @@ const InfoPanel = (props) => {
             );
           })}
         </div>
-        {editMode && (
+        {props.isAuth && editMode && (
           <Button
             className='mt-9 w-1/4 rounded-xl'
             onClick={() => {

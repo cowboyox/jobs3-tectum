@@ -10,6 +10,9 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { GoTrash } from 'react-icons/go';
+import {
+  useAnchorWallet,
+} from "@solana/wallet-adapter-react";
 
 import DropFile from '@/components/elements/dropFile';
 import FormStep from '@/components/elements/formSteps/Step';
@@ -44,7 +47,7 @@ const Question = (props) => {
   return (
     <div className='flex gap-2 rounded-xl border border-[#526872] p-4'>
       <p className='text-base text-white'>{props.question_num}.</p>
-      <div className='flex w-full flex-col gap-1'>
+      <div className='flex flex-col w-full gap-1'>
         <p className='text-base text-white'>{props.question}</p>
         <p className='w-full border-0 bg-transparent p-0 text-base text-[#96B0BD] shadow-none shadow-transparent outline-none'>
           {props.answer_placeholder}
@@ -56,6 +59,8 @@ const Question = (props) => {
 };
 
 const CreateGig = () => {
+  const wallet = useAnchorWallet();
+  
   const categories_list = [
     {
       label: 'Accounting & Consulting',
@@ -495,6 +500,17 @@ const CreateGig = () => {
     setDocumentFiles(newDocumentFiles);
   };
   async function onSubmit(values) {
+    if (!wallet) {
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Please connect your wallet!</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+      return;
+    }
+    
     /* Selmani: I didn't check if all the values are being passed here
      * And i'm sure not all, so please make sure all necessary inputs are being passed
      * NOTE: Make sure to check the ShadCN documentation
@@ -507,7 +523,8 @@ const CreateGig = () => {
     values.question = requirementQuestions;
     values.searchKeywords = tags;
     values.email = auth.user.email;
-    values.creator = auth.currentProfile._id
+    values.creator = auth.currentProfile._id;
+    values.walletPubkey = wallet.publicKey;
     // if (profile) {
     //   values.creator = profile._id;
     // }
@@ -576,7 +593,7 @@ const CreateGig = () => {
 
   return (
     <StepProvider>
-      <div className='flex w-full flex-col'>
+      <div className='flex flex-col w-full'>
         <nav className='flex w-full flex-nowrap rounded-t-xl bg-[#10191d] mobile:overflow-x-scroll'>
           <StepNavItem name='Overview' num={1} />
           <StepNavItem name='Pricing' num={2} />
@@ -603,7 +620,7 @@ const CreateGig = () => {
                     <FormControl>
                       <Textarea
                         {...field}
-                        className='h-18 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
+                        className='px-4 py-4 text-base bg-transparent h-18 rounded-xl border-slate-500'
                         placeholder='I will do something im really good at...'
                       />
                     </FormControl>
@@ -620,7 +637,7 @@ const CreateGig = () => {
                   <FormField
                     name='gigCategory'
                     render={() => (
-                      <FormItem className='flex w-full flex-col gap-2'>
+                      <FormItem className='flex flex-col w-full gap-2'>
                         <FormControl>
                           <Select
                             onValueChange={(e) => {
@@ -648,7 +665,7 @@ const CreateGig = () => {
                   <FormField
                     name='subCategory'
                     render={() => (
-                      <FormItem className='flex w-full flex-col gap-2'>
+                      <FormItem className='flex flex-col w-full gap-2'>
                         <FormControl>
                           <Select
                             onValueChange={(e) => {
@@ -680,7 +697,7 @@ const CreateGig = () => {
                   />
                 </div>
               </div>
-              <div className='flex w-full flex-col gap-4'>
+              <div className='flex flex-col w-full gap-4'>
                 <FormField
                   name='gig_tags'
                   render={({ field }) => (
@@ -708,7 +725,7 @@ const CreateGig = () => {
                 <div className='flex flex-wrap items-center gap-3'>
                   {tags.map((tag, index) => (
                     <div
-                      className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-white px-2 py-1 text-sm text-black'
+                      className='flex items-center w-auto px-2 py-1 text-sm text-black bg-white rounded-full cursor-pointer whitespace-nowrap'
                       key={index}
                       onClick={() => removeTag(index)}
                     >
@@ -730,7 +747,7 @@ const CreateGig = () => {
                     <FormLabel className='text-2xl text-[#F5F5F5]'>Setup price</FormLabel>
                     <FormControl>
                       <Input
-                        className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
+                        className='w-full px-4 py-4 text-base bg-transparent border h-14 rounded-xl border-slate-500'
                         placeholder='Price'
                         type='number'
                         {...field}
@@ -743,7 +760,7 @@ const CreateGig = () => {
               <FormField
                 name='revision'
                 render={({ field }) => (
-                  <FormItem className='flex w-full flex-col gap-2'>
+                  <FormItem className='flex flex-col w-full gap-2'>
                     <FormLabel className='text-2xl text-[#F5F5F5]'>Revisions</FormLabel>
                     <FormControl>
                       <Select defaultValue={field.value} onValueChange={field.onChange}>
@@ -768,7 +785,7 @@ const CreateGig = () => {
               <FormField
                 name='deliveryTime'
                 render={({ field }) => (
-                  <FormItem className='flex w-full flex-col gap-2'>
+                  <FormItem className='flex flex-col w-full gap-2'>
                     <FormLabel className='text-2xl text-[#F5F5F5]'>Delivery time</FormLabel>
                     <FormControl>
                       <Select defaultValue={field.value} onValueChange={field.onChange}>
@@ -811,7 +828,7 @@ const CreateGig = () => {
                     <FormControl>
                       <Textarea
                         {...field}
-                        className='h-60 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
+                        className='px-4 py-4 text-base bg-transparent h-60 rounded-xl border-slate-500'
                         placeholder='Add info here...'
                       />
                     </FormControl>
@@ -840,17 +857,17 @@ const CreateGig = () => {
               ))}
               <div className='flex flex-col gap-3 rounded-xl border border-[#526872] p-3'>
                 <input
-                  className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
+                  className='w-full px-4 py-4 text-base bg-transparent border h-14 rounded-xl border-slate-500'
                   placeholder='Add question here'
                   ref={newQuestionRef}
                 />
                 <input
-                  className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
+                  className='w-full px-4 py-4 text-base bg-transparent border h-14 rounded-xl border-slate-500'
                   placeholder='Answer example (For the client to know how to answer)'
                   ref={newAnswerPlaceholderRef}
                 />
                 <div
-                  className='h-14 w-full cursor-pointer rounded-xl bg-slate-700 px-4 py-4 text-center text-base text-white transition hover:bg-white hover:text-black'
+                  className='w-full px-4 py-4 text-base text-center text-white transition cursor-pointer h-14 rounded-xl bg-slate-700 hover:bg-white hover:text-black'
                   onClick={addNewQuestion}
                 >
                   Add new question
@@ -934,7 +951,7 @@ const CreateGig = () => {
                   Let’s publish your Gig and get you ready to start selling
                 </div>
               </div>
-              <img className='mx-auto w-1/2' src='/assets/images/publish_image.png' />
+              <img className='w-1/2 mx-auto' src='/assets/images/publish_image.png' />
             </FormStep>
             <FormNavigation />
           </form>

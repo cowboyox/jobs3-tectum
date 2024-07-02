@@ -3,6 +3,32 @@
 import React, { useEffect, useState } from 'react';
 import { FaEllipsis, FaX } from 'react-icons/fa6';
 
+import {
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+} from "@solana/wallet-adapter-react";
+import {
+  Program,
+  AnchorProvider,
+  setProvider,
+  getProvider,
+  utils,
+} from "@project-serum/anchor";
+import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
+
+import {
+  TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  getAssociatedTokenAddressSync,
+} from "@solana/spl-token";
+import IDL from "@/idl/gig_basic_contract.json";
+import {
+  PROGRAM_ID,
+  CONTRACT_SEED,
+  PAYTOKEN_MINT,
+} from "@/utils/constants";
+
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -28,6 +54,13 @@ import api from '@/utils/api';
 const Orders = () => {
   const auth = useCustomContext();
   const { toast } = useToast();
+
+  const wallet = useAnchorWallet();
+  const { sendTransaction } = useWallet();
+  const { connection } = useConnection();
+
+  const [program, setProgram] = useState();
+  const [search, setSearch] = useState('');
   const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
   const [submissions, setSubmissions] = useState([]);
   const [lives, setLives] = useState([]);
@@ -64,26 +97,49 @@ const Orders = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (wallet) {
+      (async function () {
+        let provider;
+        try {
+          provider = getProvider();
+        } catch {
+          provider = new AnchorProvider(connection, wallet, {});
+          setProvider(provider);
+        }
+
+        try {
+          const program = new Program(IDL, PROGRAM_ID);
+          setProgram(program);
+
+          console.log("programId", program.programId, program)
+        } catch (err) {}
+      })();
+    }
+  }, [wallet, connection]);
+
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
 
-    if (mode === 'live') {
-      const filtered = lives.filter(
-        (p) =>
-          p.creator.fullName.toLowerCase().includes(value) ||
-          p.gigTitle.toLowerCase().includes(value) ||
-          p.gigDescription.toLowerCase().includes(value)
-      );
-      setLives(filtered);
-    } else {
-      const filtered = submissions.filter(
-        (p) =>
-          p.creator.fullName.toLowerCase().includes(value) ||
-          p.gigTitle.toLowerCase().includes(value) ||
-          p.gigDescription.toLowerCase().includes(value)
-      );
-      setSubmissions(filtered);
+    if (gigs) {
+      if (mode === 'live') {
+        const filtered = gigs.lives.filter(
+          (p) =>
+            p.creator.fullName?.toLowerCase().includes(value) ||
+            p.gigTitle?.toLowerCase().includes(value) ||
+            p.gigDescription?.toLowerCase().includes(value)
+        );
+        setLives(filtered);
+      } else {
+        const filtered = gigs.submissions.filter(
+          (p) =>
+            p.creator.fullName?.toLowerCase().includes(value) ||
+            p.gigTitle?.toLowerCase().includes(value) ||
+            p.gigDescription?.toLowerCase().includes(value)
+        );
+        setSubmissions(filtered);
+      }
     }
   };
 
@@ -101,39 +157,116 @@ const Orders = () => {
     return formattedDate;
   };
 
-  const onWithdraw = async (gigId, clientId) => {
-    await api
-      .put(`/api/v1/freelancer_gig/accept_client/${gigId}`, JSON.stringify({ clientId }))
-      .then(async () => {
-        toast({
-          className:
-            'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Successfully accepted!</h3>,
-          title: <h1 className='text-center'>Success</h1>,
-          variant: 'default',
-        });
-      })
-      .catch((err) => {
-        console.error('Error corrupted during applying gig', err);
+  const onAccept = async (gigId, clientId, contractId) => {
+    if (!wallet || !program) {
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Please connect your wallet!</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    try {
+      const [contract, bump] = await PublicKey.findProgramAddressSync(
+          [
+            Buffer.from(utils.bytes.utf8.encode(CONTRACT_SEED)),
+            Buffer.from(utils.bytes.utf8.encode(contractId)),
+          ],
+          program.programId
+      );
+
+      const sellerAta = getAssociatedTokenAddressSync(
+          PAYTOKEN_MINT,
+          wallet?.publicKey,
+      );
+
+      // Get the token balance
+      const info = await connection.getTokenAccountBalance(sellerAta);
+
+      if (info.value.uiAmount < 0.5) {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
+          description: <h3>{`You don't have enough token. Need at least 0.5 USDC!`}</h3>,
           title: <h1 className='text-center'>Error</h1>,
           variant: 'destructive',
         });
+        return;
+      }
+
+  
+      const contractAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, contract, true);
+
+      const transaction = await program.methods
+          .activateContract(contractId)
+          .accounts({
+              seller: wallet.publicKey,
+              contract,
+              sellerAta,
+              contractAta,
+              tokenProgram: TOKEN_PROGRAM_ID,
+              associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+              systemProgram: SystemProgram.programId,
+          })
+          .transaction();
+
+      const signature = await sendTransaction(transaction, connection, { skipPreflight: true });
+
+      console.log("Your transaction signature for activating the contract", signature);
+
+      await connection.confirmTransaction(signature, "confirmed");
+      
+      await api.put(`/api/v1/freelancer_gig/accept_client/${gigId}`, JSON.stringify({ clientId }));
+
+      toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully accepted!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
       });
 
-    await refetchAllGigsProposed();
+      await refetchAllGigsProposed();
+    } catch (err) {
+      console.error('Error corrupted during applying gig', err);
+
+      if (err.message == "User rejected the request.") {
+        // In this case, don't need to show error toast.
+        return;
+      }
+
+      if (err.message == "failed to get token account balance: Invalid param: could not find account") {
+        toast({
+          className:
+            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>You should have USDC in your wallet!</h3>,
+          title: <h1 className='text-center'>Error</h1>,
+          variant: 'destructive',
+        });
+
+        return;
+      }
+      
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex flex-row items-center justify-between gap-5 rounded-xl bg-[#10191D] p-3'>
-        <div className='ml-3 flex flex-1 items-center gap-3'>
+        <div className='flex items-center flex-1 gap-3 ml-3'>
           <button>
             <svg
-              className='h-6 w-6'
+              className='w-6 h-6'
               fill='none'
               stroke='currentColor'
               strokeWidth={1.5}
@@ -149,9 +282,10 @@ const Orders = () => {
           </button>
           <input
             className='w-full bg-transparent outline-none'
-            onChange={(e) => handleSearch(e)}
+            onChange={handleSearch}
             placeholder={isSmallScreen ? 'Search' : 'Search by Order title...'}
             type='text'
+            value={search}
           />
           {isSmallScreen && (
             <button>
@@ -176,7 +310,7 @@ const Orders = () => {
             </button>
           )}
         </div>
-        <div className='flex flex-none flex-row items-center gap-2'>
+        <div className='flex flex-row items-center flex-none gap-2'>
           <button className='flex flex-row items-center justify-center gap-3'>
             {!isSmallScreen ? (
               <>
@@ -347,14 +481,14 @@ const Orders = () => {
         })}
         <span>Clear&nbsp;All</span>
       </div>
-      <div className='flex w-full items-center justify-center pb-5 pt-10'>
+      <div className='flex items-center justify-center w-full pt-10 pb-5'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block h-6 w-6 rounded-full bg-orange'>{lives.length}</span>
+              <span className='inline-block w-6 h-6 rounded-full bg-orange'>{lives.length}</span>
               &nbsp; Live
             </h1>
           ) : (
@@ -367,7 +501,7 @@ const Orders = () => {
         >
           {mode == 'submission' ? (
             <h1>
-              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
+              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
                 {submissions.length}
               </span>
               &nbsp; Submitted
@@ -384,11 +518,11 @@ const Orders = () => {
               {lives.map((order, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {order.gigTitle}
                       </div>
-                      <div className='flex flex-none flex-row items-center justify-between gap-2 mobile:w-full'>
+                      <div className='flex flex-row items-center justify-between flex-none gap-2 mobile:w-full'>
                         <div className='flex gap-2'>
                           <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                             15 H: 30 S
@@ -400,7 +534,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='border-none bg-transparent hover:bg-transparent'
+                              className='bg-transparent border-none hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -446,7 +580,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -505,7 +639,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -541,7 +675,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -573,7 +707,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -682,8 +816,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{order.gigDescription}</div>
                     {/* )} */}
-                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
-                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
+                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
+                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -721,7 +855,7 @@ const Orders = () => {
               </button>
             </>
           ) : (
-            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Live proposals will be here</p>
             </div>
@@ -734,11 +868,11 @@ const Orders = () => {
               {submissions.map((submission, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='mt-1 flex items-start justify-between md:flex-row md:items-center'>
+                    <div className='flex items-start justify-between mt-1 md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {submission.gigTitle}
                       </div>
-                      <div className='flex flex-none flex-row items-center gap-2'>
+                      <div className='flex flex-row items-center flex-none gap-2'>
                         {/* <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                         15 H: 30 S
                       </div>
@@ -748,7 +882,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='border-none bg-transparent hover:bg-transparent'
+                              className='bg-transparent border-none hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -794,7 +928,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -853,7 +987,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -889,7 +1023,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -921,7 +1055,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -1030,8 +1164,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{submission.gigDescription}</div>
                     {/* )} */}
-                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
-                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
+                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
+                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -1058,7 +1192,7 @@ const Orders = () => {
                         <button className='p-4 px-8 md:p-5'>Message</button>
                         <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
-                          onClick={() => onWithdraw(submission.gigId, submission.clientId)}
+                          onClick={() => onAccept(submission.gigId, submission.clientId, submission.contractId)}
                         >
                           Accept
                         </button>
@@ -1072,7 +1206,7 @@ const Orders = () => {
               </button>
             </>
           ) : (
-            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Submitted proposals will be here</p>
             </div>

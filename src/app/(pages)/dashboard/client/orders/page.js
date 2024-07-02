@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaEllipsis, FaX } from 'react-icons/fa6';
 
@@ -56,6 +57,7 @@ import { useGetAllClientGigsProposed } from '@/hooks/useGetAllClientGigsProposed
 import api from '@/utils/api';
 
 const Orders = () => {
+  const router = useRouter();
   const auth = useCustomContext();
 
   const wallet = useAnchorWallet();
@@ -68,7 +70,7 @@ const Orders = () => {
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllClientGigsProposed(
-    auth?.currentProfile?._id
+    auth?.currentProfile?._id, auth?.currentProfile?.userId
   );
   const { toast } = useToast();
   const [searchKeywords, setSearchKeyWords] = useState('');
@@ -164,7 +166,7 @@ const Orders = () => {
       const seller = new PublicKey(sellerPubkey);
       const contractId = uuid().slice(0, 8);
       const amount = new BN(gigPrice * Math.pow(10, 6));
-      const dispute = new BN(0.5 * Math.pow(10, 6));
+      const dispute = new BN(0.5 * Math.pow(10, 6)); // 0.5 USDC for dispute fee
       const deadline = Math.floor(Date.now() / 1000) + (10 * 24 * 60 * 60); 
 
       const [contract, bump] = await PublicKey.findProgramAddressSync(
@@ -183,11 +185,11 @@ const Orders = () => {
       // Get the token balance
       const info = await connection.getTokenAccountBalance(buyerAta);
 
-      if (info.value.uiAmount < Number(gigPrice)) {
+      if (info.value.uiAmount < Number(gigPrice) + 0.5) {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>{`You don't have enough token. Need at least ${gigPrice} USDC!`}</h3>,
+          description: <h3>{`You don't have enough token. Need at least ${gigPrice + 0.5} USDC!`}</h3>,
           title: <h1 className='text-center'>Error</h1>,
           variant: 'destructive',
         });
@@ -233,6 +235,24 @@ const Orders = () => {
       await refetchAllGigsProposed();
     } catch (err) {
       console.error('Error corrupted during applying gig', err);
+
+      if (err.message == "User rejected the request.") {
+        // In this case, don't need to show error toast.
+        return;
+      }
+
+      if (err.message == "failed to get token account balance: Invalid param: could not find account") {
+        toast({
+          className:
+            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>You should have USDC in your wallet!</h3>,
+          title: <h1 className='text-center'>Error</h1>,
+          variant: 'destructive',
+        });
+
+        return;
+      }
+      
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -561,7 +581,7 @@ const Orders = () => {
                             15 H: 30 S
                           </div>
                           <div className='rounded-xl border border-[#1BBF36] p-1 px-3 text-[#1BBF36]'>
-                            Active
+                            {order.status}
                           </div>
                         </div>
                         <DropdownMenu>
@@ -875,7 +895,12 @@ const Orders = () => {
                       </div>
                       <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
                         <button className='p-4 px-8 md:p-5'>Message</button>
-                        <button className='bg-[#DC4F13] p-4 px-8 md:p-5'>See Order</button>
+                        <button 
+                          className='bg-[#DC4F13] p-4 px-8 md:p-5'
+                          onClick={() => router.push(`/dashboard/client/orders/${order?.id}`)}
+                        >
+                          See Order
+                        </button>
                       </div>
                     </div>
                   </div>
