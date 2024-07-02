@@ -150,7 +150,7 @@ const Gigs = () => {
               <div className='flex h-14 w-full items-center justify-end md:h-auto md:w-56'>
                 <div className='flex h-full w-full gap-2 rounded-2xl bg-darkGray'>
                   <button className='flex-1'>Message</button>
-                  <button className='w-[55%] bg-orange'>Invite to Job</button>
+                  <button className='w-[55%] bg-orange'>Invite to Gig</button>
                 </div>
               </div>
             </div>

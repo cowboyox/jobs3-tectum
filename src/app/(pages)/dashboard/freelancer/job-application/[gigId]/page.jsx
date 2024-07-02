@@ -2,6 +2,9 @@
 
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import {
+  useAnchorWallet,
+} from "@solana/wallet-adapter-react";
 
 import Job from '@/components/dashboard/jobapplication/Job';
 import { useToast } from '@/components/ui/use-toast';
@@ -11,6 +14,7 @@ import api from '@/utils/api';
 
 const Page = () => {
   const { gigId } = useParams();
+  const wallet = useAnchorWallet();
   const router = useRouter();
   const { toast } = useToast();
   const [coverLetter, setCoverLetter] = useState();
@@ -31,6 +35,17 @@ const Page = () => {
   };
 
   const onApply = async () => {
+    if (!wallet) {
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Please connect your wallet!</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+      return;
+    }
+
     let values = {};
 
     values.freelancerId = auth.currentProfile._id;
@@ -38,6 +53,7 @@ const Page = () => {
     values.email = auth.user.email;
     values.proposal = coverLetter;
     values.connects = gigInfo.connects;
+    values.walletPubkey = wallet.publicKey;
 
     await api
       .post(`/api/v1/bidding/${gigId}/apply`, values)
@@ -67,12 +83,12 @@ const Page = () => {
     <div className='flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-center'>
       <div className='w-full md:w-[65%] md:max-w-[690px]'>
         {gigInfo ? <Job gigData={gigInfo} /> : <></>}
-        <div className='mt-4 flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
-          <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
+        <div className='flex flex-col gap-4 px-6 py-6 mt-4 text-white rounded-2xl bg-deepGreen'>
+          <h3 className='hidden text-xl font-semibold text-white whitespace-nowrap md:block'>
             Cover letter
           </h3>
           <textarea
-            className='w-full rounded-xl border border-medGray bg-deepGreen p-4'
+            className='w-full p-4 border rounded-xl border-medGray bg-deepGreen'
             cols='30'
             id=''
             name=''
@@ -83,7 +99,7 @@ const Page = () => {
         </div>
       </div>
       <div className='w-full md:w-[35%] md:max-w-[420px]'>
-        <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
+        <div className='flex flex-col gap-4 px-6 py-6 text-white rounded-2xl bg-deepGreen'>
           <div className='flex flex-col gap-3'>
             <div className='flex items-center justify-center gap-2 rounded-xl bg-[#1B272C] p-3'>
               <svg
@@ -120,15 +136,15 @@ const Page = () => {
             <div className='flex flex-col gap-4'>
               <div className='flex justify-between'>
                 <p> Refundable Dispute Fee</p>
-                <p>$ 0,50</p>
+                <p>$0.5</p>
               </div>
               <div className='flex justify-between'>
                 <p>Service Fee</p>
-                <p>$ 0</p>
+                <p>${gigInfo?.data?.data?.gigPrice * 0.1 || 0}</p>
               </div>
               <div className='flex justify-between'>
                 <p className='text-xl font-semibold'>Total</p>
-                <p className='text-xl font-semibold'>$ 0</p>
+                <p className='text-xl font-semibold'>${(gigInfo?.data?.data?.gigPrice - gigInfo?.data?.data?.gigPrice * 0.1)|| 0}</p>
               </div>
             </div>
             <div className='mt-2 flex rounded-xl bg-[#1B272C] p-1 md:mt-0'>

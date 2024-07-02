@@ -2,19 +2,23 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetAllClientGigsProposed = (profileId) => {
+export const useGetAllClientGigsProposed = (profileId, userId) => {
   return useQuery({
     cacheTime: Infinity,
-    enabled: !!profileId,
+    enabled: !!(profileId || userId),
     queryFn: async () => {
-      if (profileId) {
+      if (profileId && userId) {
         try {
-          const { data } = await api.get(`/api/v1/client_gig/find_all_gigs_of_client/${profileId}`);
+          const [ gigData, contractData ] = await Promise.all([
+            api.get(`/api/v1/client_gig/find_all_gigs_of_client/${profileId}`),
+            api.get(`/api/v1/client_gig/find_all_contracts_of_client/${userId}`)
+          ]);
+          console.log("contractData", gigData, contractData)
           const proposals = [];
           const lives = [];
 
-          if (data?.data) {
-            data.data.map((d) => {
+          if (gigData?.data?.data) {
+            gigData?.data?.data.map((d) => {
               d.bidInfos.map((info) => {
                 if (!info.hired) {
                   proposals.push({
@@ -26,26 +30,32 @@ export const useGetAllClientGigsProposed = (profileId) => {
                     gigId: d._id,
                     gigPostDate: d.gigPostDate,
                     gigPrice: d.gigPrice,
-                    minBudget : d.minBudget,
+                    gigTitle: d.gigTitle,
                     maxBudget: d.maxBudget,
-                    gigTitle: d.gigTitle,
-                    walletPubkey: info?.walletPubkey
-                  });
-                } else {
-                  lives.push({
-                    creator: {
-                      fullName: info.fullName,
-                    },
-                    freelancerId: info.freelancerId,
-                    gigDescription: d.gigDescription,
-                    gigId: d._id,
-                    gigPostDate: d.gigPostDate,
-                    gigPrice: d.gigPrice
-                      ? `$${d.gigPrice}`
-                      : `$${d.minBudget}/hr ~ $${d.maxBudget}/hr`,
-                    gigTitle: d.gigTitle,
+                    minBudget: d.minBudget,
+                    walletPubkey: info?.walletPubkey,
                   });
                 }
+              });
+            });
+          }
+
+          if (contractData?.data?.data) {
+            contractData?.data?.data.map((d) => {
+              lives.push({
+                id: d._id,
+                creator: {
+                  fullName: d.freelancer.fullName,
+                },
+                freelancerId: d.freelancer,
+                gigDescription: d.clientGig.gigDescription,
+                gigId: d.clientGig._id,
+                gigPostDate: d.clientGig.gigPostDate,
+                gigPrice: d.clientGig.gigPrice
+                  ? `$${d.clientGig.gigPrice}`
+                  : `$${d.clientGig.minBudget}/hr ~ $${d.clientGig.maxBudget}/hr`,
+                gigTitle: d.clientGig.gigTitle,
+                status: d.status,
               });
             });
           }
@@ -60,7 +70,7 @@ export const useGetAllClientGigsProposed = (profileId) => {
         return null;
       }
     },
-    queryKey: ['useGetAllClientGigsProposed', profileId],
+    queryKey: ['useGetAllClientGigsProposed', profileId, userId],
     staleTime: Infinity,
   });
 };
