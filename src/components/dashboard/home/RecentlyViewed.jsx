@@ -6,22 +6,29 @@ import { GiLaurelCrown } from 'react-icons/gi';
 import { MdVerified } from 'react-icons/md';
 import { RiPoliceBadgeLine } from 'react-icons/ri';
 
-import { getRecentViewedGigs } from '@/utils/http';
+import { useCustomContext } from '@/context/use-custom';
+import { getAllCLRecentViews } from '@/utils/http';
 
 const RecentlyViewed = ({ search }) => {
   const [data, setData] = useState([]);
+  const auth = useCustomContext();
 
   useEffect(() => {
     const fetchRecentViewGigs = async () => {
-      try {
-        const res = await getRecentViewedGigs();
-        setData(res.data);
-      } catch (err) {
-        console.error('Err fetching Gigs', err);
+      if (auth?.currentProfile?._id) {
+        try {
+          const res = await getAllCLRecentViews(auth.currentProfile._id);
+
+          setData(res.data);
+        } catch (err) {
+          console.error('Err fetching Gigs', err);
+        }
       }
     };
+
     fetchRecentViewGigs();
-  }, []);
+  }, [auth?.currentProfile]);
+
   const handleFilter = () => {
     let filteredGigs = data;
 
