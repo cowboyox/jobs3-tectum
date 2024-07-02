@@ -617,6 +617,7 @@ const GigPosting = () => {
     }
   }, [auth]);
 
+
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (tmp === null) {
@@ -651,6 +652,7 @@ const GigPosting = () => {
   };
   const form = useForm();
 
+  
   const handleSetGigTitle = (e) => {
     setPostData((prev) => ({
       ...prev,
@@ -667,10 +669,6 @@ const GigPosting = () => {
         variant: 'default',
       });
     }
-    setPostData((prev) => ({
-      ...prev,
-      requiredSkills: skillSet,
-    }));
     const formData = new FormData();
     files2.map((file) => {
       formData.append('files', file);
@@ -726,18 +724,12 @@ const GigPosting = () => {
       });
   };
 
-  const onSelectJobCatetory = (currentValue) => {
-    let categories = jobCategories.includes(currentValue)
-      ? jobCategories.filter((c) => c !== currentValue)
-      : [...jobCategories, currentValue];
-
-    setJobCategories(categories);
+  useEffect(() => {
     setPostData((prev) => ({
       ...prev,
-      gigCategory: categories,
+      requiredSkills: skillSet,
     }));
-    setOpenCategory(false);
-  };
+  }, [skillSet])
 
   return (
     <div className='gig_posting mb-4 flex justify-center rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>
@@ -872,6 +864,7 @@ const GigPosting = () => {
                           if (e.key === 'Enter') {
                             if (skillSet.length < 5) {
                               setSkillSet((prevSkillSet) => [...prevSkillSet, selectedSkill]);
+
                             }
                             setSelectedSkill('');
                           }

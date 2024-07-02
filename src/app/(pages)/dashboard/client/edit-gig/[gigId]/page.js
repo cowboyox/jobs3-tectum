@@ -608,35 +608,36 @@ const GigPosting = ({params}) => {
   const [currentCategory, setCurrentCategory] = useState('Accounting & Consulting');
   const [currentSub, setCurrentSub] = useState('Personal Coaching');
   useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const data = await getGigById(params.gigId);
+            setPostData((prev) => ({
+                ...prev,
+                attachment: data.data.data.attachment,
+                experienceLevel: data.data.data.experienceLevel,
+                gigCategory: data.data.data.gigCategory,
+                gigDeadline: data.data.data.gigDeadline,
+                gigDescription: data.data.data.gigDescription,
+                gigPaymentType: data.data.data.gigPaymentType,
+                gigPrice: data.data.data.gigPrice,
+                gigTitle: data.data.data.gigTitle,
+                location: data.data.data.location,
+                maxBudget: data.data.data.maxBudget,
+                minBudget: data.data.data.minBudget,
+                profileId: data.data.data.profileId,
+                requiredSkills: data.data.data.requiredSkills,
+            }));
+            setCurrentCategory(data.data.data.gigCategory[0]);
+            setSkillSet(data.data.data.requiredSkills ? data.data.data.requiredSkills : []);
+            setSelectedLevel(data.data.data.experienceLevel);
+        } catch (error) {
+            // Handle the error here
+            console.error('Error fetching data:', error);
+        }
+    };
+
     fetchData();
-  }, []);
-  const fetchData = async () => {
-    try {
-      const data = await getGigById(params.gigId);
-      setPostData((prev) => ({
-        ...prev,
-        attachment: data.data.data.attachment,
-        experienceLevel: data.data.data.experienceLevel,
-        gigCategory: data.data.data.gigCategory,
-        gigDeadline: data.data.data.gigDeadline,
-        gigDescription: data.data.data.gigDescription,
-        gigPaymentType: data.data.data.gigPaymentType, // hourly budget gig first
-        gigPrice: data.data.data.gigPrice,
-        gigTitle: data.data.data.gigTitle,
-        location: data.data.data.location,
-        maxBudget: data.data.data.maxBudget,
-        minBudget: data.data.data.minBudget,
-        profileId: data.data.data.profileId,
-        requiredSkills: data.data.data.requiredSkills,
-      }));
-      setCurrentCategory(data.data.data.gigCategory[0]);
-      setSkillSet(data.data.data.requiredSkills?data.data.data.requiredSkills:[]);
-      setSelectedLevel(data.data.data.experienceLevel);
-    } catch (error) {
-      // Handle the error here
-      console.error('Error fetching data:', error);
-    }
-  };
+}, [params.gigId]); 
   const getGigById = async (gigId) => {
     const resData = await api.get(`/api/v1/client_gig/get_gig_by_id/${gigId}`);
     return resData;
