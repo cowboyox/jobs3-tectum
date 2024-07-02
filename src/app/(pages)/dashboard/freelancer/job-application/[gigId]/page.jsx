@@ -49,14 +49,11 @@ const Page = () => {
     let values = {};
 
     values.freelancerId = auth.currentProfile._id;
-    values.fullName = auth.user.name;
-    values.email = auth.user.email;
-    values.proposal = coverLetter;
-    values.connects = gigInfo.connects;
-    values.walletPubkey = wallet.publicKey;
+    values.proposalText = coverLetter;
+    values.profileId = gigInfo?.data?.data?.profileId;
 
     await api
-      .post(`/api/v1/bidding/${gigId}/apply`, values)
+      .post(`/api/v1/bidding/${gigId}/apply-to-clientgig`, values)
       .then(async () => {
         toast({
           className:
@@ -69,13 +66,24 @@ const Page = () => {
       })
       .catch((err) => {
         console.error('Error corrupted during applying gig', err);
-        toast({
-          className:
-            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
-          title: <h1 className='text-center'>Error</h1>,
-          variant: 'destructive',
-        });
+
+        if (err?.response?.data?.message == "You already applied to this gig!") {
+          toast({
+            className:
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>{err?.response?.data?.message}</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
+          });
+        } else {
+          toast({
+            className:
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
+          });
+        }
       });
   };
 
