@@ -41,13 +41,15 @@ const RecentlyViewed = ({ search }) => {
             <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen p-5' key={index}>
               <div className='flex flex-col gap-4 border-b border-lightGray pb-4 text-white'>
                 <div className='flex gap-2'>
-                  <div className='flex items-center gap-2'>
-                    <RiPoliceBadgeLine className='text-[#158FE8]' />
-                    <span>Top Rated</span>
-                  </div>
+                  {recent?.creator?.badge && (
+                    <div className='flex items-center gap-2'>
+                      <RiPoliceBadgeLine className='text-[#158FE8]' />
+                      <span>{recent?.creator?.badge}</span>
+                    </div>
+                  )}
                   <div className='flex items-center gap-2'>
                     <GiLaurelCrown className='text-[#34E250]' />
-                    <span>0% Job Success</span>
+                    <span>{recent?.creator?.jobSuccessScore || 0}% Job Success</span>
                   </div>
                 </div>
                 <div className='flex flex-wrap gap-2'>
@@ -96,30 +98,3 @@ const RecentlyViewed = ({ search }) => {
 };
 
 export default RecentlyViewed;
-
-// const recentlyViewed = [
-//   {
-//     jobSuccess: '96% Job Success',
-//     locatin: 'Yogyakarta, Indonesia',
-//     name: 'Deven Miles',
-//     pic: '/assets/dashboard-media/profilePic.png',
-//     rated: 'Top Rated',
-//     skills: ['UI/UX', 'Design', 'Webdesign'],
-//   },
-//   {
-//     jobSuccess: '96% Job Success',
-//     locatin: 'Yogyakarta, Indonesia',
-//     name: 'Deven Miles',
-//     pic: '/assets/dashboard-media/profilePic.png',
-//     rated: 'Top Rated',
-//     skills: ['UI/UX', 'Design', 'Webdesign'],
-//   },
-//   {
-//     jobSuccess: '96% Job Success',
-//     locatin: 'Yogyakarta, Indonesia',
-//     name: 'Deven Miles',
-//     pic: '/assets/dashboard-media/profilePic.png',
-//     rated: 'Top Rated',
-//     skills: ['UI/UX', 'Design', 'Webdesign'],
-//   },
-// ];
