@@ -2,7 +2,6 @@
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineQuestion } from 'react-icons/ai';
-import { CiBellOn } from 'react-icons/ci';
 import { LuAlignLeft } from 'react-icons/lu';
 import { useDisconnect } from 'wagmi';
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";

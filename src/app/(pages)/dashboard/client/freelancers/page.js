@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaArrowRight, FaX } from 'react-icons/fa6';
 
@@ -22,6 +23,7 @@ import api from '@/utils/api';
 const Freelancers = () => {
   const filterCategory = ['English', 'Developer', 'Blockchain', 'Web3'];
   const [freelancers, setFreelancers] = useState([]);
+  const router = useRouter();
   const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const [isSmallScreen, setIsSmallScree] = useState(false);
