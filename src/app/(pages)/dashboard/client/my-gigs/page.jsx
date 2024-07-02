@@ -80,6 +80,9 @@ const MyGigs = () => {
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [filteredGigList, setFilteredGigList] = useState([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
 
   useEffect(() => {
     const handleResize = () => {
@@ -106,12 +109,23 @@ const MyGigs = () => {
     if (!tmp) {
       router.push(`/?redirect=${pathname}`);
     } else {
-      api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
-        setMyGigs(data.data.data);
-        setFilteredGigList(data.data.data);
-      });
+      api
+        .get(`/api/v1/client_gig/get-gig-by-userId?page=${page}&limit=${itemsPerPage}`)
+        .then((data) => {
+          if (data.data.data && data.data.data.length > 0) {
+            setCanLoadMore(true);
+            setMyGigs((prev) => [...prev, ...data.data.data]);
+            setFilteredGigList((prev) => [...prev, ...data.data.data]);
+          } else {
+            setCanLoadMore(false);
+          }
+        });
     }
-  }, [router, pathname]);
+  }, [router, pathname, page]);
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
 
   const onChangeType = (e) => {
     setSearchType(e);
@@ -207,9 +221,14 @@ const MyGigs = () => {
           <div className='mt-[10vh] text-center'>Not yet</div>
         )}
       </div>
-      <div className='mx-auto w-full max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'>
-        Load more +
-      </div>
+      {canLoadMore && (
+        <div
+          className='mx-auto w-full max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'
+          onClick={handleLoadMore}
+        >
+          Load More +
+        </div>
+      )}
     </div>
   );
 };
