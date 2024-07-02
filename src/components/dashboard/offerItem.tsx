@@ -36,15 +36,15 @@ const OfferItem: React.FC = () => {
 
       <div>
         <h2>Key Responsibilities:</h2>
-        {data.responsibilities.map((_item: string) => (
-          <div className='mt-1'>- {_item}</div>
+        {data.responsibilities.map((_item: string, key: number) => (
+          <div className='mt-1' key={key}>- {_item}</div>
         ))}
       </div>
 
       <div>
         <h2>Skills required:</h2>
-        {data.required.map((_item: string) => (
-          <div className='mt-1'>- {_item}</div>
+        {data.required.map((_item: string, key: number) => (
+          <div className='mt-1' key={key}>- {_item}</div>
         ))}
       </div>
 
@@ -53,8 +53,8 @@ const OfferItem: React.FC = () => {
       <div className='border-b border-[#28373A] pb-5'>
         <h2 className='text-white'>Skills</h2>
         <div className='mt-3 flex items-center gap-2 text-white'>
-            {data.skills.map((_text: string) => (
-                <div className='rounded-full w-full xs:w-auto border justify-center xs:justify-start truncate border-[#32525B] bg-[#283732] px-3 py-1'>
+            {data.skills.map((_text: string, key:number) => (
+                <div className='rounded-full w-full xs:w-auto border justify-center xs:justify-start truncate border-[#32525B] bg-[#283732] px-3 py-1' key={key}>
                   {_text}
                 </div>
             ))}
@@ -63,8 +63,8 @@ const OfferItem: React.FC = () => {
       <div className='border-b border-[#28373A] pb-5'>
         <h2 className='text-white'>Attachments</h2>
         <div className='mt-3 flex flex-col items-start gap-2 text-white'>
-          {data.attachments.map((_item: { name: string; size: string }) => (
-            <div className='flex items-center gap-2 rounded-xl border border-[#526872] p-2'>
+          {data.attachments.map((_item: { name: string; size: string }, key: number) => (
+            <div className='flex items-center gap-2 rounded-xl border border-[#526872] p-2' key={key}>
               <Icon icon='solar:file-download-outline' />
               <span>{_item.name}</span>
               <span>({_item.size})</span>
@@ -119,8 +119,8 @@ const OfferItem: React.FC = () => {
           <div className='border-b border-[#28373A] pb-3'>
             <h2 className='text-white'>Skills</h2>
             <div className='mt-3 flex items-center gap-2 text-white'>
-              {data.skills.map((_text: string) => (
-                <div className='rounded-full border truncate border-[#32525B] bg-[#283732] px-3 py-1'>
+              {data.skills.map((_text: string, key: number) => (
+                <div className='rounded-full border truncate border-[#32525B] bg-[#283732] px-3 py-1' key={key}>
                   {_text}
                 </div>
               ))}
