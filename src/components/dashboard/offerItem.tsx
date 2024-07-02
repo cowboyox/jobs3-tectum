@@ -48,7 +48,12 @@ const OfferItem: React.FC = () => {
         ))}
       </div>
 
-      <h2>{data.summary}</h2>
+      <div>
+        <h2>{data.summary}</h2>
+        <a className='cursor-pointer text-white' onClick={() => setShowDetail(false)}>
+            View less
+        </a>
+      </div>
 
       <div className='border-b border-[#28373A] pb-5'>
         <h2 className='text-white'>Skills</h2>
