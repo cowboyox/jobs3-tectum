@@ -351,12 +351,12 @@ const Orders = () => {
                 <path
                   d='M12.1962 13.4299C13.9193 13.4299 15.3162 12.0331 15.3162 10.3099C15.3162 8.58681 13.9193 7.18994 12.1962 7.18994C10.473 7.18994 9.07617 8.58681 9.07617 10.3099C9.07617 12.0331 10.473 13.4299 12.1962 13.4299Z'
                   stroke='#96B0BD'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                 />
                 <path
                   d='M3.816 8.49C5.786 -0.169998 18.616 -0.159997 20.576 8.5C21.726 13.58 18.566 17.88 15.796 20.54C13.786 22.48 10.606 22.48 8.586 20.54C5.826 17.88 2.666 13.57 3.816 8.49Z'
                   stroke='#96B0BD'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                 />
               </svg>
             </button>
@@ -379,7 +379,7 @@ const Orders = () => {
                     stroke-linecap='round'
                     stroke-linejoin='round'
                     stroke-miterlimit='10'
-                    stroke-width='1.5'
+                    strokeWidth='1.5'
                   />
                   <path
                     d='M6.46191 6.58594H2.52441'
@@ -387,7 +387,7 @@ const Orders = () => {
                     stroke-linecap='round'
                     stroke-linejoin='round'
                     stroke-miterlimit='10'
-                    stroke-width='1.5'
+                    strokeWidth='1.5'
                   />
                   <path
                     d='M10.3994 10.0312C12.3022 10.0312 13.8447 8.48873 13.8447 6.58594C13.8447 4.68314 12.3022 3.14062 10.3994 3.14062C8.49662 3.14062 6.9541 4.68314 6.9541 6.58594C6.9541 8.48873 8.49662 10.0312 10.3994 10.0312Z'
@@ -395,7 +395,7 @@ const Orders = () => {
                     stroke-linecap='round'
                     stroke-linejoin='round'
                     stroke-miterlimit='10'
-                    stroke-width='1.5'
+                    strokeWidth='1.5'
                   />
                   <path
                     d='M22.2119 17.4141H18.2744'
@@ -403,7 +403,7 @@ const Orders = () => {
                     stroke-linecap='round'
                     stroke-linejoin='round'
                     stroke-miterlimit='10'
-                    stroke-width='1.5'
+                    strokeWidth='1.5'
                   />
                   <path
                     d='M8.43066 17.4141H2.52441'
@@ -411,7 +411,7 @@ const Orders = () => {
                     stroke-linecap='round'
                     stroke-linejoin='round'
                     stroke-miterlimit='10'
-                    stroke-width='1.5'
+                    strokeWidth='1.5'
                   />
                   <path
                     d='M14.3369 20.8594C16.2397 20.8594 17.7822 19.3169 17.7822 17.4141C17.7822 15.5113 16.2397 13.9688 14.3369 13.9688C12.4341 13.9688 10.8916 15.5113 10.8916 17.4141C10.8916 19.3169 12.4341 20.8594 14.3369 20.8594Z'
@@ -419,7 +419,7 @@ const Orders = () => {
                     stroke-linecap='round'
                     stroke-linejoin='round'
                     stroke-miterlimit='10'
-                    stroke-width='1.5'
+                    strokeWidth='1.5'
                   />
                 </svg>
                 Filter
@@ -438,7 +438,7 @@ const Orders = () => {
                   stroke-linecap='round'
                   stroke-linejoin='round'
                   stroke-miterlimit='10'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                 />
                 <path
                   d='M6.42188 6.58594H2.48438'
@@ -446,7 +446,7 @@ const Orders = () => {
                   stroke-linecap='round'
                   stroke-linejoin='round'
                   stroke-miterlimit='10'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                 />
                 <path
                   d='M10.3594 10.0312C12.2622 10.0312 13.8047 8.48873 13.8047 6.58594C13.8047 4.68314 12.2622 3.14062 10.3594 3.14062C8.45658 3.14062 6.91406 4.68314 6.91406 6.58594C6.91406 8.48873 8.45658 10.0312 10.3594 10.0312Z'
@@ -454,7 +454,7 @@ const Orders = () => {
                   stroke-linecap='round'
                   stroke-linejoin='round'
                   stroke-miterlimit='10'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                 />
                 <path
                   d='M22.1719 17.4141H18.2344'
@@ -462,7 +462,7 @@ const Orders = () => {
                   stroke-linecap='round'
                   stroke-linejoin='round'
                   stroke-miterlimit='10'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                 />
                 <path
                   d='M8.39062 17.4141H2.48438'
@@ -470,7 +470,7 @@ const Orders = () => {
                   stroke-linecap='round'
                   stroke-linejoin='round'
                   stroke-miterlimit='10'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                 />
                 <path
                   d='M14.2969 20.8594C16.1997 20.8594 17.7422 19.3169 17.7422 17.4141C17.7422 15.5113 16.1997 13.9688 14.2969 13.9688C12.3941 13.9688 10.8516 15.5113 10.8516 17.4141C10.8516 19.3169 12.3941 20.8594 14.2969 20.8594Z'
@@ -478,7 +478,7 @@ const Orders = () => {
                   stroke-linecap='round'
                   stroke-linejoin='round'
                   stroke-miterlimit='10'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                 />
                 <circle cx='18.2344' cy='5.10938' fill='#DC4F13' r='4.92188' />
               </svg>
@@ -611,21 +611,21 @@ const Orders = () => {
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M12.0004 21.4098H5.94042C2.47042 21.4098 1.02042 18.9298 2.70042 15.8998L5.82042 10.2798L8.76042 4.99979C10.5404 1.78979 13.4604 1.78979 15.2404 4.99979L18.1804 10.2898L21.3004 15.9098C22.9804 18.9398 21.5204 21.4198 18.0604 21.4198H12.0004V21.4098Z'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M11.9941 17H12.0031'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                               </svg>
                               Report
@@ -647,28 +647,28 @@ const Orders = () => {
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M2.51953 7.10986H21.4796'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M8.51953 2.10986V6.96985'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M15.4795 2.10986V6.5199'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M23 18.5C23 19.85 22.4 21.05 21.47 21.88C20.67 22.57 19.64 23 18.5 23C17.42 23 16.42 22.62 15.65 21.98C14.64 21.16 14 19.91 14 18.5C14 17.08 14.65 15.81 15.69 14.99C16.46 14.37 17.44 14 18.5 14C19.91 14 21.16 14.64 21.98 15.65C22.62 16.42 23 17.42 23 18.5Z'
@@ -676,7 +676,7 @@ const Orders = () => {
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
                                   stroke-miterlimit='10'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M18.7799 17.0898V18.7798L17.3799 19.6198'
@@ -684,7 +684,7 @@ const Orders = () => {
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
                                   stroke-miterlimit='10'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                               </svg>
                               Extend The Delivery Date
@@ -706,21 +706,21 @@ const Orders = () => {
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M10.75 14.4302V9.3702C10.75 8.8902 10.55 8.7002 10.04 8.7002H8.75004C8.24004 8.7002 8.04004 8.8902 8.04004 9.3702V14.4302C8.04004 14.9102 8.24004 15.1002 8.75004 15.1002H10.04C10.55 15.1002 10.75 14.9102 10.75 14.4302Z'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M16.0303 14.4302V9.3702C16.0303 8.8902 15.8303 8.7002 15.3203 8.7002H14.0303C13.5203 8.7002 13.3203 8.8902 13.3203 9.3702V14.4302C13.3203 14.9102 13.5203 15.1002 14.0303 15.1002'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                               </svg>
                               Pause The Order
@@ -743,7 +743,7 @@ const Orders = () => {
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
                                   stroke-miterlimit='10'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M18.9004 5L4.90039 19'
@@ -751,7 +751,7 @@ const Orders = () => {
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
                                   stroke-miterlimit='10'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                               </svg>
                               Cancel Order
@@ -772,12 +772,12 @@ const Orders = () => {
                           <path
                             d='M12.0009 13.4299C13.724 13.4299 15.1209 12.0331 15.1209 10.3099C15.1209 8.58681 13.724 7.18994 12.0009 7.18994C10.2777 7.18994 8.88086 8.58681 8.88086 10.3099C8.88086 12.0331 10.2777 13.4299 12.0009 13.4299Z'
                             stroke='#96B0BD'
-                            stroke-width='1.5'
+                            strokeWidth='1.5'
                           />
                           <path
                             d='M3.61971 8.49C5.58971 -0.169998 18.4197 -0.159997 20.3797 8.5C21.5297 13.58 18.3697 17.88 15.5997 20.54C13.5897 22.48 10.4097 22.48 8.38971 20.54C5.62971 17.88 2.46971 13.57 3.61971 8.49Z'
                             stroke='#96B0BD'
-                            stroke-width='1.5'
+                            strokeWidth='1.5'
                           />
                         </svg>
                         {order.location}
@@ -797,7 +797,7 @@ const Orders = () => {
                               stroke-linecap='round'
                               stroke-linejoin='round'
                               stroke-miterlimit='10'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z'
@@ -805,35 +805,35 @@ const Orders = () => {
                               stroke-linecap='round'
                               stroke-linejoin='round'
                               stroke-miterlimit='10'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M9 13.0098H12'
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M9 9.00977H12'
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M5.99609 13H6.00508'
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M5.99609 9H6.00508'
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                           </svg>
                           {order.gigPrice}
@@ -851,14 +851,14 @@ const Orders = () => {
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977'
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                           </svg>
                           {formattedDate(order.gigPostDate)} - Present
@@ -962,21 +962,21 @@ const Orders = () => {
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M12.0004 21.4098H5.94042C2.47042 21.4098 1.02042 18.9298 2.70042 15.8998L5.82042 10.2798L8.76042 4.99979C10.5404 1.78979 13.4604 1.78979 15.2404 4.99979L18.1804 10.2898L21.3004 15.9098C22.9804 18.9398 21.5204 21.4198 18.0604 21.4198H12.0004V21.4098Z'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M11.9941 17H12.0031'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                               </svg>
                               Report
@@ -998,28 +998,28 @@ const Orders = () => {
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M2.51953 7.10986H21.4796'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M8.51953 2.10986V6.96985'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M15.4795 2.10986V6.5199'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M23 18.5C23 19.85 22.4 21.05 21.47 21.88C20.67 22.57 19.64 23 18.5 23C17.42 23 16.42 22.62 15.65 21.98C14.64 21.16 14 19.91 14 18.5C14 17.08 14.65 15.81 15.69 14.99C16.46 14.37 17.44 14 18.5 14C19.91 14 21.16 14.64 21.98 15.65C22.62 16.42 23 17.42 23 18.5Z'
@@ -1027,7 +1027,7 @@ const Orders = () => {
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
                                   stroke-miterlimit='10'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M18.7799 17.0898V18.7798L17.3799 19.6198'
@@ -1035,7 +1035,7 @@ const Orders = () => {
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
                                   stroke-miterlimit='10'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                               </svg>
                               Extend The Delivery Date
@@ -1057,21 +1057,21 @@ const Orders = () => {
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M10.75 14.4302V9.3702C10.75 8.8902 10.55 8.7002 10.04 8.7002H8.75004C8.24004 8.7002 8.04004 8.8902 8.04004 9.3702V14.4302C8.04004 14.9102 8.24004 15.1002 8.75004 15.1002H10.04C10.55 15.1002 10.75 14.9102 10.75 14.4302Z'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M16.0303 14.4302V9.3702C16.0303 8.8902 15.8303 8.7002 15.3203 8.7002H14.0303C13.5203 8.7002 13.3203 8.8902 13.3203 9.3702V14.4302C13.3203 14.9102 13.5203 15.1002 14.0303 15.1002'
                                   stroke='#96B0BD'
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                               </svg>
                               Pause The Order
@@ -1094,7 +1094,7 @@ const Orders = () => {
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
                                   stroke-miterlimit='10'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                                 <path
                                   d='M18.9004 5L4.90039 19'
@@ -1102,7 +1102,7 @@ const Orders = () => {
                                   stroke-linecap='round'
                                   stroke-linejoin='round'
                                   stroke-miterlimit='10'
-                                  stroke-width='1.5'
+                                  strokeWidth='1.5'
                                 />
                               </svg>
                               Cancel Order
@@ -1123,12 +1123,12 @@ const Orders = () => {
                           <path
                             d='M12.0009 13.4299C13.724 13.4299 15.1209 12.0331 15.1209 10.3099C15.1209 8.58681 13.724 7.18994 12.0009 7.18994C10.2777 7.18994 8.88086 8.58681 8.88086 10.3099C8.88086 12.0331 10.2777 13.4299 12.0009 13.4299Z'
                             stroke='#96B0BD'
-                            stroke-width='1.5'
+                            strokeWidth='1.5'
                           />
                           <path
                             d='M3.61971 8.49C5.58971 -0.169998 18.4197 -0.159997 20.3797 8.5C21.5297 13.58 18.3697 17.88 15.5997 20.54C13.5897 22.48 10.4097 22.48 8.38971 20.54C5.62971 17.88 2.46971 13.57 3.61971 8.49Z'
                             stroke='#96B0BD'
-                            stroke-width='1.5'
+                            strokeWidth='1.5'
                           />
                         </svg>
                         {proposal.location}
@@ -1148,7 +1148,7 @@ const Orders = () => {
                               stroke-linecap='round'
                               stroke-linejoin='round'
                               stroke-miterlimit='10'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z'
@@ -1156,35 +1156,35 @@ const Orders = () => {
                               stroke-linecap='round'
                               stroke-linejoin='round'
                               stroke-miterlimit='10'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M9 13.0098H12'
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M9 9.00977H12'
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M5.99609 13H6.00508'
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M5.99609 9H6.00508'
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                           </svg>
                           ${proposal.gigPrice}
@@ -1202,14 +1202,14 @@ const Orders = () => {
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                             <path
                               d='M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977'
                               stroke='#96B0BD'
                               stroke-linecap='round'
                               stroke-linejoin='round'
-                              stroke-width='1.5'
+                              strokeWidth='1.5'
                             />
                           </svg>
                           {formattedDate(proposal.gigPostDate)} - Present

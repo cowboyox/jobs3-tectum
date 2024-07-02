@@ -230,7 +230,7 @@ const all_form_structure = {
   upload_files_description: 'Upload files. Format: PDF',
 };
 
-const GigPosting = ({params}) => {
+const GigPosting = ({ params }) => {
   const { toast } = useToast();
   const auth = useCustomContext();
   const router = useRouter();
@@ -609,41 +609,49 @@ const GigPosting = ({params}) => {
   const [currentSub, setCurrentSub] = useState('Personal Coaching');
   useEffect(() => {
     const fetchData = async () => {
-        try {
-            const data = await getGigById(params.gigId);
-            setPostData((prev) => ({
-                ...prev,
-                attachment: data.data.data.attachment,
-                experienceLevel: data.data.data.experienceLevel,
-                gigCategory: data.data.data.gigCategory,
-                gigDeadline: data.data.data.gigDeadline,
-                gigDescription: data.data.data.gigDescription,
-                gigPaymentType: data.data.data.gigPaymentType,
-                gigPrice: data.data.data.gigPrice,
-                gigTitle: data.data.data.gigTitle,
-                location: data.data.data.location,
-                maxBudget: data.data.data.maxBudget,
-                minBudget: data.data.data.minBudget,
-                profileId: data.data.data.profileId,
-                requiredSkills: data.data.data.requiredSkills,
-            }));
-            setCurrentCategory(data.data.data.gigCategory[0]);
-            setSkillSet(data.data.data.requiredSkills ? data.data.data.requiredSkills : []);
-            setSelectedLevel(data.data.data.experienceLevel);
-        } catch (error) {
-            // Handle the error here
-            console.error('Error fetching data:', error);
-        }
+      try {
+        const data = await getGigById(params.gigId);
+        setPostData((prev) => ({
+          ...prev,
+          experienceLevel: data.data.data.experienceLevel,
+          gigCategory: data.data.data.gigCategory,
+          gigDeadline: data.data.data.gigDeadline,
+          gigDescription: data.data.data.gigDescription,
+          gigPaymentType: data.data.data.gigPaymentType,
+          gigPrice: data.data.data.gigPrice,
+          gigTitle: data.data.data.gigTitle,
+          location: data.data.data.location,
+          maxBudget: data.data.data.maxBudget,
+          minBudget: data.data.data.minBudget,
+          profileId: data.data.data.profileId,
+          requiredSkills: data.data.data.requiredSkills,
+        }));
+        setCurrentCategory(data.data.data.gigCategory[0]);
+        setSkillSet(data.data.data.requiredSkills ? data.data.data.requiredSkills : []);
+        setSelectedLevel(data.data.data.experienceLevel);
+        // data.data.data.attachmentName.map((item, key) =>
+        //   setFiles((prev) => ({
+        //     ...prev,
+        //     id: key,
+        //     preview: item
+        //   }))
+        // );
+      } catch (error) {
+        // Handle the error here
+        console.error('Error fetching data:', error);
+      }
     };
 
     fetchData();
-}, [params.gigId]); 
+  }, [params.gigId]);
+  console.log('postData', postData);
   const getGigById = async (gigId) => {
     const resData = await api.get(`/api/v1/client_gig/get_gig_by_id/${gigId}`);
     return resData;
   };
 
-  console.log("postData", postData);
+  console.log('postData', postData);
+  console.log('files', files);
 
   useEffect(() => {
     if (auth) {
@@ -704,10 +712,6 @@ const GigPosting = ({params}) => {
         variant: 'default',
       });
     }
-    setPostData((prev) => ({
-      ...prev,
-      requiredSkills: skillSet,
-    }));
     const formData = new FormData();
     files2.map((file) => {
       formData.append('files', file);
@@ -724,6 +728,12 @@ const GigPosting = ({params}) => {
     await api
       .put(`/api/v1/client_gig/edit_gig/${params.gigId}`, postData)
       .then(async (gigData) => {
+          await api
+            .post(
+              `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${params.gigId}`,
+              formData,
+              config
+            )
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -744,6 +754,12 @@ const GigPosting = ({params}) => {
         });
       });
   };
+  useEffect(() => {
+    setPostData((prev) => ({
+      ...prev,
+      requiredSkills: skillSet,
+    }));
+  }, [skillSet])
 
   return (
     <div className='gig_posting mb-4 flex justify-center rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>

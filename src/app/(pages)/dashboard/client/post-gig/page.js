@@ -652,6 +652,7 @@ const GigPosting = () => {
   };
   const form = useForm();
 
+  console.log("files", files);
   
   const handleSetGigTitle = (e) => {
     setPostData((prev) => ({
