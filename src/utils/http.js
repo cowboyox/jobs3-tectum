@@ -12,12 +12,13 @@ export async function getGigs(selectedGigs) {
   }
 }
 
-export async function getRecentViewedGigs() {
+export async function getAllCLRecentViews(profileId) {
   try {
-    const response = await api.get('/api/v1/recentView/get_recent_view');
-    return response.data;
+    const { data } = await api.get(`/api/v1/recentView/get_all_cl_recent_view/${profileId}`);
+
+    return data;
   } catch (error) {
-    console.error('Error fetching recent view gigs:', error.message);
+    console.error('Error fetching cl recent view gigs:', error.message);
   }
 }
 

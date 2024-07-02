@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { BsPatchCheckFill } from 'react-icons/bs';
@@ -8,7 +9,7 @@ import { FaClock, FaStar } from 'react-icons/fa';
 import { FaArrowRight, FaX } from 'react-icons/fa6';
 import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
 import { PiShootingStarLight } from 'react-icons/pi';
-import Link from 'next/link';
+
 import searchOptions from '../freelancers/searchOptions';
 
 import { Checkbox } from '@/components/ui/checkbox';
@@ -21,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
@@ -49,14 +51,28 @@ const DropDownTrigger = (props) => {
 };
 const GigCard = (props) => {
   const router = useRouter();
+  const auth = useCustomContext();
+
+  const handleRecentView = async (gigId) => {
+    if (auth?.currentProfile?._id && gigId) {
+      try {
+        await api.post(`/api/v1/recentView/update_cl_recent_view`, {
+          gigId,
+          profileId: auth?.currentProfile?._id,
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
   return (
     <div className='flex w-full items-center gap-4 rounded-xl bg-[#10191d] p-4 text-white mobile:flex-col'>
       <div className='relative w-[400px] max-w-full'>
         <img
           alt='Gig Image'
           className='aspect-video w-full rounded-xl object-cover'
-          src={`${ props.info.gallery?.images[0] ? props.info.gallery?.images[0] : '/assets/images/portfolio_works/portfolio.jpeg'}`}
-
+          src={`${props.info.gallery?.images[0] ? props.info.gallery?.images[0] : '/assets/images/portfolio_works/portfolio.jpeg'}`}
         />
         <div className='absolute left-2 top-2 flex gap-2'>
           <div className='flex items-center gap-2 rounded-full bg-gray-800 px-2 py-1 text-white'>
@@ -94,9 +110,9 @@ const GigCard = (props) => {
           <div className='flex items-center'>
             <Image
               alt='Devon Miles'
-              className="aspect-square rounded-full object-cover"
+              className='aspect-square rounded-full object-cover'
               height={50}
-              src={`${ props.info.creator?.avatarURL ? props.info.creator?.avatarURL : '/assets/images/users/user-6.png'}`}
+              src={`${props.info.creator?.avatarURL ? props.info.creator?.avatarURL : '/assets/images/users/user-6.png'}`}
               width={50}
             />
             <div className='ml-2'>
@@ -113,7 +129,11 @@ const GigCard = (props) => {
           </div>
           <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
             <button className='p-4 px-10 md:p-5'>Message</button>
-            <Link href={`/dashboard/client/job-application/${props.info._id}`} target='_blank'>
+            <Link
+              href={`/dashboard/client/job-application/${props.info._id}`}
+              onClick={() => handleRecentView(props.info?._id)}
+              target='_blank'
+            >
               <button className='bg-[#DC4F13] px-10 md:px-10 md:py-4'>Order</button>
             </Link>
           </div>
@@ -228,7 +248,7 @@ const GigSearch = () => {
     };
   }, []);
 
-  console.log("gigList", gigList);
+  console.log('gigList', gigList);
 
   useEffect(() => {
     api
