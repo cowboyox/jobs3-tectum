@@ -31,32 +31,31 @@ const gigOptions = [
 
 const Gigs = () => {
   const [selectedGigs, setSelectedGigs] = useState(['Figma']);
-  const [data, setData] = useState([]);
-  const [displayedData, setDisplayedData] = useState([]);
+  const [canLoadMore, setCanLoadMore] = useState(true);
   const [freelancers, setFreelancers] = useState([]);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 3;
 
   useEffect(() => {
-    api.get(`/api/v1/profile/get-all-freelancers`).then((data) => {
-      if (data.data.data) {
-        setFreelancers(data.data.data);
-      } else {
-        setFreelancers([]);
-      }
-    });
-  }, []);
+    api
+      .get(`/api/v1/profile/get-all-freelancers?page=${page}&limit=${itemsPerPage}`)
+      .then((data) => {
+        if (data.data.data && data.data.data.length > 0) {
+          setCanLoadMore(true);
+          setFreelancers((prev) => [...prev, ...data.data.data]);
+        } else {
+          setCanLoadMore(false);
+        }
+      });
+  }, [page]);
 
   const handleLoadMore = () => {
-    const nextPage = page + 1;
-    const newDisplayedData = data.slice(0, nextPage * itemsPerPage);
-    setDisplayedData(newDisplayedData);
-    setPage(nextPage);
+    setPage((prev) => prev + 1);
   };
 
   return (
     <div className='mt-10 flex flex-col gap-4'>
-      <h1 className='text-2xl font-semibold'>Sort Gigs</h1>
+      <h1 className='text-2xl font-semibold'>Sort Freelancers</h1>
       <div className='flex flex-wrap items-center gap-2'>
         {gigOptions.map((gig, index) => (
           <div
@@ -232,12 +231,14 @@ const Gigs = () => {
           })}
       </div>
       {/* {displayedData?.length < data?.length && ( */}
-      <div
-        className='cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
-        onClick={handleLoadMore}
-      >
-        Load More +
-      </div>
+      {canLoadMore && (
+        <div
+          className='cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+          onClick={handleLoadMore}
+        >
+          Load More +
+        </div>
+      )}
       {/* )} */}
     </div>
   );
