@@ -1,36 +1,14 @@
 'use client';
 import Image from 'next/image';
-import React, { useEffect } from 'react';
+import React from 'react';
 
-const recentViewed = [
-  {
-    title: "Figma and Flow Bite Mentor Needed",
-    location: "Remote",
-    price: "Applied 2 days ago",
-  },
-  {
-    title: "Figma and Flow Bite Mentor Needed",
-    location: "Remote",
-    price: "Applied 2 days ago",
-  },
-  // {
-  //   title: "Figma and Flow Bite Mentor Needed",
-  //   location: "Remote",
-  //   price: "$450",
-  // },
-];
+import { useCustomContext } from '@/context/use-custom';
+import { useGetAllFLRecentViews } from '@/hooks/useGetAllFLRecentViews';
 
 const RecentlyViewed = () => {
-  useEffect(() => {
-    const fetchRecentViewGigs = async () => {
-      try {
-      } catch (err) {
-        console.error('Err fetching Gigs', err);
-      }
-    };
+  const auth = useCustomContext();
+  const { data } = useGetAllFLRecentViews(auth?.currentProfile?._id);
 
-    fetchRecentViewGigs();
-  }, []);
   return (
     <div className='mt-10 flex flex-col gap-4'>
       <div className='flex justify-between'>
@@ -38,64 +16,45 @@ const RecentlyViewed = () => {
 
         {/* <p className='cursor-pointer'>Show more</p> */}
       </div>
-      <div className='flex justify-center items-center mt-50px text-2xl font-semibold'>
-        Not yet
-      </div>
-      {/* <div className='mt-2 grid gap-4 lg:grid-cols-2'>
-        {recentViewed.length ? (
-          recentViewed.map((spend, index) => (
+
+      <div className='mt-2 grid gap-4 lg:grid-cols-2'>
+        {data?.gigId?.length ? (
+          data.gigId.map((gig, index) => (
             <div
-              className='flex justify-between items-start gap-1 rounded-2xl bg-deepGreen p-8'
+              className='flex items-start justify-between gap-1 rounded-2xl bg-deepGreen p-8'
               key={index}
             >
               <div className='flex flex-col gap-4'>
                 <div className=''>
-                  <Image height={45} src={'/assets/icons/ActiveOrder.png'} width={45} />
-                  <h3 className='mt-4 text-xl font-[500] text-white'>{spend.title}</h3>
+                  <Image
+                    alt='active order'
+                    height={45}
+                    src={'/assets/icons/ActiveOrder.png'}
+                    width={45}
+                  />
+                  <h3 className='mt-4 text-xl font-[500] text-white'>{gig?.gigTitle}</h3>
                 </div>
                 <div className='flex items-center justify-between gap-4'>
-                  <p className='text-lg font-[400] text-medGray'>{spend.price}</p>
-                 
+                  <p className='text-lg font-[400] text-medGray'>
+                    {gig?.gigPrice
+                      ? `$${gig?.gigPrice}`
+                      : `$${gig?.minBudget} - $${gig?.maxBudget} /hr`}
+                  </p>
                 </div>
               </div>
               <div className='flex items-center gap-1 rounded-[6px] border-2 border-white px-3 text-white'>
-                    <p className='p-[1px]'>{spend.location}</p>
-                  </div>
+                <p className='p-[1px]'>{gig?.profileId?.location}</p>
+              </div>
             </div>
           ))
         ) : (
-          <div className='mt-[10%] text-center'>Not yet</div>
+          <div className='mt-50px flex items-center justify-center text-2xl font-semibold'>
+            Not yet
+          </div>
         )}
-      </div> */}
+      </div>
     </div>
   );
 };
 
 export default RecentlyViewed;
-
-// const recentlyViewed = [
-//   {
-//     pic: "/assets/dashboard-media/profilePic.png",
-//     name: "Deven Miles",
-//     locatin: "Yogyakarta, Indonesia",
-//     skills: ["UI/UX", "Design", "Webdesign"],
-//     rated: "Top Rated",
-//     jobSuccess: "96% Job Success",
-//   },
-//   {
-//     pic: "/assets/dashboard-media/profilePic.png",
-//     name: "Deven Miles",
-//     locatin: "Yogyakarta, Indonesia",
-//     skills: ["UI/UX", "Design", "Webdesign"],
-//     rated: "Top Rated",
-//     jobSuccess: "96% Job Success",
-//   },
-//   {
-//     pic: "/assets/dashboard-media/profilePic.png",
-//     name: "Deven Miles",
-//     locatin: "Yogyakarta, Indonesia",
-//     skills: ["UI/UX", "Design", "Webdesign"],
-//     rated: "Top Rated",
-//     jobSuccess: "96% Job Success",
-//   },
-// ];

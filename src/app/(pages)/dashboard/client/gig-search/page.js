@@ -8,7 +8,6 @@ import { CiFilter, CiReceipt } from 'react-icons/ci';
 import { FaClock, FaStar } from 'react-icons/fa';
 import { FaArrowRight, FaX } from 'react-icons/fa6';
 import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
-import { PiShootingStarLight } from 'react-icons/pi';
 
 import searchOptions from '../freelancers/searchOptions';
 
@@ -26,7 +25,6 @@ import { useCustomContext } from '@/context/use-custom';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
-
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
@@ -85,7 +83,7 @@ const GigCard = (props) => {
           </h3>
         </Link>
 
-        <div className='mt-2 flex items-center gap-5  text-[#F5F5F5]'>
+        <div className='mt-2 flex items-center gap-5 text-[#F5F5F5]'>
           <div className='flex items-center gap-2'>
             <FaClock size={24} />
             <span className='text-base'>{minutesDifference(props.info.gigPostDate)}</span>
@@ -96,7 +94,7 @@ const GigCard = (props) => {
           </div>
           <div className='flex items-center gap-2'>
             <FaStar fill='#DC4F13' size={24} />
-            <p className='flex gap-1 text-base '>
+            <p className='flex gap-1 text-base'>
               0.0
               <span className='text-[#96b0be]'>(0)</span>
             </p>
@@ -129,7 +127,9 @@ const GigCard = (props) => {
             </div>
           </div>
           <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-            <button className='p-4 px-10 md:p-5' onClick={() => router.push(`./inbox`)}>Message</button>
+            <button className='p-4 px-10 md:p-5' onClick={() => router.push(`./inbox`)}>
+              Message
+            </button>
             <Link
               href={`/dashboard/client/job-application/${props.info._id}`}
               onClick={() => handleRecentView(props.info?._id)}
