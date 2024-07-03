@@ -1,13 +1,7 @@
 'use client';
 
-import { AnchorProvider, getProvider, Program, setProvider, utils } from '@project-serum/anchor';
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  getAssociatedTokenAddressSync,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token';
-import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { ASSOCIATED_TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync } from '@solana/spl-token';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaEllipsis, FaX } from 'react-icons/fa6';
 
@@ -33,9 +27,10 @@ import { useCustomContext } from '@/context/use-custom';
 import { useGetAllFreelancerGigsProposed } from '@/hooks/useGetAllFreelancerGigsProposed';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
-import { CONTRACT_SEED, PAYTOKEN_MINT, PROGRAM_ID } from '@/utils/constants';
+import { CONTRACT_SEED, ContractStatus, PAYTOKEN_MINT, PROGRAM_ID } from '@/utils/constants';
 
 const Orders = () => {
+  const router = useRouter();
   const auth = useCustomContext();
   const { toast } = useToast();
 
@@ -141,7 +136,7 @@ const Orders = () => {
     return formattedDate;
   };
 
-  const onAccept = async (gigId, clientId, contractId) => {
+  const onActivate = async (id, contractId) => {
     if (!wallet || !program) {
       toast({
         className:
@@ -199,12 +194,14 @@ const Orders = () => {
 
       await connection.confirmTransaction(signature, 'confirmed');
 
-      await api.put(`/api/v1/freelancer_gig/accept_client/${gigId}`, JSON.stringify({ clientId }));
+      await connection.confirmTransaction(signature, 'confirmed');
+
+      await api.put(`/api/v1/client_gig/activate-contract/${id}`);
 
       toast({
         className:
           'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Successfully accepted!</h3>,
+        description: <h3>Successfully activate the contract!</h3>,
         title: <h1 className='text-center'>Success</h1>,
         variant: 'default',
       });
@@ -510,7 +507,7 @@ const Orders = () => {
                             15 H: 30 S
                           </div>
                           <div className='rounded-xl border border-[#1BBF36] p-1 px-3 text-[#1BBF36]'>
-                            Active
+                            {order?.status}
                           </div>
                         </div>
                         <DropdownMenu>
@@ -826,7 +823,22 @@ const Orders = () => {
                         <button className='p-4 px-10 md:p-5' onClick={() => handleMessage(order)}>
                           Message
                         </button>
-                        <button className='bg-[#DC4F13] p-4 px-10 md:p-5'>Deliver</button>
+                        {order?.status == ContractStatus.STARTED && (
+                          <button
+                            className='bg-[#DC4F13] p-4 px-8 md:p-5'
+                            onClick={() => onActivate(order.id, order.contractId)}
+                          >
+                            Activate
+                          </button>
+                        )}
+                        {order?.status == ContractStatus.ACTIVE && (
+                          <button
+                            className='bg-[#DC4F13] p-4 px-8 md:p-5'
+                            onClick={() => router.push(`/dashboard/freelancer/orders/${order?.id}`)}
+                          >
+                            See Order
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1174,9 +1186,7 @@ const Orders = () => {
                         <button className='p-4 px-8 md:p-5'>Message</button>
                         <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
-                          onClick={() =>
-                            onAccept(submission.gigId, submission.clientId, submission.contractId)
-                          }
+                          // onClick={() => onActivate(submission.gigId, submission.clientId, submission.contractId)}
                         >
                           Accept
                         </button>

@@ -1,12 +1,31 @@
 'use client';
 import { CircleAlert, CreditCardIcon } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import {
+  useAnchorWallet,
+} from "@solana/wallet-adapter-react";
 
 import { Button } from '@/components/ui/button';
+import api from '@/utils/api';
 
 const BillingView = () => {
+  const wallet = useAnchorWallet();
+  
   const [addBilling, setBilling] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      if (wallet) {
+        try {
+          await api.put(`/api/v1/profile/update-walletPublickey`, JSON.stringify({ walletPublicKey: wallet.publicKey }));
+        } catch (error) {
+          console.log("Error while updating wallet publicKey:", error);
+        }
+      }
+    })();
+  }, [wallet]);
 
   return (
     <div className='mx-auto flex max-w-[700px] flex-col gap-4'>
@@ -44,7 +63,7 @@ const BillingView = () => {
                       Card Number
                     </label>
                     <div className='flex gap-4 rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'>
-                      <CreditCardIcon className='h-6 w-6 text-white' />
+                      <CreditCardIcon className='w-6 h-6 text-white' />
                       <input
                         className='flex-1 bg-[#1B272C] text-white outline-none'
                         placeholder='Card Number'
@@ -54,7 +73,7 @@ const BillingView = () => {
                   </div>
 
                   <div className='flex gap-4'>
-                    <div className='flex flex-1 flex-col gap-3'>
+                    <div className='flex flex-col flex-1 gap-3'>
                       <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         First Name
                       </label>
@@ -64,7 +83,7 @@ const BillingView = () => {
                         type='text'
                       />
                     </div>
-                    <div className='flex flex-1 flex-col gap-3'>
+                    <div className='flex flex-col flex-1 gap-3'>
                       <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Last Name
                       </label>
@@ -102,7 +121,7 @@ const BillingView = () => {
                         className='text-md flex items-start gap-2 font-[500] text-primary'
                         htmlFor='cardNumber'
                       >
-                        Security Code <CircleAlert className='h-4 w-4' />
+                        Security Code <CircleAlert className='w-4 h-4' />
                       </label>
                       <input
                         className='rounded-[12px] border border-[#96B0BD] bg-[#1B272C] p-4 text-[#96B0BD]'
@@ -112,7 +131,7 @@ const BillingView = () => {
                     </div>
                   </div>
                   <div className='flex gap-4'>
-                    <div className='flex flex-1 flex-col gap-3'>
+                    <div className='flex flex-col flex-1 gap-3'>
                       <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Billing Address
                       </label>
@@ -124,7 +143,7 @@ const BillingView = () => {
                     </div>
                   </div>
                   <div className='flex gap-4'>
-                    <div className='flex flex-1 flex-col gap-3'>
+                    <div className='flex flex-col flex-1 gap-3'>
                       <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Address Line 1
                       </label>
@@ -134,7 +153,7 @@ const BillingView = () => {
                         type='text'
                       />
                     </div>
-                    <div className='flex flex-1 flex-col gap-3'>
+                    <div className='flex flex-col flex-1 gap-3'>
                       <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Address Line 2
                       </label>
@@ -147,7 +166,7 @@ const BillingView = () => {
                   </div>
 
                   <div className='flex gap-4'>
-                    <div className='flex flex-1 flex-col gap-3'>
+                    <div className='flex flex-col flex-1 gap-3'>
                       <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         City
                       </label>
@@ -157,7 +176,7 @@ const BillingView = () => {
                         </option>
                       </select>
                     </div>
-                    <div className='flex flex-1 flex-col gap-3'>
+                    <div className='flex flex-col flex-1 gap-3'>
                       <label className='text-md font-[500] text-primary' htmlFor='cardNumber'>
                         Postal code
                       </label>
@@ -206,13 +225,18 @@ const BillingView = () => {
               monthly membership
             </p>
 
-            <div className='flex justify-end'>
+            {/* <div className='flex justify-end'>
               <Button
                 className={`mt-6 w-[200px] rounded-xl bg-[#DC4F13] px-10 py-8 text-white hover:bg-[#DC4F13]`}
                 onClick={() => setBilling(true)}
               >
                 Add Billing Method
               </Button>
+            </div> */}
+            <div className='flex justify-end'>
+              <div className='rounded-2xl bg-[#DC4F13]'>
+                <WalletMultiButton className="bg-secondary hover:bg-[#DC4F13]" />
+              </div>
             </div>
           </>
         )}

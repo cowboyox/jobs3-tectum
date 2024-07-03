@@ -60,8 +60,7 @@ const Orders = () => {
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllClientGigsProposed(
-    auth?.currentProfile?._id,
-    auth?.currentProfile?.userId
+    auth?.currentProfile?._id
   );
   const { toast } = useToast();
   const [searchKeywords, setSearchKeyWords] = useState('');
@@ -213,7 +212,7 @@ const Orders = () => {
 
       await api.put(
         `/api/v1/client_gig/accept_freelancer/${gigId}`,
-        JSON.stringify({ contractId, freelancerId })
+        JSON.stringify({ contractId, freelancerId, profileId: auth?.currentProfile?._id })
       );
 
       toast({
@@ -1247,7 +1246,7 @@ const Orders = () => {
                               proposal.gigId,
                               proposal.freelancerId,
                               proposal.gigPrice,
-                              proposal.walletPubkey
+                              proposal.freelancerId.walletPublicKey
                             )
                           }
                         >

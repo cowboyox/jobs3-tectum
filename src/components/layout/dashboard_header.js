@@ -3,12 +3,12 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineQuestion } from 'react-icons/ai';
-import { CiBellOn } from 'react-icons/ci';
 import { LuAlignLeft } from 'react-icons/lu';
 import { useDisconnect } from 'wagmi';
 
 import { usePopupFunctions } from '../../components/popups/popups';
 
+import Notifications from '@/components/elements/notifications';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -154,7 +154,7 @@ const DashboardHeader = () => {
           <AiOutlineQuestion className='h-6 w-6 cursor-pointer object-contain' />
         </div>
         <div className='cursor-pointer rounded-xl bg-[#10191D] p-2'>
-          <CiBellOn className='h-6 w-6 cursor-pointer object-contain' />
+          <Notifications />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger className='mobile:hidden'>

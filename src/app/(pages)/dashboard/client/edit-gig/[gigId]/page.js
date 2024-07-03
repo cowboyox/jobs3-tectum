@@ -629,6 +629,7 @@ const GigPosting = ({ params }) => {
         setCurrentCategory(data.data.data.gigCategory[0]);
         setSkillSet(data.data.data.requiredSkills ? data.data.data.requiredSkills : []);
         setSelectedLevel(data.data.data.experienceLevel);
+        setBudgetMode(data.data.data.gigPaymentType === true ? 'hourly': 'fixed');
         // data.data.data.attachmentName.map((item, key) =>
         //   setFiles((prev) => ({
         //     ...prev,
@@ -1110,6 +1111,7 @@ const GigPosting = ({ params }) => {
                           className='h-4 w-4'
                           id={budget_option.value}
                           value={budget_option.value}
+                          checked={budget_option.value === budgetMode}
                         />
                         <Label
                           className='w-full cursor-pointer py-7 text-xl text-slate-300'

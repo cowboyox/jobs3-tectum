@@ -117,9 +117,31 @@ const OrderPage = ({ params }) => {
                         {contractInfo?.freelancer?.fullName}
                       </h2>
                       <img
-                        className='h-4 w-4 mobile:h-3 mobile:w-3'
-                        src='/assets/images/icons/checkmark.svg'
+                        className='aspect-square h-full w-full rounded-full object-cover'
+                        src={
+                          contractInfo?.proposer?.avatarURL
+                            ? contractInfo?.proposer?.avatarURL
+                            : '/assets/images/users/user-3.png'
+                        }
                       />
+                      <div className='absolute bottom-1 right-1 h-3 w-3 rounded-full bg-green-500 mobile:bottom-0 mobile:right-0 mobile:h-3 mobile:w-3' />
+                    </div>
+                    <div className='flex flex-col gap-4'>
+                      <div className='flex items-center gap-2'>
+                        <h2 className='text-xl mobile:text-xs'>
+                          {contractInfo?.proposer?.fullName}
+                        </h2>
+                        <img
+                          className='h-4 w-4 mobile:h-3 mobile:w-3'
+                          src='/assets/images/icons/checkmark.svg'
+                        />
+                      </div>
+                    </div>
+                    <div className='flex items-center gap-3'>
+                      <IoCalendarOutline className='h-5 w-5 fill-[#96B0BD] stroke-[#96B0BD] mobile:h-3 mobile:w-3' />
+                      <p className='text-[15px] text-[#96B0BD] mobile:text-xs'>
+                        {formattedStartDate}
+                      </p>
                     </div>
                   </div>
                   <div className='flex items-center gap-3'>
