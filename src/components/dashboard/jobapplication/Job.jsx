@@ -10,7 +10,6 @@ import { minutesDifference } from '@/utils/Helpers';
 const Job = ({ gigData }) => {
   const auth = useCustomContext();
   
-  console.log(gigData, auth?.currentProfile?.userId);
   return (
     <div className='flex flex-col gap-4 px-6 py-6 text-white rounded-2xl bg-deepGreen'>
       <div className='flex flex-col gap-3 pb-5 border-b border-lightGray'>

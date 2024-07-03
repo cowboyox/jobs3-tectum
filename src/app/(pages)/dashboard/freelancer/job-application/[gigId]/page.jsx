@@ -2,9 +2,9 @@
 
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import {
-  useAnchorWallet,
-} from "@solana/wallet-adapter-react";
+// import {
+//   useAnchorWallet,
+// } from "@solana/wallet-adapter-react";
 
 import Job from '@/components/dashboard/jobapplication/Job';
 import { useToast } from '@/components/ui/use-toast';
@@ -14,7 +14,7 @@ import api from '@/utils/api';
 
 const Page = () => {
   const { gigId } = useParams();
-  const wallet = useAnchorWallet();
+  // const wallet = useAnchorWallet();
   const router = useRouter();
   const { toast } = useToast();
   const [coverLetter, setCoverLetter] = useState();
@@ -35,11 +35,11 @@ const Page = () => {
   };
 
   const onApply = async () => {
-    if (!wallet) {
+    if (!auth.currentProfile.walletPublicKey) {
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Please connect your wallet!</h3>,
+        description: <h3>Please connect your wallet on the setting page!</h3>,
         title: <h1 className='text-center'>Error</h1>,
         variant: 'destructive',
       });

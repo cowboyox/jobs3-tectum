@@ -70,7 +70,7 @@ const Orders = () => {
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllClientGigsProposed(
-    auth?.currentProfile?._id, auth?.currentProfile?.userId
+    auth?.currentProfile?._id
   );
   const { toast } = useToast();
   const [searchKeywords, setSearchKeyWords] = useState('');
@@ -222,7 +222,7 @@ const Orders = () => {
       await connection.confirmTransaction(signature, "confirmed");
 
 
-      await api.put(`/api/v1/client_gig/accept_freelancer/${gigId}`, JSON.stringify({ freelancerId, contractId }));
+      await api.put(`/api/v1/client_gig/accept_freelancer/${gigId}`, JSON.stringify({ freelancerId, contractId, profileId: auth?.currentProfile?._id }));
   
       toast({
         className:
@@ -1248,7 +1248,7 @@ const Orders = () => {
                         <button className='p-4 px-8 md:p-5'>Message</button>
                         <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
-                          onClick={() => onAccept(proposal.gigId, proposal.freelancerId, proposal.gigPrice, proposal.walletPubkey)}
+                          onClick={() => onAccept(proposal.gigId, proposal.freelancerId, proposal.gigPrice, proposal.freelancerId.walletPublicKey)}
                         >
                           Accept
                         </button>
