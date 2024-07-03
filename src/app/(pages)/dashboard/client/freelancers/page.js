@@ -2,98 +2,73 @@
 
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { FaArrowRight, FaX } from 'react-icons/fa6';
+import { FaX } from 'react-icons/fa6';
 
+import { SearchBar } from './SearchBar';
 import searchOptions from './searchOptions';
 
-import CustomIconDropdown from '@/components/ui/dropdown';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
+import { useGetFreelancers } from '@/hooks/useGetFreelancers';
+import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
 
 const Freelancers = () => {
-  const filterCategory = ['English', 'Developer', 'Blockchain', 'Web3'];
-  const [freelancers, setFreelancers] = useState([]);
+  const [allFreelancers, setAllFreelancers] = useState([]);
   const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
-  const [isSmallScreen, setIsSmallScree] = useState(false);
-  const [searchKeyWords, setSearchKeyWords] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [canLoadMore, setCanLoadMore] = useState(true);
+  const [isAiSearch, setIsAiSearch] = useState(false);
   const [page, setPage] = useState(1);
   const itemsPerPage = 2;
-
-  const handleSearchTypeChange = (v) => setSearchType(v);
-
-  const setKey = (e) => {
-    setSearchKeyWords(e.target.value);
-    if (searchType == searchOptions[0]) {
-      const filtered = freelancers.filter(
-        (freelancer) =>
-          freelancer.email?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          freelancer.freelancerBio?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          freelancer.fullName?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          freelancer.location?.toLowerCase().includes(e.target.value.toLowerCase())
-      );
-      setFilteredFreelancers(filtered);
-    }
-  };
-
-  const aiSearch = () => {
-    api.get(`/api/v1/profile/ai-search-profile/${searchKeyWords}`).then((data) => {
-      let ai_ids = [];
-      if (data.data.profileIDs) ai_ids = data.data.profileIDs;
-      const ai_filtered = ai_ids
-        .map((id) => freelancers.find((freelancer) => freelancer._id.toString() === id))
-        .filter((freelancer) => freelancer != undefined);
-      setFilteredFreelancers(ai_filtered);
-    });
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && searchType === searchOptions[1]) {
-      aiSearch();
-    }
-  };
+  const { isSmallScreen } = useHandleResize();
+  const { data: freelancers } = useGetFreelancers(page, itemsPerPage);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsSmallScree(true);
-      } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
-        setIsSmallScree(false);
-      } else {
-        setIsSmallScree(false);
-      }
-    };
+    if (searchType == searchOptions[0]) {
+      const filtered = allFreelancers.filter(
+        (fl) =>
+          fl.email?.toLowerCase().includes(searchText.toLowerCase()) ||
+          fl.freelancerBio?.toLowerCase().includes(searchText.toLowerCase()) ||
+          fl.fullName?.toLowerCase().includes(searchText.toLowerCase()) ||
+          fl.location?.toLowerCase().includes(searchText.toLowerCase())
+      );
 
-    handleResize();
+      setFilteredFreelancers(filtered);
+    } else if (isAiSearch) {
+      api.get(`/api/v1/profile/ai-search-profile/${searchText}`).then((data) => {
+        let ai_ids = [];
 
-    window.addEventListener('resize', handleResize);
+        if (data.data.profileIDs) ai_ids = data.data.profileIDs;
 
-    api
-      .get(`/api/v1/profile/get-all-freelancers?page=${page}&limit=${itemsPerPage}`)
-      .then((data) => {
-        if (data.data.data && data.data.data.length > 0) {
-          setCanLoadMore(true);
-          setFreelancers((prev) => [...prev, ...data.data.data]);
-          setFilteredFreelancers((prev) => [...prev, ...data.data.data]);
-        } else {
-          setCanLoadMore(false);
-        }
+        const ai_filtered = ai_ids
+          .map((id) => allFreelancers.find((freelancer) => freelancer._id.toString() === id))
+          .filter((freelancer) => freelancer != undefined);
+
+        setFilteredFreelancers(ai_filtered);
       });
+    }
+  }, [searchText, allFreelancers, searchType, isAiSearch]);
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [page]);
+  useEffect(() => {
+    if (freelancers?.length > 0) {
+      setCanLoadMore(true);
+      setAllFreelancers((prev) => {
+        let result = [...prev];
+        const ids = prev.map((item) => item._id);
+
+        freelancers.map((fl) => {
+          if (!ids.includes(fl._id)) {
+            result = [...result, fl];
+          }
+        });
+
+        return result;
+      });
+    } else {
+      setCanLoadMore(false);
+    }
+  }, [freelancers]);
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
@@ -101,218 +76,14 @@ const Freelancers = () => {
 
   return (
     <div className='p-0 lg:mt-8 sm:p-0 xl:mt-8'>
-      <div className='flex gap-5 rounded-xl bg-[#10191D]'>
-        <div className='m-3 flex flex-1 items-center gap-3'>
-          <CustomIconDropdown
-            onChange={handleSearchTypeChange}
-            optionLabel={'icon'}
-            options={searchOptions}
-            value={searchType}
-          />
-          <input
-            className='w-full bg-transparent outline-none'
-            onChange={setKey}
-            onKeyDown={handleKeyDown}
-            placeholder={isSmallScreen ? 'Search' : 'Search for keywords'}
-            type='text'
-          />
-          {isSmallScreen && searchType === searchOptions[0] && (
-            <button>
-              <svg
-                fill='none'
-                height='24'
-                viewBox='0 0 25 24'
-                width='25'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M12.1962 13.4299C13.9193 13.4299 15.3162 12.0331 15.3162 10.3099C15.3162 8.58681 13.9193 7.18994 12.1962 7.18994C10.473 7.18994 9.07617 8.58681 9.07617 10.3099C9.07617 12.0331 10.473 13.4299 12.1962 13.4299Z'
-                  stroke='#96B0BD'
-                  strokeWidth='1.5'
-                />
-                <path
-                  d='M3.816 8.49C5.786 -0.169998 18.616 -0.159997 20.576 8.5C21.726 13.58 18.566 17.88 15.796 20.54C13.786 22.48 10.606 22.48 8.586 20.54C5.826 17.88 2.666 13.57 3.816 8.49Z'
-                  stroke='#96B0BD'
-                  strokeWidth='1.5'
-                />
-              </svg>
-            </button>
-          )}
-        </div>
-        {(!isSmallScreen || (isSmallScreen && searchType === searchOptions[0])) && (
-          <div className='flex flex-none flex-row items-center gap-2 px-4'>
-            <button className='flex flex-row items-center justify-center gap-3'>
-              {!isSmallScreen ? (
-                <>
-                  <svg
-                    fill='none'
-                    height='24'
-                    viewBox='0 0 25 24'
-                    width='25'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path
-                      d='M22.2119 6.58594H16.3057'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                    <path
-                      d='M6.46191 6.58594H2.52441'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                    <path
-                      d='M10.3994 10.0312C12.3022 10.0312 13.8447 8.48873 13.8447 6.58594C13.8447 4.68314 12.3022 3.14062 10.3994 3.14062C8.49662 3.14062 6.9541 4.68314 6.9541 6.58594C6.9541 8.48873 8.49662 10.0312 10.3994 10.0312Z'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                    <path
-                      d='M22.2119 17.4141H18.2744'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                    <path
-                      d='M8.43066 17.4141H2.52441'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                    <path
-                      d='M14.3369 20.8594C16.2397 20.8594 17.7822 19.3169 17.7822 17.4141C17.7822 15.5113 16.2397 13.9688 14.3369 13.9688C12.4341 13.9688 10.8916 15.5113 10.8916 17.4141C10.8916 19.3169 12.4341 20.8594 14.3369 20.8594Z'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                  </svg>
-                  Filter
-                </>
-              ) : (
-                <svg
-                  fill='none'
-                  height='24'
-                  viewBox='0 0 25 24'
-                  width='25'
-                  xmlns='http://www.w3.org/2000/svg'
-                >
-                  <path
-                    d='M22.1719 6.58594H16.2656'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M6.42188 6.58594H2.48438'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M10.3594 10.0312C12.2622 10.0312 13.8047 8.48873 13.8047 6.58594C13.8047 4.68314 12.2622 3.14062 10.3594 3.14062C8.45658 3.14062 6.91406 4.68314 6.91406 6.58594C6.91406 8.48873 8.45658 10.0312 10.3594 10.0312Z'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M22.1719 17.4141H18.2344'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M8.39062 17.4141H2.48438'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M14.2969 20.8594C16.1997 20.8594 17.7422 19.3169 17.7422 17.4141C17.7422 15.5113 16.1997 13.9688 14.2969 13.9688C12.3941 13.9688 10.8516 15.5113 10.8516 17.4141C10.8516 19.3169 12.3941 20.8594 14.2969 20.8594Z'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <circle cx='18.2344' cy='5.10938' fill='#DC4F13' r='4.92188' />
-                </svg>
-              )}
-            </button>
-            {!isSmallScreen && (
-              <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
-                4
-              </div>
-            )}
-          </div>
-        )}
-        {!isSmallScreen && (
-          <div className='flex flex-row items-center justify-center gap-2'>
-            <div>Sort by</div>
-            <div>
-              <Select>
-                <SelectTrigger className='flex justify-center border-none bg-transparent text-[#96B0BD] focus:border-none focus:outline-none'>
-                  <SelectValue placeholder='Sort By' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Sort By</SelectLabel>
-                    <SelectItem value='date'>Date</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        )}
-        {isSmallScreen && searchType === searchOptions[1] && (
-          <div className='flex'>
-            <button
-              class='flex w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white'
-              onClick={aiSearch}
-            >
-              <FaArrowRight />
-            </button>
-          </div>
-        )}
-      </div>
-      <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
-        {filterCategory.map((item, index) => {
-          return (
-            <span
-              className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
-              key={`filterCategory_${index}`}
-            >
-              <FaX className='rounded-full bg-[#3E525B] p-[2px]' />
-              {item}
-            </span>
-          );
-        })}
-        <span>Clear&nbsp;All</span>
-      </div>
-      {filteredFreelancers &&
+      <SearchBar
+        isSmallScreen={isSmallScreen}
+        searchType={searchType}
+        setIsAiSearch={setIsAiSearch}
+        setSearchText={setSearchText}
+        setSearchType={setSearchType}
+      />
+      {filteredFreelancers && filteredFreelancers.length > 0 ? (
         filteredFreelancers.map((freelancer, index) => {
           return (
             <div
@@ -470,7 +241,12 @@ const Freelancers = () => {
               </div>
             </div>
           );
-        })}
+        })
+      ) : (
+        <div className='flex h-full flex-col items-center justify-center gap-3'>
+          <h2 className='text-3xl font-bold'>Nothing Here</h2>
+        </div>
+      )}
       {canLoadMore && (
         <div
           className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
@@ -479,9 +255,6 @@ const Freelancers = () => {
           Load More +
         </div>
       )}
-      {/* <button className="p-3 mt-6 text-center border border-[#28373E] w-full">
-        Load more +{" "}
-      </button> */}
     </div>
   );
 };
