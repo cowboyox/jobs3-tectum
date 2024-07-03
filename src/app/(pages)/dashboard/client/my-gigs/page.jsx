@@ -34,7 +34,7 @@ const Status = ({ status }) => {
   const getStatusContent = () => {
     switch (status) {
       case 0:
-        return 'Alive';
+        return 'Active';
       case 1:
         return 'Hired';
       case 2:
