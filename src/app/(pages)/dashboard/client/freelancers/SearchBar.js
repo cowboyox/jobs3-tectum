@@ -4,7 +4,24 @@ import { FaArrowRight, FaX } from 'react-icons/fa6';
 import searchOptions from './searchOptions';
 
 import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
+import { Checkbox } from '@/components/ui/checkbox';
 import CustomIconDropdown from '@/components/ui/dropdown';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+
+const DropdownItem = ({ onCheckedChange, ...props }) => {
+  return (
+    <div className='flex cursor-pointer items-center gap-4 p-0'>
+      <Checkbox
+        className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
+        id={props.category_id}
+        onCheckedChange={onCheckedChange}
+      />
+      <label className='cursor-pointer text-sm text-[#96B0BD]' htmlFor={props.category_id}>
+        {props.category_name}
+      </label>
+    </div>
+  );
+};
 
 export const SearchBar = ({
   isSmallScreen,
@@ -13,7 +30,7 @@ export const SearchBar = ({
   setIsAiSearch,
   setSearchType,
 }) => {
-  const [filterItems, setFilterItems] = useState(['react']);
+  const [filterItems, setFilterItems] = useState([]);
 
   const setKey = (e) => {
     setSearchText(e.target.value);
@@ -26,6 +43,84 @@ export const SearchBar = ({
       setIsAiSearch(false);
     }
   };
+
+  const filterCategories = [
+    {
+      content: [
+        { category_id: 'any_amount', category_name: 'Any Amount' },
+        { category_id: 'over_1_earned', category_name: '$1+ Earned' },
+        { category_id: 'over_100_earned', category_name: '$100+ Earned' },
+        { category_id: 'over_1k_earned', category_name: '$1k+ Earned' },
+        { category_id: 'over_10k_earned', category_name: '$10k+ Earned' },
+        { category_id: 'no_earning_yet', category_name: 'No Earning Yet' },
+      ],
+      title: 'Earned Amount',
+    },
+    {
+      content: [
+        { category_id: 'any_job_success', category_name: 'Any Job Success' },
+        { category_id: '80_up', category_name: '80% & UP' },
+        { category_id: '90_up', category_name: '90% & UP' },
+        { category_id: 'top_rated', category_name: 'Top Rated' },
+        { category_id: 'rising_talent', category_name: 'Rising Talent' },
+      ],
+      title: 'Job Success',
+    },
+    {
+      content: [
+        { category_id: 'any_hourly_rate', category_name: 'Any Hourly Rate' },
+        { category_id: '10_below', category_name: '$10 and Below' },
+        { category_id: '10_30', category_name: '$10 - $30' },
+        { category_id: '30_60', category_name: '$30 - $60' },
+        { category_id: '60_above', category_name: '$60 and Above' },
+      ],
+      title: 'Hourly rate',
+    },
+    {
+      content: [
+        { category_id: 'over_1_hour', category_name: '1+ Hours Billed' },
+        { category_id: 'over_100_hour', category_name: '100+ Hours Billed' },
+        { category_id: 'over_1000_hour', category_name: '1000+ Hours Billed' },
+      ],
+      title: 'Hours billed',
+    },
+    {
+      content: [
+        { category_id: 'any_category', category_name: 'Any Category' },
+        { category_id: 'customer_service', category_name: 'Customer Service' },
+        { category_id: 'design_creative', category_name: 'Design And Creative' },
+        { category_id: 'web_mobile_software', category_name: 'Web, Mobile & Software' },
+      ],
+      title: 'Category',
+    },
+    {
+      content: [
+        { category_id: 'any_level', category_name: 'Any Level' },
+        { category_id: 'basic', category_name: 'Basic' },
+        { category_id: 'conversational', category_name: 'Conversational' },
+        { category_id: 'fluent', category_name: 'Fluent' },
+        { category_id: 'native_bilingual', category_name: 'Native Or Bilingual' },
+      ],
+      title: 'English Level',
+    },
+    {
+      content: [
+        { category_id: 'freelancers_agencies', category_name: 'Freelancers & Agencies' },
+        { category_id: 'freelancers', category_name: 'Freelancers' },
+        { category_id: 'agencies', category_name: 'Agencies' },
+      ],
+      title: 'Talent Type',
+    },
+    {
+      content: [
+        { category_id: 'any_time', category_name: 'Any Time' },
+        { category_id: '2_weeks', category_name: 'Within 2 Weeks' },
+        { category_id: '1_month', category_name: 'Within 1 Month' },
+        { category_id: '2_month', category_name: 'Within 2 Month' },
+      ],
+      title: 'Notice Period',
+    },
+  ];
 
   return (
     <div>
@@ -69,19 +164,49 @@ export const SearchBar = ({
         </div>
         {(!isSmallScreen || (isSmallScreen && searchType === searchOptions[0])) && (
           <div className='flex flex-none flex-row items-center gap-2 px-4'>
-            <button className='flex flex-row items-center justify-center gap-3'>
-              <FilterIcon isFiltered={filterItems.length > 0} isSmallScreen={isSmallScreen} />
-              {!isSmallScreen && (
-                <div className='flex flex-row gap-2'>
-                  <div>Filter</div>
-                  {filterItems.length > 0 && (
-                    <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
-                      {filterItems.length}
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className='flex flex-row items-center justify-center gap-3'>
+                  <FilterIcon isFiltered={filterItems.length > 0} isSmallScreen={isSmallScreen} />
+                  {!isSmallScreen && (
+                    <div className='flex flex-row gap-2'>
+                      <div>Filter</div>
+                      {filterItems.length > 0 && (
+                        <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
+                          {filterItems.length}
+                        </div>
+                      )}
                     </div>
                   )}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent
+                align='end'
+                className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
+              >
+                <div className='grid grid-cols-4 gap-4'>
+                  {filterItems.map((item, index) => {
+                    return (
+                      <div className='flex flex-col gap-2' key={index}>
+                        <div>{item.title}</div>
+                        {item.content.map((con, i) => {
+                          return (
+                            <DropdownItem
+                              category_id={con.category_id}
+                              category_name={con.category_name}
+                              key={i}
+                              onCheckedChange={(value) =>
+                                onCheckedChange(value, con.category_id, con.category_name)
+                              }
+                            />
+                          );
+                        })}
+                      </div>
+                    );
+                  })}
                 </div>
-              )}
-            </button>
+              </PopoverContent>
+            </Popover>
           </div>
         )}
         {isSmallScreen && searchType === searchOptions[1] && (

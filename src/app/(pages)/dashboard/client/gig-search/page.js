@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCustomContext } from '@/context/use-custom';
+import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
@@ -148,8 +149,8 @@ const GigSearch = () => {
   const [searchType, setSearchType] = useState('normal');
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [filteredGigList, setFilteredGigList] = useState([]);
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [filters, setFilters] = useState([]);
+  const { isSmallScreen } = useHandleResize();
   const filterItems = [
     {
       content: [
