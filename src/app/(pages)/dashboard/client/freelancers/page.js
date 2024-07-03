@@ -12,6 +12,7 @@ import { JobSuccessIcon } from '@/components/elements/svgs/JobSuccessIcon';
 import { TopRatedBadgeIcon } from '@/components/elements/svgs/TopRatedBadgeIcon';
 import { VerifiedIcon } from '@/components/elements/svgs/VerifiedIcon';
 import { Separator } from '@/components/ui/seperator';
+import { useDebounce } from '@/hooks/useDebounce';
 import { useGetFreelancers } from '@/hooks/useGetFreelancers';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
@@ -23,24 +24,30 @@ const Freelancers = () => {
   const [searchText, setSearchText] = useState('');
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [isAiSearch, setIsAiSearch] = useState(false);
+  const debouncedSearchText = useDebounce(searchText);
   const [page, setPage] = useState(1);
   const itemsPerPage = 2;
   const { isSmallScreen } = useHandleResize();
-  const { data: freelancers } = useGetFreelancers(page, itemsPerPage);
+  const { data: freelancers } = useGetFreelancers(page, itemsPerPage, debouncedSearchText);
+
+  useEffect(() => {
+    setPage(1);
+    setCanLoadMore(true);
+  }, [debouncedSearchText]);
 
   useEffect(() => {
     if (searchType == searchOptions[0]) {
       const filtered = allFreelancers.filter(
         (fl) =>
-          fl.email?.toLowerCase().includes(searchText.toLowerCase()) ||
-          fl.freelancerBio?.toLowerCase().includes(searchText.toLowerCase()) ||
-          fl.fullName?.toLowerCase().includes(searchText.toLowerCase()) ||
-          fl.location?.toLowerCase().includes(searchText.toLowerCase())
+          fl.email?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
+          fl.freelancerBio?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
+          fl.fullName?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
+          fl.location?.toLowerCase().includes(debouncedSearchText.toLowerCase())
       );
 
       setFilteredFreelancers(filtered);
     } else if (isAiSearch) {
-      api.get(`/api/v1/profile/ai-search-profile/${searchText}`).then((data) => {
+      api.get(`/api/v1/profile/ai-search-profile/${debouncedSearchText}`).then((data) => {
         let ai_ids = [];
 
         if (data.data.profileIDs) ai_ids = data.data.profileIDs;
@@ -52,27 +59,34 @@ const Freelancers = () => {
         setFilteredFreelancers(ai_filtered);
       });
     }
-  }, [searchText, allFreelancers, searchType, isAiSearch]);
+  }, [debouncedSearchText, allFreelancers, searchType, isAiSearch]);
 
   useEffect(() => {
     if (freelancers?.length > 0) {
       setCanLoadMore(true);
-      setAllFreelancers((prev) => {
-        let result = [...prev];
-        const ids = prev.map((item) => item._id);
+      if (page === 1) {
+        setAllFreelancers(freelancers);
+      } else {
+        setAllFreelancers((prev) => {
+          let result = [...prev];
+          const ids = prev.map((item) => item._id);
 
-        freelancers.map((fl) => {
-          if (!ids.includes(fl._id)) {
-            result = [...result, fl];
-          }
+          freelancers.map((fl) => {
+            if (!ids.includes(fl._id)) {
+              result = [...result, fl];
+            }
+          });
+
+          return result;
         });
-
-        return result;
-      });
+      }
     } else {
+      if (page === 1) {
+        setAllFreelancers([]);
+      }
       setCanLoadMore(false);
     }
-  }, [freelancers]);
+  }, [freelancers, page]);
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
