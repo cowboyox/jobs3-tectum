@@ -78,6 +78,7 @@
     "react": "^18",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
+    "react-drag-drop-files": "^2.3.10",
     "react-drag-n-drop-image": "^1.2.5",
     "react-dropzone": "^14.2.3",
     "react-fast-marquee": "^1.6.4",

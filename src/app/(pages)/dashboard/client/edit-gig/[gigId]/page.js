@@ -1,6 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { FileUploader } from 'react-drag-drop-files';
 import FileUpload from 'react-drag-n-drop-image';
 import { useForm } from 'react-hook-form';
 import { FiPlus } from 'react-icons/fi';
@@ -8,6 +9,8 @@ import { GoChevronDown, GoTrash } from 'react-icons/go';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
 import { IoIosClose } from 'react-icons/io';
 import { IoCheckmark } from 'react-icons/io5';
+import { GrDocumentPdf } from 'react-icons/gr';
+
 import {
   Select,
   SelectContent,
@@ -613,6 +616,7 @@ const GigPosting = ({ params }) => {
         const data = await getGigById(params.gigId);
         setPostData((prev) => ({
           ...prev,
+          attachment: data.data.data.attachmentName,
           experienceLevel: data.data.data.experienceLevel,
           gigCategory: data.data.data.gigCategory,
           gigDeadline: data.data.data.gigDeadline,
@@ -629,14 +633,8 @@ const GigPosting = ({ params }) => {
         setCurrentCategory(data.data.data.gigCategory[0]);
         setSkillSet(data.data.data.requiredSkills ? data.data.data.requiredSkills : []);
         setSelectedLevel(data.data.data.experienceLevel);
-        setBudgetMode(data.data.data.gigPaymentType === true ? 'hourly': 'fixed');
-        // data.data.data.attachmentName.map((item, key) =>
-        //   setFiles((prev) => ({
-        //     ...prev,
-        //     id: key,
-        //     preview: item
-        //   }))
-        // );
+        setBudgetMode(data.data.data.gigPaymentType === true ? 'hourly' : 'fixed');
+        createFileObjectsFromUrls(data.data.data.attachmentName);
       } catch (error) {
         // Handle the error here
         console.error('Error fetching data:', error);
@@ -645,6 +643,20 @@ const GigPosting = ({ params }) => {
 
     fetchData();
   }, [params.gigId]);
+  const createFileObjectsFromUrls = async (data) => {
+    const attachmentUrls = data;
+    const filePromises = attachmentUrls.map(async (url) => {
+      const response = await fetch(url, { mode: 'no-cors' });
+
+      const blob = await response.blob();
+      const fileName = url.split('/').pop();
+      return new File([blob], fileName, { type: blob.type });
+    });
+
+    const fileObjects = await Promise.all(filePromises);
+    setFiles(fileObjects);
+  };
+
   console.log('postData', postData);
   const getGigById = async (gigId) => {
     const resData = await api.get(`/api/v1/client_gig/get_gig_by_id/${gigId}`);
@@ -680,17 +692,22 @@ const GigPosting = ({ params }) => {
   }, [router, toast]);
 
   const FileChanged = (file) => {
+    console.log('file', file);
+    console.log('file.length', file.length);
     let tmp = [];
-    file.map((fi) => tmp.push(fi.file));
-    setFiles(file);
+    const filesArray = Array.from(file);
+    console.log('filesArray', filesArray);
+    filesArray.map((fi) => tmp.push(fi));
+    setFiles(filesArray);
     setFiles2(tmp);
+    console.log('tmp', tmp);
     setPostData((prev) => ({
       ...prev,
-      attachment: [...prev.attachment, file],
+      attachment: [...prev.attachment, filesArray],
     }));
   };
   const onRemoveImage = (id) => {
-    setFiles((prev) => prev.filter((i) => i.id !== id));
+    setFiles(files.filter((_, i) => i !== id));
   };
   const FileError = (error) => {
     console.error(error);
@@ -714,7 +731,7 @@ const GigPosting = ({ params }) => {
       });
     }
     const formData = new FormData();
-    files2.map((file) => {
+    files.map((file) => {
       formData.append('files', file);
     });
 
@@ -729,12 +746,11 @@ const GigPosting = ({ params }) => {
     await api
       .put(`/api/v1/client_gig/edit_gig/${params.gigId}`, postData)
       .then(async (gigData) => {
-          await api
-            .post(
-              `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${params.gigId}`,
-              formData,
-              config
-            )
+        await api.post(
+          `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${params.gigId}`,
+          formData,
+          config
+        );
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -760,7 +776,7 @@ const GigPosting = ({ params }) => {
       ...prev,
       requiredSkills: skillSet,
     }));
-  }, [skillSet])
+  }, [skillSet]);
 
   return (
     <div className='gig_posting mb-4 flex justify-center rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>
@@ -1275,27 +1291,27 @@ const GigPosting = ({ params }) => {
                 </FormDescription>
                 <FormControl>
                   <div className='rounded-xl border border-dashed border-slate-500'>
-                    <FileUpload
-                      body={<FileUploadBody />}
-                      fileValue={files}
-                      onChange={(e) => FileChanged(e)}
-                      onError={FileError}
-                      overlap={false}
-                    />
+                    <FileUploader
+                      fileOrFiles={files}
+                      handleChange={(e) => FileChanged(e)}
+                      types={['PDF']}
+                      multiple={true}
+                      label={''}
+                    >
+                      <FileUploadBody />
+                    </FileUploader>
                     {files.length > 0 && (
-                      <div className='mt-5 flex w-full flex-wrap gap-0 rounded-xl border border-slate-500'>
+                      <div className='mt-5 flex w-full flex-wrap gap-0 rounded-xl border border-slate-500 justify-center'>
                         {files.map((item, index) => {
                           return (
                             <div
                               aria-hidden
-                              className='w-1/3 p-3'
+                              className='flex w-full cursor-pointer items-center gap-2 p-3 md:w-1/2 lg:w-1/3'
                               key={index}
-                              onClick={() => onRemoveImage(item.id)}
+                              onClick={() => onRemoveImage(index)}
                             >
-                              <img
-                                className='aspect-square w-full rounded-xl bg-slate-800 object-cover p-2'
-                                src={item.preview}
-                              />
+                              <GrDocumentPdf size={'20px'} />
+                              <span>{item.name}</span>
                             </div>
                           );
                         })}
