@@ -4,6 +4,7 @@ import React from 'react';
 
 import { useCustomContext } from '@/context/use-custom';
 import { useGetAllFLRecentViews } from '@/hooks/useGetAllFLRecentViews';
+import { getLocationType } from '@/utils/gigInfo';
 
 const RecentlyViewed = () => {
   const auth = useCustomContext();
@@ -36,14 +37,14 @@ const RecentlyViewed = () => {
                 </div>
                 <div className='flex items-center justify-between gap-4'>
                   <p className='text-lg font-[400] text-medGray'>
-                    {gig?.gigPrice
+                    {!gig?.gigPaymentType
                       ? `$${gig?.gigPrice}`
                       : `$${gig?.minBudget} - $${gig?.maxBudget} /hr`}
                   </p>
                 </div>
               </div>
               <div className='flex items-center gap-1 rounded-[6px] border-2 border-white px-3 text-white'>
-                <p className='p-[1px]'>{gig?.profileId?.location}</p>
+                <p className='p-[1px]'>{getLocationType(gig?.gigLocationType)}</p>
               </div>
             </div>
           ))
