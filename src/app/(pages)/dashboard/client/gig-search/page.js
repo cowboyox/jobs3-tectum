@@ -70,76 +70,83 @@ const GigCard = (props) => {
   };
 
   return (
-    <div className='flex w-full items-center gap-4 rounded-xl bg-[#10191d] p-4 text-white mobile:flex-col'>
-      <div className='relative w-[400px] max-w-full'>
-        <img
-          alt='Gig Image'
-          className='aspect-video w-full rounded-xl object-cover'
-          src={`${props.info.gallery?.images[0] ? props.info.gallery?.images[0] : '/assets/images/portfolio_works/portfolio.jpeg'}`}
-        />
-      </div>
-      <div className='flex flex-grow flex-col gap-2'>
-        <Link href={`/dashboard/client/job-application/${props.info._id}`} target='_blank'>
-          <h3 className='cursor-pointer text-2xl font-semibold text-[#F5F5F5]'>
-            {props.info.gigTitle}
-          </h3>
-        </Link>
+    <div>
+      <div
+        className={`flex w-full items-center gap-4 ${props.info.reason ? 'rounded-t-xl' : 'rounded-xl'} bg-[#10191d] p-4 text-white mobile:flex-col`}
+      >
+        <div className='relative w-[400px] max-w-full'>
+          <img
+            alt='Gig Image'
+            className='aspect-video w-full rounded-xl object-cover'
+            src={`${props.info.gallery?.images[0] ? props.info.gallery?.images[0] : '/assets/images/portfolio_works/portfolio.jpeg'}`}
+          />
+        </div>
+        <div className='flex flex-grow flex-col gap-2'>
+          <Link href={`/dashboard/client/job-application/${props.info._id}`} target='_blank'>
+            <h3 className='cursor-pointer text-2xl font-semibold text-[#F5F5F5]'>
+              {props.info.gigTitle}
+            </h3>
+          </Link>
 
-        <div className='mt-2 flex items-center gap-5  text-[#F5F5F5]'>
-          <div className='flex items-center gap-2'>
-            <FaClock size={24} />
-            <span className='text-base'>{minutesDifference(props.info.gigPostDate)}</span>
-          </div>
-          <div className='flex items-center gap-2'>
-            <CiReceipt size={28} />
-            <span className='text-base'>${props.info.gigPrice}</span>
-          </div>
-          <div className='flex items-center gap-2'>
-            <FaStar fill='#DC4F13' size={24} />
-            <p className='flex gap-1 text-base '>
-              0.0
-              <span className='text-[#96b0be]'>(0)</span>
-            </p>
-          </div>
-          {/* <div className='flex items-center gap-2'>
+          <div className='mt-2 flex items-center gap-5 text-[#F5F5F5]'>
+            <div className='flex items-center gap-2'>
+              <FaClock size={24} />
+              <span className='text-base'>{minutesDifference(props.info.gigPostDate)}</span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <CiReceipt size={28} />
+              <span className='text-base'>${props.info.gigPrice}</span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <FaStar fill='#DC4F13' size={24} />
+              <p className='flex gap-1 text-base'>
+                0.0
+                <span className='text-[#96b0be]'>(0)</span>
+              </p>
+            </div>
+            {/* <div className='flex items-center gap-2'>
             <PiShootingStarLight className='text-blue-500' />
             <span className='text-[#96b0be] text-base'>Top Rated</span>
           </div> */}
-        </div>
-        <hr className='my-3 border-[#1B272C]' />
-        <div className='flex justify-between'>
-          <div className='flex items-center'>
-            <Image
-              alt='Devon Miles'
-              className='aspect-square rounded-full object-cover'
-              height={50}
-              src={`${props.info.creator?.avatarURL ? props.info.creator?.avatarURL : '/assets/images/users/user-6.png'}`}
-              width={50}
-            />
-            <div className='ml-2'>
-              <div className='flex items-center gap-2'>
-                <p className='text-2xl font-semibold mobile:text-xl'>
-                  {props.info.creator?.fullName}
-                </p>
-                <BsPatchCheckFill fill='#0b75c2' />
-              </div>
-              <p className='text-base text-gray-400 mobile:text-sm'>
-                {props.info.creator?.location}
-              </p>
-            </div>
           </div>
-          <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-            <button className='p-4 px-10 md:p-5' onClick={() => router.push(`./inbox`)}>Message</button>
-            <Link
-              href={`/dashboard/client/job-application/${props.info._id}`}
-              onClick={() => handleRecentView(props.info?._id)}
-              target='_blank'
-            >
-              <button className='bg-[#DC4F13] px-10 md:px-10 md:py-4'>Order</button>
-            </Link>
+          <hr className='my-3 border-[#1B272C]' />
+          <div className='flex justify-between'>
+            <div className='flex items-center'>
+              <Image
+                alt='Devon Miles'
+                className='aspect-square rounded-full object-cover'
+                height={50}
+                src={`${props.info.creator?.avatarURL ? props.info.creator?.avatarURL : '/assets/images/users/user-6.png'}`}
+                width={50}
+              />
+              <div className='ml-2'>
+                <div className='flex items-center gap-2'>
+                  <p className='text-2xl font-semibold mobile:text-xl'>
+                    {props.info.creator?.fullName}
+                  </p>
+                  <BsPatchCheckFill fill='#0b75c2' />
+                </div>
+                <p className='text-base text-gray-400 mobile:text-sm'>
+                  {props.info.creator?.location}
+                </p>
+              </div>
+            </div>
+            <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
+              <button className='p-4 px-10 md:p-5'>Message</button>
+              <Link
+                href={`/dashboard/client/job-application/${props.info._id}`}
+                onClick={() => handleRecentView(props.info?._id)}
+                target='_blank'
+              >
+                <button className='bg-[#DC4F13] px-10 md:px-10 md:py-4'>Order</button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
+      {props.info.reason && (
+        <div className='text-md rounded-b-xl bg-orange p-4 text-white'>{props.info.reason}</div>
+      )}
     </div>
   );
 };
@@ -269,7 +276,11 @@ const GigSearch = () => {
       if (data.data.profileIDs) ai_ids = data.data.profileIDs;
       const ai_filtered = ai_ids
         .map((id) => gigList.find((gig) => gig._id.toString() === id))
-        .filter((gig) => gig != undefined);
+        .filter((gig) => gig != undefined)
+        .map((gig, index) => {
+          gig.reason = data.data.reasons[index];
+          return gig;
+        });
       setFilteredGigList(ai_filtered);
     });
   };
