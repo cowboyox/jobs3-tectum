@@ -156,6 +156,8 @@ const GigSearch = () => {
   const [filteredGigList, setFilteredGigList] = useState([]);
   const [filters, setFilters] = useState([]);
   const { isSmallScreen } = useHandleResize();
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
   const filterItems = [
     {
       content: [
@@ -236,7 +238,7 @@ const GigSearch = () => {
 
   useEffect(() => {
     api
-      .get(`/api/v1/freelancer_gig/find_all_gigs`)
+      .get(`/api/v1/freelancer_gig/find_all_gigs?page=${page}&limit=${itemsPerPage}`)
       .then((data) => {
         if (data.data.data) {
           setGigList(data.data.data);
@@ -246,7 +248,7 @@ const GigSearch = () => {
       .catch((err) => {
         console.error('Error corrupted while getting all gigs: ', err);
       });
-  }, []);
+  }, [page]);
 
   const onChangeType = (e) => {
     setSearchType(e);

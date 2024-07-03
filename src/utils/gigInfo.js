@@ -3,16 +3,16 @@ export const getDeadline = (gigDeadline) => {
 
   switch (gigDeadline) {
     case 0:
-      deadline = 'less than 1 month.';
+      deadline = 'less than 1 month';
       break;
     case 1:
-      deadline = '1-3 months.';
+      deadline = '1-3 months';
       break;
     case 2:
-      deadline = '3-6 months.';
+      deadline = '3-6 months';
       break;
     default:
-      deadline = 'more than 6 months.';
+      deadline = 'more than 6 months';
       break;
   }
 

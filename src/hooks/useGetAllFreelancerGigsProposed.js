@@ -9,8 +9,10 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
     queryFn: async () => {
       if (profileId) {
         try {
-          const result = await api.get(`/api/v1/freelancer_gig/find_all_gigs_of_freelancer/${profileId}`);
-          console.log("result in useGetAllFreelancerGigsProposed:", result);
+          const result = await api.get(
+            `/api/v1/freelancer_gig/find_all_gigs_by_profile_id/${profileId}`
+          );
+          console.log('result in useGetAllFreelancerGigsProposed:', result);
           const submissions = [];
           const lives = [];
 
@@ -35,7 +37,7 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
           if (result.data.lives.length > 0) {
             result.data.lives.map((contract) => {
               lives.push({
-                id: contract._id,
+                contractId: contract.contractId,
                 creator: {
                   fullName: contract.gigOwner.fullName,
                 },
@@ -47,8 +49,8 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
                   ? `$${contract.clientGig.gigPrice}`
                   : `$${contract.clientGig.minBudget}/hr ~ $${contract.clientGig.maxBudget}/hr`,
                 gigTitle: contract.clientGig.gigTitle,
+                id: contract._id,
                 status: contract.status,
-                contractId: contract.contractId,
               });
             });
           }

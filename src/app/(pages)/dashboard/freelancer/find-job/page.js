@@ -26,6 +26,7 @@ import {
 import { Separator } from '@/components/ui/seperator';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
+import { useGetClientGigs } from '@/hooks/useGetClientGigs';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
 
@@ -40,23 +41,25 @@ const FindJob = () => {
   const [loaded, setLoaded] = useState(false);
   const [searchType, setSearchType] = useState('normal');
   const [searchKeyWords, setSearchKeyWords] = useState('');
+  const [canLoadMore, setCanLoadMore] = useState(true);
   const [filteredGigList, setFilteredGigList] = useState([]);
   const [filteredGigShowModeList, setFilteredGigShowModeList] = useState([]);
+  const [page, setPage] = useState(1);
 
+  const itemsPerPage = 2;
+  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
 
   useEffect(() => {
-    api
-      .get(`/api/v1/client_gig/find_all_gigs`)
-      .then((data) => {
-        setGigList(data.data.data);
-        setFilteredGigList(data.data.data);
-        setFilteredGigShowModeList(new Array(data.data.data.length).fill(false));
-      })
-      .catch((err) => {
-        console.error('Error corrupted while getting all gigs: ', err);
-      });
+    if (clientGigs) {
+      setGigList(clientGigs);
+      setFilteredGigList(clientGigs);
+      setFilteredGigShowModeList(new Array(clientGigs.length).fill(false));
+    }
+  }, [clientGigs]);
+
+  useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setIsSmallScree(true);
@@ -78,6 +81,40 @@ const FindJob = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    setPage(1);
+    setCanLoadMore(true);
+  }, [searchKeyWords]);
+
+  useEffect(() => {
+    if (clientGigs?.length > 0) {
+      setCanLoadMore(true);
+      if (page === 1) {
+        setGigList(clientGigs);
+        setFilteredGigList(clientGigs);
+        setFilteredGigShowModeList(new Array(clientGigs.length).fill(false));
+      } else {
+        setGigList((prev) => {
+          let result = [...prev];
+          const ids = prev.map((item) => item._id);
+
+          clientGigs.map((cg) => {
+            if (!ids.includes(cg._id)) {
+              result = [...result, cg];
+            }
+          });
+
+          return result;
+        });
+      }
+    } else {
+      if (page === 1) {
+        setGigList([]);
+      }
+      setCanLoadMore(false);
+    }
+  }, [clientGigs, page]);
 
   const onChangeType = (e) => {
     setSearchType(e);
@@ -182,8 +219,12 @@ const FindJob = () => {
     }
   };
 
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
+
   return loaded ? (
-    <div className='p-0 lg:mt-8 sm:p-0 xl:mt-8'>
+    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-4 rounded-xl bg-[#10191D] mobile:gap-0'>
         <div className='m-3 flex flex-1 items-center gap-3'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
@@ -1186,9 +1227,14 @@ const FindJob = () => {
               </div>
             );
           })}
-          <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
-            Load more +{' '}
-          </button>
+          {canLoadMore && (
+            <button
+              className='mt-6 w-full border border-[#28373E] p-3 text-center'
+              onClick={handleLoadMore}
+            >
+              Load more +{' '}
+            </button>
+          )}
         </>
       )}
       {filteredGigList.length === 0 && (
