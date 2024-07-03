@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCustomContext } from '@/context/use-custom';
+import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
@@ -148,8 +149,8 @@ const GigSearch = () => {
   const [searchType, setSearchType] = useState('normal');
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [filteredGigList, setFilteredGigList] = useState([]);
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [filters, setFilters] = useState([]);
+  const { isSmallScreen } = useHandleResize();
   const filterItems = [
     {
       content: [
@@ -227,28 +228,6 @@ const GigSearch = () => {
       title: 'Notice Period',
     },
   ];
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsSmallScreen(true);
-      } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
-        setIsSmallScreen(false);
-      } else {
-        setIsSmallScreen(false);
-      }
-    };
-
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  console.log('gigList', gigList);
 
   useEffect(() => {
     api
