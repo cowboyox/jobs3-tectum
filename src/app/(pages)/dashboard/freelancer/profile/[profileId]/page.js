@@ -129,6 +129,8 @@ const FreelancerProfile = () => {
       setViewMode('preview');
     }
   }, [auth, profileId]);
+  console.log('isAuth', isAuth);
+  console.log('viewMode', viewMode);
 
   useEffect(() => {
     (async () => {
@@ -427,9 +429,9 @@ const FreelancerProfile = () => {
 
   return !isLoading ? (
     <div className='p-0'>
-      <div className='group relative cursor-pointer' {...getBannerRootProps()}>
+      <div className={`group relative ${isAuth && 'cursor-pointer'}`} {...getBannerRootProps()}>
         <label
-          className='w-full hover:cursor-pointer'
+          className={`w-full ${isAuth && 'hover:cursor-pointer'}`}
           htmlFor='dropzone-banner'
           onClick={(e) => e.stopPropagation()}
         >
@@ -442,21 +444,25 @@ const FreelancerProfile = () => {
                 : '/assets/images/freelancer-image.jpeg'
             }
           />
-          <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
-            <IoCameraOutline className='h-6 w-6' />
-          </div>
+          {isAuth && (
+            <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
+              <IoCameraOutline className='h-6 w-6' />
+            </div>
+          )}
         </label>
-        <Input
-          {...getBannerInputProps()}
-          accept='image/png, image/jpeg'
-          className='hidden'
-          id='dropzone-banner'
-          onChange={(e) => handleBannerUpload(e)}
-          type='file'
-        />
+        {isAuth && (
+          <Input
+            {...getBannerInputProps()}
+            accept='image/png, image/jpeg'
+            className='hidden'
+            id='dropzone-banner'
+            onChange={(e) => handleBannerUpload(e)}
+            type='file'
+          />
+        )}
       </div>
       <div className='mx-auto flex max-w-7xl -translate-y-8 flex-col gap-3 px-0 md:px-8'>
-        <Tabs defaultValue='edit-profile'>
+        <Tabs defaultValue='preview'>
           <div className='flex flex-col gap-4 rounded-xl bg-[#10191D] px-3 py-4 md:flex-row md:gap-0 md:p-8'>
             <div className='flex w-full items-center gap-4 md:w-3/4 md:gap-7'>
               <div className='relative w-16 md:h-24 md:w-24'>
@@ -465,7 +471,7 @@ const FreelancerProfile = () => {
                   {...getAvatarRootProps()}
                 >
                   <label
-                    className='w-full hover:cursor-pointer'
+                    className={`w-full ${isAuth && 'hover:cursor-pointer'}`}
                     htmlFor='dropzone-avatar'
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -478,18 +484,22 @@ const FreelancerProfile = () => {
                           : '/assets/images/users/user-5.png'
                       }
                     />
-                    <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
-                      <IoCameraOutline className='h-6 w-6' />
-                    </div>
+                    {isAuth && (
+                      <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
+                        <IoCameraOutline className='h-6 w-6' />
+                      </div>
+                    )}
                   </label>
-                  <Input
-                    {...getAvatarInputProps()}
-                    accept='image/png, image/jpeg'
-                    className='hidden'
-                    id='dropzone-avatar'
-                    onChange={(e) => handleAvatarUpload(e)}
-                    type='file'
-                  />
+                  {isAuth && (
+                    <Input
+                      {...getAvatarInputProps()}
+                      accept='image/png, image/jpeg'
+                      className='hidden'
+                      id='dropzone-avatar'
+                      onChange={(e) => handleAvatarUpload(e)}
+                      type='file'
+                    />
+                  )}
                 </div>
                 {/* Change background color depending on user online status */}
                 <div className='absolute bottom-1 right-1 h-4 w-4 rounded-full bg-green-500' />
@@ -950,6 +960,7 @@ const FreelancerProfile = () => {
                   </div>
                 </div>
               </TabsContent>
+
               <TabsContent value='edit-profile'>
                 <div className='flex flex-col gap-5'>
                   <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
