@@ -75,13 +75,13 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
           {
             (label === 'hourlyRate' || label === 'monthlyRate') &&
             <span className='text-sm text-[#96B0BD]'>
-              $
+              &nbsp;$
             </span>
           }
         </span>
       ) : (
         <span className='text-sm text-[#96B0BD]'>
-          {(label === 'hourlyRate' || label === 'monthlyRate')? handleValue(value) + '$': handleValue(value)}
+          {(label === 'hourlyRate' || label === 'monthlyRate')? handleValue(value) + ' $': handleValue(value)}
         </span>
       )}
     </div>
