@@ -33,6 +33,9 @@ const languages = ['English', 'Germany', 'Russian', 'Spanish', 'Portugues'];
 
 const ContractStatus = {
   ACTIVE: 'Active',
+  PENDING: 'Pending',
+  DELIVERED: 'Delivered',
+  RELEASED: 'Released',
   CANCELLED: 'Cancelled',
   COMPLETED: 'Completed',
   PENDING: 'Pending',

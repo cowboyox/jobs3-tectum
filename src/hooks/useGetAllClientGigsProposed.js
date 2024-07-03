@@ -49,6 +49,7 @@ export const useGetAllClientGigsProposed = (profileId) => {
                   : `$${contract.clientGig.minBudget}/hr ~ $${contract.clientGig.maxBudget}/hr`,
                 gigTitle: contract.clientGig.gigTitle,
                 status: contract.status,
+                contractId: contract.contractId,
               });
             });
           }
