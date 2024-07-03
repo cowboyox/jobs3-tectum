@@ -25,6 +25,8 @@ import {
 import { useCustomContext } from '@/context/use-custom';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
+import { minutesDifference } from '@/utils/Helpers';
+
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
@@ -75,19 +77,6 @@ const GigCard = (props) => {
           className='aspect-video w-full rounded-xl object-cover'
           src={`${props.info.gallery?.images[0] ? props.info.gallery?.images[0] : '/assets/images/portfolio_works/portfolio.jpeg'}`}
         />
-        <div className='absolute left-2 top-2 flex gap-2'>
-          <div className='flex items-center gap-2 rounded-full bg-gray-800 px-2 py-1 text-white'>
-            <FaStar fill='#DC4F13' size={16} />
-            <p className='flex gap-1 text-[14px] text-[#E0F0F9]'>
-              5.5
-              <span className='text-[#96b0be]'>(921)</span>
-            </p>
-          </div>
-          <div className='flex items-center gap-2 rounded-full bg-gray-800 px-2 py-1 text-white'>
-            <PiShootingStarLight className='text-blue-500' />
-            <span className='text-[#96b0be]'>Top Rated</span>
-          </div>
-        </div>
       </div>
       <div className='flex flex-grow flex-col gap-2'>
         <Link href={`/dashboard/client/job-application/${props.info._id}`} target='_blank'>
@@ -96,15 +85,26 @@ const GigCard = (props) => {
           </h3>
         </Link>
 
-        <div className='mt-2 flex items-center gap-5 text-gray-400'>
+        <div className='mt-2 flex items-center gap-5  text-[#F5F5F5]'>
           <div className='flex items-center gap-2'>
             <FaClock size={24} />
-            <span className='text-base'>{props.info.gigPrice}</span>
+            <span className='text-base'>{minutesDifference(props.info.gigPostDate)}</span>
           </div>
           <div className='flex items-center gap-2'>
             <CiReceipt size={28} />
             <span className='text-base'>${props.info.gigPrice}</span>
           </div>
+          <div className='flex items-center gap-2'>
+            <FaStar fill='#DC4F13' size={24} />
+            <p className='flex gap-1 text-base '>
+              0.0
+              <span className='text-[#96b0be]'>(0)</span>
+            </p>
+          </div>
+          {/* <div className='flex items-center gap-2'>
+            <PiShootingStarLight className='text-blue-500' />
+            <span className='text-[#96b0be] text-base'>Top Rated</span>
+          </div> */}
         </div>
         <hr className='my-3 border-[#1B272C]' />
         <div className='flex justify-between'>
