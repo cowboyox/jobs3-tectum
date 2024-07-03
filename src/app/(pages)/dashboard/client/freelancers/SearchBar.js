@@ -70,77 +70,18 @@ export const SearchBar = ({
         {(!isSmallScreen || (isSmallScreen && searchType === searchOptions[0])) && (
           <div className='flex flex-none flex-row items-center gap-2 px-4'>
             <button className='flex flex-row items-center justify-center gap-3'>
-              <FilterIcon isFiltered={true} isSmallScreen={true} />
-              {!isSmallScreen ? (
-                <>
-                  <FilterIcon />
-                  Filter
-                </>
-              ) : (
-                <svg
-                  fill='none'
-                  height='24'
-                  viewBox='0 0 25 24'
-                  width='25'
-                  xmlns='http://www.w3.org/2000/svg'
-                >
-                  <path
-                    d='M22.1719 6.58594H16.2656'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M6.42188 6.58594H2.48438'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M10.3594 10.0312C12.2622 10.0312 13.8047 8.48873 13.8047 6.58594C13.8047 4.68314 12.2622 3.14062 10.3594 3.14062C8.45658 3.14062 6.91406 4.68314 6.91406 6.58594C6.91406 8.48873 8.45658 10.0312 10.3594 10.0312Z'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M22.1719 17.4141H18.2344'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M8.39062 17.4141H2.48438'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M14.2969 20.8594C16.1997 20.8594 17.7422 19.3169 17.7422 17.4141C17.7422 15.5113 16.1997 13.9688 14.2969 13.9688C12.3941 13.9688 10.8516 15.5113 10.8516 17.4141C10.8516 19.3169 12.3941 20.8594 14.2969 20.8594Z'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <circle cx='18.2344' cy='5.10938' fill='#DC4F13' r='4.92188' />
-                </svg>
+              <FilterIcon isFiltered={filterItems.length > 0} isSmallScreen={isSmallScreen} />
+              {!isSmallScreen && (
+                <div className='flex flex-row gap-2'>
+                  <div>Filter</div>
+                  {filterItems.length > 0 && (
+                    <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
+                      {filterItems.length}
+                    </div>
+                  )}
+                </div>
               )}
             </button>
-            {!isSmallScreen && (
-              <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
-                4
-              </div>
-            )}
           </div>
         )}
         {isSmallScreen && searchType === searchOptions[1] && (
