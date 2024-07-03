@@ -4,7 +4,7 @@ import { GoChevronDown } from 'react-icons/go';
 
 import { Textarea } from '../ui/textarea';
 
-const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio }) => {
+const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio, bio }) => {
   const [isOpen, setIsOpen] = useState(false);
   const contentRef = useRef(null);
   const [maxHeight, setMaxHeight] = useState('0px');
@@ -31,7 +31,7 @@ const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio }) => {
             <p key={index}>{line}</p>
           ))} */}
           <pre>
-            {previewText}
+            {bio}
           </pre>
         </div>
       ) : (
@@ -39,7 +39,7 @@ const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio }) => {
           className='rounded-xl outline-none'
           onChange={(e) => setBio(e.target.value)}
           rows={7}
-          value={previewText + expandedText}
+          value={bio}
         />
       )}
       {!isEditBio && (
@@ -49,13 +49,16 @@ const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio }) => {
           style={{ maxHeight }}
         >
           <div>
-            {expandedText.split('\n').map((line, index) => (
+            {/* {expandedText.split('\n').map((line, index) => (
               <p key={index}>{line}</p>
-            ))}
+            ))} */}
+            <pre>
+              {bio}
+            </pre>
           </div>
         </div>
       )}
-      {!isEditBio && (
+      {/* {!isEditBio && (
         <button
           className={`absolute bottom-0 top-full mt-2 flex w-full justify-center text-base text-[#96B0BD]`}
           onClick={toggleCollapse}
@@ -70,7 +73,7 @@ const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio }) => {
             </span>
           )}
         </button>
-      )}
+      )} */}
     </div>
   );
 };
