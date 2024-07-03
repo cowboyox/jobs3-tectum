@@ -827,7 +827,6 @@ const FreelancerProfile = () => {
                       isEditBio={false}
                       previewText={previewBio}
                       setBio={setBio}
-                      bio={bio}
                     />
                   </div>
                   <div className='flex w-full flex-col justify-between gap-5 rounded-xl bg-[#10191d] p-5'>
