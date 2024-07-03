@@ -34,7 +34,7 @@ const Status = ({ status }) => {
   const getStatusContent = () => {
     switch (status) {
       case 0:
-        return 'Alive';
+        return 'Active';
       case 1:
         return 'Hired';
       case 2:
@@ -48,11 +48,13 @@ const Status = ({ status }) => {
     </div>
   );
 };
+
 const GigCard = ({ gig }) => {
+  const router = useRouter();
   return (
     <div className='mb-4 flex justify-between rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-3'>
       <div className='flex flex-col gap-1'>
-        <h2 className='text-xl text-white'>{gig.gigTitle}</h2>
+        <h2 className='text-xl text-white cursor-pointer' onClick={() => router.push(`./edit-gig/${gig._id}`)}>{gig.gigTitle}</h2>
         <div className='mt-2 flex items-center gap-5 text-gray-400'>
           <div className='flex items-center gap-2'>
             <CiClock2 size={24} />
@@ -80,38 +82,33 @@ const MyGigs = () => {
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [filteredGigList, setFilteredGigList] = useState([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsSmallScreen(true);
-      } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
-        setIsSmallScreen(false);
-      } else {
-        setIsSmallScreen(false);
-      }
-    };
-
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (!tmp) {
       router.push(`/?redirect=${pathname}`);
     } else {
-      api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
-        setMyGigs(data.data.data);
-        setFilteredGigList(data.data.data);
-      });
+      api
+        .get(`/api/v1/client_gig/get-gig-by-userId?page=${page}&limit=${itemsPerPage}`)
+        .then((data) => {
+          if (data.data.data && data.data.data.length > 0) {
+            setCanLoadMore(true);
+            setMyGigs((prev) => [...prev, ...data.data.data]);
+            setFilteredGigList((prev) => [...prev, ...data.data.data]);
+          } else {
+            setCanLoadMore(false);
+          }
+        });
     }
-  }, [router, pathname]);
+  }, [router, pathname, page]);
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
 
   const onChangeType = (e) => {
     setSearchType(e);
@@ -195,7 +192,7 @@ const MyGigs = () => {
         </div>
         <Link
           className='flex w-40 cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-1 text-center text-base transition hover:bg-white hover:text-black mobile:w-full mobile:py-2 mobile:text-center'
-          href='./portfolio/create'
+          href='./post-gig'
         >
           Post a New Gig
         </Link>
@@ -207,9 +204,14 @@ const MyGigs = () => {
           <div className='mt-[10vh] text-center'>Not yet</div>
         )}
       </div>
-      <div className='mx-auto w-full max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'>
-        Load more +
-      </div>
+      {canLoadMore && (
+        <div
+          className='mx-auto w-full max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'
+          onClick={handleLoadMore}
+        >
+          Load More +
+        </div>
+      )}
     </div>
   );
 };

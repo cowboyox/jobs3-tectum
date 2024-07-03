@@ -2,13 +2,15 @@
 
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import FileUpload from 'react-drag-n-drop-image';
+import { FileUploader } from 'react-drag-drop-files';
 import { useForm } from 'react-hook-form';
 import { FiPlus } from 'react-icons/fi';
 import { GoChevronDown, GoTrash } from 'react-icons/go';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
 import { IoIosClose } from 'react-icons/io';
 import { IoCheckmark } from 'react-icons/io5';
+import { MdOutlineAttachFile } from 'react-icons/md';
+
 import {
   Select,
   SelectContent,
@@ -228,7 +230,7 @@ const all_form_structure = {
   title_placeholder: 'Type the title here',
 
   upload_files_label: 'Documents (Up To 2)',
-  upload_files_description: 'Upload files. Format: PDF',
+  upload_files_description: 'Upload files. Format: PDF, DOC, JPG, PNG...',
 };
 
 const GigPosting = () => {
@@ -634,23 +636,28 @@ const GigPosting = () => {
   }, [router, toast]);
 
   const FileChanged = (file) => {
+    console.log('file', file);
+    console.log('file.length', file.length);
     let tmp = [];
-    file.map((fi) => tmp.push(fi.file));
-    setFiles(file);
+    const filesArray = Array.from(file);
+    console.log('filesArray', filesArray);
+    filesArray.map((fi) => tmp.push(fi));
+    setFiles(filesArray);
     setFiles2(tmp);
+    console.log('tmp', tmp);
     setPostData((prev) => ({
       ...prev,
-      attachment: [...prev.attachment, file],
+      attachment: [...prev.attachment, filesArray],
     }));
   };
   const onRemoveImage = (id) => {
-    setFiles((prev) => prev.filter((i) => i.id !== id));
+    setFiles(files.filter((_, i) => i !== id));
   };
   const FileError = (error) => {
     console.error(error);
   };
   const form = useForm();
-
+  console.log('files is here', files);
   const handleSetGigTitle = (e) => {
     setPostData((prev) => ({
       ...prev,
@@ -667,11 +674,8 @@ const GigPosting = () => {
         variant: 'default',
       });
     }
-    setPostData((prev) => ({
-      ...prev,
-      requiredSkills: skillSet,
-    }));
     const formData = new FormData();
+    console.log('files2 ->', files2);
     files2.map((file) => {
       formData.append('files', file);
     });
@@ -702,7 +706,7 @@ const GigPosting = () => {
               imageURL:
                 auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
               gigId: gigData.data.gigId,
-              gigTitle: postData.gigTitle
+              gigTitle: postData.gigTitle,
             });
           });
         toast({
@@ -726,18 +730,12 @@ const GigPosting = () => {
       });
   };
 
-  const onSelectJobCatetory = (currentValue) => {
-    let categories = jobCategories.includes(currentValue)
-      ? jobCategories.filter((c) => c !== currentValue)
-      : [...jobCategories, currentValue];
-
-    setJobCategories(categories);
+  useEffect(() => {
     setPostData((prev) => ({
       ...prev,
-      gigCategory: categories,
+      requiredSkills: skillSet,
     }));
-    setOpenCategory(false);
-  };
+  }, [skillSet]);
 
   return (
     <div className='gig_posting mb-4 flex justify-center rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>
@@ -1023,7 +1021,7 @@ const GigPosting = () => {
                   {all_form_structure.location_label}
                 </FormLabel>
                 <FormControl>
-                  <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50 flex'>
+                  <div className='mt-4 flex rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
                     <input
                       className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
                       value={postData.location}
@@ -1100,7 +1098,7 @@ const GigPosting = () => {
                           <FormField
                             name='hourly_rate_from'
                             render={() => (
-                              <FormItem className='mt-2 mb-4 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                              <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
                                 <FormLabel className='text-base font-normal text-[#96B0BD]'>
                                   {all_form_structure.gig_from_to.from_label}
                                 </FormLabel>
@@ -1133,7 +1131,7 @@ const GigPosting = () => {
                           <FormField
                             name='hourly_rate_to'
                             render={() => (
-                              <FormItem className='mt-2 mb-4 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                              <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
                                 <FormLabel className='text-base font-normal text-[#96B0BD]'>
                                   {all_form_structure.gig_from_to.to_label}
                                 </FormLabel>
@@ -1219,7 +1217,7 @@ const GigPosting = () => {
                 <FormControl>
                   <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
                     <textarea
-                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none resize-none'
+                      className='box-border w-full resize-none bg-transparent !p-0 text-[#96B0BD] outline-none'
                       value={postData.gigDescription}
                       onChange={(e) => {
                         setPostData((prev) => ({
@@ -1228,6 +1226,7 @@ const GigPosting = () => {
                         }));
                       }}
                       placeholder={all_form_structure.gig_description_placeholder}
+                      rows={7}
                     />
                   </div>
                 </FormControl>
@@ -1247,27 +1246,38 @@ const GigPosting = () => {
                 </FormDescription>
                 <FormControl>
                   <div className='rounded-xl border border-dashed border-slate-500'>
-                    <FileUpload
-                      body={<FileUploadBody />}
-                      fileValue={files}
-                      onChange={(e) => FileChanged(e)}
-                      onError={FileError}
-                      overlap={false}
-                    />
+                    <FileUploader
+                      fileOrFiles={files}
+                      handleChange={(e) => FileChanged(e)}
+                      types={[
+                        'jpg',
+                        'jpeg',
+                        'png',
+                        'gif',
+                        'pdf',
+                        'mp4',
+                        'avi',
+                        'mov',
+                        'doc',
+                        'docx',
+                      ]}
+                      multiple={true}
+                      label={''}
+                    >
+                      <FileUploadBody />
+                    </FileUploader>
                     {files.length > 0 && (
-                      <div className='mt-5 flex w-full flex-wrap gap-0 rounded-xl border border-slate-500'>
+                      <div className='mt-5 flex w-full flex-wrap justify-center gap-0 rounded-xl border border-slate-500'>
                         {files.map((item, index) => {
                           return (
                             <div
                               aria-hidden
-                              className='w-1/3 p-3'
+                              className='flex w-full cursor-pointer items-center justify-center gap-2 p-3 md:w-1/2 lg:w-1/3'
                               key={index}
-                              onClick={() => onRemoveImage(item.id)}
+                              onClick={() => onRemoveImage(index)}
                             >
-                              <img
-                                className='aspect-square w-full rounded-xl bg-slate-800 object-cover p-2'
-                                src={item.preview}
-                              />
+                              <MdOutlineAttachFile size={'20px'} />
+                              <span className='overflow-hidden mobile:w-[80%]'>{item.name}</span>
                             </div>
                           );
                         })}

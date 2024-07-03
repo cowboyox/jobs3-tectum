@@ -2,9 +2,6 @@
 
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import {
-  useAnchorWallet,
-} from "@solana/wallet-adapter-react";
 
 import Job from '@/components/dashboard/jobapplication/Job';
 import { useToast } from '@/components/ui/use-toast';
@@ -14,19 +11,19 @@ import api from '@/utils/api';
 
 const Page = () => {
   const { gigId } = useParams();
-  const wallet = useAnchorWallet();
+  // const wallet = useAnchorWallet();
   const router = useRouter();
   const { toast } = useToast();
   const [coverLetter, setCoverLetter] = useState();
   const auth = useCustomContext();
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   useEffect(() => {
-    let tmp = localStorage.getItem('jobs_2024_token')
-    if(!tmp){
+    let tmp = localStorage.getItem('jobs_2024_token');
+    if (!tmp) {
       router.push(`/?redirect=${pathname}`);
     }
-  }, [router, pathname])
+  }, [router, pathname]);
 
   const { data: gigInfo } = useGetClientGigById(gigId);
 
@@ -35,11 +32,11 @@ const Page = () => {
   };
 
   const onApply = async () => {
-    if (!wallet) {
+    if (!auth.currentProfile.walletPublicKey) {
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Please connect your wallet!</h3>,
+        description: <h3>Please connect your wallet on the setting page!</h3>,
         title: <h1 className='text-center'>Error</h1>,
         variant: 'destructive',
       });
@@ -49,14 +46,11 @@ const Page = () => {
     let values = {};
 
     values.freelancerId = auth.currentProfile._id;
-    values.fullName = auth.user.name;
-    values.email = auth.user.email;
-    values.proposal = coverLetter;
-    values.connects = gigInfo.connects;
-    values.walletPubkey = wallet.publicKey;
+    values.proposalText = coverLetter;
+    values.profileId = gigInfo?.data?.data?.profileId;
 
     await api
-      .post(`/api/v1/bidding/${gigId}/apply`, values)
+      .post(`/api/v1/bidding/${gigId}/apply-to-clientgig`, values)
       .then(async () => {
         toast({
           className:
@@ -69,13 +63,24 @@ const Page = () => {
       })
       .catch((err) => {
         console.error('Error corrupted during applying gig', err);
-        toast({
-          className:
-            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
-          title: <h1 className='text-center'>Error</h1>,
-          variant: 'destructive',
-        });
+
+        if (err?.response?.data?.message == 'You already applied to this gig!') {
+          toast({
+            className:
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>{err?.response?.data?.message}</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
+          });
+        } else {
+          toast({
+            className:
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
+          });
+        }
       });
   };
 
@@ -83,12 +88,12 @@ const Page = () => {
     <div className='flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-center'>
       <div className='w-full md:w-[65%] md:max-w-[690px]'>
         {gigInfo ? <Job gigData={gigInfo} /> : <></>}
-        <div className='flex flex-col gap-4 px-6 py-6 mt-4 text-white rounded-2xl bg-deepGreen'>
-          <h3 className='hidden text-xl font-semibold text-white whitespace-nowrap md:block'>
+        <div className='mt-4 flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
+          <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
             Cover letter
           </h3>
           <textarea
-            className='w-full p-4 border rounded-xl border-medGray bg-deepGreen'
+            className='w-full rounded-xl border border-medGray bg-deepGreen p-4'
             cols='30'
             id=''
             name=''
@@ -99,7 +104,7 @@ const Page = () => {
         </div>
       </div>
       <div className='w-full md:w-[35%] md:max-w-[420px]'>
-        <div className='flex flex-col gap-4 px-6 py-6 text-white rounded-2xl bg-deepGreen'>
+        <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
           <div className='flex flex-col gap-3'>
             <div className='flex items-center justify-center gap-2 rounded-xl bg-[#1B272C] p-3'>
               <svg
@@ -112,23 +117,23 @@ const Page = () => {
                 <path
                   d='M6 10V8C6 4.69 7 2 12 2C17 2 18 4.69 18 8V10'
                   stroke='#96B0BD'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-width='1.5'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='1.5'
                 />
                 <path
                   d='M12 18.5C13.3807 18.5 14.5 17.3807 14.5 16C14.5 14.6193 13.3807 13.5 12 13.5C10.6193 13.5 9.5 14.6193 9.5 16C9.5 17.3807 10.6193 18.5 12 18.5Z'
                   stroke='#96B0BD'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-width='1.5'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='1.5'
                 />
                 <path
                   d='M17 22H7C3 22 2 21 2 17V15C2 11 3 10 7 10H17C21 10 22 11 22 15V17C22 21 21 22 17 22Z'
                   stroke='#96B0BD'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-width='1.5'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='1.5'
                 />
               </svg>
               SSL Secure Payment
@@ -144,7 +149,9 @@ const Page = () => {
               </div>
               <div className='flex justify-between'>
                 <p className='text-xl font-semibold'>Total</p>
-                <p className='text-xl font-semibold'>${(gigInfo?.data?.data?.gigPrice - gigInfo?.data?.data?.gigPrice * 0.1)|| 0}</p>
+                <p className='text-xl font-semibold'>
+                  ${gigInfo?.data?.data?.gigPrice - gigInfo?.data?.data?.gigPrice * 0.1 || 0}
+                </p>
               </div>
             </div>
             <div className='mt-2 flex rounded-xl bg-[#1B272C] p-1 md:mt-0'>
