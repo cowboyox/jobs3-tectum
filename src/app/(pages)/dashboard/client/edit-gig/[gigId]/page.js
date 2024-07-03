@@ -10,6 +10,7 @@ import { IoIosCloseCircleOutline } from 'react-icons/io';
 import { IoIosClose } from 'react-icons/io';
 import { IoCheckmark } from 'react-icons/io5';
 import { GrDocumentPdf } from 'react-icons/gr';
+import { MdOutlineAttachFile } from "react-icons/md";
 
 import {
   Select,
@@ -230,7 +231,7 @@ const all_form_structure = {
   title_placeholder: 'Type the title here',
 
   upload_files_label: 'Documents (Up To 2)',
-  upload_files_description: 'Upload files. Format: PDF',
+  upload_files_description: 'Upload files. Format: PDF, DOC, JPG, PNG...',
 };
 
 const GigPosting = ({ params }) => {
@@ -1272,6 +1273,7 @@ const GigPosting = ({ params }) => {
                         }));
                       }}
                       placeholder={all_form_structure.gig_description_placeholder}
+                      rows={7}
                     />
                   </div>
                 </FormControl>
@@ -1294,7 +1296,7 @@ const GigPosting = ({ params }) => {
                     <FileUploader
                       fileOrFiles={files}
                       handleChange={(e) => FileChanged(e)}
-                      types={['PDF']}
+                      types={['jpg', 'jpeg', 'png', 'gif', 'pdf', 'mp4', 'avi', 'mov', 'doc', 'docx']}
                       multiple={true}
                       label={''}
                     >
@@ -1306,12 +1308,12 @@ const GigPosting = ({ params }) => {
                           return (
                             <div
                               aria-hidden
-                              className='flex w-full cursor-pointer items-center gap-2 p-3 md:w-1/2 lg:w-1/3'
+                              className='flex w-full cursor-pointer items-center gap-2 p-3 md:w-1/2 lg:w-1/3 justify-center'
                               key={index}
                               onClick={() => onRemoveImage(index)}
                             >
-                              <GrDocumentPdf size={'20px'} />
-                              <span>{item.name}</span>
+                              <MdOutlineAttachFile size={'20px'} />
+                              <span className='mobile:w-[80%] overflow-hidden'>{item.name}</span>
                             </div>
                           );
                         })}
