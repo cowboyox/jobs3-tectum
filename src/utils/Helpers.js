@@ -168,5 +168,6 @@ export const minutesDifference = (timeString) => {
   if (days > 0) result += `${days}D${days > 1 ? 's' : ''} `;
   if (hours > 0) result += `${hours}Hr${hours > 1 ? 's' : ''} `;
   if (mins > 0) result += `${mins}Min${mins > 1 ? 's' : ''} ago`;
+  if (mins == 0) result += 'Just now';
   return result.trim();
 };
