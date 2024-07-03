@@ -231,7 +231,7 @@ const all_form_structure = {
   title_placeholder: 'Type the title here',
 
   upload_files_label: 'Documents (Up To 2)',
-  upload_files_description: 'Upload files. Format: PDF',
+  upload_files_description: 'Upload files. Format: PDF, DOC, JPG, PNG...',
 };
 
 const GigPosting = ({ params }) => {

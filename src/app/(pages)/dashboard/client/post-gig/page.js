@@ -9,7 +9,7 @@ import { GoChevronDown, GoTrash } from 'react-icons/go';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
 import { IoIosClose } from 'react-icons/io';
 import { IoCheckmark } from 'react-icons/io5';
-import { MdOutlineAttachFile } from "react-icons/md";
+import { MdOutlineAttachFile } from 'react-icons/md';
 
 import {
   Select,
@@ -230,7 +230,7 @@ const all_form_structure = {
   title_placeholder: 'Type the title here',
 
   upload_files_label: 'Documents (Up To 2)',
-  upload_files_description: 'Upload files. Format: PDF',
+  upload_files_description: 'Upload files. Format: PDF, DOC, JPG, PNG...',
 };
 
 const GigPosting = () => {
@@ -1249,24 +1249,35 @@ const GigPosting = () => {
                     <FileUploader
                       fileOrFiles={files}
                       handleChange={(e) => FileChanged(e)}
-                      types={['jpg', 'jpeg', 'png', 'gif', 'pdf', 'mp4', 'avi', 'mov', 'doc', 'docx']}
+                      types={[
+                        'jpg',
+                        'jpeg',
+                        'png',
+                        'gif',
+                        'pdf',
+                        'mp4',
+                        'avi',
+                        'mov',
+                        'doc',
+                        'docx',
+                      ]}
                       multiple={true}
                       label={''}
                     >
                       <FileUploadBody />
                     </FileUploader>
                     {files.length > 0 && (
-                      <div className='mt-5 flex w-full flex-wrap gap-0 rounded-xl border border-slate-500 justify-center'>
+                      <div className='mt-5 flex w-full flex-wrap justify-center gap-0 rounded-xl border border-slate-500'>
                         {files.map((item, index) => {
                           return (
                             <div
                               aria-hidden
-                              className='flex w-full cursor-pointer items-center gap-2 p-3 md:w-1/2 lg:w-1/3 justify-center'
+                              className='flex w-full cursor-pointer items-center justify-center gap-2 p-3 md:w-1/2 lg:w-1/3'
                               key={index}
                               onClick={() => onRemoveImage(index)}
                             >
                               <MdOutlineAttachFile size={'20px'} />
-                              <span className='mobile:w-[80%] overflow-hidden'>{item.name}</span>
+                              <span className='overflow-hidden mobile:w-[80%]'>{item.name}</span>
                             </div>
                           );
                         })}
