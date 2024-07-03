@@ -26,6 +26,9 @@ const Freelancers = () => {
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [searchKeyWords, setSearchKeyWords] = useState(false);
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
 
   const handleSearchTypeChange = (v) => setSearchType(v);
 
@@ -75,22 +78,29 @@ const Freelancers = () => {
 
     window.addEventListener('resize', handleResize);
 
-    api.get(`/api/v1/profile/get-all-freelancers`).then((data) => {
-      if (data.data.data) {
-        setFreelancers(data.data.data);
-        setFilteredFreelancers(data.data.data);
-      } else {
-        setFreelancers([]);
-        setFilteredFreelancers([]);
-      }
-    });
+    api
+      .get(`/api/v1/profile/get-all-freelancers?page=${page}&limit=${itemsPerPage}`)
+      .then((data) => {
+        if (data.data.data && data.data.data.length > 0) {
+          setCanLoadMore(true);
+          setFreelancers((prev) => [...prev, ...data.data.data]);
+          setFilteredFreelancers((prev) => [...prev, ...data.data.data]);
+        } else {
+          setCanLoadMore(false);
+        }
+      });
+
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [page]);
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
 
   return (
-    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
+    <div className='p-0 lg:mt-8 sm:p-0 xl:mt-8'>
       <div className='flex gap-5 rounded-xl bg-[#10191D]'>
         <div className='m-3 flex flex-1 items-center gap-3'>
           <CustomIconDropdown
@@ -461,6 +471,14 @@ const Freelancers = () => {
             </div>
           );
         })}
+      {canLoadMore && (
+        <div
+          className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+          onClick={handleLoadMore}
+        >
+          Load More +
+        </div>
+      )}
       {/* <button className="p-3 mt-6 text-center border border-[#28373E] w-full">
         Load more +{" "}
       </button> */}
