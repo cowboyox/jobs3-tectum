@@ -129,7 +129,7 @@ const GigCard = (props) => {
             </div>
           </div>
           <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-            <button className='p-4 px-10 md:p-5'>Message</button>
+            <button className='p-4 px-10 md:p-5' onClick={() => router.push(`./inbox`)}>Message</button>
             <Link
               href={`/dashboard/client/job-application/${props.info._id}`}
               onClick={() => handleRecentView(props.info?._id)}
@@ -321,7 +321,7 @@ const GigSearch = () => {
                 <CiFilter className='mobile:max-w-4' fill='#96B0BD' size={20} />
                 <span className='text-[#96B0BD] mobile:text-sm'>Filter</span>
                 <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
-                  4
+                  {filters.length}
                 </span>
               </div>
             </PopoverTrigger>
