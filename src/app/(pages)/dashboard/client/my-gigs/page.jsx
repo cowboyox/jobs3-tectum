@@ -48,11 +48,13 @@ const Status = ({ status }) => {
     </div>
   );
 };
+
 const GigCard = ({ gig }) => {
+  const router = useRouter();
   return (
     <div className='mb-4 flex justify-between rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-3'>
       <div className='flex flex-col gap-1'>
-        <h2 className='text-xl text-white'>{gig.gigTitle}</h2>
+        <h2 className='text-xl text-white cursor-pointer' onClick={() => router.push(`./edit-gig/${gig._id}`)}>{gig.gigTitle}</h2>
         <div className='mt-2 flex items-center gap-5 text-gray-400'>
           <div className='flex items-center gap-2'>
             <CiClock2 size={24} />
@@ -84,25 +86,6 @@ const MyGigs = () => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 2;
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsSmallScreen(true);
-      } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
-        setIsSmallScreen(false);
-      } else {
-        setIsSmallScreen(false);
-      }
-    };
-
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
@@ -209,7 +192,7 @@ const MyGigs = () => {
         </div>
         <Link
           className='flex w-40 cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-1 text-center text-base transition hover:bg-white hover:text-black mobile:w-full mobile:py-2 mobile:text-center'
-          href='./portfolio/create'
+          href='./post-gig'
         >
           Post a New Gig
         </Link>

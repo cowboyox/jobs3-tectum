@@ -1,5 +1,4 @@
 'use client';
-
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import FileUpload from 'react-drag-n-drop-image';
@@ -231,7 +230,7 @@ const all_form_structure = {
   upload_files_description: 'Upload files. Format: PDF',
 };
 
-const GigPosting = () => {
+const GigPosting = ({ params }) => {
   const { toast } = useToast();
   const auth = useCustomContext();
   const router = useRouter();
@@ -609,6 +608,52 @@ const GigPosting = () => {
   const [currentCategory, setCurrentCategory] = useState('Accounting & Consulting');
   const [currentSub, setCurrentSub] = useState('Personal Coaching');
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getGigById(params.gigId);
+        setPostData((prev) => ({
+          ...prev,
+          experienceLevel: data.data.data.experienceLevel,
+          gigCategory: data.data.data.gigCategory,
+          gigDeadline: data.data.data.gigDeadline,
+          gigDescription: data.data.data.gigDescription,
+          gigPaymentType: data.data.data.gigPaymentType,
+          gigPrice: data.data.data.gigPrice,
+          gigTitle: data.data.data.gigTitle,
+          location: data.data.data.location,
+          maxBudget: data.data.data.maxBudget,
+          minBudget: data.data.data.minBudget,
+          profileId: data.data.data.profileId,
+          requiredSkills: data.data.data.requiredSkills,
+        }));
+        setCurrentCategory(data.data.data.gigCategory[0]);
+        setSkillSet(data.data.data.requiredSkills ? data.data.data.requiredSkills : []);
+        setSelectedLevel(data.data.data.experienceLevel);
+        // data.data.data.attachmentName.map((item, key) =>
+        //   setFiles((prev) => ({
+        //     ...prev,
+        //     id: key,
+        //     preview: item
+        //   }))
+        // );
+      } catch (error) {
+        // Handle the error here
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [params.gigId]);
+  console.log('postData', postData);
+  const getGigById = async (gigId) => {
+    const resData = await api.get(`/api/v1/client_gig/get_gig_by_id/${gigId}`);
+    return resData;
+  };
+
+  console.log('postData', postData);
+  console.log('files', files);
+
+  useEffect(() => {
     if (auth) {
       setPostData((prev) => ({
         ...prev,
@@ -616,7 +661,6 @@ const GigPosting = () => {
       }));
     }
   }, [auth]);
-
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
@@ -652,8 +696,6 @@ const GigPosting = () => {
   };
   const form = useForm();
 
-  console.log("files", files);
-  
   const handleSetGigTitle = (e) => {
     setPostData((prev) => ({
       ...prev,
@@ -684,34 +726,22 @@ const GigPosting = () => {
     };
 
     await api
-      .post('/api/v1/client_gig/post_gig', postData)
+      .put(`/api/v1/client_gig/edit_gig/${params.gigId}`, postData)
       .then(async (gigData) => {
-        await api
-          .post(
-            `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${gigData.data.gigId}`,
-            formData,
-            config
-          )
-          .then(async (data) => {
-            console.log('Successfully uploaded', data.data.msg[0]);
-            await api.post('/api/v1/freelancer_gig/send_tg_bot', {
-              gigDescription: postData.gigDescription,
-              profileName: auth.user.name,
-              profileType: 'Client',
-              imageURL:
-                auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
-              gigId: gigData.data.gigId,
-              gigTitle: postData.gigTitle
-            });
-          });
+          await api
+            .post(
+              `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${params.gigId}`,
+              formData,
+              config
+            )
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Successfully posted gig titled {postData.gigTitle}</h3>,
+          description: <h3>Successfully updated gig titled {postData.gigTitle}</h3>,
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
-        router.push('./my-gigs');
+        router.push('/dashboard/client/my-gigs');
       })
       .catch((err) => {
         console.error('Error corrupted during posting gig', err);
@@ -724,7 +754,6 @@ const GigPosting = () => {
         });
       });
   };
-
   useEffect(() => {
     setPostData((prev) => ({
       ...prev,
@@ -786,6 +815,7 @@ const GigPosting = () => {
                           }));
                           setCurrentCategory(e);
                         }}
+                        value={postData.gigCategory[0]}
                       >
                         <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                           <SelectValue placeholder='Choose' />
@@ -817,6 +847,7 @@ const GigPosting = () => {
                             gigCategory: [...prev.gigCategory, e],
                           }));
                         }}
+                        value={postData.gigCategory[1]}
                       >
                         <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                           <SelectValue placeholder='Choose' />
@@ -865,7 +896,6 @@ const GigPosting = () => {
                           if (e.key === 'Enter') {
                             if (skillSet.length < 5) {
                               setSkillSet((prevSkillSet) => [...prevSkillSet, selectedSkill]);
-
                             }
                             setSelectedSkill('');
                           }
@@ -873,7 +903,7 @@ const GigPosting = () => {
                       />
                     </div>
                     <div className='mt-8 flex flex-wrap items-center gap-3'>
-                      {skillSet.map((index, selectedSkillIndex) => (
+                      {skillSet?.map((index, selectedSkillIndex) => (
                         <div
                           className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-[#28373E] px-5 py-1 text-sm text-[#F5F5F5]'
                           data-index={selectedSkillIndex}
@@ -949,6 +979,7 @@ const GigPosting = () => {
                           }));
                         }}
                         value={single_option.value}
+                        checked={postData.gigDeadline === single_option.indexNum}
                       />
                       <Label
                         className='ml-[4px] w-full cursor-pointer rounded-[15px] border border-slate-500 p-5 transition'
@@ -993,6 +1024,7 @@ const GigPosting = () => {
                           setSelectedLevel(key);
                         }}
                         value={experience_option.value}
+                        checked={selectedLevel == key}
                       />
                       <Label
                         className='w-full cursor-pointer py-7'
@@ -1017,7 +1049,7 @@ const GigPosting = () => {
                   {all_form_structure.location_label}
                 </FormLabel>
                 <FormControl>
-                  <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50 flex'>
+                  <div className='mt-4 flex rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
                     <input
                       className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
                       value={postData.location}
@@ -1094,7 +1126,7 @@ const GigPosting = () => {
                           <FormField
                             name='hourly_rate_from'
                             render={() => (
-                              <FormItem className='mt-2 mb-4 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                              <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
                                 <FormLabel className='text-base font-normal text-[#96B0BD]'>
                                   {all_form_structure.gig_from_to.from_label}
                                 </FormLabel>
@@ -1127,7 +1159,7 @@ const GigPosting = () => {
                           <FormField
                             name='hourly_rate_to'
                             render={() => (
-                              <FormItem className='mt-2 mb-4 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                              <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
                                 <FormLabel className='text-base font-normal text-[#96B0BD]'>
                                   {all_form_structure.gig_from_to.to_label}
                                 </FormLabel>
@@ -1213,7 +1245,7 @@ const GigPosting = () => {
                 <FormControl>
                   <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
                     <textarea
-                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none resize-none'
+                      className='box-border w-full resize-none bg-transparent !p-0 text-[#96B0BD] outline-none'
                       value={postData.gigDescription}
                       onChange={(e) => {
                         setPostData((prev) => ({
@@ -1277,7 +1309,7 @@ const GigPosting = () => {
               className='mt-8 w-full min-w-[220px] rounded-xl bg-[#DC4F13] text-white md:w-1/5 xl:w-1/5'
               type='submit'
             >
-              Publish Gig
+              Update Gig
             </Button>
           </div>
         </form>
