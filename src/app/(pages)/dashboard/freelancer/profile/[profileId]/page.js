@@ -29,6 +29,10 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
       const year = new Date(value).getFullYear();
       return month + ' ' + year;
     }
+    if(label === 'hourlyRate' || label === 'monthlyRate') {
+      if(Number(value) < 0) return "0";
+      else return value;
+    }
     return value;
   };
   const handleLabel = () => {
@@ -56,9 +60,9 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
         <span className='text-sm'>{handleLabel()}</span>
       </div>
       {editable && label !== 'created' ? (
-        <span>
+        <span className='flex gap-0'>
           <input
-            className='border-b bg-transparent text-right text-sm text-[#96B0BD] outline-none focus:border-white'
+            className={`border-b bg-transparent text-right text-sm outline-none text-[#96B0BD] ${(label === 'hourlyRate' || label === 'monthlyRate') && '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'} `}
             onChange={(e) =>
               setProfileData((prev) => ({
                 ...prev,
@@ -66,10 +70,19 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
               }))
             }
             value={handleValue(value)}
+            type={label === 'hourlyRate' || label === 'monthlyRate' ? 'number' : 'text'}
           />
+          {
+            (label === 'hourlyRate' || label === 'monthlyRate') &&
+            <span className='text-sm text-[#96B0BD]'>
+              $
+            </span>
+          }
         </span>
       ) : (
-        <span className='text-sm text-[#96B0BD]'>{handleValue(value)}</span>
+        <span className='text-sm text-[#96B0BD]'>
+          {(label === 'hourlyRate' || label === 'monthlyRate')? handleValue(value) + '$': handleValue(value)}
+        </span>
       )}
     </div>
   );
