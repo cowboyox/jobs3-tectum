@@ -29,8 +29,8 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
       const year = new Date(value).getFullYear();
       return month + ' ' + year;
     }
-    if(label === 'hourlyRate' || label === 'monthlyRate') {
-      if(Number(value) < 0) return "0";
+    if (label === 'hourlyRate' || label === 'monthlyRate') {
+      if (Number(value) < 0) return '0';
       else return value;
     }
     return value;
@@ -62,7 +62,7 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
       {editable && label !== 'created' ? (
         <span className='flex gap-0'>
           <input
-            className={`border-b bg-transparent text-right text-sm outline-none text-[#96B0BD] ${(label === 'hourlyRate' || label === 'monthlyRate') && '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'} `}
+            className={`border-b bg-transparent text-right text-sm text-[#96B0BD] outline-none ${(label === 'hourlyRate' || label === 'monthlyRate') && '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'} `}
             onChange={(e) =>
               setProfileData((prev) => ({
                 ...prev,
@@ -72,16 +72,15 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
             value={handleValue(value)}
             type={label === 'hourlyRate' || label === 'monthlyRate' ? 'number' : 'text'}
           />
-          {
-            (label === 'hourlyRate' || label === 'monthlyRate') &&
-            <span className='text-sm text-[#96B0BD]'>
-              &nbsp;$
-            </span>
-          }
+          {(label === 'hourlyRate' || label === 'monthlyRate') && (
+            <span className='text-sm text-[#96B0BD]'>&nbsp;$</span>
+          )}
         </span>
       ) : (
         <span className='text-sm text-[#96B0BD]'>
-          {(label === 'hourlyRate' || label === 'monthlyRate')? handleValue(value) + ' $': handleValue(value)}
+          {label === 'hourlyRate' || label === 'monthlyRate'
+            ? handleValue(value) + ' $'
+            : handleValue(value)}
         </span>
       )}
     </div>
@@ -842,12 +841,14 @@ const FreelancerProfile = () => {
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      <div className='ml-auto flex items-center gap-3 md:gap-4'>
-                        <p className='cursor-pointer text-sm text-white underline'>Active</p>
-                        <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
-                          Drafts
-                        </p>
-                      </div>
+                      {viewMode === 'edit' && (
+                        <div className='ml-auto flex items-center gap-3 md:gap-4'>
+                          <p className='cursor-pointer text-sm text-white underline'>Active</p>
+                          <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
+                            Drafts
+                          </p>
+                        </div>
+                      )}
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
                       {profileData.portfolio.length > 0 &&
@@ -895,12 +896,14 @@ const FreelancerProfile = () => {
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      <div className='ml-auto flex items-center gap-3 md:gap-4'>
-                        <p className='cursor-pointer text-sm text-white underline'>Active</p>
-                        <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
-                          Drafts
-                        </p>
-                      </div>
+                      {viewMode === 'edit' && (
+                        <div className='ml-auto flex items-center gap-3 md:gap-4'>
+                          <p className='cursor-pointer text-sm text-white underline'>Active</p>
+                          <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
+                            Drafts
+                          </p>
+                        </div>
+                      )}
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
                       {profileData.myGigs.length > 0 &&
@@ -1020,7 +1023,7 @@ const FreelancerProfile = () => {
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      {isAuth && (
+                      {isAuth && viewMode === 'edit' && (
                         <div className='ml-auto flex items-center gap-3 md:gap-4'>
                           <p className='cursor-pointer text-sm text-white underline'>Active</p>
                           <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
