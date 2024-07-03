@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { FileUploader } from "react-drag-drop-files";
+import { FileUploader } from 'react-drag-drop-files';
 import FileUpload from 'react-drag-n-drop-image';
 import { useForm } from 'react-hook-form';
 import { FiPlus } from 'react-icons/fi';
@@ -9,7 +9,7 @@ import { GoChevronDown, GoTrash } from 'react-icons/go';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
 import { IoIosClose } from 'react-icons/io';
 import { IoCheckmark } from 'react-icons/io5';
-import { GrDocumentPdf } from "react-icons/gr";
+import { GrDocumentPdf } from 'react-icons/gr';
 
 import {
   Select,
@@ -633,9 +633,8 @@ const GigPosting = ({ params }) => {
         setCurrentCategory(data.data.data.gigCategory[0]);
         setSkillSet(data.data.data.requiredSkills ? data.data.data.requiredSkills : []);
         setSelectedLevel(data.data.data.experienceLevel);
-        setBudgetMode(data.data.data.gigPaymentType === true ? 'hourly': 'fixed');
+        setBudgetMode(data.data.data.gigPaymentType === true ? 'hourly' : 'fixed');
         createFileObjectsFromUrls(data.data.data.attachmentName);
-
       } catch (error) {
         // Handle the error here
         console.error('Error fetching data:', error);
@@ -653,7 +652,7 @@ const GigPosting = ({ params }) => {
       const fileName = url.split('/').pop();
       return new File([blob], fileName, { type: blob.type });
     });
-  
+
     const fileObjects = await Promise.all(filePromises);
     setFiles(fileObjects);
   };
@@ -693,15 +692,15 @@ const GigPosting = ({ params }) => {
   }, [router, toast]);
 
   const FileChanged = (file) => {
-    console.log("file", file);
-    console.log("file.length", file.length);
+    console.log('file', file);
+    console.log('file.length', file.length);
     let tmp = [];
     const filesArray = Array.from(file);
-    console.log("filesArray", filesArray);
+    console.log('filesArray', filesArray);
     filesArray.map((fi) => tmp.push(fi));
     setFiles(filesArray);
     setFiles2(tmp);
-    console.log("tmp", tmp);
+    console.log('tmp', tmp);
     setPostData((prev) => ({
       ...prev,
       attachment: [...prev.attachment, filesArray],
@@ -747,12 +746,11 @@ const GigPosting = ({ params }) => {
     await api
       .put(`/api/v1/client_gig/edit_gig/${params.gigId}`, postData)
       .then(async (gigData) => {
-          await api
-            .post(
-              `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${params.gigId}`,
-              formData,
-              config
-            )
+        await api.post(
+          `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${params.gigId}`,
+          formData,
+          config
+        );
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -778,7 +776,7 @@ const GigPosting = ({ params }) => {
       ...prev,
       requiredSkills: skillSet,
     }));
-  }, [skillSet])
+  }, [skillSet]);
 
   return (
     <div className='gig_posting mb-4 flex justify-center rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>
@@ -1293,28 +1291,27 @@ const GigPosting = ({ params }) => {
                 </FormDescription>
                 <FormControl>
                   <div className='rounded-xl border border-dashed border-slate-500'>
-                    <FileUploader 
-                      children={<FileUploadBody />}
+                    <FileUploader
                       fileOrFiles={files}
                       handleChange={(e) => FileChanged(e)}
                       types={['PDF']}
                       multiple={true}
-                      label={""}
-                    />
+                      label={''}
+                    >
+                      <FileUploadBody />
+                    </FileUploader>
                     {files.length > 0 && (
-                      <div className='mt-5 flex w-full gap-0 rounded-xl flex-wrap border border-slate-500'>
+                      <div className='mt-5 flex w-full flex-wrap gap-0 rounded-xl border border-slate-500 justify-center'>
                         {files.map((item, index) => {
                           return (
                             <div
                               aria-hidden
-                              className='w-full p-3 flex gap-2 items-center lg:w-1/3 md:w-1/2 cursor-pointer'
+                              className='flex w-full cursor-pointer items-center gap-2 p-3 md:w-1/2 lg:w-1/3'
                               key={index}
                               onClick={() => onRemoveImage(index)}
                             >
-                              <GrDocumentPdf size={"20px"}/>
-                              <span>
-                                {item.name}
-                              </span>
+                              <GrDocumentPdf size={'20px'} />
+                              <span>{item.name}</span>
                             </div>
                           );
                         })}
