@@ -27,9 +27,12 @@ const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio }) => {
     <div className='relative'>
       {!isEditBio ? (
         <div>
-          {previewText.split('\n').map((line, index) => (
+          {/* {previewText.split('\n').map((line, index) => (
             <p key={index}>{line}</p>
-          ))}
+          ))} */}
+          <pre>
+            {previewText}
+          </pre>
         </div>
       ) : (
         <Textarea
