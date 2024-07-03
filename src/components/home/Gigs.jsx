@@ -4,60 +4,66 @@ import React, { useEffect, useState } from 'react';
 import { FaX } from 'react-icons/fa6';
 
 import { Separator } from '@/components/ui/seperator';
-import api from '@/utils/api';
-
-const gigOptions = [
-  'Figma',
-  'WebDesign',
-  'Javascript',
-  'React.JS',
-  'Next.JS',
-  'Shadcn',
-  'Tailwind',
-  'MobileDevelopment',
-  'WebDevelopment',
-  'DatabaseDevelopment',
-  'DesktopApplication',
-  'Python',
-  'Java',
-  'C++',
-  'Swift',
-  'Kotlin',
-  'SQL',
-  'MongoDB',
-  'Angular',
-  'Vue.JS',
-];
+import { useGetFreelancersBySkills } from '@/hooks/useGetFreelancersBySkills';
+import { skillSets } from '@/utils/constants';
 
 const Gigs = () => {
-  const [selectedGigs, setSelectedGigs] = useState(['Figma']);
+  const [selectedGigs, setSelectedGigs] = useState([]);
   const [canLoadMore, setCanLoadMore] = useState(true);
-  const [freelancers, setFreelancers] = useState([]);
+  const [allFreelancers, setAllFreelancers] = useState([]);
   const [page, setPage] = useState(1);
   const itemsPerPage = 3;
 
+  const { data: freelancers } = useGetFreelancersBySkills(page, itemsPerPage, selectedGigs);
+
   useEffect(() => {
-    api
-      .get(`/api/v1/profile/get-all-freelancers?page=${page}&limit=${itemsPerPage}`)
-      .then((data) => {
-        if (data.data.data && data.data.data.length > 0) {
-          setCanLoadMore(true);
-          setFreelancers((prev) => [...prev, ...data.data.data]);
-        } else {
-          setCanLoadMore(false);
-        }
-      });
-  }, [page]);
+    if (freelancers?.length > 0) {
+      setCanLoadMore(true);
+      if (page === 1) {
+        setAllFreelancers(freelancers);
+      } else {
+        setAllFreelancers((prev) => {
+          let result = [...prev];
+          const ids = prev.map((item) => item._id);
+
+          freelancers.map((fl) => {
+            if (!ids.includes(fl._id)) {
+              result = [...result, fl];
+            }
+          });
+
+          return result;
+        });
+      }
+    } else {
+      if (page === 1) {
+        setAllFreelancers([]);
+      }
+      setCanLoadMore(false);
+    }
+  }, [page, freelancers]);
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
+  };
+
+  const handleGigClick = (gig) => {
+    setSelectedGigs((prev) => {
+      if (prev.includes(gig)) {
+        return prev.filter((item) => item !== gig);
+      } else {
+        return [...prev, gig];
+      }
+    });
+    setPage(1);
+    setCanLoadMore(true);
   };
 
   return (
     <div className='mt-10 flex flex-col gap-4'>
       <h1 className='text-2xl font-semibold'>Sort Freelancers</h1>
       <div className='flex flex-wrap items-center gap-2'>
-        {gigOptions.map((gig, index) => (
+        {skillSets.map((gig, index) => (
           <div
             className={`${
               selectedGigs.includes(gig) ? 'bg-orange' : 'bg-darkGray'
@@ -70,8 +76,8 @@ const Gigs = () => {
         ))}
       </div>
       <div className='flex flex-col gap-2'>
-        {freelancers &&
-          freelancers.map((freelancer, index) => {
+        {allFreelancers &&
+          allFreelancers.map((freelancer, index) => {
             return (
               <div
                 className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'

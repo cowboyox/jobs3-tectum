@@ -1,16 +1,42 @@
 import { BN } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 
-const skillSets = ['UI/UX', 'Design', 'Webdesign', 'Prototyping', 'Wireframing', 'Research'];
+const skillSets = [
+  'UI/UX',
+  'Design',
+  'Webdesign',
+  'Prototyping',
+  'Wireframing',
+  'Research',
+  'Figma',
+  'Javascript',
+  'React.JS',
+  'Next.JS',
+  'Shadcn',
+  'Tailwind',
+  'MobileDevelopment',
+  'WebDevelopment',
+  'DatabaseDevelopment',
+  'DesktopApplication',
+  'Python',
+  'Java',
+  'C++',
+  'Swift',
+  'Kotlin',
+  'SQL',
+  'MongoDB',
+  'Angular',
+  'Vue.JS',
+];
 
 const languages = ['English', 'Germany', 'Russian', 'Spanish', 'Portugues'];
 
 const ContractStatus = {
-  STARTED: 'Started',
   ACTIVE: 'Active',
-  PENDING: 'Pending',
   CANCELLED: 'Cancelled',
-  COMPLETED: 'Completed'
+  COMPLETED: 'Completed',
+  PENDING: 'Pending',
+  STARTED: 'Started',
 };
 
 const PROGRAM_ID = 'GuqgMVMCLi9daQMHyhnLRGTpgpwNGU4yZXs9GK4SYrbS'; // devnet and mainnet
