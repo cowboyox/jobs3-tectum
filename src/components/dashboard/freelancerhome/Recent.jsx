@@ -1,159 +1,52 @@
 'use client';
+
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaRegHeart, FaRegUser } from 'react-icons/fa';
 import { IoIosMore, IoLogoUsd } from 'react-icons/io';
 import { MdAccessTime } from 'react-icons/md';
 import { TiLocationOutline } from 'react-icons/ti';
 
-const gigOptions = [
-  'Figma',
-  'WebDesign',
-  'Javascript',
-  'React.JS',
-  'Next.JS',
-  'Shadcn',
-  'Tailwind',
-];
-
-const gigs = [
-  // {
-  //   title: "Figma and Flow bite mentor needed",
-  //   time: "Posted 15 minutes ago",
-  //   location: "Remote",
-  //   rated: "5 Applicants",
-  //   jobSuccess: "Hourly: $40–$60",
-  //   about:
-  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-  //   skills: ["UI/UX", "Design", "Webdesign"],
-  //   pic: "/assets/dashboard-media/profilePic.png",
-  //   name: "Deven Miles",
-  //   desg: "Freelancer",
-  // },
-  // {
-  //   title: "Figma and Flow bite mentor needed",
-  //   time: "Posted 15 minutes ago",
-  //   location: "Remote",
-  //   rated: "5 Applicants",
-  //   jobSuccess: "Hourly: $40–$60",
-  //   about:
-  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-  //   skills: ["UI/UX", "Design", "Webdesign"],
-  //   pic: "/assets/dashboard-media/profilePic.png",
-  //   name: "Deven Miles",
-  //   desg: "Freelancer",
-  // },
-  // {
-  //   title: "Figma and Flow bite mentor needed",
-  //   time: "Posted 15 minutes ago",
-  //   location: "Remote",
-  //   rated: "5 Applicants",
-  //   jobSuccess: "Hourly: $40–$60",
-  //   about:
-  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-  //   skills: ["UI/UX", "Design", "Webdesign"],
-  //   pic: "/assets/dashboard-media/profilePic.png",
-  //   name: "Deven Miles",
-  //   desg: "Freelancer",
-  // },
-  // {
-  //   title: "Figma and Flow bite mentor needed",
-  //   time: "Posted 15 minutes ago",
-  //   location: "Remote",
-  //   rated: "5 Applicants",
-  //   jobSuccess: "Hourly: $40–$60",
-  //   about:
-  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-  //   skills: ["UI/UX", "Design", "Webdesign"],
-  //   pic: "/assets/dashboard-media/profilePic.png",
-  //   name: "Deven Miles",
-  //   desg: "Freelancer",
-  // },
-  // {
-  //   title: "Figma and Flow bite mentor needed",
-  //   time: "Posted 15 minutes ago",
-  //   location: "Remote",
-  //   rated: "5 Applicants",
-  //   jobSuccess: "Hourly: $40–$60",
-  //   about:
-  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-  //   skills: ["UI/UX", "Design", "Webdesign"],
-  //   pic: "/assets/dashboard-media/profilePic.png",
-  //   name: "Deven Miles",
-  //   desg: "Freelancer",
-  // },
-  // {
-  //   title: "Figma and Flow bite mentor needed",
-  //   time: "Posted 15 minutes ago",
-  //   location: "Remote",
-  //   rated: "5 Applicants",
-  //   jobSuccess: "Hourly: $40–$60",
-  //   about:
-  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-  //   skills: ["UI/UX", "Design", "Webdesign"],
-  //   pic: "/assets/dashboard-media/profilePic.png",
-  //   name: "Deven Miles",
-  //   desg: "Freelancer",
-  // },
-  // {
-  //   title: "Figma and Flow bite mentor needed",
-  //   time: "Posted 15 minutes ago",
-  //   location: "Remote",
-  //   rated: "5 Applicants",
-  //   jobSuccess: "Hourly: $40–$60",
-  //   about:
-  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-  //   skills: ["UI/UX", "Design", "Webdesign"],
-  //   pic: "/assets/dashboard-media/profilePic.png",
-  //   name: "Deven Miles",
-  //   desg: "Freelancer",
-  // },
-  // {
-  //   title: "Figma and Flow bite mentor needed",
-  //   time: "Posted 15 minutes ago",
-  //   location: "Remote",
-  //   rated: "5 Applicants",
-  //   jobSuccess: "Hourly: $40–$60",
-  //   about:
-  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-  //   skills: ["UI/UX", "Design", "Webdesign"],
-  //   pic: "/assets/dashboard-media/profilePic.png",
-  //   name: "Deven Miles",
-  //   desg: "Freelancer",
-  // },
-  // {
-  //   title: "Figma and Flow bite mentor needed",
-  //   time: "Posted 15 minutes ago",
-  //   location: "Remote",
-  //   rated: "5 Applicants",
-  //   jobSuccess: "Hourly: $40–$60",
-  //   about:
-  //     "I'm Robert, a passionate UI Designer with over 7 years of experience in creating intuitive and visually compelling digital interfaces. My mission is to bridge the gap between functionality and aesthetics, ensuring ...",
-  //   skills: ["UI/UX", "Design", "Webdesign"],
-  //   pic: "/assets/dashboard-media/profilePic.png",
-  //   name: "Deven Miles",
-  //   desg: "Freelancer",
-  // },
-];
+import { useCustomContext } from '@/context/use-custom';
+import { useGetClientGigs } from '@/hooks/useGetClientGigs';
+import { skillSets } from '@/utils/constants';
+import { getDeadline } from '@/utils/gigInfo';
 
 const Recent = ({ search }) => {
   const [selectedGigs, setSelectedGigs] = useState(['Figma']);
-  // const [data, setData] = useState([]);
-  // const [page, setPage] = useState(1);
-  // const itemsPerPage = 10;
+  const [allGigs, setAllGigs] = useState([]);
+  const [page, setPage] = useState(1);
+  const auth = useCustomContext();
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const itemsPerPage = 2;
+  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage);
 
-  // const fetchGigs = async (gigs) => {
-  //   try {
-  //     const res = await getGigs(gigs);
-  //     setData(res.data);
-  //   } catch (err) {
-  //     console.warn('Err fetching Gigs', err);
-  //   }
-  // };
+  useEffect(() => {
+    if (clientGigs?.length > 0) {
+      setCanLoadMore(true);
+      if (page === 1) {
+        setAllGigs(clientGigs);
+      } else {
+        setAllGigs((prev) => {
+          let result = [...prev];
+          const ids = prev.map((item) => item._id);
 
-  // useEffect(() => {
-  //   fetchGigs(selectedGigs);
-  // }, [selectedGigs]);
+          clientGigs.map((cg) => {
+            if (!ids.includes(cg._id)) {
+              result = [...result, cg];
+            }
+          });
+
+          return result;
+        });
+      }
+    } else {
+      if (page === 1) {
+        setAllGigs([]);
+      }
+      setCanLoadMore(false);
+    }
+  }, [clientGigs, page]);
 
   const handleGigClick = (gig) => {
     setSelectedGigs((prevSelectedGigs) => {
@@ -187,20 +80,15 @@ const Recent = ({ search }) => {
     return filteredGigs;
   };
 
-  const filteredRecentJob = handleFilter();
-
-  // const handleLoadMore = () => {
-  //   const nextPage = page + 1;
-  //   const newDisplayedData = data.slice(0, nextPage * itemsPerPage);
-  //   setDisplayedData(newDisplayedData);
-  //   setPage(nextPage);
-  // };
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
 
   return (
     <div className='mt-10 flex flex-col gap-4'>
       <h1 className='text-2xl font-semibold'>Recent Job Posts</h1>
       <div className='flex flex-wrap items-center gap-2'>
-        {gigOptions.map((gig, index) => (
+        {skillSets.map((gig, index) => (
           <div
             className={`${
               selectedGigs.includes(gig) ? 'bg-orange' : 'bg-darkGray'
@@ -213,8 +101,8 @@ const Recent = ({ search }) => {
         ))}
       </div>
       <div className='flex flex-col gap-4'>
-        {filteredRecentJob.length ? (
-          filteredRecentJob.map((gig, index) => (
+        {allGigs?.length ? (
+          allGigs.map((gig, index) => (
             <div
               className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'
               key={index}
@@ -224,24 +112,26 @@ const Recent = ({ search }) => {
                   <div className='flex items-center gap-4'>
                     <Image height={45} src={'/assets/icons/ActiveOrder.png'} width={45} />
                     <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
-                      {gig.title}
+                      {gig.gigTitle}
                     </h3>
                   </div>
                   <div className='flex items-center gap-6'>
-                    <p className='cursor-pointer rounded-[6px] border border-green-600 p-[1px] px-2 font-[500] text-green-600'>
-                      Applied
-                    </p>
+                    {gig.proposalUsers.includes(auth?.currentProfile?._id) && (
+                      <p className='cursor-pointer rounded-[6px] border border-green-600 p-[1px] px-2 font-[500] text-green-600'>
+                        Applied
+                      </p>
+                    )}
                     <FaRegHeart className='text-xl text-medGray' />
                     <IoIosMore className='text-xl text-medGray' />
                   </div>
                 </div>
                 <h3 className='whitespace-nowrap text-xl font-semibold text-white md:hidden'>
-                  {gig.title}
+                  {gig.gigTitle}
                 </h3>
                 <div className='flex flex-wrap gap-4'>
                   <div className='flex items-center gap-1'>
                     <MdAccessTime className='text-xl text-medGray' />
-                    <span>{gig.time}</span>
+                    <span>{getDeadline(gig.gigDeadline)}</span>
                   </div>
                   <div className='flex items-center gap-1'>
                     <TiLocationOutline className='text-xl text-medGray' />
@@ -249,18 +139,22 @@ const Recent = ({ search }) => {
                   </div>
                   <div className='flex items-center gap-2'>
                     <FaRegUser className='text-xl text-medGray' />
-                    <span>{gig.rated}</span>
+                    <span>{gig.proposalUsers.length} Applicants</span>
                   </div>
                   <div className='flex items-center gap-2'>
                     <IoLogoUsd className='text-xl text-medGray' />
-                    <span>{gig.jobSuccess}</span>
+                    <span>
+                      {!gig.gigPaymentType
+                        ? gig.gigPrice
+                        : `${gig.minBudget} - ${gig.maxBudget} /hr`}
+                    </span>
                   </div>
                 </div>
               </div>
-              <p className='text-medGray'>{gig.about}</p>
+              <p className='text-medGray'>{gig.gigDescription}</p>
               <p className='text-white'>Show more</p>
               <div className='flex flex-wrap gap-2'>
-                {gig.skills.map((skill, skillIndex) => (
+                {gig.requiredSkills.map((skill, skillIndex) => (
                   <div
                     className='cursor-pointer rounded-full border border-lightGray bg-darkGray px-2 py-1 text-center'
                     key={skillIndex}
@@ -275,9 +169,14 @@ const Recent = ({ search }) => {
           <div className='text-center text-2xl font-semibold'>Not yet</div>
         )}
       </div>
-      <div className='cursor-pointer rounded-2xl border border-lightGray py-3 text-center'>
-        Load More +
-      </div>
+      {canLoadMore && (
+        <div
+          className='cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+          onClick={handleLoadMore}
+        >
+          Load More +
+        </div>
+      )}
     </div>
   );
 };
