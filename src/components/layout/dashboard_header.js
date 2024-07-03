@@ -1,14 +1,14 @@
 /*--------- Hooks ---------*/
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineQuestion } from 'react-icons/ai';
-import { CiBellOn } from 'react-icons/ci';
 import { LuAlignLeft } from 'react-icons/lu';
 import { useDisconnect } from 'wagmi';
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 import { usePopupFunctions } from '../../components/popups/popups';
 
+import Notifications from '@/components/elements/notifications';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -26,10 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { RxReload } from "react-icons/rx";
 import { useCustomContext } from '@/context/use-custom';
-import { FaRegCopy } from "react-icons/fa";
-import { IoIosLogOut } from "react-icons/io";
 
 const DashboardHeader = () => {
   const { renderPopup } = usePopupFunctions();
@@ -84,15 +81,13 @@ const DashboardHeader = () => {
   };
 
   const renderWalletButton = () => {
-    return (
-        <WalletMultiButton className="bg-secondary hover:bg-[#15539a]" />
-    );
+    return <WalletMultiButton className='bg-secondary hover:bg-[#15539a]' />;
   };
 
   if (!auth?.currentProfile) {
     return (
       <header
-        className='flex flex-wrap items-center justify-end h-28 md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
+        className='flex h-28 flex-wrap items-center justify-end md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
         id='header_container'
       />
     );
@@ -100,16 +95,16 @@ const DashboardHeader = () => {
 
   return (
     <header
-      className='flex flex-wrap items-center justify-end h-28 md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
+      className='flex h-28 flex-wrap items-center justify-end md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
       id='header_container'
     >
       {renderPopup()}
       <div className='w-full md:hidden'>
         <img className='h-6' src='/assets/images/logo.svg' />
       </div>
-      <div className='flex items-center w-full gap-3 md:w-auto md:gap-4'>
+      <div className='flex w-full items-center gap-3 md:w-auto md:gap-4'>
         <LuAlignLeft
-          className='w-5 h-5 mr-auto md:hidden'
+          className='mr-auto h-5 w-5 md:hidden'
           onClick={() => {
             OpenSideBar();
           }}
@@ -141,34 +136,46 @@ const DashboardHeader = () => {
           </DropdownMenuContent>
         </DropdownMenu> */}
         <Select defaultValue={handleTap(auth?.currentRole)}>
-          <SelectTrigger className='min-w-20 w-auto rounded-xl bg-[#10191D] gap-1 flex mobile:p-2 py-5 mobile:hidden'>
+          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className='rounded-xl bg-[#10191D] p-1' align='end'>
+          <SelectContent align='end' className='rounded-xl bg-[#10191D] p-1'>
             <SelectGroup className='flex flex-col gap-2'>
-              <SelectItem className='rounded bg-[#1B272C] cursor-pointer' value="Client">Client</SelectItem>
-              <SelectItem className='rounded bg-[#1B272C] cursor-pointer' value="Freelancer">Freelancer</SelectItem>
+              <SelectItem className='cursor-pointer rounded bg-[#1B272C]' value='Client'>
+                Client
+              </SelectItem>
+              <SelectItem className='cursor-pointer rounded bg-[#1B272C]' value='Freelancer'>
+                Freelancer
+              </SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
-        <div className='p-[10px] rounded-xl bg-[#10191D] cursor-pointer mobile:hidden'> 
-          <AiOutlineQuestion className='object-contain w-6 h-6 cursor-pointer' />
+        <div className='cursor-pointer rounded-xl bg-[#10191D] p-[10px] mobile:hidden'>
+          <AiOutlineQuestion className='h-6 w-6 cursor-pointer object-contain' />
         </div>
-        <div className='p-2 rounded-xl bg-[#10191D] cursor-pointer'> 
-          <CiBellOn className='object-contain w-6 h-6 cursor-pointer' />
+        <div className='cursor-pointer rounded-xl bg-[#10191D] p-2'>
+          <Notifications />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger className='mobile:hidden'>
             <div className='relative w-20 md:h-12 md:w-12'>
               <img
-                className='w-full h-full rounded-full aspect-square'
-                src={auth?.currentProfile?.avatarURL ? auth?.currentProfile?.avatarURL : '/assets/images/users/user-5.png'}
+                className='aspect-square h-full w-full rounded-full'
+                src={
+                  auth?.currentProfile?.avatarURL
+                    ? auth?.currentProfile?.avatarURL
+                    : '/assets/images/users/user-5.png'
+                }
               />
               {/* Change background color depending on user online status */}
-              <div className='absolute w-2 h-2 bg-green-500 rounded-full bottom-1 right-1' />
+              <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent sideOffset={10} className='w-52 flex flex-col gap-0 rounded-xl border-2 border-[#28373e] bg-[#10191d]' align='end'>
+          <DropdownMenuContent
+            align='end'
+            className='flex w-52 flex-col gap-0 rounded-xl border-2 border-[#28373e] bg-[#10191d]'
+            sideOffset={10}
+          >
             <DropdownMenuLabel className='uppercase'>
               {handleTap(auth?.currentRole)}
             </DropdownMenuLabel>

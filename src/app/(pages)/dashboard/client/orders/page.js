@@ -1,36 +1,24 @@
 'use client';
 
+import {
+  AnchorProvider,
+  BN,
+  getProvider,
+  Program,
+  setProvider,
+  utils,
+} from '@project-serum/anchor';
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  getAssociatedTokenAddressSync,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token';
+import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaEllipsis, FaX } from 'react-icons/fa6';
-
-import {
-  useAnchorWallet,
-  useConnection,
-  useWallet,
-} from "@solana/wallet-adapter-react";
-import {
-  Program,
-  AnchorProvider,
-  setProvider,
-  getProvider,
-  utils,
-  BN,
-} from "@project-serum/anchor";
-import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
-
-import {
-  TOKEN_PROGRAM_ID,
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  getAssociatedTokenAddressSync,
-} from "@solana/spl-token";
-import { v4 as uuid } from "uuid";
-import IDL from "@/idl/gig_basic_contract.json";
-import {
-  PROGRAM_ID,
-  CONTRACT_SEED,
-  PAYTOKEN_MINT,
-} from "@/utils/constants";
+import { v4 as uuid } from 'uuid';
 
 import searchOptions from '../freelancers/searchOptions';
 
@@ -54,7 +42,9 @@ import { Separator } from '@/components/ui/seperator';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import { useGetAllClientGigsProposed } from '@/hooks/useGetAllClientGigsProposed';
+import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
+import { CONTRACT_SEED, PAYTOKEN_MINT, PROGRAM_ID } from '@/utils/constants';
 
 const Orders = () => {
   const router = useRouter();
@@ -70,7 +60,7 @@ const Orders = () => {
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllClientGigsProposed(
-    auth?.currentProfile?._id, auth?.currentProfile?.userId
+    auth?.currentProfile?._id
   );
   const { toast } = useToast();
   const [searchKeywords, setSearchKeyWords] = useState('');
@@ -119,7 +109,7 @@ const Orders = () => {
           const program = new Program(IDL, PROGRAM_ID);
           setProgram(program);
 
-          console.log("programId", program.programId, program)
+          console.log('programId', program.programId, program);
         } catch (err) {}
       })();
     }
@@ -167,7 +157,7 @@ const Orders = () => {
       const contractId = uuid().slice(0, 8);
       const amount = new BN(gigPrice * Math.pow(10, 6));
       const dispute = new BN(0.5 * Math.pow(10, 6)); // 0.5 USDC for dispute fee
-      const deadline = Math.floor(Date.now() / 1000) + (10 * 24 * 60 * 60); 
+      const deadline = Math.floor(Date.now() / 1000) + 10 * 24 * 60 * 60;
 
       const [contract, bump] = await PublicKey.findProgramAddressSync(
         [
@@ -177,10 +167,7 @@ const Orders = () => {
         program.programId
       );
 
-      const buyerAta = getAssociatedTokenAddressSync(
-        PAYTOKEN_MINT,
-        wallet?.publicKey,
-      );
+      const buyerAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, wallet?.publicKey);
 
       // Get the token balance
       const info = await connection.getTokenAccountBalance(buyerAta);
@@ -189,41 +176,45 @@ const Orders = () => {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>{`You don't have enough token. Need at least ${gigPrice + 0.5} USDC!`}</h3>,
+          description: (
+            <h3>{`You don't have enough token. Need at least ${gigPrice + 0.5} USDC!`}</h3>
+          ),
           title: <h1 className='text-center'>Error</h1>,
           variant: 'destructive',
         });
         return;
       }
-      
+
       const contractAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, contract, true);
 
       const transaction = await program.methods
         .startContract(contractId, amount, dispute, deadline)
         .accounts({
-          buyer: wallet.publicKey,
-          contract,
-          seller,
-          payTokenMint: PAYTOKEN_MINT,
-          buyerAta,
-          contractAta,
-          tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
+          buyer: wallet.publicKey,
+          buyerAta,
+          contract,
+          contractAta,
+          payTokenMint: PAYTOKEN_MINT,
           rent: SYSVAR_RENT_PUBKEY,
+          seller,
+          systemProgram: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
         })
         .transaction();
-      console.log(transaction, connection)
+      console.log(transaction, connection);
 
       const signature = await sendTransaction(transaction, connection, { skipPreflight: true });
 
-      console.log("Your transaction signature for creating a new contract", signature);
+      console.log('Your transaction signature for creating a new contract', signature);
 
-      await connection.confirmTransaction(signature, "confirmed");
+      await connection.confirmTransaction(signature, 'confirmed');
 
+      await api.put(
+        `/api/v1/client_gig/accept_freelancer/${gigId}`,
+        JSON.stringify({ contractId, freelancerId, profileId: auth?.currentProfile?._id })
+      );
 
-      await api.put(`/api/v1/client_gig/accept_freelancer/${gigId}`, JSON.stringify({ freelancerId, contractId }));
-  
       toast({
         className:
           'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -236,12 +227,14 @@ const Orders = () => {
     } catch (err) {
       console.error('Error corrupted during applying gig', err);
 
-      if (err.message == "User rejected the request.") {
+      if (err.message == 'User rejected the request.') {
         // In this case, don't need to show error toast.
         return;
       }
 
-      if (err.message == "failed to get token account balance: Invalid param: could not find account") {
+      if (
+        err.message == 'failed to get token account balance: Invalid param: could not find account'
+      ) {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -252,7 +245,7 @@ const Orders = () => {
 
         return;
       }
-      
+
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -319,9 +312,9 @@ const Orders = () => {
   };
 
   return (
-    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
+    <div className='p-0 lg:mt-8 sm:p-0 xl:mt-8'>
       <div className='flex flex-row items-center justify-between gap-5 rounded-xl bg-[#10191D] p-3'>
-        <div className='flex items-center flex-1 gap-3 ml-3'>
+        <div className='ml-3 flex flex-1 items-center gap-3'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -362,7 +355,7 @@ const Orders = () => {
             </button>
           )}
         </div>
-        <div className='flex flex-row items-center flex-none gap-2'>
+        <div className='flex flex-none flex-row items-center gap-2'>
           <button className='flex flex-row items-center justify-center gap-3'>
             {!isSmallScreen ? (
               <>
@@ -376,49 +369,49 @@ const Orders = () => {
                   <path
                     d='M22.2119 6.58594H16.3057'
                     stroke='#96B0BD'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
-                    stroke-miterlimit='10'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeMiterlimit='10'
                     strokeWidth='1.5'
                   />
                   <path
                     d='M6.46191 6.58594H2.52441'
                     stroke='#96B0BD'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
-                    stroke-miterlimit='10'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeMiterlimit='10'
                     strokeWidth='1.5'
                   />
                   <path
                     d='M10.3994 10.0312C12.3022 10.0312 13.8447 8.48873 13.8447 6.58594C13.8447 4.68314 12.3022 3.14062 10.3994 3.14062C8.49662 3.14062 6.9541 4.68314 6.9541 6.58594C6.9541 8.48873 8.49662 10.0312 10.3994 10.0312Z'
                     stroke='#96B0BD'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
-                    stroke-miterlimit='10'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeMiterlimit='10'
                     strokeWidth='1.5'
                   />
                   <path
                     d='M22.2119 17.4141H18.2744'
                     stroke='#96B0BD'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
-                    stroke-miterlimit='10'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeMiterlimit='10'
                     strokeWidth='1.5'
                   />
                   <path
                     d='M8.43066 17.4141H2.52441'
                     stroke='#96B0BD'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
-                    stroke-miterlimit='10'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeMiterlimit='10'
                     strokeWidth='1.5'
                   />
                   <path
                     d='M14.3369 20.8594C16.2397 20.8594 17.7822 19.3169 17.7822 17.4141C17.7822 15.5113 16.2397 13.9688 14.3369 13.9688C12.4341 13.9688 10.8916 15.5113 10.8916 17.4141C10.8916 19.3169 12.4341 20.8594 14.3369 20.8594Z'
                     stroke='#96B0BD'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
-                    stroke-miterlimit='10'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeMiterlimit='10'
                     strokeWidth='1.5'
                   />
                 </svg>
@@ -435,49 +428,49 @@ const Orders = () => {
                 <path
                   d='M22.1719 6.58594H16.2656'
                   stroke='#96B0BD'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-miterlimit='10'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeMiterlimit='10'
                   strokeWidth='1.5'
                 />
                 <path
                   d='M6.42188 6.58594H2.48438'
                   stroke='#96B0BD'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-miterlimit='10'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeMiterlimit='10'
                   strokeWidth='1.5'
                 />
                 <path
                   d='M10.3594 10.0312C12.2622 10.0312 13.8047 8.48873 13.8047 6.58594C13.8047 4.68314 12.2622 3.14062 10.3594 3.14062C8.45658 3.14062 6.91406 4.68314 6.91406 6.58594C6.91406 8.48873 8.45658 10.0312 10.3594 10.0312Z'
                   stroke='#96B0BD'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-miterlimit='10'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeMiterlimit='10'
                   strokeWidth='1.5'
                 />
                 <path
                   d='M22.1719 17.4141H18.2344'
                   stroke='#96B0BD'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-miterlimit='10'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeMiterlimit='10'
                   strokeWidth='1.5'
                 />
                 <path
                   d='M8.39062 17.4141H2.48438'
                   stroke='#96B0BD'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-miterlimit='10'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeMiterlimit='10'
                   strokeWidth='1.5'
                 />
                 <path
                   d='M14.2969 20.8594C16.1997 20.8594 17.7422 19.3169 17.7422 17.4141C17.7422 15.5113 16.1997 13.9688 14.2969 13.9688C12.3941 13.9688 10.8516 15.5113 10.8516 17.4141C10.8516 19.3169 12.3941 20.8594 14.2969 20.8594Z'
                   stroke='#96B0BD'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-miterlimit='10'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeMiterlimit='10'
                   strokeWidth='1.5'
                 />
                 <circle cx='18.2344' cy='5.10938' fill='#DC4F13' r='4.92188' />
@@ -532,14 +525,14 @@ const Orders = () => {
         })}
         <span>Clear&nbsp;All</span>
       </div>
-      <div className='flex items-center justify-center w-full pt-10 pb-5'>
+      <div className='flex w-full items-center justify-center pb-5 pt-10'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
                 {gigs ? gigs.lives.length : ''}
               </span>
               &nbsp; Live
@@ -554,7 +547,7 @@ const Orders = () => {
         >
           {mode == 'proposal' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
                 {gigs ? gigs.proposals.length : ''}
               </span>
               &nbsp; Proposals
@@ -571,11 +564,11 @@ const Orders = () => {
               {filteredLiveList.map((order, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
+                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {order.gigTitle}
                       </div>
-                      <div className='flex flex-row items-center justify-between flex-none gap-2 mobile:w-full'>
+                      <div className='flex flex-none flex-row items-center justify-between gap-2 mobile:w-full'>
                         <div className='flex gap-2'>
                           <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                             15 H: 30 S
@@ -587,7 +580,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='bg-transparent border-none hover:bg-transparent'
+                              className='border-none bg-transparent hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -609,22 +602,22 @@ const Orders = () => {
                                 <path
                                   d='M12 9V14'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M12.0004 21.4098H5.94042C2.47042 21.4098 1.02042 18.9298 2.70042 15.8998L5.82042 10.2798L8.76042 4.99979C10.5404 1.78979 13.4604 1.78979 15.2404 4.99979L18.1804 10.2898L21.3004 15.9098C22.9804 18.9398 21.5204 21.4198 18.0604 21.4198H12.0004V21.4098Z'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M11.9941 17H12.0031'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                               </svg>
@@ -633,7 +626,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -645,45 +638,45 @@ const Orders = () => {
                                 <path
                                   d='M22 9V15C22 15.22 22 15.44 21.98 15.65C21.16 14.64 19.91 14 18.5 14C17.44 14 16.46 14.37 15.69 14.99C14.65 15.81 14 17.08 14 18.5C14 19.91 14.64 21.16 15.65 21.98C15.44 22 15.22 22 15 22H9C4 22 2 20 2 15V9C2 4 4 2 9 2H15C20 2 22 4 22 9Z'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M2.51953 7.10986H21.4796'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M8.51953 2.10986V6.96985'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M15.4795 2.10986V6.5199'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M23 18.5C23 19.85 22.4 21.05 21.47 21.88C20.67 22.57 19.64 23 18.5 23C17.42 23 16.42 22.62 15.65 21.98C14.64 21.16 14 19.91 14 18.5C14 17.08 14.65 15.81 15.69 14.99C16.46 14.37 17.44 14 18.5 14C19.91 14 21.16 14.64 21.98 15.65C22.62 16.42 23 17.42 23 18.5Z'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
-                                  stroke-miterlimit='10'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
+                                  strokeMiterlimit='10'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M18.7799 17.0898V18.7798L17.3799 19.6198'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
-                                  stroke-miterlimit='10'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
+                                  strokeMiterlimit='10'
                                   strokeWidth='1.5'
                                 />
                               </svg>
@@ -692,7 +685,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -704,22 +697,22 @@ const Orders = () => {
                                 <path
                                   d='M4 6C2.75 7.67 2 9.75 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C10.57 2 9.2 2.3 7.97 2.85'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M10.75 14.4302V9.3702C10.75 8.8902 10.55 8.7002 10.04 8.7002H8.75004C8.24004 8.7002 8.04004 8.8902 8.04004 9.3702V14.4302C8.04004 14.9102 8.24004 15.1002 8.75004 15.1002H10.04C10.55 15.1002 10.75 14.9102 10.75 14.4302Z'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M16.0303 14.4302V9.3702C16.0303 8.8902 15.8303 8.7002 15.3203 8.7002H14.0303C13.5203 8.7002 13.3203 8.8902 13.3203 9.3702V14.4302C13.3203 14.9102 13.5203 15.1002 14.0303 15.1002'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                               </svg>
@@ -728,7 +721,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -740,17 +733,17 @@ const Orders = () => {
                                 <path
                                   d='M12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22Z'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
-                                  stroke-miterlimit='10'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
+                                  strokeMiterlimit='10'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M18.9004 5L4.90039 19'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
-                                  stroke-miterlimit='10'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
+                                  strokeMiterlimit='10'
                                   strokeWidth='1.5'
                                 />
                               </svg>
@@ -760,7 +753,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -794,45 +787,45 @@ const Orders = () => {
                             <path
                               d='M22 6V8.42C22 10 21 11 19.42 11H16V4.01C16 2.9 16.91 2 18.02 2C19.11 2.01 20.11 2.45 20.83 3.17C21.55 3.9 22 4.9 22 6Z'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                              stroke-miterlimit='10'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              strokeMiterlimit='10'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                              stroke-miterlimit='10'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              strokeMiterlimit='10'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M9 13.0098H12'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M9 9.00977H12'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M5.99609 13H6.00508'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M5.99609 9H6.00508'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                           </svg>
@@ -849,15 +842,15 @@ const Orders = () => {
                             <path
                               d='M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                           </svg>
@@ -869,8 +862,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{order.gigDescription}</div>
                     {/* )} */}
-                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
-                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
+                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
+                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -895,7 +888,7 @@ const Orders = () => {
                       </div>
                       <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
                         <button className='p-4 px-8 md:p-5'>Message</button>
-                        <button 
+                        <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
                           onClick={() => router.push(`/dashboard/client/orders/${order?.id}`)}
                         >
@@ -911,7 +904,7 @@ const Orders = () => {
               </button>
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Live proposals will be here</p>
             </div>
@@ -924,11 +917,11 @@ const Orders = () => {
               {filteredProposalsList.map((proposal, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='flex items-start justify-between mt-1 md:flex-row md:items-center'>
+                    <div className='mt-1 flex items-start justify-between md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {proposal.gigTitle}
                       </div>
-                      <div className='flex flex-row items-center flex-none gap-2'>
+                      <div className='flex flex-none flex-row items-center gap-2'>
                         {/* <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                         15 H: 30 S
                       </div>
@@ -938,7 +931,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='bg-transparent border-none hover:bg-transparent'
+                              className='border-none bg-transparent hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -960,22 +953,22 @@ const Orders = () => {
                                 <path
                                   d='M12 9V14'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M12.0004 21.4098H5.94042C2.47042 21.4098 1.02042 18.9298 2.70042 15.8998L5.82042 10.2798L8.76042 4.99979C10.5404 1.78979 13.4604 1.78979 15.2404 4.99979L18.1804 10.2898L21.3004 15.9098C22.9804 18.9398 21.5204 21.4198 18.0604 21.4198H12.0004V21.4098Z'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M11.9941 17H12.0031'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                               </svg>
@@ -984,7 +977,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -996,45 +989,45 @@ const Orders = () => {
                                 <path
                                   d='M22 9V15C22 15.22 22 15.44 21.98 15.65C21.16 14.64 19.91 14 18.5 14C17.44 14 16.46 14.37 15.69 14.99C14.65 15.81 14 17.08 14 18.5C14 19.91 14.64 21.16 15.65 21.98C15.44 22 15.22 22 15 22H9C4 22 2 20 2 15V9C2 4 4 2 9 2H15C20 2 22 4 22 9Z'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M2.51953 7.10986H21.4796'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M8.51953 2.10986V6.96985'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M15.4795 2.10986V6.5199'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M23 18.5C23 19.85 22.4 21.05 21.47 21.88C20.67 22.57 19.64 23 18.5 23C17.42 23 16.42 22.62 15.65 21.98C14.64 21.16 14 19.91 14 18.5C14 17.08 14.65 15.81 15.69 14.99C16.46 14.37 17.44 14 18.5 14C19.91 14 21.16 14.64 21.98 15.65C22.62 16.42 23 17.42 23 18.5Z'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
-                                  stroke-miterlimit='10'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
+                                  strokeMiterlimit='10'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M18.7799 17.0898V18.7798L17.3799 19.6198'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
-                                  stroke-miterlimit='10'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
+                                  strokeMiterlimit='10'
                                   strokeWidth='1.5'
                                 />
                               </svg>
@@ -1043,7 +1036,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1055,22 +1048,22 @@ const Orders = () => {
                                 <path
                                   d='M4 6C2.75 7.67 2 9.75 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C10.57 2 9.2 2.3 7.97 2.85'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M10.75 14.4302V9.3702C10.75 8.8902 10.55 8.7002 10.04 8.7002H8.75004C8.24004 8.7002 8.04004 8.8902 8.04004 9.3702V14.4302C8.04004 14.9102 8.24004 15.1002 8.75004 15.1002H10.04C10.55 15.1002 10.75 14.9102 10.75 14.4302Z'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M16.0303 14.4302V9.3702C16.0303 8.8902 15.8303 8.7002 15.3203 8.7002H14.0303C13.5203 8.7002 13.3203 8.8902 13.3203 9.3702V14.4302C13.3203 14.9102 13.5203 15.1002 14.0303 15.1002'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
                                   strokeWidth='1.5'
                                 />
                               </svg>
@@ -1079,7 +1072,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1091,17 +1084,17 @@ const Orders = () => {
                                 <path
                                   d='M12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22Z'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
-                                  stroke-miterlimit='10'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
+                                  strokeMiterlimit='10'
                                   strokeWidth='1.5'
                                 />
                                 <path
                                   d='M18.9004 5L4.90039 19'
                                   stroke='#96B0BD'
-                                  stroke-linecap='round'
-                                  stroke-linejoin='round'
-                                  stroke-miterlimit='10'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
+                                  strokeMiterlimit='10'
                                   strokeWidth='1.5'
                                 />
                               </svg>
@@ -1111,7 +1104,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -1145,45 +1138,45 @@ const Orders = () => {
                             <path
                               d='M22 6V8.42C22 10 21 11 19.42 11H16V4.01C16 2.9 16.91 2 18.02 2C19.11 2.01 20.11 2.45 20.83 3.17C21.55 3.9 22 4.9 22 6Z'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                              stroke-miterlimit='10'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              strokeMiterlimit='10'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                              stroke-miterlimit='10'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              strokeMiterlimit='10'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M9 13.0098H12'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M9 9.00977H12'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M5.99609 13H6.00508'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M5.99609 9H6.00508'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                           </svg>
@@ -1200,15 +1193,15 @@ const Orders = () => {
                             <path
                               d='M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                             <path
                               d='M15.7099 15.1798L12.6099 13.3298C12.0699 13.0098 11.6299 12.2398 11.6299 11.6098V7.50977'
                               stroke='#96B0BD'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
                               strokeWidth='1.5'
                             />
                           </svg>
@@ -1220,8 +1213,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{proposal.gigDescription}</div>
                     {/* )} */}
-                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
-                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
+                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
+                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -1248,7 +1241,14 @@ const Orders = () => {
                         <button className='p-4 px-8 md:p-5'>Message</button>
                         <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
-                          onClick={() => onAccept(proposal.gigId, proposal.freelancerId, proposal.gigPrice, proposal.walletPubkey)}
+                          onClick={() =>
+                            onAccept(
+                              proposal.gigId,
+                              proposal.freelancerId,
+                              proposal.gigPrice,
+                              proposal.freelancerId.walletPublicKey
+                            )
+                          }
                         >
                           Accept
                         </button>
@@ -1262,7 +1262,7 @@ const Orders = () => {
               </button>
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Freelancer proposals will be here</p>
             </div>

@@ -9,46 +9,46 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
     queryFn: async () => {
       if (profileId) {
         try {
-          const { data } = await api.get(
-            `/api/v1/freelancer_gig/find_all_gigs_of_freelancer/${profileId}`
-          );
-
+          const result = await api.get(`/api/v1/freelancer_gig/find_all_gigs_of_freelancer/${profileId}`);
+          console.log("result in useGetAllFreelancerGigsProposed:", result);
           const submissions = [];
           const lives = [];
 
-          if (data?.data) {
-            data.data.map((d) => {
-              d.bidInfos.map((info) => {
-                if (!info.hired) {
-                  submissions.push({
-                    clientId: info.clientId,
-                    creator: {
-                      fullName: info.fullName,
-                    },
-                    gigDescription: d.gigDescription,
-                    gigId: d._id,
-                    gigPostDate: d.gigPostDate,
-                    gigPrice: d.gigPrice
-                      ? `$${d.gigPrice}`
-                      : `$${d.minBudget}/hr ~ $${d.maxBudget}/hr`,
-                    gigTitle: d.gigTitle,
-                    contractId: info?.contractId,
-                  });
-                } else {
-                  lives.push({
-                    clientId: info.clientId,
-                    creator: {
-                      fullName: info.fullName,
-                    },
-                    gigDescription: d.gigDescription,
-                    gigId: d._id,
-                    gigPostDate: d.gigPostDate,
-                    gigPrice: d.gigPrice
-                      ? `$${d.gigPrice}`
-                      : `$${d.minBudget}/hr ~ $${d.maxBudget}/hr`,
-                    gigTitle: d.gigTitle,
-                  });
-                }
+          if (result.data.submissions.length > 0) {
+            result.data.submissions.map((submission) => {
+              submissions.push({
+                clientId: submission.gigOwner,
+                creator: {
+                  fullName: submission.gigOwner.fullName,
+                },
+                gigDescription: submission.clientGig.gigDescription,
+                gigId: submission.clientGig._id,
+                gigPostDate: submission.clientGig.gigPostDate,
+                gigPrice: submission.clientGig.gigPrice
+                  ? `$${submission.clientGig.gigPrice}`
+                  : `$${submission.clientGig.minBudget}/hr ~ $${submission.clientGig.maxBudget}/hr`,
+                gigTitle: submission.clientGig.gigTitle,
+              });
+            });
+          }
+
+          if (result.data.lives.length > 0) {
+            result.data.lives.map((contract) => {
+              lives.push({
+                id: contract._id,
+                creator: {
+                  fullName: contract.gigOwner.fullName,
+                },
+                freelancerId: contract.proposer,
+                gigDescription: contract.clientGig.gigDescription,
+                gigId: contract.clientGig._id,
+                gigPostDate: contract.clientGig.gigPostDate,
+                gigPrice: contract.clientGig.gigPrice
+                  ? `$${contract.clientGig.gigPrice}`
+                  : `$${contract.clientGig.minBudget}/hr ~ $${contract.clientGig.maxBudget}/hr`,
+                gigTitle: contract.clientGig.gigTitle,
+                status: contract.status,
+                contractId: contract.contractId,
               });
             });
           }
