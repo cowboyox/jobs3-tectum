@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetFreelancers = (pageNum, itemsPerPage) => {
+export const useGetFreelancers = (pageNum, itemsPerPage, searchText = '') => {
   return useQuery({
     cacheTime: Infinity,
     enabled: pageNum > 0 && itemsPerPage > 0,
@@ -10,7 +10,7 @@ export const useGetFreelancers = (pageNum, itemsPerPage) => {
       if (pageNum > 0 && itemsPerPage > 0) {
         try {
           const { data } = await api.get(
-            `/api/v1/profile/get-all-freelancers?page=${pageNum}&limit=${itemsPerPage}`
+            `/api/v1/profile/get-all-freelancers?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}`
           );
 
           return data?.data;
@@ -23,7 +23,7 @@ export const useGetFreelancers = (pageNum, itemsPerPage) => {
 
       return null;
     },
-    queryKey: ['useGetFreelancers', pageNum, itemsPerPage],
+    queryKey: ['useGetFreelancers', pageNum, itemsPerPage, searchText],
     staleTime: Infinity,
   });
 };
