@@ -8,10 +8,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import CustomIconDropdown from '@/components/ui/dropdown';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-const DropdownItem = ({ onCheckedChange, ...props }) => {
+const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
     <div className='flex cursor-pointer items-center gap-4 p-0'>
       <Checkbox
+        checked={isChecked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
         id={props.category_id}
         onCheckedChange={onCheckedChange}
@@ -41,6 +42,14 @@ export const SearchBar = ({
       setIsAiSearch(true);
     } else {
       setIsAiSearch(false);
+    }
+  };
+
+  const onCheckedChange = (value, id, name) => {
+    if (value) {
+      setFilterItems((prev) => [...prev, name]);
+    } else {
+      setFilterItems((prev) => prev.filter((item) => item !== name));
     }
   };
 
@@ -182,10 +191,10 @@ export const SearchBar = ({
               </PopoverTrigger>
               <PopoverContent
                 align='end'
-                className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
+                className='mt-4 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
               >
-                <div className='grid grid-cols-4 gap-4'>
-                  {filterItems.map((item, index) => {
+                <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
+                  {filterCategories.map((item, index) => {
                     return (
                       <div className='flex flex-col gap-2' key={index}>
                         <div>{item.title}</div>
@@ -194,6 +203,7 @@ export const SearchBar = ({
                             <DropdownItem
                               category_id={con.category_id}
                               category_name={con.category_name}
+                              isChecked={filterItems.includes(con.category_name)}
                               key={i}
                               onCheckedChange={(value) =>
                                 onCheckedChange(value, con.category_id, con.category_name)
@@ -220,20 +230,28 @@ export const SearchBar = ({
           </div>
         )}
       </div>
-      <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
-        {filterItems.map((item, index) => {
-          return (
-            <span
-              className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
-              key={`filterItems_${index}`}
-            >
-              <FaX className='rounded-full bg-[#3E525B] p-[2px]' />
-              {item}
-            </span>
-          );
-        })}
-        <span>Clear&nbsp;All</span>
-      </div>
+      {filterItems.length > 0 && (
+        <div className='mt-4 flex touch-pan-x flex-row flex-wrap items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
+          {filterItems.map((item, index) => {
+            return (
+              <span
+                className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
+                key={index}
+              >
+                <FaX
+                  className='rounded-full bg-[#3E525B] p-[2px]'
+                  onClick={() => setFilterItems((prev) => prev.filter((_item) => _item !== item))}
+                />
+                {item}
+              </span>
+            );
+          })}
+
+          <span className='cursor-pointer' onClick={() => setFilterItems([])}>
+            Clear&nbsp;All
+          </span>
+        </div>
+      )}
     </div>
   );
 };
