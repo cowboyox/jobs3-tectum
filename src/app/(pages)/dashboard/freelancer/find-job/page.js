@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaArrowRight, FaEllipsis, FaX } from 'react-icons/fa6';
@@ -168,8 +169,21 @@ const FindJob = () => {
     }
   };
 
+  const handleRecentView = async (gigId) => {
+    if (auth?.currentProfile?._id && gigId) {
+      try {
+        await api.post(`/api/v1/recentView/update_fl_recent_view`, {
+          gigId,
+          profileId: auth?.currentProfile?._id,
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
   return loaded ? (
-    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
+    <div className='p-0 lg:mt-8 sm:p-0 xl:mt-8'>
       <div className='flex gap-4 rounded-xl bg-[#10191D] mobile:gap-0'>
         <div className='m-3 flex flex-1 items-center gap-3'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
@@ -1151,16 +1165,19 @@ const FindJob = () => {
                         );
                       })}
                     </div>
-                    <button
-                      className={`mt-2 rounded-xl bg-[#DC4F13] p-4 px-[5vw] pl-[5vw] md:mt-0 md:flex-none ${
-                        isSmallScreen ? 'w-full' : ''
-                      }`}
-                      onClick={() =>
-                        router.push(`/dashboard/freelancer/job-application/${gig._id}`)
-                      }
+                    <Link
+                      href={`/dashboard/freelancer/job-application/${gig._id}`}
+                      onClick={() => handleRecentView(gig._id)}
+                      target='_blank'
                     >
-                      Apply
-                    </button>
+                      <button
+                        className={`mt-2 rounded-xl bg-[#DC4F13] p-4 px-[5vw] pl-[5vw] md:mt-0 md:flex-none ${
+                          isSmallScreen ? 'w-full' : ''
+                        }`}
+                      >
+                        Apply
+                      </button>
+                    </Link>
                   </div>
                 </div>
                 {gig.reason && (

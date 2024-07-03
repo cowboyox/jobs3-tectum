@@ -8,7 +8,6 @@ import { CiFilter, CiReceipt } from 'react-icons/ci';
 import { FaClock, FaStar } from 'react-icons/fa';
 import { FaArrowRight, FaX } from 'react-icons/fa6';
 import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
-import { PiShootingStarLight } from 'react-icons/pi';
 
 import searchOptions from '../freelancers/searchOptions';
 
@@ -26,7 +25,6 @@ import { useCustomContext } from '@/context/use-custom';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
-
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
