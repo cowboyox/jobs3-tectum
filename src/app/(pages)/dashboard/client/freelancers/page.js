@@ -47,17 +47,17 @@ const Freelancers = () => {
 
       setFilteredFreelancers(filtered);
     } else if (isAiSearch) {
-      setIsAiSearch(false)
-      console.log("AI search...")
+      setIsAiSearch(false);
+      console.log('AI search...');
       api.get(`/api/v1/profile/ai-search-profile/${debouncedSearchText}`).then((data) => {
-        if(data.data.profiles){
-          let profiles = data.data.profiles
-          let reasons = data.data.reasons
+        if (data.data.profiles) {
+          let profiles = data.data.profiles;
+          let reasons = data.data.reasons;
           profiles = profiles.map((profile, index) => {
-            profile.reason = reasons[index]
-            return profile
-          })
-          console.log("new", profiles)
+            profile.reason = reasons[index];
+            return profile;
+          });
+          console.log('new', profiles);
           setFilteredFreelancers(profiles);
         }
       });
@@ -103,12 +103,11 @@ const Freelancers = () => {
         setIsAiSearch={setIsAiSearch}
         setSearchText={setSearchText}
         setSearchType={setSearchType}
-        
       />
       {filteredFreelancers && filteredFreelancers.length > 0 ? (
         filteredFreelancers.map((freelancer, index) => {
           return (
-            <div>
+            <div key={`freelancers_ext_${index}`}>
               <div
                 className={`mt-4 ${freelancer?.reason ? 'rounded-t-xl' : 'rounded-xl'} bg-[#10191D] p-5 text-center`}
                 key={`freelancers_${index}`}

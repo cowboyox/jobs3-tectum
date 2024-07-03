@@ -395,7 +395,7 @@ const FindJob = () => {
         <>
           {filteredGigList.map((gig, index) => {
             return (
-              <div>
+              <div key={`gig_${index}`}>
                 <div
                   className={`mt-4 ${gig.reason ? 'rounded-t-xl' : 'rounded-xl'} bg-[#10191D] p-5 text-center`}
                   key={index}
