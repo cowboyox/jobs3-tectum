@@ -2,13 +2,14 @@
 
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import FileUpload from 'react-drag-n-drop-image';
+import { FileUploader } from "react-drag-drop-files";
 import { useForm } from 'react-hook-form';
 import { FiPlus } from 'react-icons/fi';
 import { GoChevronDown, GoTrash } from 'react-icons/go';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
 import { IoIosClose } from 'react-icons/io';
 import { IoCheckmark } from 'react-icons/io5';
+import { GrDocumentPdf } from "react-icons/gr";
 import {
   Select,
   SelectContent,
@@ -635,25 +636,28 @@ const GigPosting = () => {
   }, [router, toast]);
 
   const FileChanged = (file) => {
+    console.log("file", file);
+    console.log("file.length", file.length);
     let tmp = [];
-    file.map((fi) => tmp.push(fi.file));
-    setFiles(file);
+    const filesArray = Array.from(file);
+    console.log("filesArray", filesArray);
+    filesArray.map((fi) => tmp.push(fi));
+    setFiles(filesArray);
     setFiles2(tmp);
+    console.log("tmp", tmp);
     setPostData((prev) => ({
       ...prev,
-      attachment: [...prev.attachment, file],
+      attachment: [...prev.attachment, filesArray],
     }));
   };
   const onRemoveImage = (id) => {
-    setFiles((prev) => prev.filter((i) => i.id !== id));
+    setFiles(files.filter((_, i) => i !== id));
   };
   const FileError = (error) => {
     console.error(error);
   };
   const form = useForm();
-
-  console.log("files", files);
-  
+  console.log("files is here", files);
   const handleSetGigTitle = (e) => {
     setPostData((prev) => ({
       ...prev,
@@ -671,6 +675,7 @@ const GigPosting = () => {
       });
     }
     const formData = new FormData();
+    console.log("files2 ->", files2);
     files2.map((file) => {
       formData.append('files', file);
     });
@@ -1241,27 +1246,28 @@ const GigPosting = () => {
                 </FormDescription>
                 <FormControl>
                   <div className='rounded-xl border border-dashed border-slate-500'>
-                    <FileUpload
-                      body={<FileUploadBody />}
-                      fileValue={files}
-                      onChange={(e) => FileChanged(e)}
-                      onError={FileError}
-                      overlap={false}
+                    <FileUploader 
+                      children={<FileUploadBody />}
+                      fileOrFiles={files}
+                      handleChange={(e) => FileChanged(e)}
+                      types={['PDF']}
+                      multiple={true}
+                      label={""}
                     />
                     {files.length > 0 && (
-                      <div className='mt-5 flex w-full flex-wrap gap-0 rounded-xl border border-slate-500'>
+                      <div className='mt-5 flex w-full gap-0 rounded-xl flex-wrap border border-slate-500'>
                         {files.map((item, index) => {
                           return (
                             <div
                               aria-hidden
-                              className='w-1/3 p-3'
+                              className='w-full p-3 flex gap-2 items-center lg:w-1/3 md:w-1/2 cursor-pointer'
                               key={index}
-                              onClick={() => onRemoveImage(item.id)}
+                              onClick={() => onRemoveImage(index)}
                             >
-                              <img
-                                className='aspect-square w-full rounded-xl bg-slate-800 object-cover p-2'
-                                src={item.preview}
-                              />
+                              <GrDocumentPdf size={"20px"}/>
+                              <span>
+                                {item.name}
+                              </span>
                             </div>
                           );
                         })}
