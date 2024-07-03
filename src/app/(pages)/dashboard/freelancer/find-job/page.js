@@ -183,7 +183,7 @@ const FindJob = () => {
   };
 
   return loaded ? (
-    <div className='p-0 lg:mt-8 sm:p-0 xl:mt-8'>
+    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-4 rounded-xl bg-[#10191D] mobile:gap-0'>
         <div className='m-3 flex flex-1 items-center gap-3'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>

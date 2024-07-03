@@ -9,8 +9,10 @@ export const useGetAllClientGigsProposed = (profileId) => {
     queryFn: async () => {
       if (profileId) {
         try {
-          const result = await api.get(`/api/v1/client_gig/find_all_gigs_of_client/${profileId}`);
-          console.log("result in useGetAllClientGigsProposed:", result);
+          const result = await api.get(
+            `/api/v1/client_gig/find_all_gigs_by_profile_id/${profileId}`
+          );
+          console.log('result in useGetAllClientGigsProposed:', result);
           const proposals = [];
           const lives = [];
 
@@ -36,7 +38,7 @@ export const useGetAllClientGigsProposed = (profileId) => {
           if (result.data.contracts.length > 0) {
             result.data.contracts.map((contract) => {
               lives.push({
-                id: contract._id,
+                contractId: contract.contractId,
                 creator: {
                   fullName: contract.proposer.fullName,
                 },
@@ -48,8 +50,8 @@ export const useGetAllClientGigsProposed = (profileId) => {
                   ? `$${contract.clientGig.gigPrice}`
                   : `$${contract.clientGig.minBudget}/hr ~ $${contract.clientGig.maxBudget}/hr`,
                 gigTitle: contract.clientGig.gigTitle,
+                id: contract._id,
                 status: contract.status,
-                contractId: contract.contractId,
               });
             });
           }

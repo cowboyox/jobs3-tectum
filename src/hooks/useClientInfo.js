@@ -9,7 +9,9 @@ export const useClientInfo = (profileId) => {
     queryFn: async () => {
       if (profileId) {
         try {
-          const { data } = await api.get(`/api/v1/client_gig/find_all_gigs_of_client/${profileId}`);
+          const { data } = await api.get(
+            `/api/v1/client_gig/find_all_gigs_by_profile_id/${profileId}`
+          );
           let proposals = [];
           let recentHires = [];
 
