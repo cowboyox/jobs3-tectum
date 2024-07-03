@@ -51,8 +51,6 @@ const FindJob = () => {
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
 
-  console.log(clientGigs);
-
   useEffect(() => {
     if (clientGigs) {
       setGigList(clientGigs);
