@@ -2,7 +2,6 @@
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineQuestion } from 'react-icons/ai';
-import { CiBellOn } from 'react-icons/ci';
 import { LuAlignLeft } from 'react-icons/lu';
 import { useDisconnect } from 'wagmi';
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
@@ -25,11 +24,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { RxReload } from "react-icons/rx";
-import { useCustomContext } from '@/context/use-custom';
-import { FaRegCopy } from "react-icons/fa";
-import { IoIosLogOut } from "react-icons/io";
+} from '@/components/ui/select'; 
+import Notifications from '@/components/elements/notifications';
+import { useCustomContext } from '@/context/use-custom'; 
 
 const DashboardHeader = () => {
   const { renderPopup } = usePopupFunctions();
@@ -155,7 +152,7 @@ const DashboardHeader = () => {
           <AiOutlineQuestion className='object-contain w-6 h-6 cursor-pointer' />
         </div>
         <div className='p-2 rounded-xl bg-[#10191D] cursor-pointer'> 
-          <CiBellOn className='object-contain w-6 h-6 cursor-pointer' />
+          <Notifications />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger className='mobile:hidden'>
