@@ -993,6 +993,7 @@ const FreelancerProfile = () => {
                         profileData.myGigs.map((myGig, index) => (
                           <MyGigs
                             email={profileData.email}
+                            gigId={myGig._id}
                             imagePath={
                               myGig.gallery?.images[0]
                                 ? myGig.gallery?.images[0]
@@ -1206,6 +1207,7 @@ const FreelancerProfile = () => {
                         profileData.myGigs.map((myGig, index) => (
                           <MyGigs
                             email={profileData.email}
+                            gigId={myGig._id}
                             imagePath={
                               myGig.gallery?.images[0]
                                 ? myGig.gallery?.images[0]
