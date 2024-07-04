@@ -10,7 +10,7 @@ export const useGetAllClientOrdersProposed = (profileId) => {
       if (profileId) {
         try {
           const result = await api.get(`/api/v1/freelancer_gig/find_all_orders_of_client/${profileId}`);
-          console.log("result in useGetAllClientGigsProposed:", result);
+          console.log("result in useGetAllClientOrdersProposed:", result);
           const proposals = [];
           const lives = [];
 
@@ -21,35 +21,41 @@ export const useGetAllClientOrdersProposed = (profileId) => {
                   fullName: proposal.proposer.fullName,
                 },
                 freelancerId: proposal.proposer,
-                gigDescription: proposal.clientGig.gigDescription,
-                gigId: proposal.clientGig._id,
-                gigPostDate: proposal.clientGig.gigPostDate,
-                gigPrice: proposal.clientGig.gigPrice,
-                gigTitle: proposal.clientGig.gigTitle,
-                maxBudget: proposal.clientGig.maxBudget,
-                minBudget: proposal.clientGig.minBudget,
+                gigDescription: proposal.freelancerGig.gigDescription,
+                gigId: proposal.freelancerGig._id,
+                gigPostDate: proposal.freelancerGig.gigPostDate,
+                gigPrice: proposal.freelancerGig.gigPrice,
+                gigTitle: proposal.freelancerGig.gigTitle,
+                maxBudget: proposal.freelancerGig.maxBudget,
+                minBudget: proposal.freelancerGig.minBudget,
                 walletPubkey: proposal.proposer?.walletPubkey,
+                deliveryTime: proposal.freelancerGig.deliveryTime,
+                proposal: proposal.proposal,
+                proposalId: proposal._id,
               });
             });
           }
 
-          if (result.data.contracts.length > 0) {
-            result.data.contracts.map((contract) => {
+          if (result.data.lives.length > 0) {
+            result.data.lives.map((live) => {
               lives.push({
-                id: contract._id,
+                id: live._id,
                 creator: {
-                  fullName: contract.proposer.fullName,
+                  fullName: live.proposer.fullName,
                 },
-                freelancerId: contract.proposer,
-                gigDescription: contract.clientGig.gigDescription,
-                gigId: contract.clientGig._id,
-                gigPostDate: contract.clientGig.gigPostDate,
-                gigPrice: contract.clientGig.gigPrice
-                  ? `$${contract.clientGig.gigPrice}`
-                  : `$${contract.clientGig.minBudget}/hr ~ $${contract.clientGig.maxBudget}/hr`,
-                gigTitle: contract.clientGig.gigTitle,
-                status: contract.status,
-                contractId: contract.contractId,
+                freelancerId: live.proposer,
+                gigDescription: live.freelancerGig.gigDescription,
+                gigId: live.freelancerGig._id,
+                gigPostDate: live.freelancerGig.gigPostDate,
+                gigPrice: live.freelancerGig.gigPrice
+                  ? `$${live.freelancerGig.gigPrice}`
+                  : `$${live.freelancerGig.minBudget}/hr ~ $${live.freelancerGig.maxBudget}/hr`,
+                gigTitle: live.freelancerGig.gigTitle,
+                status: live.status,
+                contractId: live.contractId,
+                deliveryTime: live.freelancerGig.deliveryTime,
+                proposal: live.proposal,
+                proposalId: live._id,
               });
             });
           }
