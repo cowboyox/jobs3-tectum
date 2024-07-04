@@ -29,6 +29,10 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
       const year = new Date(value).getFullYear();
       return month + ' ' + year;
     }
+    if (label === 'hourlyRate' || label === 'monthlyRate') {
+      if (Number(value) < 0) return '0';
+      else return value;
+    }
     return value;
   };
   const handleLabel = () => {
@@ -56,9 +60,9 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
         <span className='text-sm'>{handleLabel()}</span>
       </div>
       {editable && label !== 'created' ? (
-        <span>
+        <span className='flex gap-0'>
           <input
-            className='border-b bg-transparent text-right text-sm text-[#96B0BD] outline-none focus:border-white'
+            className={`border-b bg-transparent text-right text-sm text-[#96B0BD] outline-none ${(label === 'hourlyRate' || label === 'monthlyRate') && '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'} `}
             onChange={(e) =>
               setProfileData((prev) => ({
                 ...prev,
@@ -66,10 +70,18 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
               }))
             }
             value={handleValue(value)}
+            type={label === 'hourlyRate' || label === 'monthlyRate' ? 'number' : 'text'}
           />
+          {(label === 'hourlyRate' || label === 'monthlyRate') && (
+            <span className='text-sm text-[#96B0BD]'>&nbsp;$</span>
+          )}
         </span>
       ) : (
-        <span className='text-sm text-[#96B0BD]'>{handleValue(value)}</span>
+        <span className='text-sm text-[#96B0BD]'>
+          {label === 'hourlyRate' || label === 'monthlyRate'
+            ? handleValue(value) + ' $'
+            : handleValue(value)}
+        </span>
       )}
     </div>
   );
@@ -123,12 +135,14 @@ const FreelancerProfile = () => {
   useEffect(() => {
     if (auth?.currentProfile?._id === profileId) {
       setIsAuth(true);
-      setViewMode('edit');
+      // setViewMode('edit');
     } else {
       setIsAuth(false);
-      setViewMode('preview');
+      // setViewMode('preview');
     }
   }, [auth, profileId]);
+  console.log('isAuth', isAuth);
+  console.log('viewMode', viewMode);
 
   useEffect(() => {
     (async () => {
@@ -137,6 +151,13 @@ const FreelancerProfile = () => {
 
         const data = await api.get(`/api/v1/profile/get_profile_by_id/${profileId}`);
         setProfileData(data.data.profile);
+        const data1 = await api.get(
+          `/api/v1/freelancer_gig/find_all_gigs_by_email/${data.data.profile.email}`
+        );
+        setProfileData((prev) => ({
+          ...prev,
+          myGigs: data1.data.data,
+        }));
 
         if (data.data.profile.freelancerBio) {
           const lines = data.data.profile.freelancerBio.split(/\r\n|\r|\n/).length;
@@ -427,9 +448,9 @@ const FreelancerProfile = () => {
 
   return !isLoading ? (
     <div className='p-0'>
-      <div className='group relative cursor-pointer' {...getBannerRootProps()}>
+      <div className={`group relative ${isAuth && 'cursor-pointer'}`} {...getBannerRootProps()}>
         <label
-          className='w-full hover:cursor-pointer'
+          className={`w-full ${isAuth && 'hover:cursor-pointer'}`}
           htmlFor='dropzone-banner'
           onClick={(e) => e.stopPropagation()}
         >
@@ -442,21 +463,25 @@ const FreelancerProfile = () => {
                 : '/assets/images/freelancer-image.jpeg'
             }
           />
-          <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
-            <IoCameraOutline className='h-6 w-6' />
-          </div>
+          {isAuth && (
+            <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
+              <IoCameraOutline className='h-6 w-6' />
+            </div>
+          )}
         </label>
-        <Input
-          {...getBannerInputProps()}
-          accept='image/png, image/jpeg'
-          className='hidden'
-          id='dropzone-banner'
-          onChange={(e) => handleBannerUpload(e)}
-          type='file'
-        />
+        {isAuth && (
+          <Input
+            {...getBannerInputProps()}
+            accept='image/png, image/jpeg'
+            className='hidden'
+            id='dropzone-banner'
+            onChange={(e) => handleBannerUpload(e)}
+            type='file'
+          />
+        )}
       </div>
       <div className='mx-auto flex max-w-7xl -translate-y-8 flex-col gap-3 px-0 md:px-8'>
-        <Tabs defaultValue='edit-profile'>
+        <Tabs defaultValue='preview'>
           <div className='flex flex-col gap-4 rounded-xl bg-[#10191D] px-3 py-4 md:flex-row md:gap-0 md:p-8'>
             <div className='flex w-full items-center gap-4 md:w-3/4 md:gap-7'>
               <div className='relative w-16 md:h-24 md:w-24'>
@@ -465,7 +490,7 @@ const FreelancerProfile = () => {
                   {...getAvatarRootProps()}
                 >
                   <label
-                    className='w-full hover:cursor-pointer'
+                    className={`w-full ${isAuth && 'hover:cursor-pointer'}`}
                     htmlFor='dropzone-avatar'
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -478,18 +503,22 @@ const FreelancerProfile = () => {
                           : '/assets/images/users/user-5.png'
                       }
                     />
-                    <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
-                      <IoCameraOutline className='h-6 w-6' />
-                    </div>
+                    {isAuth && (
+                      <div className='absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a272c] opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
+                        <IoCameraOutline className='h-6 w-6' />
+                      </div>
+                    )}
                   </label>
-                  <Input
-                    {...getAvatarInputProps()}
-                    accept='image/png, image/jpeg'
-                    className='hidden'
-                    id='dropzone-avatar'
-                    onChange={(e) => handleAvatarUpload(e)}
-                    type='file'
-                  />
+                  {isAuth && (
+                    <Input
+                      {...getAvatarInputProps()}
+                      accept='image/png, image/jpeg'
+                      className='hidden'
+                      id='dropzone-avatar'
+                      onChange={(e) => handleAvatarUpload(e)}
+                      type='file'
+                    />
+                  )}
                 </div>
                 {/* Change background color depending on user online status */}
                 <div className='absolute bottom-1 right-1 h-4 w-4 rounded-full bg-green-500' />
@@ -537,6 +566,24 @@ const FreelancerProfile = () => {
                 </TabsList>
               </div>
             )}
+            {/* {isAuth && (
+            <div className='flex w-full rounded-xl bg-[#28373E] px-1 py-1 text-base md:w-1/4 md:flex-col md:py-2 lg:flex-row lg:py-1'>
+              <button
+                className={`w-1/2 cursor-pointer text-center md:w-full lg:w-1/2 ${viewMode === 'preview' && 'roudned-xl border bg-[#DC4F13] py-[10px]'}`}
+                onClick={() => {
+                  setViewMode('preview');
+                }}
+              >
+                Preview
+              </button>
+              <button
+                className={`w-1/2 cursor-pointer text-center md:w-full lg:w-1/2 ${viewMode === 'edit' && 'roudned-xl border bg-[#DC4F13] py-[10px]'}`}
+                onClick={() => setViewMode('edit')}
+              >
+                Edit
+              </button>
+            </div>
+            )} */}
           </div>
           <div className='mt-5 flex flex-col md:flex-row'>
             {/* Sidebar */}
@@ -819,12 +866,14 @@ const FreelancerProfile = () => {
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      <div className='ml-auto flex items-center gap-3 md:gap-4'>
-                        <p className='cursor-pointer text-sm text-white underline'>Active</p>
-                        <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
-                          Drafts
-                        </p>
-                      </div>
+                      {viewMode === 'edit' && (
+                        <div className='ml-auto flex items-center gap-3 md:gap-4'>
+                          <p className='cursor-pointer text-sm text-white underline'>Active</p>
+                          <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
+                            Drafts
+                          </p>
+                        </div>
+                      )}
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
                       {profileData.portfolio.length > 0 &&
@@ -839,6 +888,9 @@ const FreelancerProfile = () => {
                           />
                         ))}
                     </div>
+                    {profileData.portfolio.length === 0 && (
+                      <div className='mb-20 mt-10 text-center text-3xl font-bold'>Nothing Here yet</div>
+                    )}
                     <div className='md:hidden'>
                       <Swiper slidesPerView={1.2} spaceBetween={20}>
                         <SwiperSlide>
@@ -855,9 +907,11 @@ const FreelancerProfile = () => {
                         </SwiperSlide>
                       </Swiper>
                     </div>
-                    <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                      Show more <GoChevronDown />
-                    </span>
+                    {profileData.portfolio.length > 3 && (
+                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                        Show more <GoChevronDown />
+                      </span>
+                    )}
                   </div>
                   <div className='flex w-full flex-col justify-between gap-5 rounded-xl bg-[#10191d] p-5'>
                     <div className='flex justify-between'>
@@ -872,19 +926,26 @@ const FreelancerProfile = () => {
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      <div className='ml-auto flex items-center gap-3 md:gap-4'>
-                        <p className='cursor-pointer text-sm text-white underline'>Active</p>
-                        <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
-                          Drafts
-                        </p>
-                      </div>
+                      {viewMode === 'edit' && (
+                        <div className='ml-auto flex items-center gap-3 md:gap-4'>
+                          <p className='cursor-pointer text-sm text-white underline'>Active</p>
+                          <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
+                            Drafts
+                          </p>
+                        </div>
+                      )}
                     </div>
-                    <div className='hidden grid-cols-3 gap-4 md:grid'>
-                      {profileData.myGigs.length > 0 &&
-                        profileData.myGigs.map((imagePath, index) => (
+                    <div className='hidden grid-cols-3 justify-center gap-4 md:grid'>
+                      {profileData.myGigs?.length > 0 &&
+                        profileData.myGigs.map((myGig, index) => (
                           <MyGigs
                             email={profileData.email}
-                            imagePath={imagePath}
+                            title={myGig.gigTitle}
+                            imagePath={
+                              myGig.gallery?.images[0]
+                                ? myGig.gallery?.images[0]
+                                : '/assets/images/portfolio_works/portfolio.jpeg'
+                            }
                             key={index}
                             setProfileData={setProfileData}
                             setUploadedGigPath={setUploadedGigPath}
@@ -892,6 +953,9 @@ const FreelancerProfile = () => {
                           />
                         ))}
                     </div>
+                    {profileData.myGigs.length === 0 && (
+                      <div className='mb-20 mt-10 text-center text-3xl font-bold'>Nothing Here yet</div>
+                    )}
                     <div className='md:hidden'>
                       <Swiper slidesPerView={1.2} spaceBetween={20}>
                         <SwiperSlide>
@@ -908,9 +972,11 @@ const FreelancerProfile = () => {
                         </SwiperSlide>
                       </Swiper>
                     </div>
-                    <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                      Show more <GoChevronDown />
-                    </span>
+                    {profileData.myGigs.length > 3 && (
+                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                        Show more <GoChevronDown />
+                      </span>
+                    )}
                   </div>
                   <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
                     <p className='text-2xl text-[#96B0BD]'>Reviews</p>
@@ -943,13 +1009,19 @@ const FreelancerProfile = () => {
                           </div>
                         </div>
                       ))}
-                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                        Show more <GoChevronDown />
-                      </span>
+                      {reviews.length === 0 && (
+                        <div className='mb-20 mt-10 text-center text-3xl font-bold'>Nothing Here yet</div>
+                      )}
+                      {reviews.length > 1 && (
+                        <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                          Show more <GoChevronDown />
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
               </TabsContent>
+
               <TabsContent value='edit-profile'>
                 <div className='flex flex-col gap-5'>
                   <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
@@ -996,7 +1068,7 @@ const FreelancerProfile = () => {
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      {isAuth && (
+                      {isAuth && viewMode === 'edit' && (
                         <div className='ml-auto flex items-center gap-3 md:gap-4'>
                           <p className='cursor-pointer text-sm text-white underline'>Active</p>
                           <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
@@ -1043,9 +1115,11 @@ const FreelancerProfile = () => {
                         </SwiperSlide>
                       </Swiper>
                     </div>
-                    <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                      Show more <GoChevronDown />
-                    </span>
+                    {profileData.portfolio.length > 3 && (
+                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                        Show more <GoChevronDown />
+                      </span>
+                    )}
                   </div>
                   <div className='flex w-full flex-col justify-between gap-5 rounded-xl bg-[#10191d] p-5'>
                     <div className='flex justify-between'>
@@ -1071,15 +1145,20 @@ const FreelancerProfile = () => {
                       )}
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
-                      {profileData.myGigs.length > 0 &&
-                        profileData.myGigs.map((imagePath, index) => (
+                      {profileData.myGigs?.length > 0 &&
+                        profileData.myGigs.map((myGig, index) => (
                           <MyGigs
                             email={profileData.email}
-                            imagePath={imagePath}
+                            imagePath={
+                              myGig.gallery?.images[0]
+                                ? myGig.gallery?.images[0]
+                                : '/assets/images/portfolio_works/portfolio.jpeg'
+                            }
                             key={index}
                             setProfileData={setProfileData}
                             setUploadedGigPath={setUploadedGigPath}
                             viewMode={isAuth ? 'edit' : 'preview'}
+                            title={myGig.gigTitle}
                           />
                         ))}
                       <MyGigs
@@ -1089,6 +1168,7 @@ const FreelancerProfile = () => {
                         setProfileData={setProfileData}
                         setUploadedGigPath={setUploadedGigPath}
                         viewMode={isAuth ? 'edit' : 'preview'}
+                        title={''}
                       />
                     </div>
                     <div className='md:hidden'>
@@ -1107,9 +1187,11 @@ const FreelancerProfile = () => {
                         </SwiperSlide>
                       </Swiper>
                     </div>
-                    <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                      Show more <GoChevronDown />
-                    </span>
+                    {profileData.myGigs.length > 3 && (
+                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                        Show more <GoChevronDown />
+                      </span>
+                    )}
                   </div>
                   <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
                     <p className='text-2xl text-[#96B0BD]'>Reviews</p>

@@ -8,7 +8,6 @@ import { CiFilter, CiReceipt } from 'react-icons/ci';
 import { FaClock, FaStar } from 'react-icons/fa';
 import { FaArrowRight, FaX } from 'react-icons/fa6';
 import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
-import { PiShootingStarLight } from 'react-icons/pi';
 
 import searchOptions from '../freelancers/searchOptions';
 
@@ -26,7 +25,6 @@ import { useCustomContext } from '@/context/use-custom';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
-
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
@@ -158,6 +156,9 @@ const GigSearch = () => {
   const [filteredGigList, setFilteredGigList] = useState([]);
   const [filters, setFilters] = useState([]);
   const { isSmallScreen } = useHandleResize();
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
   const filterItems = [
     {
       content: [
@@ -238,7 +239,7 @@ const GigSearch = () => {
 
   useEffect(() => {
     api
-      .get(`/api/v1/freelancer_gig/find_all_gigs`)
+      .get(`/api/v1/freelancer_gig/find_all_gigs?page=${page}&limit=${itemsPerPage}`)
       .then((data) => {
         if (data.data.data) {
           setGigList(data.data.data);
@@ -248,7 +249,7 @@ const GigSearch = () => {
       .catch((err) => {
         console.error('Error corrupted while getting all gigs: ', err);
       });
-  }, []);
+  }, [page]);
 
   const onChangeType = (e) => {
     setSearchType(e);
@@ -271,6 +272,7 @@ const GigSearch = () => {
   };
 
   const aiSearch = () => {
+    setLoading(true);
     api.get(`/api/v1/freelancer_gig/ai-search/${searchKeywords}`).then((data) => {
       let ai_ids = [];
       if (data.data.profileIDs) ai_ids = data.data.profileIDs;
@@ -281,6 +283,7 @@ const GigSearch = () => {
           gig.reason = data.data.reasons[index];
           return gig;
         });
+      setLoading(false);
       setFilteredGigList(ai_filtered);
     });
   };
@@ -397,21 +400,38 @@ const GigSearch = () => {
           </span>
         </div>
       )}
-      <div className='flex items-center justify-center rounded-xl bg-[#10191d] px-3 py-6 text-lg'>
-        Wow! <span className='main_color px-2'>{filteredGigList.length}</span> projects available 😀
-      </div>
-      {/*
-       * These should be dynamic, you can pass all the data you need through attributes and retrieve it on the component
-       */}
-      {filteredGigList.map((gig, index) => {
-        return <GigCard info={gig} key={index} />;
-      })}
-      {/* <GigCard />
+      {loading && (
+        <div className='z-1 flex h-screen justify-center space-x-2 pt-6'>
+          <div className='mt-8 flex h-fit items-baseline text-[20px]'>
+            <p className='mr-3'>The neural network is thinking</p>
+            <div className='flex gap-1'>
+              <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.3s]'></div>
+              <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.15s]'></div>
+              <div className='h-2 w-2 animate-bounce rounded-full bg-white'></div>
+            </div>
+          </div>
+        </div>
+      )}
+      {!loading && (
+        <div>
+          <div className='flex items-center justify-center rounded-xl bg-[#10191d] px-3 py-6 text-lg'>
+            Wow! <span className='main_color px-2'>{filteredGigList.length}</span> projects
+            available 😀
+          </div>
+          {/*
+           * These should be dynamic, you can pass all the data you need through attributes and retrieve it on the component
+           */}
+          {filteredGigList.map((gig, index) => {
+            return <GigCard info={gig} key={index} />;
+          })}
+          {/* <GigCard />
       <GigCard />
       <GigCard /> */}
-      <div className='mx-auto mt-4 w-full max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'>
-        Load more +
-      </div>
+          <div className='mx-auto mt-4 w-full max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'>
+            Load more +
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -7,11 +7,14 @@ import { Input } from '@/components/ui/input';
 import RadialProgress from '@/components/ui/progress';
 import api from '@/utils/api';
 import { backend_url } from '@/utils/variables';
+import { useRouter } from 'next/navigation';
+
 
 const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, viewMode }) => {
   const [loading, setLoading] = useState(false);
   // const [progress, setProgress] = useState(0);
   const progress = 0;
+  const router = useRouter();
 
   // const onUploadProgress = (progressEvent) => {
   //   if (progressEvent.total) {
@@ -101,7 +104,7 @@ const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, vie
           )}
 
           {!loading && imagePath === '' && (
-            <div className='text-center'>
+            <div className='text-center cursor-pointer' onClick={() => router.push(`../portfolio/create`)} >
               <div className='mx-auto max-w-min rounded-md p-2'>
                 <GoPlus size='2.6em' />
               </div>
@@ -121,7 +124,7 @@ const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, vie
             </div>
           )}
         </label>
-        {viewMode === 'edit' && (
+        {/* {viewMode === 'edit' && (
           <Input
             {...getInputProps()}
             accept='image/png, image/jpeg'
@@ -131,7 +134,7 @@ const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, vie
             onChange={handleImageChange}
             type='file'
           />
-        )}
+        )} */}
       </div>
 
       {/* {!!uploadedImagePath && (
