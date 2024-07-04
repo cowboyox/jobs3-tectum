@@ -48,6 +48,7 @@ const Offer = () => {
                   <>
                     {lives.map((order, index) => (
                       <OfferItem 
+                        key={index}
                         proposalId={order.proposalId} 
                         gigTitle={order.gigTitle} 
                         gigPrice={order.gigPrice} 
@@ -78,6 +79,7 @@ const Offer = () => {
                   <>
                     {proposals.map((proposal, index) => (
                       <OfferItem 
+                        key={index}
                         proposalId={proposal.proposalId} 
                         gigTitle={proposal.gigTitle} 
                         gigPrice={proposal.gigPrice} 
