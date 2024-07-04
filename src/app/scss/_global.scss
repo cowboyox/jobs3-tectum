@@ -47,8 +47,11 @@ h6 {
 }
 
 body {
-	background-color: black !important;
+	background-color: #111313 !important;
 	overflow-x: hidden;
+	&.mobile-menu-open {
+		overflow: hidden;
+	}
 }
 
 @mixin toCenter() {

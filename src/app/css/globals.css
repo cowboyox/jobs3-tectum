@@ -617,8 +617,11 @@ h6 {
 }
 
 body {
-  background-color: black !important;
+  background-color: #111313 !important;
   overflow-x: hidden;
+}
+body.mobile-menu-open {
+  overflow: hidden;
 }
 
 .main_layout {
@@ -10127,8 +10130,6 @@ body {
 .message_popup.error_message svg path {
   fill: #c292eb;
 }
-
-
 .message_popup svg {
   width: 39px;
   margin-bottom: -10px;
@@ -10777,7 +10778,8 @@ body {
   margin-left: 0 !important;
 }
 .gig_posting .radio_items .radio_item input:checked + label {
-  border-color: var(--main-color) !important;
+  background-color: #28373E;
+  border-color: #526872;
 }
 .gig_posting .file_container .file_container {
   width: 100% !important;
