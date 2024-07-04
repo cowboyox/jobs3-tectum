@@ -41,6 +41,7 @@ const DropdownItem = ({ onCheckedChange, ...props }) => {
       className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
       id={props.category_id}
       onCheckedChange={onCheckedChange}
+      checked={props.checked}
     />
       <label className='cursor-pointer text-sm text-[#96B0BD]' htmlFor={props.category_id}>
         {props.category_name}
@@ -372,7 +373,7 @@ const FindJob = () => {
               align='end'
               className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
             >
-              <div className='grid grid-cols-4 gap-4'>
+              <div className='grid lg:grid-cols-4 md:grid-cols-3 xxs:grid-cols-2 grid-cols-1 gap-4'>
                 {filterItems.map((item, index) => {
                   return (
                     <div className='flex flex-col gap-2' key={index}>
@@ -382,6 +383,7 @@ const FindJob = () => {
                           <DropdownItem
                             category_id={con.category_id}
                             category_name={con.category_name}
+                            checked={filters.includes(con.category_name)}
                             key={i}
                             onCheckedChange={(value) =>
                               onCheckedChange(value, con.category_id, con.category_name)
@@ -558,7 +560,7 @@ const FindJob = () => {
                                   </svg>
                                   Report
                                 </DropdownMenuCheckboxItem>
-                                <DropdownMenuCheckboxItem
+                                {/* <DropdownMenuCheckboxItem
                                   // checked={showActivityBar}
                                   // onCheckedChange={setShowActivityBar}
                                   className='gap-2 mt-1 rounded-xl hover:bg-white'
@@ -683,7 +685,7 @@ const FindJob = () => {
                                     />
                                   </svg>
                                   Cancel Order
-                                </DropdownMenuCheckboxItem>
+                                </DropdownMenuCheckboxItem> */}
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </div>
@@ -793,7 +795,7 @@ const FindJob = () => {
                                       </svg>
                                       Report
                                     </DropdownMenuCheckboxItem>
-                                    <DropdownMenuCheckboxItem
+                                    {/* <DropdownMenuCheckboxItem
                                       // checked={showActivityBar}
                                       // onCheckedChange={setShowActivityBar}
                                       className='gap-2 mt-1 rounded-xl hover:bg-white'
@@ -918,7 +920,7 @@ const FindJob = () => {
                                         />
                                       </svg>
                                       Cancel Order
-                                    </DropdownMenuCheckboxItem>
+                                    </DropdownMenuCheckboxItem> */}
                                   </DropdownMenuContent>
                                 </DropdownMenu>
                               </div>
