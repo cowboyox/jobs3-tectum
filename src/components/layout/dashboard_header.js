@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCustomContext } from '@/context/use-custom';
+import { USER_ROLE } from '@/utils/constants';
 
 const DashboardHeader = () => {
   const { renderPopup } = usePopupFunctions();
@@ -57,6 +58,11 @@ const DashboardHeader = () => {
       return 'Client';
     }
     return 'Freelancer';
+  };
+
+  const handleChangeRole = (roleNumber) => {
+    auth.setCurrentRole(roleNumber);
+    router.push(`/dashboard/${handleTap(roleNumber).toLowerCase()}/home`);
   };
 
   const router = useRouter();
@@ -135,16 +141,19 @@ const DashboardHeader = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu> */}
-        <Select defaultValue={handleTap(auth?.currentRole)}>
+        <Select defaultValue={auth?.currentRole} onValueChange={handleChangeRole}>
           <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
             <SelectValue />
           </SelectTrigger>
           <SelectContent align='end' className='rounded-xl bg-[#10191D] p-1'>
             <SelectGroup className='flex flex-col gap-2'>
-              <SelectItem className='cursor-pointer rounded bg-[#1B272C]' value='Client'>
+              <SelectItem className='cursor-pointer rounded bg-[#1B272C]' value={USER_ROLE.CLIENT}>
                 Client
               </SelectItem>
-              <SelectItem className='cursor-pointer rounded bg-[#1B272C]' value='Freelancer'>
+              <SelectItem
+                className='cursor-pointer rounded bg-[#1B272C]'
+                value={USER_ROLE.FREELANCER}
+              >
                 Freelancer
               </SelectItem>
             </SelectGroup>
