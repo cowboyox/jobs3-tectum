@@ -135,10 +135,10 @@ const FreelancerProfile = () => {
   useEffect(() => {
     if (auth?.currentProfile?._id === profileId) {
       setIsAuth(true);
-      setViewMode('edit');
+      // setViewMode('edit');
     } else {
       setIsAuth(false);
-      setViewMode('preview');
+      // setViewMode('preview');
     }
   }, [auth, profileId]);
   console.log('isAuth', isAuth);
@@ -151,9 +151,11 @@ const FreelancerProfile = () => {
 
         const data = await api.get(`/api/v1/profile/get_profile_by_id/${profileId}`);
         setProfileData(data.data.profile);
-        const data1 = await api.get(`/api/v1/freelancer_gig/find_all_gigs_by_email/${data.data.profile.email}`);
+        const data1 = await api.get(
+          `/api/v1/freelancer_gig/find_all_gigs_by_email/${data.data.profile.email}`
+        );
         setProfileData((prev) => ({
-         ...prev,
+          ...prev,
           myGigs: data1.data.data,
         }));
 
@@ -582,7 +584,6 @@ const FreelancerProfile = () => {
               </button>
             </div>
             )} */}
-            
           </div>
           <div className='mt-5 flex flex-col md:flex-row'>
             {/* Sidebar */}
@@ -887,6 +888,9 @@ const FreelancerProfile = () => {
                           />
                         ))}
                     </div>
+                    {profileData.portfolio.length === 0 && (
+                      <div className='mb-20 mt-10 text-center text-3xl font-bold'>Nothing Here yet</div>
+                    )}
                     <div className='md:hidden'>
                       <Swiper slidesPerView={1.2} spaceBetween={20}>
                         <SwiperSlide>
@@ -903,9 +907,11 @@ const FreelancerProfile = () => {
                         </SwiperSlide>
                       </Swiper>
                     </div>
-                    <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                      Show more <GoChevronDown />
-                    </span>
+                    {profileData.portfolio.length > 3 && (
+                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                        Show more <GoChevronDown />
+                      </span>
+                    )}
                   </div>
                   <div className='flex w-full flex-col justify-between gap-5 rounded-xl bg-[#10191d] p-5'>
                     <div className='flex justify-between'>
@@ -929,13 +935,17 @@ const FreelancerProfile = () => {
                         </div>
                       )}
                     </div>
-                    <div className='hidden grid-cols-3 gap-4 md:grid'>
+                    <div className='hidden grid-cols-3 justify-center gap-4 md:grid'>
                       {profileData.myGigs?.length > 0 &&
                         profileData.myGigs.map((myGig, index) => (
                           <MyGigs
                             email={profileData.email}
                             title={myGig.gigTitle}
-                            imagePath={myGig.gallery?.images[0]?myGig.gallery?.images[0]:"/assets/images/portfolio_works/portfolio.jpeg"}
+                            imagePath={
+                              myGig.gallery?.images[0]
+                                ? myGig.gallery?.images[0]
+                                : '/assets/images/portfolio_works/portfolio.jpeg'
+                            }
                             key={index}
                             setProfileData={setProfileData}
                             setUploadedGigPath={setUploadedGigPath}
@@ -943,6 +953,9 @@ const FreelancerProfile = () => {
                           />
                         ))}
                     </div>
+                    {profileData.myGigs.length === 0 && (
+                      <div className='mb-20 mt-10 text-center text-3xl font-bold'>Nothing Here yet</div>
+                    )}
                     <div className='md:hidden'>
                       <Swiper slidesPerView={1.2} spaceBetween={20}>
                         <SwiperSlide>
@@ -959,9 +972,11 @@ const FreelancerProfile = () => {
                         </SwiperSlide>
                       </Swiper>
                     </div>
-                    <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                      Show more <GoChevronDown />
-                    </span>
+                    {profileData.myGigs.length > 3 && (
+                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                        Show more <GoChevronDown />
+                      </span>
+                    )}
                   </div>
                   <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
                     <p className='text-2xl text-[#96B0BD]'>Reviews</p>
@@ -994,9 +1009,14 @@ const FreelancerProfile = () => {
                           </div>
                         </div>
                       ))}
-                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                        Show more <GoChevronDown />
-                      </span>
+                      {reviews.length === 0 && (
+                        <div className='mb-20 mt-10 text-center text-3xl font-bold'>Nothing Here yet</div>
+                      )}
+                      {reviews.length > 1 && (
+                        <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                          Show more <GoChevronDown />
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1095,9 +1115,11 @@ const FreelancerProfile = () => {
                         </SwiperSlide>
                       </Swiper>
                     </div>
-                    <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                      Show more <GoChevronDown />
-                    </span>
+                    {profileData.portfolio.length > 3 && (
+                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                        Show more <GoChevronDown />
+                      </span>
+                    )}
                   </div>
                   <div className='flex w-full flex-col justify-between gap-5 rounded-xl bg-[#10191d] p-5'>
                     <div className='flex justify-between'>
@@ -1127,7 +1149,11 @@ const FreelancerProfile = () => {
                         profileData.myGigs.map((myGig, index) => (
                           <MyGigs
                             email={profileData.email}
-                            imagePath={myGig.gallery?.images[0]?myGig.gallery?.images[0]:"/assets/images/portfolio_works/portfolio.jpeg"}
+                            imagePath={
+                              myGig.gallery?.images[0]
+                                ? myGig.gallery?.images[0]
+                                : '/assets/images/portfolio_works/portfolio.jpeg'
+                            }
                             key={index}
                             setProfileData={setProfileData}
                             setUploadedGigPath={setUploadedGigPath}
@@ -1161,9 +1187,11 @@ const FreelancerProfile = () => {
                         </SwiperSlide>
                       </Swiper>
                     </div>
-                    <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                      Show more <GoChevronDown />
-                    </span>
+                    {profileData.myGigs.length > 3 && (
+                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                        Show more <GoChevronDown />
+                      </span>
+                    )}
                   </div>
                   <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
                     <p className='text-2xl text-[#96B0BD]'>Reviews</p>
