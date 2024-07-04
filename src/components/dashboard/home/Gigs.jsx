@@ -7,30 +7,8 @@ import { MdVerified } from 'react-icons/md';
 import { RiPoliceBadgeLine } from 'react-icons/ri';
 import { TiLocationOutline } from 'react-icons/ti';
 
+import { skillSets } from '@/utils/constants';
 import { getGigs } from '@/utils/http';
-
-const gigOptions = [
-  'Figma',
-  'WebDesign',
-  'Javascript',
-  'React.JS',
-  'Next.JS',
-  'Shadcn',
-  'Tailwind',
-  'MobileDevelopment',
-  'WebDevelopment',
-  'DatabaseDevelopment',
-  'DesktopApplication',
-  'Python',
-  'Java',
-  'C++',
-  'Swift',
-  'Kotlin',
-  'SQL',
-  'MongoDB',
-  'Angular',
-  'Vue.JS',
-];
 
 const Gigs = () => {
   const [selectedGigs, setSelectedGigs] = useState(['Figma']);
@@ -74,7 +52,7 @@ const Gigs = () => {
     <div className='mt-10 flex flex-col gap-4'>
       <h1>Gigs you may like</h1>
       <div className='flex flex-wrap items-center gap-2'>
-        {gigOptions.map((gig, index) => (
+        {skillSets.map((gig, index) => (
           <div
             className={`${
               selectedGigs.includes(gig) ? 'bg-orange' : 'bg-darkGray'
