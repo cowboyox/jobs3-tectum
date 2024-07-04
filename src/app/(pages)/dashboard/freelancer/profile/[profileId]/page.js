@@ -11,16 +11,69 @@ import StarRating from '@/components/elements/starRating';
 import MyGigs from '@/components/pages/dashboard/freelancer/MyGigs';
 import Portfolio from '@/components/pages/dashboard/freelancer/Portfolio';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
-import { languages, skillSets, USER_ROLE } from '@/utils/constants';
+import { languages, skillSets, TimeZone, USER_ROLE } from '@/utils/constants';
 
 import 'swiper/css';
 // import './remove_horizontal_padding.css';
 import '/src/app/css/remove_horizontal_padding.css';
+
+const ProfileTimeZone = ({ value, setProfileData, editable }) => {
+  const handleChange = (value) => {
+    setProfileData((prev) => ({
+      ...prev,
+      timeZone: value,
+    }));
+  };
+
+  return (
+    <div className='flex w-full justify-between'>
+      <div className='flex w-1/2 items-center gap-2'>
+        <img
+          className='h-5 w-5 object-contain object-center'
+          src={'/assets/images/icons/watch.svg'}
+        />
+        <span className='text-sm'>Time Zone</span>
+      </div>
+      {editable ? (
+        <Select defaultValue={value} onValueChange={handleChange}>
+          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent align='end' className='rounded-xl bg-[#10191D] p-1'>
+            <SelectGroup className='flex flex-col gap-2'>
+              {Object.values(TimeZone).map((value, index) => {
+                return (
+                  <SelectItem
+                    className='cursor-pointer rounded bg-[#1B272C]'
+                    key={index}
+                    value={value}
+                  >
+                    {value}
+                  </SelectItem>
+                );
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      ) : (
+        <span className='text-sm text-[#96B0BD]'>{value}</span>
+      )}
+    </div>
+  );
+};
 
 const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) => {
   const handleValue = (value) => {
@@ -69,8 +122,8 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
                 [label]: e.target.value,
               }))
             }
-            value={handleValue(value)}
             type={label === 'hourlyRate' || label === 'monthlyRate' ? 'number' : 'text'}
+            value={handleValue(value)}
           />
           {(label === 'hourlyRate' || label === 'monthlyRate') && (
             <span className='text-sm text-[#96B0BD]'>&nbsp;$</span>
@@ -643,10 +696,8 @@ const FreelancerProfile = () => {
                     setProfileData={setProfileData}
                     value={profileData.avgResponseTime}
                   />
-                  <ProfileInfoItem
+                  <ProfileTimeZone
                     editable={isEditProfileInfo}
-                    iconSrc='/assets/images/icons/watch.svg'
-                    label={'timeZone'}
                     setProfileData={setProfileData}
                     value={profileData.timeZone}
                   />
@@ -889,7 +940,9 @@ const FreelancerProfile = () => {
                         ))}
                     </div>
                     {profileData.portfolio.length === 0 && (
-                      <div className='mb-20 mt-10 text-center text-3xl font-bold'>Nothing Here yet</div>
+                      <div className='mb-20 mt-10 text-center text-3xl font-bold'>
+                        Nothing Here yet
+                      </div>
                     )}
                     <div className='md:hidden'>
                       <Swiper slidesPerView={1.2} spaceBetween={20}>
@@ -940,7 +993,6 @@ const FreelancerProfile = () => {
                         profileData.myGigs.map((myGig, index) => (
                           <MyGigs
                             email={profileData.email}
-                            title={myGig.gigTitle}
                             imagePath={
                               myGig.gallery?.images[0]
                                 ? myGig.gallery?.images[0]
@@ -949,12 +1001,15 @@ const FreelancerProfile = () => {
                             key={index}
                             setProfileData={setProfileData}
                             setUploadedGigPath={setUploadedGigPath}
+                            title={myGig.gigTitle}
                             viewMode={'preview'}
                           />
                         ))}
                     </div>
                     {profileData.myGigs.length === 0 && (
-                      <div className='mb-20 mt-10 text-center text-3xl font-bold'>Nothing Here yet</div>
+                      <div className='mb-20 mt-10 text-center text-3xl font-bold'>
+                        Nothing Here yet
+                      </div>
                     )}
                     <div className='md:hidden'>
                       <Swiper slidesPerView={1.2} spaceBetween={20}>
@@ -1010,7 +1065,9 @@ const FreelancerProfile = () => {
                         </div>
                       ))}
                       {reviews.length === 0 && (
-                        <div className='mb-20 mt-10 text-center text-3xl font-bold'>Nothing Here yet</div>
+                        <div className='mb-20 mt-10 text-center text-3xl font-bold'>
+                          Nothing Here yet
+                        </div>
                       )}
                       {reviews.length > 1 && (
                         <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
@@ -1157,8 +1214,8 @@ const FreelancerProfile = () => {
                             key={index}
                             setProfileData={setProfileData}
                             setUploadedGigPath={setUploadedGigPath}
-                            viewMode={isAuth ? 'edit' : 'preview'}
                             title={myGig.gigTitle}
+                            viewMode={isAuth ? 'edit' : 'preview'}
                           />
                         ))}
                       <MyGigs
@@ -1167,8 +1224,8 @@ const FreelancerProfile = () => {
                         key={`extra-${uploadedGigPath.length}`}
                         setProfileData={setProfileData}
                         setUploadedGigPath={setUploadedGigPath}
-                        viewMode={isAuth ? 'edit' : 'preview'}
                         title={''}
+                        viewMode={isAuth ? 'edit' : 'preview'}
                       />
                     </div>
                     <div className='md:hidden'>
