@@ -413,7 +413,7 @@ const GigSearch = () => {
         </div>
       )}
       {!loading && (
-        <>
+        <div>
           <div className='flex items-center justify-center rounded-xl bg-[#10191d] px-3 py-6 text-lg'>
             Wow! <span className='main_color px-2'>{filteredGigList.length}</span> projects
             available 😀
@@ -430,7 +430,7 @@ const GigSearch = () => {
           <div className='mx-auto mt-4 w-full max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'>
             Load more +
           </div>
-        </>
+        </div>
       )}
     </div>
   );

@@ -64,7 +64,7 @@ const Freelancers = () => {
         }
       });
     }
-  }, [debouncedSearchText, allFreelancers, searchType, isAiSearch]);
+  }, [debouncedSearchText, allFreelancers, searchType, isAiSearch, searchText]);
 
   useEffect(() => {
     if (freelancers?.length > 0) {
@@ -98,7 +98,7 @@ const Freelancers = () => {
   };
 
   return (
-    <>
+    <div>
       <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
         <SearchBar
           isSmallScreen={isSmallScreen}
@@ -240,7 +240,7 @@ const Freelancers = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

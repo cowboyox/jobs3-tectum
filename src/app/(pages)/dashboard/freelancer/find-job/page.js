@@ -48,7 +48,7 @@ const FindJob = () => {
   const [loading, setLoading] = useState(false);
 
   const itemsPerPage = 2;
-  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage);
+  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, "");
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
 
@@ -443,7 +443,7 @@ const FindJob = () => {
         </div>
       )}
       {!loading && (
-        <>
+        <div>
           <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
             You have <span className='font-bold text-[#DC4F13]'>{filteredGigList.length}</span>{' '}
             Jobs😊
@@ -1264,7 +1264,7 @@ const FindJob = () => {
           {filteredGigList.length === 0 && (
             <div className='mt-6 w-full border border-[#28373E] p-3 text-center'>No data found</div>
           )}
-        </>
+        </div>
       )}
     </div>
   ) : (
