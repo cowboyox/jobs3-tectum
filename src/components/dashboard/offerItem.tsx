@@ -50,14 +50,14 @@ const OfferItem: React.FC = () => {
 
       <div>
         <h2>{data.summary}</h2>
-        <a className='cursor-pointer text-white' onClick={() => setShowDetail(false)}>
+        <a className='text-white cursor-pointer' onClick={() => setShowDetail(false)}>
             View less
         </a>
       </div>
 
       <div className='border-b border-[#28373A] pb-5'>
         <h2 className='text-white'>Skills</h2>
-        <div className='mt-3 flex items-center gap-2 text-white'>
+        <div className='flex items-center gap-2 mt-3 text-white'>
             {data.skills.map((_text: string, key:number) => (
                 <div className='rounded-full w-full xs:w-auto border justify-center xs:justify-start truncate border-[#32525B] bg-[#283732] px-3 py-1' key={key}>
                   {_text}
@@ -67,7 +67,7 @@ const OfferItem: React.FC = () => {
       </div>
       <div className='border-b border-[#28373A] pb-5'>
         <h2 className='text-white'>Attachments</h2>
-        <div className='mt-3 flex flex-col items-start gap-2 text-white'>
+        <div className='flex flex-col items-start gap-2 mt-3 text-white'>
           {data.attachments.map((_item: { name: string; size: string }, key: number) => (
             <div className='flex items-center gap-2 rounded-xl border border-[#526872] p-2' key={key}>
               <Icon icon='solar:file-download-outline' />
@@ -81,7 +81,7 @@ const OfferItem: React.FC = () => {
   );
 
   return (
-    <div className='mx-auto flex max-w-[1000px] flex-col gap-2 rounded-xl bg-[#10191D] p-4 sm:p-8'>
+    <div className='mx-auto flex flex-col gap-2 rounded-xl bg-[#10191D] p-4 sm:p-8'>
       <h1 className='text-xl'>Digital interface for finance project</h1>
       <div className='flex items-center gap-4 py-1'>
         <div className='flex items-center gap-2'>
@@ -115,15 +115,15 @@ const OfferItem: React.FC = () => {
       {!showDetail ? (
         <div className='flex w-full flex-col gap-3 text-[#516170]'>
           <div>
-            <div className='line-clamp-2 overflow-hidden text-ellipsis'>{data.description}</div>
-            <a className='cursor-pointer text-white' onClick={() => setShowDetail(true)}>
+            <div className='overflow-hidden line-clamp-2 text-ellipsis'>{data.description}</div>
+            <a className='text-white cursor-pointer' onClick={() => setShowDetail(true)}>
                 View more
             </a>
           </div>
           
           <div className='border-b border-[#28373A] pb-3'>
             <h2 className='text-white'>Skills</h2>
-            <div className='mt-3 flex items-center gap-2 text-white'>
+            <div className='flex items-center gap-2 mt-3 text-white'>
               {data.skills.map((_text: string, key: number) => (
                 <div className='rounded-full border truncate border-[#32525B] bg-[#283732] px-3 py-1' key={key}>
                   {_text}
@@ -136,13 +136,15 @@ const OfferItem: React.FC = () => {
         _renderDetails()
       )}
 
-      <div className='grid grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
-        <div className='flex cursor-pointer items-center justify-center p-3 hover:opacity-60'>
+      <div>
+        <div className='grid grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white w-[50%] float-right'>
+        <div className='flex items-center justify-center p-3 cursor-pointer hover:opacity-60'>
           Reject
         </div>
         <div className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'>
           Accept
         </div>
+      </div>
       </div>
     </div>
   );
