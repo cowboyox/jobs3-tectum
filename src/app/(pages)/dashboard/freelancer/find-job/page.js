@@ -29,6 +29,26 @@ import { useCustomContext } from '@/context/use-custom';
 import { useGetClientGigs } from '@/hooks/useGetClientGigs';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
+import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CiFilter, CiReceipt } from 'react-icons/ci';
+import { Checkbox } from '@/components/ui/checkbox';
+
+const DropdownItem = ({ onCheckedChange, ...props }) => {
+  return (
+    <div className='flex cursor-pointer items-center gap-4 p-0'>
+    <Checkbox
+      className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
+      id={props.category_id}
+      onCheckedChange={onCheckedChange}
+    />
+      <label className='cursor-pointer text-sm text-[#96B0BD]' htmlFor={props.category_id}>
+        {props.category_name}
+      </label>
+    </div>
+  );
+};
+
 
 const FindJob = () => {
   const router = useRouter();
@@ -46,11 +66,90 @@ const FindJob = () => {
   const [filteredGigShowModeList, setFilteredGigShowModeList] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [filters, setFilters] = useState([]);
+
 
   const itemsPerPage = 2;
   const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, "");
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
+  const filterItems = [
+    {
+      content: [
+        { category_id: 'any_amount', category_name: 'Any Amount' },
+        { category_id: 'over_1_earned', category_name: '$1+ Earned' },
+        { category_id: 'over_100_earned', category_name: '$100+ Earned' },
+        { category_id: 'over_1k_earned', category_name: '$1k+ Earned' },
+        { category_id: 'over_10k_earned', category_name: '$10k+ Earned' },
+        { category_id: 'no_earning_yet', category_name: 'No Earning Yet' },
+      ],
+      title: 'Earned Amount',
+    },
+    {
+      content: [
+        { category_id: 'any_job_success', category_name: 'Any Job Success' },
+        { category_id: '80_up', category_name: '80% & UP' },
+        { category_id: '90_up', category_name: '90% & UP' },
+        { category_id: 'top_rated', category_name: 'Top Rated' },
+        { category_id: 'rising_talent', category_name: 'Rising Talent' },
+      ],
+      title: 'Job Success',
+    },
+    {
+      content: [
+        { category_id: 'any_hourly_rate', category_name: 'Any Hourly Rate' },
+        { category_id: '10_below', category_name: '$10 and Below' },
+        { category_id: '10_30', category_name: '$10 - $30' },
+        { category_id: '30_60', category_name: '$30 - $60' },
+        { category_id: '60_above', category_name: '$60 and Above' },
+      ],
+      title: 'Hourly rate',
+    },
+    {
+      content: [
+        { category_id: 'over_1_hour', category_name: '1+ Hours Billed' },
+        { category_id: 'over_100_hour', category_name: '100+ Hours Billed' },
+        { category_id: 'over_1000_hour', category_name: '1000+ Hours Billed' },
+      ],
+      title: 'Hours billed',
+    },
+    {
+      content: [
+        { category_id: 'any_category', category_name: 'Any Category' },
+        { category_id: 'customer_service', category_name: 'Customer Service' },
+        { category_id: 'design_creative', category_name: 'Design And Creative' },
+        { category_id: 'web_mobile_software', category_name: 'Web, Mobile & Software' },
+      ],
+      title: 'Category',
+    },
+    {
+      content: [
+        { category_id: 'any_level', category_name: 'Any Level' },
+        { category_id: 'basic', category_name: 'Basic' },
+        { category_id: 'conversational', category_name: 'Conversational' },
+        { category_id: 'fluent', category_name: 'Fluent' },
+        { category_id: 'native_bilingual', category_name: 'Native Or Bilingual' },
+      ],
+      title: 'English Level',
+    },
+    {
+      content: [
+        { category_id: 'freelancers_agencies', category_name: 'Freelancers & Agencies' },
+        { category_id: 'freelancers', category_name: 'Freelancers' },
+        { category_id: 'agencies', category_name: 'Agencies' },
+      ],
+      title: 'Talent Type',
+    },
+    {
+      content: [
+        { category_id: 'any_time', category_name: 'Any Time' },
+        { category_id: '2_weeks', category_name: 'Within 2 Weeks' },
+        { category_id: '1_month', category_name: 'Within 1 Month' },
+        { category_id: '2_month', category_name: 'Within 2 Month' },
+      ],
+      title: 'Notice Period',
+    },
+  ];
 
   useEffect(() => {
     if (clientGigs) {
@@ -224,10 +323,18 @@ const FindJob = () => {
     setPage((prev) => prev + 1);
   };
 
+  const onCheckedChange = (value, id, name) => {
+    if (value) {
+      setFilters((prev) => [...prev, name]);
+    } else {
+      setFilters((prev) => prev.filter((item) => item !== name));
+    }
+  };
+
   return loaded ? (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
-      <div className='flex gap-4 rounded-xl bg-[#10191D] mobile:gap-0'>
-        <div className='m-3 flex flex-1 items-center gap-3'>
+      <div className='flex gap-2 rounded-xl bg-[#10191d]'>
+        <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -240,184 +347,54 @@ const FindJob = () => {
             </SelectContent>
           </Select>
           <input
-            className='w-full bg-transparent outline-none'
+            className='w-full bg-transparent text-white outline-none mobile:text-sm'
             onChange={(e) => setKey(e)}
             onKeyDown={handleKeyDown}
-            placeholder={isSmallScreen ? 'Search' : 'Search by Order title...'}
-            type='text'
+            placeholder='Search by job title, company, keywords'
           />
-
-          {isSmallScreen && searchType === 'normal' && (
-            <button>
-              <svg
-                fill='none'
-                height='24'
-                viewBox='0 0 25 24'
-                width='25'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M12.1962 13.4299C13.9193 13.4299 15.3162 12.0331 15.3162 10.3099C15.3162 8.58681 13.9193 7.18994 12.1962 7.18994C10.473 7.18994 9.07617 8.58681 9.07617 10.3099C9.07617 12.0331 10.473 13.4299 12.1962 13.4299Z'
-                  stroke='#96B0BD'
-                  strokeWidth='1.5'
-                />
-                <path
-                  d='M3.816 8.49C5.786 -0.169998 18.616 -0.159997 20.576 8.5C21.726 13.58 18.566 17.88 15.796 20.54C13.786 22.48 10.606 22.48 8.586 20.54C5.826 17.88 2.666 13.57 3.816 8.49Z'
-                  stroke='#96B0BD'
-                  strokeWidth='1.5'
-                />
-              </svg>
-            </button>
-          )}
         </div>
-        {(!isSmallScreen || (isSmallScreen && searchType === 'normal')) && (
-          <div className='m-3 flex flex-none flex-row items-center gap-2'>
-            <button className='flex flex-row items-center justify-center gap-3'>
-              {!isSmallScreen ? (
-                <>
-                  <svg
-                    fill='none'
-                    height='24'
-                    viewBox='0 0 25 24'
-                    width='25'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path
-                      d='M22.2119 6.58594H16.3057'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                    <path
-                      d='M6.46191 6.58594H2.52441'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                    <path
-                      d='M10.3994 10.0312C12.3022 10.0312 13.8447 8.48873 13.8447 6.58594C13.8447 4.68314 12.3022 3.14062 10.3994 3.14062C8.49662 3.14062 6.9541 4.68314 6.9541 6.58594C6.9541 8.48873 8.49662 10.0312 10.3994 10.0312Z'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                    <path
-                      d='M22.2119 17.4141H18.2744'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                    <path
-                      d='M8.43066 17.4141H2.52441'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                    <path
-                      d='M14.3369 20.8594C16.2397 20.8594 17.7822 19.3169 17.7822 17.4141C17.7822 15.5113 16.2397 13.9688 14.3369 13.9688C12.4341 13.9688 10.8916 15.5113 10.8916 17.4141C10.8916 19.3169 12.4341 20.8594 14.3369 20.8594Z'
-                      stroke='#96B0BD'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeMiterlimit='10'
-                      strokeWidth='1.5'
-                    />
-                  </svg>
-                  Filter
-                </>
-              ) : (
-                <svg
-                  fill='none'
-                  height='24'
-                  viewBox='0 0 25 24'
-                  width='25'
-                  xmlns='http://www.w3.org/2000/svg'
-                >
-                  <path
-                    d='M22.1719 6.58594H16.2656'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M6.42188 6.58594H2.48438'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M10.3594 10.0312C12.2622 10.0312 13.8047 8.48873 13.8047 6.58594C13.8047 4.68314 12.2622 3.14062 10.3594 3.14062C8.45658 3.14062 6.91406 4.68314 6.91406 6.58594C6.91406 8.48873 8.45658 10.0312 10.3594 10.0312Z'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M22.1719 17.4141H18.2344'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M8.39062 17.4141H2.48438'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <path
-                    d='M14.2969 20.8594C16.1997 20.8594 17.7422 19.3169 17.7422 17.4141C17.7422 15.5113 16.1997 13.9688 14.2969 13.9688C12.3941 13.9688 10.8516 15.5113 10.8516 17.4141C10.8516 19.3169 12.3941 20.8594 14.2969 20.8594Z'
-                    stroke='#96B0BD'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeMiterlimit='10'
-                    strokeWidth='1.5'
-                  />
-                  <circle cx='18.2344' cy='5.10938' fill='#DC4F13' r='4.92188' />
-                </svg>
-              )}
-            </button>
-            {!isSmallScreen && (
-              <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
-                4
+        <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
+          <IoLocationOutline size={20} stroke='#96B0BD' />
+          <span className='text-[#96B0BD]'>Anywhere</span>
+        </div>
+        {(!isSmallScreen || searchType === 'normal') && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
+                <CiFilter className='mobile:max-w-4' fill='#96B0BD' size={20} />
+                <span className='text-[#96B0BD] mobile:text-sm'>Filter</span>
+                <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
+                  {filters.length}
+                </span>
               </div>
-            )}
-          </div>
-        )}
-        {!isSmallScreen && (
-          <div className='m-3 flex flex-row items-center justify-center gap-2'>
-            <div>Sort by</div>
-            <div>
-              <Select onValueChange={(value) => setOrder(value)}>
-                <SelectTrigger className='flex justify-center border-none bg-transparent text-[#96B0BD] focus:border-none focus:outline-none'>
-                  <SelectValue placeholder='Sort By' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Sort By</SelectLabel>
-                    <SelectItem value='dateAsc'>Date Ascending</SelectItem>
-                    <SelectItem value='dateDesc'>Date Descending</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+            </PopoverTrigger>
+            <PopoverContent
+              align='end'
+              className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
+            >
+              <div className='grid grid-cols-4 gap-4'>
+                {filterItems.map((item, index) => {
+                  return (
+                    <div className='flex flex-col gap-2' key={index}>
+                      <div>{item.title}</div>
+                      {item.content.map((con, i) => {
+                        return (
+                          <DropdownItem
+                            category_id={con.category_id}
+                            category_name={con.category_name}
+                            key={i}
+                            onCheckedChange={(value) =>
+                              onCheckedChange(value, con.category_id, con.category_name)
+                            }
+                          />
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+            </PopoverContent>
+          </Popover>
         )}
         {searchType === 'ai' && (
           <div className='flex'>
@@ -430,6 +407,28 @@ const FindJob = () => {
           </div>
         )}
       </div>
+      {filters.length > 0 && (
+        <div className='flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
+          {filters.map((item, index) => {
+            return (
+              <span
+                className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
+                key={index}
+              >
+                <FaX
+                  className='rounded-full bg-[#3E525B] p-[2px]'
+                  onClick={() => setFilters((prev) => prev.filter((_item) => _item !== item))}
+                />
+                {item}
+              </span>
+            );
+          })}
+
+          <span className='cursor-pointer' onClick={() => setFilters([])}>
+            Clear&nbsp;All
+          </span>
+        </div>
+      )}
       {loading && (
         <div className='z-1 flex h-screen justify-center space-x-2 pt-6'>
           <div className='mt-8 flex h-fit items-baseline text-[20px]'>
@@ -447,20 +446,6 @@ const FindJob = () => {
           <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
             You have <span className='font-bold text-[#DC4F13]'>{filteredGigList.length}</span>{' '}
             Jobs😊
-          </div>
-          <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
-            {filterCategory.map((item, index) => {
-              return (
-                <span
-                  className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
-                  key={index}
-                >
-                  <FaX className='rounded-full bg-[#3E525B] p-[2px]' />
-                  {item}
-                </span>
-              );
-            })}
-            <span>Clear&nbsp;All</span>
           </div>
           {filteredGigList.length > 0 && (
             <>
@@ -706,7 +691,7 @@ const FindJob = () => {
                         {!isSmallScreen && (
                           <div className='flex w-full flex-col justify-between'>
                             <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
-                              <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
+                              <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl cursor-pointer' onClick={() => router.push(`/dashboard/freelancer/job-application/${gig._id}`)}>
                                 {gig.gigTitle}
                               </div>
                               <div className='flex flex-none flex-row items-center gap-2'>
