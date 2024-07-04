@@ -206,6 +206,49 @@ const SideBar = () => {
       name: 'Gig Orders',
     },
     {
+      href: `/dashboard/freelancer/offer`,
+      icon: (
+        <svg
+          fill='none'
+          height='24'
+          viewBox='0 0 24 24'
+          width='24'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M19 8C20.6569 8 22 6.65685 22 5C22 3.34315 20.6569 2 19 2C17.3431 2 16 3.34315 16 5C16 6.65685 17.3431 8 19 8Z'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M7 13H12'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M7 17H16'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M14 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H15C20 22 22 20 22 15V10'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+        </svg>
+      ),
+      id: 4,
+      name: 'Client Orders',
+    },
+    {
       href: `/dashboard/freelancer/disputes`,
       icon: (
         <svg
@@ -721,10 +764,10 @@ const SideBar = () => {
   }
   return (
     <div
-      className='main_sidebar fixed left-0 top-0 z-40 min-h-screen w-10/12 -translate-x-full bg-black p-10 transition md:sticky md:w-60 md:translate-x-0'
+      className='fixed top-0 left-0 z-40 w-10/12 min-h-screen p-10 transition -translate-x-full bg-black main_sidebar md:sticky md:w-60 md:translate-x-0'
       ref={sideBarRef}
     >
-      <div className='mx-auto mb-10 w-10/12' onClick={OpenSideBar}>
+      <div className='w-10/12 mx-auto mb-10' onClick={OpenSideBar}>
         <img className='w-100' src='/assets/images/logo.svg' />
       </div>
       <div onClick={OpenSideBar}>
