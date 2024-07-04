@@ -1123,7 +1123,7 @@ const FreelancerProfile = () => {
                       )}
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
-                      {profileData.myGigs.length > 0 &&
+                      {profileData.myGigs?.length > 0 &&
                         profileData.myGigs.map((myGig, index) => (
                           <MyGigs
                             email={profileData.email}
