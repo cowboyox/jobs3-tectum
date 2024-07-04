@@ -21,7 +21,7 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
               submissions.push({
                 clientId: submission.gigOwner,
                 creator: {
-                  fullName: submission.gigOwner.fullName,
+                  fullName: submission.gigOwner?.fullName,
                 },
                 gigDescription: submission.clientGig.gigDescription,
                 gigId: submission.clientGig._id,
@@ -39,7 +39,7 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
               lives.push({
                 contractId: contract.contractId,
                 creator: {
-                  fullName: contract.gigOwner.fullName,
+                  fullName: contract.gigOwner?.fullName,
                 },
                 freelancerId: contract.proposer,
                 gigDescription: contract.clientGig.gigDescription,
