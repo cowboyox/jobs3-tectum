@@ -706,7 +706,7 @@ const FindJob = () => {
                         {!isSmallScreen && (
                           <div className='flex w-full flex-col justify-between'>
                             <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
-                              <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
+                              <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl cursor-pointer' onClick={router.push(`/dashboard/freelancer/job-application/${gig._id}`)}>
                                 {gig.gigTitle}
                               </div>
                               <div className='flex flex-none flex-row items-center gap-2'>
