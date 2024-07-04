@@ -151,6 +151,11 @@ const FreelancerProfile = () => {
 
         const data = await api.get(`/api/v1/profile/get_profile_by_id/${profileId}`);
         setProfileData(data.data.profile);
+        const data1 = await api.get(`/api/v1/freelancer_gig/find_all_gigs_by_email/${data.data.profile.email}`);
+        setProfileData((prev) => ({
+         ...prev,
+          myGigs: data1.data.data,
+        }));
 
         if (data.data.profile.freelancerBio) {
           const lines = data.data.profile.freelancerBio.split(/\r\n|\r|\n/).length;
@@ -559,6 +564,24 @@ const FreelancerProfile = () => {
                 </TabsList>
               </div>
             )}
+            {/* {isAuth && (
+            <div className='flex w-full rounded-xl bg-[#28373E] px-1 py-1 text-base md:w-1/4 md:flex-col md:py-2 lg:flex-row lg:py-1'>
+              <button
+                className={`w-1/2 cursor-pointer text-center md:w-full lg:w-1/2 ${viewMode === 'preview' && 'roudned-xl border bg-[#DC4F13] py-[10px]'}`}
+                onClick={() => {
+                  setViewMode('preview');
+                }}
+              >
+                Preview
+              </button>
+              <button
+                className={`w-1/2 cursor-pointer text-center md:w-full lg:w-1/2 ${viewMode === 'edit' && 'roudned-xl border bg-[#DC4F13] py-[10px]'}`}
+                onClick={() => setViewMode('edit')}
+              >
+                Edit
+              </button>
+            </div>
+            )} */}
             
           </div>
           <div className='mt-5 flex flex-col md:flex-row'>
@@ -907,11 +930,12 @@ const FreelancerProfile = () => {
                       )}
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
-                      {profileData.myGigs.length > 0 &&
-                        profileData.myGigs.map((imagePath, index) => (
+                      {profileData.myGigs?.length > 0 &&
+                        profileData.myGigs.map((myGig, index) => (
                           <MyGigs
                             email={profileData.email}
-                            imagePath={imagePath}
+                            title={myGig.gigTitle}
+                            imagePath={myGig.gallery?.images[0]?myGig.gallery?.images[0]:"/assets/images/portfolio_works/portfolio.jpeg"}
                             key={index}
                             setProfileData={setProfileData}
                             setUploadedGigPath={setUploadedGigPath}
@@ -1100,14 +1124,15 @@ const FreelancerProfile = () => {
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
                       {profileData.myGigs.length > 0 &&
-                        profileData.myGigs.map((imagePath, index) => (
+                        profileData.myGigs.map((myGig, index) => (
                           <MyGigs
                             email={profileData.email}
-                            imagePath={imagePath}
+                            imagePath={myGig.gallery?.images[0]?myGig.gallery?.images[0]:"/assets/images/portfolio_works/portfolio.jpeg"}
                             key={index}
                             setProfileData={setProfileData}
                             setUploadedGigPath={setUploadedGigPath}
                             viewMode={isAuth ? 'edit' : 'preview'}
+                            title={myGig.gigTitle}
                           />
                         ))}
                       <MyGigs
@@ -1117,6 +1142,7 @@ const FreelancerProfile = () => {
                         setProfileData={setProfileData}
                         setUploadedGigPath={setUploadedGigPath}
                         viewMode={isAuth ? 'edit' : 'preview'}
+                        title={''}
                       />
                     </div>
                     <div className='md:hidden'>
