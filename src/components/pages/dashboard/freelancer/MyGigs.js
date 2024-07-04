@@ -7,11 +7,12 @@ import { Input } from '@/components/ui/input';
 import RadialProgress from '@/components/ui/progress';
 import api from '@/utils/api';
 import { backend_url } from '@/utils/variables';
+import {useRouter} from 'next/navigation';
 
-const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode }) => {
+const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode, title }) => {
   const [loading, setLoading] = useState(false);
   // const [progress, setProgress] = useState(0);
-
+  const router = useRouter();
   const progress = 0;
 
   // const onUploadProgress = (progressEvent) => {
@@ -84,11 +85,13 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode
 
   return (
     <div className='h-full space-y-3'>
-      <div {...getRootProps()} className='h-full'>
+      <div className='text-center text-base'>
+        {title}
+      </div>
+      <div  className='h-full'>
         <label
           className={`flex h-72 w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
-          htmlFor='dropzone-file'
-          onClick={(e) => e.stopPropagation()}
+          // htmlFor='dropzone-file'
         >
           {loading && (
             <div className='max-w-md text-center'>
@@ -101,7 +104,7 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode
           )}
 
           {!loading && imagePath === '' && (
-            <div className='text-center'>
+            <div className='text-center cursor-pointer' onClick={() => router.push(`../my-gigs/create`)}>
               <div className='mx-auto max-w-min rounded-md p-2'>
                 <GoPlus size='2.6em' />
               </div>
@@ -109,29 +112,16 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode
           )}
 
           {imagePath && !loading && (
-            <div className='space-y-2 text-center'>
-              <Image
+            <div className='space-y-2 h-[80%] text-center'>
+              <img
                 alt='uploaded image'
-                className='w-full rounded-xl object-contain opacity-70'
-                height={1000}
+                className='w-full h-full rounded-xl object-contain opacity-70'
                 key={imagePath}
-                src={`${backend_url}/${imagePath}`}
-                width={1000}
+                src={imagePath}
               />
             </div>
           )}
         </label>
-        {viewMode === 'edit' && (
-          <Input
-            {...getInputProps()}
-            accept='image/png, image/jpeg'
-            className='hidden'
-            disabled={loading}
-            id='dropzone-file'
-            onChange={handleImageChange}
-            type='file'
-          />
-        )}
       </div>
 
       {/* {!!uploadedImagePath && (
