@@ -54,6 +54,8 @@ const Offer = () => {
                         gigPrice={order.gigPrice} 
                         deliveryTime={order.deliveryTime} 
                         proposal={order.proposal} 
+                        avatarURL={proposal.freelancerId.avatarURL}
+                        fullName={proposal.freelancerId.fullName}
                         refetchAllOrdersProposed={refetchAllOrdersProposed}
                         accepted={true}
                       />
@@ -85,6 +87,8 @@ const Offer = () => {
                         gigPrice={proposal.gigPrice} 
                         deliveryTime={proposal.deliveryTime} 
                         proposal={proposal.proposal}
+                        avatarURL={proposal.freelancerId.avatarURL}
+                        fullName={proposal.freelancerId.fullName}
                         refetchAllOrdersProposed={refetchAllOrdersProposed}
                         accepted={false}
                       />

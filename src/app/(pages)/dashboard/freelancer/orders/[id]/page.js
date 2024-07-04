@@ -402,7 +402,7 @@ const OrderPage = ({ params }) => {
                   <div className='flex items-center w-full gap-2 md:w-3/4 md:gap-5'>
                     <div className='relative w-12 h-12 mobile:h-8 mobile:w-8'>
                       <img
-                        className='object-cover w-full h-full rounded-full aspect-square'
+                        className='object-cover w-12 h-12 rounded-full mobile:h-8 mobile:w-8 aspect-square'
                         src={contractInfo?.gigOwner?.avatarURL ? contractInfo?.gigOwner?.avatarURL : '/assets/images/users/user-3.png'}
                       /> 
                       <div className='absolute w-3 h-3 bg-green-500 rounded-full bottom-1 mobile:bottom-0 right-1 mobile:right-0 mobile:h-3 mobile:w-3' />

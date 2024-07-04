@@ -251,7 +251,7 @@ const OrderPage = ({ params }) => {
                 <div className='flex items-center w-full gap-2 md:w-3/4 md:gap-5'>
                   <div className='relative w-12 h-12 mobile:h-8 mobile:w-8'>
                     <img
-                      className='object-cover w-full h-full rounded-full aspect-square'
+                      className='object-cover w-12 h-12 rounded-full mobile:h-8 mobile:w-8 aspect-square'
                       src={
                         contractInfo?.proposer?.avatarURL
                           ? contractInfo?.proposer?.avatarURL
@@ -261,22 +261,14 @@ const OrderPage = ({ params }) => {
                     <div className='absolute w-3 h-3 bg-green-500 rounded-full bottom-1 right-1 mobile:bottom-0 mobile:right-0 mobile:h-3 mobile:w-3' />
                   </div>
                   <div className='flex flex-col gap-4'>
-                    <div className='flex flex-col gap-4'>
-                      <div className='flex items-center gap-2'>
-                        <h2 className='text-xl mobile:text-xs'>
-                          {contractInfo?.proposer?.fullName}
-                        </h2>
-                        <img
-                          className='w-4 h-4 mobile:h-3 mobile:w-3'
-                          src='/assets/images/icons/checkmark.svg'
-                        />
-                      </div>
-                    </div>
-                    <div className='flex items-center gap-3'>
-                      <IoCalendarOutline className='h-5 w-5 fill-[#96B0BD] stroke-[#96B0BD] mobile:h-3 mobile:w-3' />
-                      <p className='text-[15px] text-[#96B0BD] mobile:text-xs'>
-                        {formattedStartDate}
-                      </p>
+                    <div className='flex items-center gap-2'>
+                      <h2 className='text-xl mobile:text-xs'>
+                        {contractInfo?.proposer?.fullName}
+                      </h2>
+                      <img
+                        className='w-4 h-4 mobile:h-3 mobile:w-3'
+                        src='/assets/images/icons/checkmark.svg'
+                      />
                     </div>
                   </div>
                   <div className='flex items-center gap-3'>
