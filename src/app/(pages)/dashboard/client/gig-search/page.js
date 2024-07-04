@@ -51,6 +51,9 @@ const DropDownTrigger = (props) => {
     </PopoverTrigger>
   );
 };
+
+
+
 const GigCard = (props) => {
   const router = useRouter();
   const auth = useCustomContext();
@@ -71,7 +74,7 @@ const GigCard = (props) => {
   return (
     <div>
       <div
-        className={`flex w-full items-center gap-4 ${props.info.reason ? 'rounded-t-xl' : 'rounded-xl'} bg-[#10191d] p-4 text-white mobile:flex-col`}
+        className={`flex w-full items-center gap-4 ${props.info.reason ? 'rounded-t-xl' : 'rounded-xl'} bg-[#10191d] p-4 mt-4 text-white mobile:flex-col`}
       >
         <div className='relative w-[400px] max-w-full'>
           <img
@@ -237,7 +240,7 @@ const GigSearch = () => {
       title: 'Notice Period',
     },
   ];
-
+  console.log("filteredGigList", filteredGigList);
   useEffect(() => {
     api
       .get(`/api/v1/freelancer_gig/find_all_gigs?page=${page}&limit=${itemsPerPage}`)
@@ -415,8 +418,8 @@ const GigSearch = () => {
         </div>
       )}
       {!loading && (
-        <div>
-          <div className='flex items-center justify-center rounded-xl bg-[#10191d] px-3 py-6 text-lg'>
+        <div className='mt-[30px]'>
+          <div className='flex items-center justify-center rounded-xl bg-[#10191d] px-3 py-6 text-lg mb-[18px]'>
             Wow! <span className='main_color px-2'>{filteredGigList.length}</span> projects
             available 😀
           </div>
@@ -426,9 +429,6 @@ const GigSearch = () => {
           {filteredGigList.map((gig, index) => {
             return <GigCard info={gig} key={index} />;
           })}
-          {/* <GigCard />
-      <GigCard />
-      <GigCard /> */}
           <div className='mx-auto mt-4 w-full max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'>
             Load more +
           </div>
