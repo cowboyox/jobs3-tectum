@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CgOptions } from 'react-icons/cg';
 import { CiSearch } from 'react-icons/ci';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
@@ -13,55 +13,57 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Separator } from '@/components/ui/seperator';
 import { useCustomContext } from '@/context/use-custom';
 import { useFreelancerInfo } from '@/hooks/useFreelancerInfo';
-
-const orders = [
-  // {
-  //   title: "Figma and Flow Bite Mentor Needed",
-  //   daysAgo: "15 H: 30 S",
-  //   price: "$360",
-  // },
-  // {
-  //   title: "Figma and Flow Bite Mentor Needed",
-  //   daysAgo: "8 days",
-  //   price: "$400",
-  // },
-  // {
-  //   title: "Figma and Flow Bite Mentor Needed",
-  //   daysAgo: "14 days",
-  //   price: "$450",
-  // },
-];
-
-const earnings = [
-  // {
-  //   month: 'June',
-  //   price: '$360'
-  // },
-  // {
-  //   month: 'May',
-  //   price: '$1450'
-  // },
-  // {
-  //   month: 'April',
-  //   price: '$830'
-  // },
-  // {
-  //   month: 'March',
-  //   price: '$1250'
-  // },
-];
+import { timeSincePublication } from '@/utils/Helpers';
 
 const Stats = () => {
   const auth = useCustomContext();
   const { data: flInfo } = useFreelancerInfo(auth?.currentProfile?._id);
+  const [searchType, setSearchType] = useState('normal');
+  const [searchKeywords, setSearchKeyWords] = useState('');
+  const [filteredActiveOrders, setFilteredActiveOrders] = useState([]);
+
+  useEffect(() => {
+    if (flInfo?.activeOrders?.length > 0) {
+      if (searchKeywords) {
+        setFilteredActiveOrders(
+          flInfo.activeOrders.filter(
+            (item) =>
+              item?.gigTitle?.toLowerCase().includes(searchKeywords.toLowerCase()) ||
+              item?.gigStatus?.toLowerCase().includes(searchKeywords.toLowerCase())
+          )
+        );
+      } else {
+        setFilteredActiveOrders(flInfo.activeOrders);
+      }
+    }
+  }, [flInfo, searchKeywords]);
+
+  const onChangeType = (e) => {
+    setSearchType(e);
+  };
+
+  const setKey = (e) => {
+    setSearchKeyWords(e.target.value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && searchType === 'ai') {
+      // aiSearch();
+    }
+  };
 
   return (
     <div className='mt-10 flex min-h-96 w-full flex-col font-roboto'>
       <div className='flex items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4 md:h-16'>
-        <div className='flex items-center gap-4'>
-          <Select className='outline-none' defaultValue='normal'>
+        <div className='flex flex-1 items-center gap-4'>
+          <Select
+            className='outline-none'
+            defaultValue='normal'
+            onValueChange={(e) => onChangeType(e)}
+          >
             <SelectTrigger className='h-full w-20 rounded-xl bg-[#1B272C] outline-none mobile:w-14 mobile:p-2'>
               <SelectValue />
             </SelectTrigger>
@@ -77,14 +79,16 @@ const Stats = () => {
             </SelectContent>
           </Select>
           <input
-            className='h-full w-full flex-1 border-none bg-transparent text-medGray outline-none'
+            className='h-full w-full border-none bg-transparent text-medGray outline-none'
             id='search'
             name='search'
+            onChange={(e) => setKey(e)}
+            onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
             type='text'
           />
         </div>
-        <div className='flex h-16 min-w-28 items-center justify-center gap-4'>
+        <div className='flex h-16 items-center justify-center gap-4'>
           {/* <div className='hidden rounded-full bg-[#1BBF36] md:block'>
             <Image height={32} src={'/assets/icons/AIChatIcon.png'} width={32} />
           </div> */}
@@ -106,35 +110,40 @@ const Stats = () => {
               {/* <p className='text-medGray'>See All</p> */}
             </div>
             <div className='mt-6 flex flex-1 flex-col justify-between gap-2'>
-              {flInfo?.activeOrders?.length ? (
-                flInfo?.activeOrders?.map((order, index) => (
-                  <div
-                    className='flex flex-1 items-center gap-1 rounded-2xl bg-darkGray px-3'
-                    key={index}
-                  >
-                    {/* <Image
+              {filteredActiveOrders.length ? (
+                filteredActiveOrders.map((order, index) => (
+                  <div className='flex flex-col' key={index}>
+                    <Separator className='my-4' />
+                    <div className='flex items-center gap-1 rounded-2xl px-3'>
+                      {/* <Image
                       className='md:hidden'
                       height={45}
                       src={'/assets/icons/ActiveOrder.png'}
                       width={45}
                     /> */}
-                    <div className='flex flex-1 flex-col items-center justify-between md:flex-row'>
-                      <div className='flex items-center gap-4'>
-                        {/* <Image
+                      <div className='flex flex-1 flex-col items-center justify-between md:flex-row'>
+                        <div className='flex items-center gap-4'>
+                          {/* <Image
                           className='hidden md:block'
                           height={45}
                           src={'/assets/icons/ActiveOrder.png'}
                           width={45}
                         /> */}
-                        <h3 className='text-md whitespace-nowrap font-semibold text-white md:text-xl'>
-                          {order.gigTitle}
-                        </h3>
-                      </div>
-                      <div className='flex w-full items-center justify-between gap-4 px-4 md:w-auto md:px-0'>
-                        <p className='text-xl font-[500] text-medGray'>{order.gigPrice}</p>
-                        {/* <div className='flex items-center gap-1 rounded-[6px] border-2 border-white px-3 text-white'>
-                          <p>{spend.daysAgo}</p>
-                        </div> */}
+                          <h3 className='text-md whitespace-nowrap font-semibold text-white md:text-xl'>
+                            {order.gigTitle}
+                          </h3>
+                        </div>
+                        <div className='flex w-full items-center justify-between gap-4 px-4 md:w-auto md:px-0'>
+                          <p className='text-xl font-[500] text-medGray'>{order.gigPrice}</p>
+                          <div className='flex items-center gap-1 rounded-[6px] border-2 border-yellow-500 px-3 text-yellow-500'>
+                            <p>
+                              {timeSincePublication(new Date(order.gigPostDate).getTime() / 1000)}
+                            </p>
+                          </div>
+                          <div className='flex items-center gap-1 rounded-[6px] border-2 border-green-500 px-3 text-green-500'>
+                            <p>{order.gigStatus}</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -159,7 +168,7 @@ const Stats = () => {
                     key={index}
                   >
                     <p className='text-xl font-[500] text-white'>
-                      {new Date(earning.timestamp).getMonth() + 1}
+                      {new Date(earning.earnedAt).getMonth() + 1}
                     </p>
                     <p className='text-xl font-[500] text-medGray'>{earning.amount}</p>
                   </div>
