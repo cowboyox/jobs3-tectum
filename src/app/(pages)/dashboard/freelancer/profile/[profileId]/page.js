@@ -601,16 +601,16 @@ const FreelancerProfile = () => {
             </div>
             {isAuth && (
               <div className='flex w-full items-center justify-end md:w-1/4'>
-                <TabsList className='w-full rounded-xl md:w-auto'>
+                <TabsList className='h-[60px] w-full rounded-xl md:w-auto'>
                   <TabsTrigger
-                    className='w-full rounded-xl px-6 data-[state=active]:bg-[#dc4f14]'
+                    className='h-[50px] w-full rounded-xl px-6 data-[state=active]:bg-[#dc4f14]'
                     onClick={() => setViewMode('preview')}
                     value='preview'
                   >
                     Preview
                   </TabsTrigger>
                   <TabsTrigger
-                    className='w-full rounded-xl px-6 data-[state=active]:bg-[#dc4f14]'
+                    className='h-[50px] w-full rounded-xl px-6 data-[state=active]:bg-[#dc4f14]'
                     onClick={() => setViewMode('edit')}
                     value='edit-profile'
                   >
