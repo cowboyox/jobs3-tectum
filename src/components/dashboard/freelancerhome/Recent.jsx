@@ -24,14 +24,14 @@ import { skillSets } from '@/utils/constants';
 import { getDeadline } from '@/utils/gigInfo';
 
 const Recent = ({ search }) => {
-  const [selectedGigs, setSelectedGigs] = useState(['Figma']);
+  const [selectedSkills, setSelectedSkills] = useState([]);
   const [allGigs, setAllGigs] = useState([]);
   const [page, setPage] = useState(1);
   const auth = useCustomContext();
   const { toast } = useToast();
   const [canLoadMore, setCanLoadMore] = useState(true);
   const itemsPerPage = 2;
-  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage);
+  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, selectedSkills);
 
   useEffect(() => {
     if (clientGigs?.length > 0) {
@@ -60,36 +60,15 @@ const Recent = ({ search }) => {
     }
   }, [clientGigs, page]);
 
-  const handleGigClick = (gig) => {
-    setSelectedGigs((prevSelectedGigs) => {
-      if (prevSelectedGigs.includes(gig)) {
-        return prevSelectedGigs.filter((selectedGig) => selectedGig !== gig);
+  const handleSkillClick = (skill) => {
+    setPage(1);
+    setSelectedSkills((prev) => {
+      if (prev.includes(skill)) {
+        return prev.filter((selectedSkill) => selectedSkill !== skill);
       } else {
-        return [...prevSelectedGigs, gig];
+        return [...prev, skill];
       }
     });
-  };
-
-  const handleFilter = () => {
-    let filteredGigs = gigs;
-
-    if (search) {
-      filteredGigs = filteredGigs.filter((gig) =>
-        gig.title.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
-    // if (sortOrder === "dateAsc") {
-    //   filteredGigs.sort(
-    //     (a, b) => new Date(a.gigPostDate) - new Date(b.gigPostDate)
-    //   );
-    // } else if (sortOrder === "dateDesc") {
-    //   filteredGigs.sort(
-    //     (a, b) => new Date(b.gigPostDate) - new Date(a.gigPostDate)
-    //   );
-    // }
-
-    return filteredGigs;
   };
 
   const handleLoadMore = () => {
@@ -135,15 +114,15 @@ const Recent = ({ search }) => {
     <div className='mt-10 flex flex-col gap-4'>
       <h1 className='text-2xl font-semibold'>Recent Job Posts</h1>
       <div className='flex flex-wrap items-center gap-2'>
-        {skillSets.map((gig, index) => (
+        {skillSets.map((skill, index) => (
           <div
             className={`${
-              selectedGigs.includes(gig) ? 'bg-orange' : 'bg-darkGray'
+              selectedSkills.includes(skill) ? 'bg-orange' : 'bg-darkGray'
             } cursor-pointer rounded-full border border-lightGray px-2 py-1 text-center`}
             key={index}
-            onClick={() => handleGigClick(gig)}
+            onClick={() => handleSkillClick(skill)}
           >
-            {gig}
+            {skill}
           </div>
         ))}
       </div>

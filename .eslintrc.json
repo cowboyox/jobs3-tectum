@@ -43,7 +43,7 @@
     "@typescript-eslint/sort-type-constituents": "warn", // should be "error" in production
     "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
     "no-console": ["warn", { "allow": ["warn", "error"] }], // should be "error" in production
-    "react/self-closing-comp": ["error", { "component": true, "html": true }],
+    "react/self-closing-comp": "off",
     "react-hooks/exhaustive-deps": "error",
     "react/display-name": "off",
     "react/jsx-sort-props": "warn", // should be "error" in production

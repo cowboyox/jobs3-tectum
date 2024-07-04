@@ -51,10 +51,16 @@ const Status = ({ status }) => {
 
 const GigCard = ({ gig }) => {
   const router = useRouter();
+
   return (
     <div className='mb-4 flex justify-between rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-3'>
       <div className='flex flex-col gap-1'>
-        <h2 className='text-xl text-white cursor-pointer' onClick={() => router.push(`./edit-gig/${gig._id}`)}>{gig.gigTitle}</h2>
+        <h2
+          className='cursor-pointer text-xl text-white'
+          onClick={() => router.push(`./edit-gig/${gig._id}`)}
+        >
+          {gig.gigTitle}
+        </h2>
         <div className='mt-2 flex items-center gap-5 text-gray-400'>
           <div className='flex items-center gap-2'>
             <CiClock2 size={24} />
@@ -62,7 +68,9 @@ const GigCard = ({ gig }) => {
           </div>
           <div className='flex items-center gap-2'>
             <CiReceipt size={28} />
-            <span className='text-base'>${gig.totalPrice}</span>
+            <span className='text-base'>
+              ${!gig.gigPaymentType ? gig.gigPrice : `${gig.minBudget} - ${gig.maxBudget} /hr`}
+            </span>
           </div>
         </div>
       </div>
@@ -85,7 +93,6 @@ const MyGigs = () => {
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [page, setPage] = useState(1);
   const itemsPerPage = 2;
-
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');

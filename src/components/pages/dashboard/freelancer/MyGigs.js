@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import RadialProgress from '@/components/ui/progress';
 import api from '@/utils/api';
 import { backend_url } from '@/utils/variables';
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode, title }) => {
   const [loading, setLoading] = useState(false);
@@ -85,12 +85,9 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode
 
   return (
     <div className='h-full space-y-3'>
-      <div className='text-center text-base'>
-        {title}
-      </div>
-      <div  className='h-full'>
+      <div className='h-full realative flex justify-center items-center'>
         <label
-          className={`flex h-72 w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
+          className={`flex h-full w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
           // htmlFor='dropzone-file'
         >
           {loading && (
@@ -104,7 +101,10 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode
           )}
 
           {!loading && imagePath === '' && (
-            <div className='text-center cursor-pointer' onClick={() => router.push(`../my-gigs/create`)}>
+            <div
+              className='cursor-pointer text-center'
+              onClick={() => router.push(`../my-gigs/create`)}
+            >
               <div className='mx-auto max-w-min rounded-md p-2'>
                 <GoPlus size='2.6em' />
               </div>
@@ -112,16 +112,20 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode
           )}
 
           {imagePath && !loading && (
-            <div className='space-y-2 h-[80%] text-center'>
-              <img
+            <div className='space-y-2 text-center'>
+              <Image
                 alt='uploaded image'
-                className='w-full h-full rounded-xl object-contain opacity-70'
+                className='h-full w-full rounded-xl object-contain opacity-70'
                 key={imagePath}
                 src={imagePath}
+                width={1000}
+                height={1000}
               />
             </div>
           )}
+          
         </label>
+        <div className='absolute text-center text-base z-50'>{title}</div>
       </div>
 
       {/* {!!uploadedImagePath && (

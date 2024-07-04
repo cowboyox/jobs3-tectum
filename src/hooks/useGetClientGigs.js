@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetClientGigs = (pageNum, itemsPerPage) => {
+export const useGetClientGigs = (pageNum, itemsPerPage, skills) => {
   return useQuery({
     cacheTime: Infinity,
     enabled: pageNum > 0 && itemsPerPage > 0,
@@ -10,7 +10,7 @@ export const useGetClientGigs = (pageNum, itemsPerPage) => {
       if (pageNum > 0 && itemsPerPage > 0) {
         try {
           const { data } = await api.get(
-            `/api/v1/client_gig/find_all_gigs?page=${pageNum}&limit=${itemsPerPage}`
+            `/api/v1/client_gig/get_all_gigs_by_skills?page=${pageNum}&limit=${itemsPerPage}&skills=${skills}`
           );
 
           return data?.data;
@@ -23,7 +23,7 @@ export const useGetClientGigs = (pageNum, itemsPerPage) => {
 
       return null;
     },
-    queryKey: ['useGetClientGigs', pageNum, itemsPerPage],
+    queryKey: ['useGetClientGigs', pageNum, itemsPerPage, skills],
     staleTime: Infinity,
   });
 };
