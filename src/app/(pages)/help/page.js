@@ -212,7 +212,7 @@ const HelpSupport = () => {
           <div className='w-full max-w-6xl mx-auto flex gap-2 items-center justify-between mobile:flex-col mobile:items-start mobile:px-6'>
             <div className='w-auto max-w-[80%] flex flex-col gap-3'>
               <h2 className='text-4xl mobile:text-2xl text-[#F5F5F5] font-bold'>
-                Can't find what you're looking for?
+                Can&apos;t find what you&apos;re looking for?
               </h2>
               <p className='text-[#6A828D] text-base'>
                 We are here to help
