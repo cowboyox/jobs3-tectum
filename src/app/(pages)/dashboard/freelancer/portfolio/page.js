@@ -6,56 +6,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 import { useRouter } from 'next/navigation';
-const portfolio = [
-  {
-    badges: ['Tag', 'Category'],
-    description:
-      'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system',
-    id: 0,
-    image: '/assets/images/portfolio_works/portfolio.jpeg',
-    name: 'Title of the item',
-  },
-  {
-    badges: ['Tag', 'Category'],
-    description:
-      'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system',
-    id: 1,
-    image: '/assets/images/portfolio_works/portfolio.jpeg',
-    name: 'Title of the item',
-  },
-  {
-    badges: ['Tag', 'Category'],
-    description:
-      'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system',
-    id: 2,
-    image: '/assets/images/portfolio_works/portfolio.jpeg',
-    name: 'Title of the item',
-  },
-  {
-    badges: ['Tag', 'Category'],
-    description:
-      'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system',
-    id: 3,
-    image: '/assets/images/portfolio_works/portfolio.jpeg',
-    name: 'Title of the item',
-  },
-  {
-    badges: ['Tag', 'Category'],
-    description:
-      'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system',
-    id: 4,
-    image: '/assets/images/portfolio_works/portfolio.jpeg',
-    name: 'Title of the item',
-  },
-  {
-    badges: ['Tag', 'Category'],
-    description:
-      'But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system',
-    id: 5,
-    image: '/assets/images/portfolio_works/portfolio.jpeg',
-    name: 'Title of the item',
-  },
-];
 
 const FreelancerPortfolio = () => {
   const [page, setPage] = useState(1);
@@ -64,6 +14,7 @@ const FreelancerPortfolio = () => {
   const [canLoadMore, setCanLoadMore] = useState(false);
   const itemsPerPage = 6;
   const auth = useCustomContext();
+  const router = useRouter();
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
   };
@@ -130,9 +81,9 @@ const FreelancerPortfolio = () => {
           </Link>
         </div>
       </div>
-      <div className='my-5 grid w-full grid-cols-3 gap-5 mobile:grid-cols-1'>
+      <div className='my-5 grid w-full md:grid-cols-2 lg:grid-cols-3 gap-5 mobile:grid-cols-1'>
         {portfolioList.map((portfolio_item, key) => (
-          <div className='rounded-xl bg-[#10191d] p-4' key={key}>
+          <div className='rounded-xl bg-[#10191d] p-4 cursor-pointer' key={key} onClick={() => router.push(`/dashboard/freelancer/portfolio-view/${auth.currentProfile._id}/${portfolio_item._id}`)}>
             <div className='relative flex h-64 w-full'>
               <img
                 alt={portfolio_item.portfolioTitle}

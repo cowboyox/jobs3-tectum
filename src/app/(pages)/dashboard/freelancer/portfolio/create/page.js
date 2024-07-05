@@ -428,6 +428,10 @@ const Createportfolio = () => {
     setDocumentFiles(newDocumentFiles);
   };
 
+  console.log("videoFile", videoFile);
+  console.log("imageFiles", imageFiles);
+  console.log("documentFiles", documentFiles);
+
   /*------------ Form submission handler ------------*/
   async function onSubmit(values) {
     console.log(values);
