@@ -68,6 +68,7 @@ const ContractStatus = {
   PENDING: 'Pending',
   RELEASED: 'Released',
   STARTED: 'Started',
+  CONFIRMED: 'Confirmed',
 };
 
 const PROGRAM_ID = 'GuqgMVMCLi9daQMHyhnLRGTpgpwNGU4yZXs9GK4SYrbS'; // devnet and mainnet

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import OfferItem from '@/components/dashboard/offerItem';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCustomContext } from '@/context/use-custom';
-import { useGetAllClientOrdersProposed } from '@/hooks/useGetAllClientOrdersProposed';
+import { useGetAllFreelancerOrdersProposed } from '@/hooks/useGetAllFreelancerOrdersProposed';
 
 const Offer = () => {
   const auth = useCustomContext();
@@ -13,7 +13,7 @@ const Offer = () => {
   const [proposals, setProposals] = useState([]);
   const [lives, setLives] = useState([]);
 
-  const { data: orders, refetch: refetchAllOrdersProposed } = useGetAllClientOrdersProposed(
+  const { data: orders, refetch: refetchAllOrdersProposed } = useGetAllFreelancerOrdersProposed(
     auth?.currentProfile?._id
   );
 
@@ -50,19 +50,19 @@ const Offer = () => {
                       <OfferItem 
                         key={index}
                         gigId={order.gigId}
-                        freelancerId={auth?.currentProfile?._id}
-                        clientId={order.client._id}
+                        clientId={auth?.currentProfile?._id}
+                        freelancerId={order.freelancer._id}
                         proposalId={order.proposalId} 
                         gigTitle={order.gigTitle} 
                         gigPrice={order.gigPrice} 
                         deliveryTime={order.deliveryTime} 
                         proposal={order.proposal} 
-                        avatarURL={order.client.avatarURL}
-                        fullName={order.client.fullName}
+                        avatarURL={order.freelancer.avatarURL}
+                        fullName={order.freelancer.fullName}
                         refetchAllOrdersProposed={refetchAllOrdersProposed}
                         accepted={true}
                         status={order.status}
-                        clientSide={false}
+                        clientSide={true}
                       />
                     ))}
                     <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
@@ -88,19 +88,19 @@ const Offer = () => {
                       <OfferItem 
                         key={index}
                         gigId={proposal.gigId}
-                        freelancerId={auth?.currentProfile?._id}
-                        clientId={proposal.client._id}
+                        clientId={auth?.currentProfile?._id}
+                        freelancerId={proposal.freelancer._id}
                         proposalId={proposal.proposalId} 
                         gigTitle={proposal.gigTitle} 
                         gigPrice={proposal.gigPrice} 
                         deliveryTime={proposal.deliveryTime} 
                         proposal={proposal.proposal}
-                        avatarURL={proposal.client.avatarURL}
-                        fullName={proposal.client.fullName}
+                        avatarURL={proposal.freelancer.avatarURL}
+                        fullName={proposal.freelancer.fullName}
                         refetchAllOrdersProposed={refetchAllOrdersProposed}
                         accepted={false}
                         status={proposal.status}
-                        clientSide={false}
+                        clientSide={true}
                       />
                     ))}
                     <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
