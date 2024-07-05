@@ -413,14 +413,17 @@ const EditGig = () => {
   const [formInfo, setFormInfo] = useState({
     currentCategory: '',
     deliveryTime: 0,
+    documents: [],
     email: '',
     gigDescription: '',
     gigPrice: 0,
     gigTitle: '',
+    images: [],
     question: [],
     revision: 0,
     subCategory: '',
     tags: [],
+    video: '',
   });
 
   const { toast } = useToast();
@@ -434,14 +437,17 @@ const EditGig = () => {
       setFormInfo({
         currentCategory: gigInfo.gigCategory,
         deliveryTime: gigInfo.deliveryTime,
+        documents: gigInfo.gallery?.documents,
         email: auth.user.email,
         gigDescription: gigInfo.gigDescription,
         gigPrice: gigInfo.gigPrice,
         gigTitle: gigInfo.gigTitle,
+        images: gigInfo.gallery?.images,
         question: gigInfo.question,
         revision: gigInfo.revision,
         subCategory: gigInfo.subCategory,
         tags: gigInfo.searchKeywords,
+        video: gigInfo.gallery?.video,
       });
     }
   }, [gigInfo, auth]);
@@ -555,11 +561,7 @@ const EditGig = () => {
       .put(`/api/v1/freelancer_gig/edit_gig/${gigId}`, formInfo)
       .then(async (gigData) => {
         await api
-          .post(
-            `/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${gigData.data.gigId}`,
-            formData,
-            config
-          )
+          .post(`/api/v1/freelancer_gig/upload_attachment/${gigId}`, formData, config)
           .then(async (data) => {
             console.log(data);
           });
@@ -856,6 +858,17 @@ const EditGig = () => {
                   onFileUpload={handleVideoUpload}
                   placeHolderPlusIconSize={60}
                 />
+                {formInfo.video && (
+                  <DropFile
+                    acceptOnly='video'
+                    className='aspect-video max-h-80'
+                    fileType='video'
+                    fileUrl={video}
+                    inputName='video'
+                    onFileUpload={handleVideoUpload}
+                    placeHolderPlusIconSize={60}
+                  />
+                )}
               </div>
               <div className='flex flex-col gap-4'>
                 <p className='text-2xl text-[#F5F5F5]'>Images (up to 4)</p>
@@ -863,7 +876,20 @@ const EditGig = () => {
                   Het noticed by the right buyers with visual examples of your services
                 </p>
                 <div className='grid gap-5 md:grid-cols-2'>
-                  {Array.from({ length: 4 }, (_, indx) => (
+                  {formInfo.images?.length > 0 &&
+                    formInfo.images?.map((image, index) => (
+                      <DropFile
+                        acceptOnly='image'
+                        className='aspect-video'
+                        fileType='image'
+                        fileUrl={image}
+                        inputName={`gig_image_${index}`}
+                        key={index}
+                        onFileUpload={(files) => handleImageUpload(files, index)}
+                        placeHolderPlusIconSize={40}
+                      />
+                    ))}
+                  {Array.from({ length: 4 - (formInfo.images?.length ?? 0) }, (_, indx) => (
                     <DropFile
                       acceptOnly='image'
                       className='aspect-video'
@@ -881,7 +907,19 @@ const EditGig = () => {
                   Show some the best work you created in a document. Format: PDF
                 </p>
                 <div className='grid gap-5 md:grid-cols-2'>
-                  {Array.from({ length: 2 }, (_, indx) => (
+                  {formInfo.documents?.length > 0 &&
+                    formInfo.documents?.map((doc, index) => (
+                      <DropFile
+                        acceptOnly='other'
+                        className='h-12'
+                        fileUrl={doc}
+                        inputName={`gig_document_${index}`}
+                        key={index}
+                        onFileUpload={(files) => handleDocumentUpload(files, indx)}
+                        placeHolderPlusIconSize={40}
+                      />
+                    ))}
+                  {Array.from({ length: 2 - (formInfo.documents?.length ?? 0) }, (_, indx) => (
                     <DropFile
                       acceptOnly='other'
                       className='h-12'
