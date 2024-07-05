@@ -9,7 +9,7 @@
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { GoTrash } from 'react-icons/go';
 
@@ -23,7 +23,6 @@ import {
   Form,
   FormControl,
   FormDescription,
-  FormField,
   FormItem,
   FormLabel,
   FormMessage,
@@ -412,27 +411,44 @@ const EditGig = () => {
       ],
     },
   ];
-  const [currentCategory, setCurrentCategory] = useState('Accounting & Consulting');
-  const [currentSub, setCurrentSub] = useState('Personal Coaching');
+
+  const [formInfo, setFormInfo] = useState({
+    currentCategory: '',
+    deliveryTime: 0,
+    email: '',
+    gigDescription: '',
+    gigPrice: 0,
+    gigTitle: '',
+    question: [],
+    revision: 0,
+    subCategory: '',
+    tags: [],
+  });
 
   const { toast } = useToast();
   const auth = useCustomContext();
   const router = useRouter();
 
   const form = useForm();
-  const [tags, setTags] = useState([]);
-  const [requirementQuestions, setRequirementQuestions] = useState([
-    {
-      answer_placeholder: '3D design, e-commerce, accounting, marketing, etc',
-      id: 0,
-      question: 'If you are ordering for a business, what’s your industry?',
-    },
-    {
-      answer_placeholder: 'Building a mobile app, creating an animation, developing a game, etc',
-      id: 1,
-      question: 'Is this order part of a bigger project you’re working on?',
-    },
-  ]);
+
+  useEffect(() => {
+    if (gigInfo) {
+      setFormInfo({
+        currentCategory: gigInfo.gigCategory,
+        deliveryTime: gigInfo.deliveryTime,
+        email: auth.user.email,
+        gigDescription: gigInfo.gigDescription,
+        gigPrice: gigInfo.gigPrice,
+        gigTitle: gigInfo.gigTitle,
+        question: gigInfo.question,
+        revision: gigInfo.revision,
+        subCategory: gigInfo.subCategory,
+        tags: gigInfo.searchKeywords,
+      });
+    }
+  }, [gigInfo, auth]);
+
+  console.log(formInfo);
 
   // const [profile, setProfileData] = useState(null);
   // useEffect(() => {
@@ -453,10 +469,10 @@ const EditGig = () => {
     if (newQuestion && newAnswerPlaceholder) {
       const newQuestionObject = {
         answer_placeholder: newAnswerPlaceholder,
-        id: requirementQuestions.length + 1,
+        id: gigInfo.question.length + 1,
         question: newQuestion,
       };
-      setRequirementQuestions((prevState) => [...prevState, newQuestionObject]);
+      setFormInfo((prev) => ({ ...prev, question: [...prev.question, newQuestionObject] }));
 
       // Clear input fields
       newQuestionRef.current.value = '';
@@ -465,7 +481,7 @@ const EditGig = () => {
   };
 
   const deleteQuestion = (id) => {
-    setRequirementQuestions((prevState) => prevState.filter((question) => question.id !== id));
+    setFormInfo((prev) => ({ ...prev, question: prev.question.filter((q) => q.id !== id) }));
   };
 
   const [tagInputValue, setTagInputValue] = useState('');
@@ -473,15 +489,18 @@ const EditGig = () => {
   const tagsInputFocus = (event) => {
     if (event.key === 'Enter' && tagInputValue.trim()) {
       event.preventDefault();
-      if (tags.length < 5) {
-        setTags([...tags, tagInputValue.trim()]);
+      if (formInfo.tags.length < 5) {
+        setFormInfo((prev) => ({ ...prev, tags: [...prev.tags, tagInputValue.trim()] }));
         setTagInputValue('');
       }
     }
   };
 
   const removeTag = (indexToRemove) => {
-    setTags(tags.filter((_, index) => index !== indexToRemove));
+    setFormInfo((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((_, index) => index !== indexToRemove),
+    }));
   };
 
   const [videoFile, setVideoFile] = useState(null);
@@ -503,7 +522,8 @@ const EditGig = () => {
     newDocumentFiles[index] = files[0]; // Assuming single file for each document slot
     setDocumentFiles(newDocumentFiles);
   };
-  async function onSubmit(values) {
+
+  async function onSubmit() {
     if (!wallet) {
       toast({
         className:
@@ -515,25 +535,7 @@ const EditGig = () => {
       return;
     }
 
-    /* Selmani: I didn't check if all the values are being passed here
-     * And i'm sure not all, so please make sure all necessary inputs are being passed
-     * NOTE: Make sure to check the ShadCN documentation
-     * https://ui.shadcn.com/docs/components
-     * I know you know but just wanted to mention :D
-     */
-    let postData = values;
-    postData.gigCategory = currentCategory;
-    postData.subCategory = currentSub;
-    values.question = requirementQuestions;
-    values.searchKeywords = tags;
-    values.email = auth.user.email;
-    values.creator = auth.currentProfile._id;
-    values.walletPubkey = wallet.publicKey;
-    // if (profile) {
-    //   values.creator = profile._id;
-    // }
-
-    if (!values.gigTitle || !values.gigDescription) {
+    if (!formInfo.gigTitle || !formInfo.gigDescription) {
       return toast({
         className:
           'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -544,6 +546,7 @@ const EditGig = () => {
     }
 
     const formData = new FormData();
+
     if (videoFile) {
       formData.append('file', videoFile);
     }
@@ -551,6 +554,7 @@ const EditGig = () => {
     imageFiles.forEach((file) => {
       if (file) formData.append('file', file);
     });
+
     documentFiles.forEach((file) => {
       if (file) formData.append('file', file);
     });
@@ -561,7 +565,7 @@ const EditGig = () => {
       },
     };
     await api
-      .post('/api/v1/freelancer_gig/post_gig', values)
+      .post(`/api/v1/freelancer_gig/edit_gig/${gigId}`, formInfo)
       .then(async (gigData) => {
         await api
           .post(
@@ -571,9 +575,9 @@ const EditGig = () => {
           )
           .then(async (data) => {
             await api.post('/api/v1/freelancer_gig/send_tg_bot', {
-              gigDescription: values.gigDescription,
+              gigDescription: formInfo.gigDescription,
               gigId: gigData.data.gigId,
-              gigTitle: values.gigTitle,
+              gigTitle: formInfo.gigTitle,
               imageURL:
                 auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
               profileName: auth.user.name,
@@ -583,7 +587,7 @@ const EditGig = () => {
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Successfully posted gig titled {values.gigTitle}</h3>,
+          description: <h3>Successfully posted gig titled {formInfo.gigTitle}</h3>,
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
@@ -618,125 +622,106 @@ const EditGig = () => {
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormStep stepOrder={1}>
-              <FormField
-                name='gigTitle'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Gig title</FormLabel>
-                    <FormDescription className='text-base text-[#96B0BD]'>
-                      As your Gig storefront, your title is the most important place to include
-                      words that buyers would likely use to search for a service like yours
-                    </FormDescription>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        className='h-18 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
-                        placeholder='I will do something im really good at...'
-                        value={gigTitle}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem className='flex flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Gig title</FormLabel>
+                <FormDescription className='text-base text-[#96B0BD]'>
+                  As your Gig storefront, your title is the most important place to include words
+                  that buyers would likely use to search for a service like yours
+                </FormDescription>
+                <FormControl>
+                  <Textarea
+                    className='h-18 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
+                    onChange={(e) => setFormInfo((prev) => ({ ...prev, gigTitle: e.target.value }))}
+                    placeholder='I will do something im really good at...'
+                    value={formInfo.gigTitle}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
               <div className='flex flex-col gap-2'>
                 <p className='text-2xl text-[#F5F5F5]'>Category</p>
                 <p className='text-base text-[#96B0BD]'>
                   Choose the category and subcategory most suitable for your Gig
                 </p>
                 <div className='flex gap-3 mobile:flex-col'>
-                  <FormField
-                    name='gigCategory'
-                    render={() => (
-                      <FormItem className='flex w-full flex-col gap-2'>
-                        <FormControl>
-                          <Select
-                            defaultValue={gigInfo?.gigCategory}
-                            onValueChange={(e) => {
-                              setCurrentCategory(e);
-                            }}
-                          >
-                            <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                              <SelectValue placeholder='Select a Category' />
-                            </SelectTrigger>
-                            <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                              <SelectGroup>
-                                {categories_list.map((job_category) => (
-                                  <SelectItem key={job_category.value} value={job_category.label}>
-                                    {job_category.label}
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <Select
+                        defaultValue={formInfo.currentCategory}
+                        onValueChange={(e) =>
+                          setFormInfo((prev) => ({ ...prev, currentCategory: e }))
+                        }
+                        value={formInfo.currentCategory}
+                      >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Select a Category' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {categories_list.map((job_category) => (
+                              <SelectItem key={job_category.value} value={job_category.label}>
+                                {job_category.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <Select
+                        defaultValue={formInfo.subCategory}
+                        onValueChange={(e) => setFormInfo((prev) => ({ ...prev, subCategory: e }))}
+                        value={formInfo.subCategory}
+                      >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Select a Sub Category' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {subcategory_list.map((subcat) => {
+                              if (subcat.parent === formInfo.currentCategory) {
+                                return subcat.value.map((item, index) => (
+                                  <SelectItem key={index} value={item}>
+                                    {item} {/* Displaying the item instead of index */}
                                   </SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name='subCategory'
-                    render={() => (
-                      <FormItem className='flex w-full flex-col gap-2'>
-                        <FormControl>
-                          <Select
-                            defaultValue={gigInfo?.subCategory}
-                            onValueChange={(e) => {
-                              setCurrentSub(e);
-                            }}
-                          >
-                            <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                              <SelectValue placeholder='Select a Sub Category' />
-                            </SelectTrigger>
-                            <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                              <SelectGroup>
-                                {subcategory_list.map((subcat) => {
-                                  if (subcat.parent === currentCategory) {
-                                    return subcat.value.map((item, index) => (
-                                      <SelectItem key={index} value={item}>
-                                        {item} {/* Displaying the item instead of index */}
-                                      </SelectItem>
-                                    ));
-                                  }
-                                  return null; // Return null if condition is not met
-                                })}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                                ));
+                              }
+                              return null; // Return null if condition is not met
+                            })}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 </div>
               </div>
               <div className='flex w-full flex-col gap-4'>
-                <FormField
-                  name='gig_tags'
-                  render={({ field }) => (
-                    <FormItem className='flex flex-col gap-2'>
-                      <FormLabel className='text-2xl text-[#F5F5F5]'>
-                        Search tags, positive keywords
-                      </FormLabel>
-                      <FormDescription className='text-base text-[#96B0BD]'>
-                        Enter search terms you feel buyers will use when looking for service.
-                      </FormDescription>
-                      <FormControl>
-                        <Input defaultValue={tags.join(', ')} type='hidden' {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <FormItem className='flex flex-col gap-2'>
+                  <FormLabel className='text-2xl text-[#F5F5F5]'>
+                    Search tags, positive keywords
+                  </FormLabel>
+                  <FormDescription className='text-base text-[#96B0BD]'>
+                    Enter search terms you feel buyers will use when looking for service.
+                  </FormDescription>
+                  <FormControl>
+                    <Input defaultValue={formInfo.tags.join(', ')} type='hidden' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+
                 <input
-                  className={`h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base ${tags.length >= 5 ? 'cursor-not-allowed opacity-15' : ''}`}
+                  className={`h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base ${formInfo.tags.length >= 5 ? 'cursor-not-allowed opacity-15' : ''}`}
                   onChange={(event) => setTagInputValue(event.target.value)}
                   onKeyDown={tagsInputFocus}
                   placeholder='Enter tag'
                   value={tagInputValue}
                 />
                 <div className='flex flex-wrap items-center gap-3'>
-                  {tags.map((tag, index) => (
+                  {formInfo.tags.map((tag, index) => (
                     <div
                       className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-white px-2 py-1 text-sm text-black'
                       key={index}
@@ -753,102 +738,86 @@ const EditGig = () => {
               </div>
             </FormStep>
             <FormStep stepOrder={2}>
-              <FormField
-                name='gigPrice'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Setup price</FormLabel>
-                    <FormControl>
-                      <Input
-                        className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
-                        placeholder='Price'
-                        type='number'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name='revision'
-                render={({ field }) => (
-                  <FormItem className='flex w-full flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Revisions</FormLabel>
-                    <FormControl>
-                      <Select defaultValue={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                          <SelectValue placeholder='Revisions' />
-                        </SelectTrigger>
-                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                          <SelectGroup>
-                            {Array.from({ length: 31 }, (_, i) => (
-                              <SelectItem key={i + 1} value={`${i + 1}`}>
-                                {i}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name='deliveryTime'
-                render={({ field }) => (
-                  <FormItem className='flex w-full flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Delivery time</FormLabel>
-                    <FormControl>
-                      <Select defaultValue={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                          <SelectValue placeholder='Delivery time' />
-                        </SelectTrigger>
-                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                          <SelectGroup>
-                            {Array.from({ length: 60 }, (_, i) => (
-                              <SelectItem key={i + 1} value={`${i + 1} days`}>
-                                {i + 1} day{i + 1 > 1 ? 's' : ''}
-                              </SelectItem>
-                            ))}
-                            <SelectItem value='+ 2 months'>+ 2 Months</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem className='flex flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Setup price</FormLabel>
+                <FormControl>
+                  <Input
+                    className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
+                    onChange={(e) => setFormInfo((prev) => ({ ...prev, gigPrice: e.target.value }))}
+                    placeholder='Price'
+                    type='number'
+                    value={formInfo.gigPrice}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+
+              <FormItem className='flex w-full flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Revisions</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={(e) => setFormInfo((prev) => ({ ...prev, revision: e }))}
+                    value={formInfo.revision}
+                  >
+                    <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                      <SelectValue placeholder='Revisions' />
+                    </SelectTrigger>
+                    <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                      <SelectGroup>
+                        {Array.from({ length: 31 }, (_, i) => (
+                          <SelectItem key={i + 1} value={`${i + 1}`}>
+                            {i + 1}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+              <FormItem className='flex w-full flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Delivery time</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={(e) => setFormInfo((prev) => ({ ...prev, deliveryTime: e }))}
+                    value={formInfo.deliveryTime}
+                  >
+                    <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                      <SelectValue placeholder='Delivery time' />
+                    </SelectTrigger>
+                    <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                      <SelectGroup>
+                        {Array.from({ length: 60 }, (_, i) => (
+                          <SelectItem key={i + 1} value={`${i + 1} days`}>
+                            {i + 1} day{i + 1 > 1 ? 's' : ''}
+                          </SelectItem>
+                        ))}
+                        <SelectItem value='+ 2 months'>+ 2 Months</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             </FormStep>
             <FormStep stepOrder={3}>
-              <FormField
-                name='gigDescription'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>
-                      Briefly describe your Gig
-                    </FormLabel>
-                    <FormDescription className='text-base text-[#96B0BD]'>
-                      0/1200 characters
-                      {/* 
-                        * Selmani: Needs to be functional for sure, just 
-                        didn't got a chance to complete it 
-                        * And it would be better to create a reusable component!
-                      */}
-                    </FormDescription>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        className='h-60 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
-                        placeholder='Add info here...'
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem className='flex flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Briefly describe your Gig</FormLabel>
+                <FormDescription className='text-base text-[#96B0BD]'>
+                  0/1200 characters
+                </FormDescription>
+                <FormControl>
+                  <Textarea
+                    className='h-60 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
+                    onChange={(e) =>
+                      setFormInfo((prev) => ({ ...prev, gigDescription: e.target.value }))
+                    }
+                    placeholder='Add info here...'
+                    value={formInfo.gigDescription}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             </FormStep>
             <FormStep stepOrder={4}>
               <div className='text-2xl text-[#F5F5F5]'>
@@ -858,7 +827,7 @@ const EditGig = () => {
                 Add questions to help buyers provide you with exactly what you need to start working
                 on their order
               </div>
-              {requirementQuestions.map((requirement_question, q_indx) => (
+              {formInfo.question.map((requirement_question, q_indx) => (
                 <Question
                   answer_placeholder={requirement_question.answer_placeholder}
                   id={requirement_question.id}
