@@ -42,7 +42,12 @@ const ActiveView = ({ allGigs }) => {
           </div>
           <div className='flex flex-grow basis-2/3 flex-col gap-2 mobile:w-full'>
             <div className='mt-1 flex flex-row items-start justify-between gap-4 md:items-center'>
-              <div className='flex-1 text-left text-[24px] md:text-2xl'>{gig.gigTitle}</div>
+              <div
+                className='flex-1 cursor-pointer text-left text-[24px] hover:underline md:text-2xl'
+                onClick={() => handleEdit(gig._id)}
+              >
+                {gig.gigTitle}
+              </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
