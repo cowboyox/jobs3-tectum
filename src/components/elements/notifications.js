@@ -27,7 +27,7 @@ const NotificationItem = ({ type, userImage, userName, message, time, icon, isOn
                 )}
             </div>
             <div className='flex flex-col gap-2'> 
-                <p className={`text-sm ${type == 'general' ? 'text-white font-bold' : 'text-[#96B0BD]'}`}>
+                <p className={`text-sm ${type === 'general' ? 'text-white font-bold' : 'text-[#96B0BD]'}`}>
                 <strong className='text-white'>{userName}</strong> {message}
                 </p>
                 <p className='text-[#96B0BD] text-xs'>{time}</p>

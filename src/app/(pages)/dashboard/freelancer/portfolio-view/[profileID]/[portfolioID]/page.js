@@ -30,13 +30,12 @@ const EditPortfolio = ({ params }) => {
       .catch((err) => {
         console.error('Error corrupted while getting all gigs: ', err);
       });
-  }, []);
+  }, [params.profileID]);
 
   useEffect(() => {
-    console.log('id', params.portfolioI);
     const selectedPortfolio = portfolioList.find((item) => item._id === String(params.portfolioID));
     setCurrentPortfolio(selectedPortfolio);
-  }, [portfolioList]);
+  }, [portfolioList, params.portfolioID]);
 
   console.log('currentPortfolio', currentPortfolio);
   console.log('portfolioList', portfolioList);
