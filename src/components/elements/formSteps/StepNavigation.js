@@ -9,7 +9,7 @@ const FormNavigation = () => {
         <PrevStep className='w-full py-5 text-center text-white transition cursor-pointer rounded-2xl mobile:py-3 hover:bg-white hover:text-black' />
         <NextStep
           className='w-full rounded-2xl bg-[#DC4F13] text-white py-5 mobile:py-3 text-center cursor-pointer'
-          max={6}
+          max={4}
         />
       </div>
     </div>
