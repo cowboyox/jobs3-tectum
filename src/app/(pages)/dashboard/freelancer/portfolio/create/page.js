@@ -42,6 +42,9 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
+import { useCustomContext } from '@/context/use-custom';
+import api from '@/utils/api';
+import { useRouter } from 'next/navigation';
 
 
 const Createportfolio = () => {
@@ -394,16 +397,19 @@ const Createportfolio = () => {
       ],
     },
   ];
-
+  
   /*------------ State hooks ------------*/
   const [currentCategory, setCurrentCategory] = useState('Accounting & Consulting');
+  const [currentSub, setCurrentSub] = useState('Personal Coaching');
   const [videoFile, setVideoFile] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
   const [documentFiles, setDocumentFiles] = useState([]);
 
   /*------------ Toast and Form hooks ------------*/
   const { toast } = useToast();
+  const auth = useCustomContext();
   const form = useForm();
+  const router = useRouter();
 
   /*------------ File upload handlers ------------*/
   const handleVideoUpload = (file) => {
@@ -425,6 +431,85 @@ const Createportfolio = () => {
   /*------------ Form submission handler ------------*/
   async function onSubmit(values) {
     console.log(values);
+    // if (!wallet) {
+    //   toast({
+    //     className:
+    //       'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+    //     description: <h3>Please connect your wallet!</h3>,
+    //     title: <h1 className='text-center'>Error</h1>,
+    //     variant: 'destructive',
+    //   });
+    //   return;
+    // }
+    values.mainCategory = currentCategory;
+    values.subCategory = currentSub;
+    values.email = auth.user.email;
+    values.creator = auth.currentProfile._id;
+    // values.walletPubkey = wallet.publicKey;
+    if (!values.portfolioTitle || !values.portfolioDescription) {
+      return toast({
+        className:
+          'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3 className='text-center'>Input Portfolio Title and Description</h3>,
+        title: <h1 className='text-center'>Warning</h1>,
+        variant: 'default',
+      });
+    }
+    const formData = new FormData();
+    if (videoFile) {
+      formData.append('files', videoFile);
+    }
+
+    imageFiles.forEach((file) => {
+      if (file) formData.append('files', file);
+    });
+    documentFiles.forEach((file) => {
+      if (file) formData.append('files', file);
+    });
+
+    formData.append('metadata', JSON.stringify({
+      video: videoFile ? 1 : 0,
+      images: imageFiles.length,
+      documents: documentFiles.length
+    }));
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    await api
+      .post('/api/v1/freelancer_portfolio/create_portfolio', values)
+      .then(async (portfolioData) => {
+        await api.post(`/api/v1/freelancer_portfolio/upload_attachment/${auth.currentProfile._id}/${portfolioData.data.portfolioId}`, formData, config).then(async (data) => {
+          console.log("Successfully uploaded", data.data.msg[0]);
+          // await api.post('/api/v1/freelancer_gig/send_tg_bot', {
+          //   gigDescription: values.gigDescription,
+          //   profileName: auth.user.name,
+          //   profileType: 'Freelancer',
+          //   imageURL: auth?.currentProfile?.avatarURL != "" ? auth.currentProfile.avatarURL : null,
+          //   gigId: gigData.data.gigId,
+          //   gigTitle: values.gigTitle
+          // })
+        })
+        toast({
+          className:
+            'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>Successfully created {values.portfolioTitle}</h3>,
+          title: <h1 className='text-center'>Success</h1>,
+          variant: 'default',
+        });
+        router.push('../');
+      })
+      .catch((err) => {
+        console.error('Error corrupted during creating portfolio', err);
+        toast({
+          className:
+            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>Internal Server Error</h3>,
+          title: <h1 className='text-center'>Error</h1>,
+          variant: 'destructive',
+        });
+      });
   }
 
   return (
