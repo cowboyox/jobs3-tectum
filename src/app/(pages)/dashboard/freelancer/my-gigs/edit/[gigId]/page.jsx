@@ -62,8 +62,6 @@ const EditGig = () => {
   const { gigId } = useParams();
   const { data: gigInfo } = useGetFreelancerGigById(gigId);
 
-  console.log({ gigInfo });
-
   const categories_list = [
     {
       label: 'Accounting & Consulting',
@@ -448,17 +446,6 @@ const EditGig = () => {
     }
   }, [gigInfo, auth]);
 
-  console.log(formInfo);
-
-  // const [profile, setProfileData] = useState(null);
-  // useEffect(() => {
-  //   if (auth.user) {
-  //     api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then((res) => {
-  //       setProfileData(res.data.profile);
-  //     });
-  //   }
-  // }, [auth]);
-
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
 
@@ -565,7 +552,7 @@ const EditGig = () => {
       },
     };
     await api
-      .post(`/api/v1/freelancer_gig/edit_gig/${gigId}`, formInfo)
+      .put(`/api/v1/freelancer_gig/edit_gig/${gigId}`, formInfo)
       .then(async (gigData) => {
         await api
           .post(
@@ -574,15 +561,7 @@ const EditGig = () => {
             config
           )
           .then(async (data) => {
-            await api.post('/api/v1/freelancer_gig/send_tg_bot', {
-              gigDescription: formInfo.gigDescription,
-              gigId: gigData.data.gigId,
-              gigTitle: formInfo.gigTitle,
-              imageURL:
-                auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
-              profileName: auth.user.name,
-              profileType: 'Freelancer',
-            });
+            console.log(data);
           });
         toast({
           className:
