@@ -482,14 +482,6 @@ const Createportfolio = () => {
       .then(async (portfolioData) => {
         await api.post(`/api/v1/freelancer_portfolio/upload_attachment/${auth.currentProfile._id}/${portfolioData.data.portfolioId}`, formData, config).then(async (data) => {
           console.log("Successfully uploaded", data.data.msg[0]);
-          // await api.post('/api/v1/freelancer_gig/send_tg_bot', {
-          //   gigDescription: values.gigDescription,
-          //   profileName: auth.user.name,
-          //   profileType: 'Freelancer',
-          //   imageURL: auth?.currentProfile?.avatarURL != "" ? auth.currentProfile.avatarURL : null,
-          //   gigId: gigData.data.gigId,
-          //   gigTitle: values.gigTitle
-          // })
         })
         toast({
           className:
