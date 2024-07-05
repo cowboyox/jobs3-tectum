@@ -161,7 +161,7 @@ const GigSearch = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [canLoadMore, setCanLoadMore] = useState(false);
-  const itemsPerPage = 1;
+  const itemsPerPage = 3;
   const filterItems = [
     {
       content: [
@@ -241,8 +241,6 @@ const GigSearch = () => {
   ];
 
   const { data: flGigs } = useGetFreelancerGigs(page, itemsPerPage, searchKeywords);
-
-  console.log({ flGigs });
 
   useEffect(() => {
     if (flGigs?.length > 0) {
