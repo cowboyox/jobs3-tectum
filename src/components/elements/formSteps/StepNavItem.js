@@ -6,10 +6,11 @@ import { useStep, useStepNumber } from '@/components/elements/formSteps/StepCont
 const StepNavItem = (props) => {
   const { setStepNumber } = useStep();
   const stepNumber = useStepNumber();
+
   return (
     <div
       className={` ${stepNumber == props.num ? 'border-[#DC4F13]' : 'border-[#516270]'} ${
-        stepNumber < props.num && 'pointer-events-none opacity-30'
+        !props.isEdit && stepNumber < props.num && 'pointer-events-none opacity-30'
       } flex w-full cursor-pointer items-center justify-center gap-3 border-b-4 px-3 py-7`}
       onClick={() => {
         setStepNumber(props.num);
