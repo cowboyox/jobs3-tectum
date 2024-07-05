@@ -2,15 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetAllClientOrdersProposed = (profileId) => {
+export const useGetAllFreelancerOrdersProposed = (profileId) => {
   return useQuery({
     cacheTime: Infinity,
     enabled: !!profileId,
     queryFn: async () => {
       if (profileId) {
         try {
-          const result = await api.get(`/api/v1/freelancer_gig/find_all_orders_of_client/${profileId}`);
-          console.log("result in useGetAllClientOrdersProposed:", result);
+          const result = await api.get(`/api/v1/freelancer_gig/find_all_orders_on_client/${profileId}`);
+          console.log("result in useGetAllFreelancerOrdersProposed:", result);
           const proposals = [];
           const lives = [];
 
@@ -18,9 +18,9 @@ export const useGetAllClientOrdersProposed = (profileId) => {
             result.data.proposals.map((proposal) => {
               proposals.push({
                 creator: {
-                  fullName: proposal.proposer.fullName,
+                  fullName: proposal.gigOwner.fullName,
                 },
-                client: proposal.proposer,
+                freelancer: proposal.gigOwner,
                 gigDescription: proposal.freelancerGig.gigDescription,
                 gigId: proposal.freelancerGig._id,
                 gigPostDate: proposal.freelancerGig.gigPostDate,
@@ -42,9 +42,9 @@ export const useGetAllClientOrdersProposed = (profileId) => {
               lives.push({
                 id: live._id,
                 creator: {
-                  fullName: live.proposer.fullName,
+                  fullName: live.gigOwner.fullName,
                 },
-                client: live.proposer,
+                freelancer: live.gigOwner,
                 gigDescription: live.freelancerGig.gigDescription,
                 gigId: live.freelancerGig._id,
                 gigPostDate: live.freelancerGig.gigPostDate,

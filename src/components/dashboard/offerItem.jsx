@@ -1,9 +1,11 @@
 'use client';
 import React from 'react';
 import { Icon } from '@iconify/react';
+import { v4 as uuid } from 'uuid';
 
 import { useToast } from '@/components/ui/use-toast';
 import api from '@/utils/api';
+import { ContractStatus } from '@/utils/constants';
 
 const data = {
   description:
@@ -32,6 +34,9 @@ const data = {
 const descriptionTextMaxLength = 320;
 
 const OfferItem = ({ 
+  gigId,
+  freelancerId, 
+  clientId,
   gigTitle, 
   gigPrice, 
   deliveryTime, 
@@ -41,6 +46,8 @@ const OfferItem = ({
   proposalId, 
   refetchAllOrdersProposed,
   accepted,
+  status,
+  clientSide,
 }) => {
   const { toast } = useToast();
 
@@ -98,7 +105,9 @@ const OfferItem = ({
 
   const onAccept = async () => {
     try {
-      await api.put(`/api/v1/freelancer_gig/accept-order/${proposalId}`);
+      const contractId = uuid().slice(0, 8);
+
+      await api.put(`/api/v1/freelancer_gig/accept-order/${proposalId}`, JSON.stringify({ gigId, contractId, freelancerId, clientId  }));
 
       await refetchAllOrdersProposed();
 
@@ -148,9 +157,148 @@ const OfferItem = ({
     }
   };
 
+  const onComplete = async () => {
+    try {
+      await api.put(`/api/v1/client_gig/complete-contract/${proposalId}`);
+
+      await refetchAllOrdersProposed();
+
+      toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully completed the contract!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
+      });
+    } catch (err) {
+      console.error('Error corrupted during rejecting proposal:', err);
+
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+  };
+ 
+  const onConfirm = async () => {
+    try {
+      await api.put(`/api/v1/client_gig/confirm-contract/${proposalId}`);
+
+      await refetchAllOrdersProposed();
+
+      toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully confirmed the contract!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
+      });
+    } catch (err) {
+      console.error('Error corrupted during rejecting proposal:', err);
+
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+  };
+  
+  const onActivate = async () => {
+    try {
+      await api.put(`/api/v1/client_gig/activate-contract/${proposalId}`);
+
+      await refetchAllOrdersProposed();
+
+      toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully activated the contract!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
+      });
+    } catch (err) {
+      console.error('Error corrupted during activating contract:', err);
+
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+  };
+  
+  const onDeliver = async () => {
+    try {
+      await api.put(`/api/v1/client_gig/deliver-contract/${proposalId}`);
+
+      await refetchAllOrdersProposed();
+
+      toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully delivered the contract!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
+      });
+    } catch (err) {
+      console.error('Error corrupted during delivering:', err);
+
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const onRelease = async () => {
+    try {
+      await api.put(`/api/v1/client_gig/release-contract/${proposalId}`);
+
+      await refetchAllOrdersProposed();
+
+      toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully released the funds!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
+      });
+    } catch (err) {
+      console.error('Error corrupted during releasing funds:', err);
+
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <div className='mx-auto flex w-full flex-col gap-2 rounded-xl bg-[#10191D] p-4 sm:p-8'>
-      <h1 className='text-xl'>{gigTitle}</h1>
+      {
+        status ? 
+          <div className='flex items-center justify-between'>
+            <h1 className='text-xl'>{gigTitle}</h1>
+            <div className='ml-auto rounded-xl border border-[#1BBF36] px-2 py-1 text-sm text-[#1BBF36] mobile:text-xs'>
+              {status}
+            </div>
+          </div> :
+          <h1 className='text-xl'>{gigTitle}</h1>
+      }
       <div className='flex items-center gap-4 py-1'>
         <div className='relative w-12 h-12 mobile:h-8 mobile:w-8'>
           <img
@@ -203,18 +351,18 @@ const OfferItem = ({
       </div>
      
       <div className='flex w-full flex-col gap-3 text-[#516170]'>
-        <div>
+        {proposal && <div>
           <div className=''>
             {
-              proposal.length < descriptionTextMaxLength
+              proposal?.length < descriptionTextMaxLength
                 ? proposal
                 : showDetail
                   ? proposal
-                  : proposal.slice(0, descriptionTextMaxLength) + '...'
+                  : proposal?.slice(0, descriptionTextMaxLength) + '...'
             }
           </div>
           {
-            proposal.length < descriptionTextMaxLength ? (
+            proposal?.length < descriptionTextMaxLength ? (
                 <></>
               ) : !showDetail ? (
                 <button
@@ -236,7 +384,7 @@ const OfferItem = ({
                 </button>
               )
           }
-        </div>
+        </div>}
         
         <div className='border-b border-[#28373A] pb-3'>
           <h2 className='text-white'>Skills</h2>
@@ -250,24 +398,75 @@ const OfferItem = ({
         </div>
       </div>
 
-      <div>
-        {
-          accepted ?
-            <div className='grid grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white w-[25%] float-right'>
-              <div onClick={onReject} className='flex items-center justify-center p-3 cursor-pointer hover:opacity-60'>
-                Reject
-              </div>
-            </div> :
-            <div className='grid grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white w-[50%] float-right'>
-              <div onClick={onReject} className='flex items-center justify-center p-3 cursor-pointer hover:opacity-60'>
-                Reject
-              </div>
-              <div onClick={onAccept} className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'>
-                Accept
-              </div>
-            </div>
-        }
-      </div>
+      {
+        !clientSide &&
+          <div>
+            {
+              !accepted &&
+                <div className='grid grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white w-[50%] float-right'>
+                  <div onClick={onReject} className='flex items-center justify-center p-3 cursor-pointer hover:opacity-60'>
+                    Reject
+                  </div>
+                  <div onClick={onAccept} className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'>
+                    Accept
+                  </div>
+                </div>
+            }
+            {
+              status == ContractStatus.CONFIRMED &&
+                <div className='grid grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white w-[25%] float-right'>
+                  <div onClick={onActivate} className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'>
+                      Activate
+                  </div>
+                </div>
+            }
+            {
+              status == ContractStatus.ACTIVE &&
+                <div className='grid grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white w-[25%] float-right'>
+                  <div onClick={onDeliver} className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'>
+                      Deliver
+                  </div>
+                </div>
+            }
+            {
+              status == ContractStatus.DELIVERED &&
+                <div className='grid grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white w-[25%] float-right'>
+                  <div className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'>
+                      Request Payment
+                  </div>
+                </div>
+            }
+            {
+              status == ContractStatus.RELEASED &&
+                <div className='grid grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white w-[25%] float-right'>
+                  <div onClick={onComplete} className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'>
+                      Complete
+                  </div>
+                </div>
+            }
+        </div>
+      }
+      {
+        clientSide && 
+          <div>
+            {
+              status == ContractStatus.STARTED &&
+                <div className='grid grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white w-[25%] float-right'>
+                  <div onClick={onConfirm} className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'>
+                      Confirm
+                  </div>
+                </div>
+            }
+            {
+              status == ContractStatus.DELIVERED &&
+                <div className='grid grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white w-[25%] float-right'>
+                  <div onClick={onRelease} className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'>
+                      Release
+                  </div>
+                </div>
+            }
+          </div>
+      }
     </div>
   );
 };
