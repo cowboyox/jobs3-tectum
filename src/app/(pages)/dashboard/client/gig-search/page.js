@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCustomContext } from '@/context/use-custom';
+import { useGetFreelancerGigs } from '@/hooks/useGetFreelancerGigs';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
@@ -30,10 +31,10 @@ const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
     <div className='flex cursor-pointer items-center gap-4 p-0'>
       <Checkbox
+        checked={props.checked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
         id={props.category_id}
         onCheckedChange={onCheckedChange}
-        checked={props.checked}
       />
       <label className='cursor-pointer text-sm text-[#96B0BD]' htmlFor={props.category_id}>
         {props.category_name}
@@ -51,8 +52,6 @@ const DropDownTrigger = (props) => {
     </PopoverTrigger>
   );
 };
-
-
 
 const GigCard = (props) => {
   const router = useRouter();
@@ -74,7 +73,7 @@ const GigCard = (props) => {
   return (
     <div>
       <div
-        className={`flex w-full items-center gap-4 ${props.info.reason ? 'rounded-t-xl' : 'rounded-xl'} bg-[#10191d] p-4 mt-4 text-white mobile:flex-col`}
+        className={`flex w-full items-center gap-4 ${props.info.reason ? 'rounded-t-xl' : 'rounded-xl'} mt-4 bg-[#10191d] p-4 text-white mobile:flex-col`}
       >
         <div className='relative w-[400px] max-w-full'>
           <img
@@ -154,7 +153,6 @@ const GigCard = (props) => {
 };
 
 const GigSearch = () => {
-  const [gigList, setGigList] = useState([]);
   const [searchType, setSearchType] = useState('normal');
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [filteredGigList, setFilteredGigList] = useState([]);
@@ -162,7 +160,8 @@ const GigSearch = () => {
   const { isSmallScreen } = useHandleResize();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 2;
+  const [canLoadMore, setCanLoadMore] = useState(false);
+  const itemsPerPage = 3;
   const filterItems = [
     {
       content: [
@@ -240,56 +239,64 @@ const GigSearch = () => {
       title: 'Notice Period',
     },
   ];
-  console.log("filteredGigList", filteredGigList);
+
+  const { data: flGigs } = useGetFreelancerGigs(page, itemsPerPage, searchKeywords);
+
   useEffect(() => {
-    api
-      .get(`/api/v1/freelancer_gig/find_all_gigs?page=${page}&limit=${itemsPerPage}`)
-      .then((data) => {
-        if (data.data.data) {
-          setGigList(data.data.data);
-          setFilteredGigList(data.data.data);
-        }
-      })
-      .catch((err) => {
-        console.error('Error corrupted while getting all gigs: ', err);
-      });
-  }, [page]);
+    if (flGigs?.length > 0) {
+      setCanLoadMore(true);
+      if (page === 1) {
+        setFilteredGigList(flGigs);
+      } else {
+        setFilteredGigList((prev) => {
+          let result = [...prev];
+          const ids = prev.map((item) => item._id);
+
+          flGigs.map((gig) => {
+            if (!ids.includes(gig._id)) {
+              result = [...result, gig];
+            }
+          });
+
+          return result;
+        });
+      }
+    } else {
+      if (page === 1) {
+        setFilteredGigList([]);
+      }
+      setCanLoadMore(false);
+    }
+  }, [flGigs, page]);
 
   const onChangeType = (e) => {
     setSearchType(e);
   };
 
   const setKey = (e) => {
+    setPage(1);
     setSearchKeyWords(e.target.value);
-    if (searchType == 'normal') {
-      const filtered = gigList.filter(
-        (gig) =>
-          gig.deliveryTime?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.email?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.gigPostDate?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.gigPrice?.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase())
-      );
-      setFilteredGigList(filtered);
-    }
+  };
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
   };
 
   const aiSearch = () => {
     setLoading(true);
-    api.get(`/api/v1/freelancer_gig/ai-search/${searchKeywords}`).then((data) => {
-      let ai_ids = [];
-      if (data.data.profileIDs) ai_ids = data.data.profileIDs;
-      const ai_filtered = ai_ids
-        .map((id) => gigList.find((gig) => gig._id.toString() === id))
-        .filter((gig) => gig != undefined)
-        .map((gig, index) => {
-          gig.reason = data.data.reasons[index];
-          return gig;
-        });
-      setLoading(false);
-      setFilteredGigList(ai_filtered);
-    });
+    // api.get(`/api/v1/freelancer_gig/ai-search/${searchKeywords}`).then((data) => {
+    //   let ai_ids = [];
+    //   if (data.data.profileIDs) ai_ids = data.data.profileIDs;
+    //   const ai_filtered = ai_ids
+    //     .map((id) => gigList.find((gig) => gig._id.toString() === id))
+    //     .filter((gig) => gig != undefined)
+    //     .map((gig, index) => {
+    //       gig.reason = data.data.reasons[index];
+    //       return gig;
+    //     });
+    //   setLoading(false);
+    //   setFilteredGigList(ai_filtered);
+    // });
   };
 
   const handleKeyDown = (e) => {
@@ -347,7 +354,7 @@ const GigSearch = () => {
               align='end'
               className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
             >
-              <div className='grid lg:grid-cols-4 md:grid-cols-3 xxs:grid-cols-2 grid-cols-1 gap-4'>
+              <div className='grid grid-cols-1 gap-4 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
                 {filterItems.map((item, index) => {
                   return (
                     <div className='flex flex-col gap-2' key={index}>
@@ -357,8 +364,8 @@ const GigSearch = () => {
                           <DropdownItem
                             category_id={con.category_id}
                             category_name={con.category_name}
-                            key={i}
                             checked={filters.includes(con.category_name)}
+                            key={i}
                             onCheckedChange={(value) =>
                               onCheckedChange(value, con.category_id, con.category_name)
                             }
@@ -419,7 +426,7 @@ const GigSearch = () => {
       )}
       {!loading && (
         <div className='mt-[30px]'>
-          <div className='flex items-center justify-center rounded-xl bg-[#10191d] px-3 py-6 text-lg mb-[18px]'>
+          <div className='mb-[18px] flex items-center justify-center rounded-xl bg-[#10191d] px-3 py-6 text-lg'>
             Wow! <span className='main_color px-2'>{filteredGigList.length}</span> projects
             available 😀
           </div>
@@ -429,9 +436,14 @@ const GigSearch = () => {
           {filteredGigList.map((gig, index) => {
             return <GigCard info={gig} key={index} />;
           })}
-          <div className='mx-auto mt-4 w-full max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'>
-            Load more +
-          </div>
+          {canLoadMore && (
+            <div
+              className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+              onClick={handleLoadMore}
+            >
+              Load More +
+            </div>
+          )}
         </div>
       )}
     </div>
