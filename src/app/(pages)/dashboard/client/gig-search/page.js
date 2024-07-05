@@ -242,6 +242,8 @@ const GigSearch = () => {
 
   const { data: flGigs } = useGetFreelancerGigs(page, itemsPerPage, searchKeywords);
 
+  console.log({ flGigs });
+
   useEffect(() => {
     if (flGigs?.length > 0) {
       setCanLoadMore(true);
@@ -274,6 +276,7 @@ const GigSearch = () => {
   };
 
   const setKey = (e) => {
+    setPage(1);
     setSearchKeyWords(e.target.value);
   };
 
