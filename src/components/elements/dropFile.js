@@ -6,17 +6,26 @@ import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/f
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 
-const DropFile = ({ className, inputName, placeHolderPlusIconSize, acceptOnly, onFileUpload }) => {
+const DropFile = ({
+  className,
+  inputName,
+  placeHolderPlusIconSize,
+  acceptOnly,
+  onFileUpload,
+  fileType = null,
+  fileUrl = null,
+  fileName = null,
+}) => {
   const { toast } = useToast();
 
   const [filePreview, setFilePreview] = useState({
-    name: null,
-    type: null,
-    url: null,
+    name: fileName,
+    type: fileType,
+    url: fileUrl,
   });
 
   const previewPhoto = (file) => {
-    if(onFileUpload) {
+    if (onFileUpload) {
       onFileUpload(file.files);
     }
     const fileType = file.files[0].type.split('/')[0];
