@@ -769,9 +769,9 @@ const CreateGig = () => {
                         </SelectTrigger>
                         <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
                           <SelectGroup>
-                            {Array.from({ length: 30 }, (_, i) => (
+                            {Array.from({ length: 31 }, (_, i) => (
                               <SelectItem key={i + 1} value={`${i + 1}`}>
-                                {i + 1}
+                                {i}
                               </SelectItem>
                             ))}
                           </SelectGroup>
