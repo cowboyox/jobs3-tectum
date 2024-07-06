@@ -428,9 +428,8 @@ const Createportfolio = () => {
     setDocumentFiles(newDocumentFiles);
   };
 
-  console.log("videoFile", videoFile);
-  console.log("imageFiles", imageFiles);
-  console.log("documentFiles", documentFiles);
+  console.log("auth.currentProfile._id", auth?.currentProfile?._id);
+
 
   /*------------ Form submission handler ------------*/
   async function onSubmit(values) {
@@ -703,7 +702,7 @@ const Createportfolio = () => {
               </div>
               <img className='w-1/2 mx-auto' src='/assets/images/publish_image.png' />
             </FormStep>
-            <FormNavigation />
+            <FormNavigation max={4}/>
           </form>
         </Form>
       </div>
