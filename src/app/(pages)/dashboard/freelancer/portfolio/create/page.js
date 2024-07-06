@@ -702,7 +702,7 @@ const Createportfolio = () => {
               </div>
               <img className='w-1/2 mx-auto' src='/assets/images/publish_image.png' />
             </FormStep>
-            <FormNavigation />
+            <FormNavigation max={4}/>
           </form>
         </Form>
       </div>
