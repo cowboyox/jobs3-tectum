@@ -807,7 +807,7 @@ const SideBar = () => {
   }
   return (
     <div
-      className='fixed top-0 left-0 z-40 w-10/12 min-h-screen p-10 transition -translate-x-full bg-black main_sidebar md:sticky md:w-60 md:translate-x-0'
+      className='fixed top-0 left-0 z-40 w-10/12 min-h-screen p-10 transition -translate-x-full bg-black main_sidebar md:sticky md:w-1/6 md:translate-x-0'
       ref={sideBarRef}
     >
       <div className='w-10/12 mx-auto mb-10' onClick={OpenSideBar}>

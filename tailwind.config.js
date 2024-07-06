@@ -91,9 +91,6 @@ module.exports = {
           '20%,50%': { opacity: '0' },
         },
       },
-      screens: {
-        mobile: { max: '768px' },
-      },
     },
     fontFamily: {
       roboto: ['Roboto', 'sans-serif'],
