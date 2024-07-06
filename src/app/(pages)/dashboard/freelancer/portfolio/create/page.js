@@ -428,9 +428,8 @@ const Createportfolio = () => {
     setDocumentFiles(newDocumentFiles);
   };
 
-  console.log("videoFile", videoFile);
-  console.log("imageFiles", imageFiles);
-  console.log("documentFiles", documentFiles);
+  console.log("auth.currentProfile._id", auth?.currentProfile?._id);
+
 
   /*------------ Form submission handler ------------*/
   async function onSubmit(values) {
