@@ -7,7 +7,7 @@ import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 import { useRouter } from 'next/navigation';
 
-const FreelancerPortfolio = () => {
+const FreelancerPortfolio = ({params}) => {
   const [page, setPage] = useState(1);
   const [portfolioAllList, setPortfolioAllList] = useState([]);
   const [portfolioList, setPortfolioList] = useState([]);
@@ -19,9 +19,8 @@ const FreelancerPortfolio = () => {
     setPage((prev) => prev + 1);
   };
   useEffect(() => {
-    if (auth.user) {
       api
-        .get(`/api/v1/freelancer_portfolio/find_all_portfolios_by_email/${auth.user.email}?page=${page}&limit=${itemsPerPage}`)
+        .get(`/api/v1/freelancer_portfolio/find_all_portfolios_by_profileId/${params.id}?page=${page}&limit=${itemsPerPage}`)
         .then((data) => {
           if (data.data.data) {
             setPortfolioAllList(data.data.data);
@@ -30,8 +29,7 @@ const FreelancerPortfolio = () => {
         .catch((err) => {
           console.error('Error corrupted while getting all gigs: ', err);
         });
-    }
-  }, [auth, page]);
+  }, [page]);
   useEffect(() => {
     if (portfolioAllList?.length > 0) {
       setCanLoadMore(true);
@@ -83,7 +81,7 @@ const FreelancerPortfolio = () => {
       </div>
       <div className='my-5 grid w-full md:grid-cols-2 lg:grid-cols-3 gap-5 mobile:grid-cols-1'>
         {portfolioList.map((portfolio_item, key) => (
-          <div className='rounded-xl bg-[#10191d] p-4 cursor-pointer' key={key} onClick={() => router.push(`/dashboard/freelancer/portfolio-view/${auth.currentProfile._id}/${portfolio_item._id}`)}>
+          <div className='rounded-xl bg-[#10191d] p-4 cursor-pointer' key={key} onClick={() => router.push(`/dashboard/freelancer/portfolio-view/${params.id}/${portfolio_item._id}`)}>
             <div className='relative flex h-64 w-full'>
               <img
                 alt={portfolio_item.portfolioTitle}
