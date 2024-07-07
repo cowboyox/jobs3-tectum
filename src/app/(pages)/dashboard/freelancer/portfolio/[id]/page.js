@@ -29,7 +29,7 @@ const FreelancerPortfolio = ({params}) => {
         .catch((err) => {
           console.error('Error corrupted while getting all gigs: ', err);
         });
-  }, [page]);
+  }, [page, params.id]);
   useEffect(() => {
     if (portfolioAllList?.length > 0) {
       setCanLoadMore(true);
