@@ -1,7 +1,6 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { CiFilter, CiReceipt } from 'react-icons/ci';
@@ -54,7 +53,6 @@ const DropDownTrigger = (props) => {
 };
 
 const GigCard = (props) => {
-  const router = useRouter();
   const auth = useCustomContext();
 
   const handleRecentView = async (gigId) => {

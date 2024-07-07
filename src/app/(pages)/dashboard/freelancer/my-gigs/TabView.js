@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import ActiveView from './Active';
 import DraftsView from './Drafts';
 
-const TabView = ({ allGigs }) => {
+const TabView = ({ allGigs, canLoadMore, setPage }) => {
   const buttonTexts = ['Active', 'Drafts'];
   const [selectedTab, setSelectedTab] = useState('Active');
 
@@ -25,8 +25,12 @@ const TabView = ({ allGigs }) => {
         ))}
       </div>
       <div className='mt-10'>
-        {selectedTab === 'Active' && <ActiveView allGigs={allGigs} />}
-        {selectedTab === 'Drafts' && <DraftsView allGigs={allGigs} />}
+        {selectedTab === 'Active' && (
+          <ActiveView allGigs={allGigs} canLoadMore={canLoadMore} setPage={setPage} />
+        )}
+        {selectedTab === 'Drafts' && (
+          <DraftsView allGigs={allGigs} canLoadMore={canLoadMore} setPage={setPage} />
+        )}
       </div>
     </>
   );
