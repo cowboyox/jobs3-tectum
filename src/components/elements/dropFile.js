@@ -25,39 +25,41 @@ const DropFile = ({
   });
 
   const previewPhoto = (file) => {
-    if (onFileUpload) {
-      onFileUpload(file.files);
-    }
-    const fileType = file.files[0].type.split('/')[0];
-    const fileUrl = URL.createObjectURL(file.files[0]);
-    const fileName = file.files[0].name;
+    if (file.files[0]) {
+      if (onFileUpload) {
+        onFileUpload(file.files);
+      }
+      const fileType = file.files[0].type.split('/')[0];
+      const fileUrl = URL.createObjectURL(file.files[0]);
+      const fileName = file.files[0].name;
 
-    // Validate file type
-    if (acceptOnly === 'image' && fileType !== 'image') {
-      toast({
-        description: 'Only image files are allowed, for example png/jpeg/webp/etc...',
-        title: 'Please select an image file.',
-      });
-      return;
-    } else if (acceptOnly === 'video' && fileType !== 'video') {
-      toast({
-        description: 'Only video files are allowed, for example webm/mp4/mov/etc...',
-        title: 'Please select a video file.',
-      });
-      return;
-    } else if (acceptOnly === 'other' && (fileType === 'image' || fileType === 'video')) {
-      toast({
-        description: 'Please try something else, for example pdf/docx/txt/etc...',
-        title: 'Images and Videos are not accepted',
-      });
-      return;
-    }
+      // Validate file type
+      if (acceptOnly === 'image' && fileType !== 'image') {
+        toast({
+          description: 'Only image files are allowed, for example png/jpeg/webp/etc...',
+          title: 'Please select an image file.',
+        });
+        return;
+      } else if (acceptOnly === 'video' && fileType !== 'video') {
+        toast({
+          description: 'Only video files are allowed, for example webm/mp4/mov/etc...',
+          title: 'Please select a video file.',
+        });
+        return;
+      } else if (acceptOnly === 'other' && (fileType === 'image' || fileType === 'video')) {
+        toast({
+          description: 'Please try something else, for example pdf/docx/txt/etc...',
+          title: 'Images and Videos are not accepted',
+        });
+        return;
+      }
 
-    setFilePreview({
-      name: fileName,
-      type: fileType,
-      url: fileUrl,
-    });
+      setFilePreview({
+        name: fileName,
+        type: fileType,
+        url: fileUrl,
+      });
+    }
   };
 
   return (
@@ -89,9 +91,10 @@ const DropFile = ({
               <FormControl>
                 <Input
                   {...field}
-                  className='absolute left-0 top-0 h-full w-full bg-black'
+                  className='absolute left-0 top-0 h-full w-full cursor-pointer bg-black'
                   name={inputName}
                   onChange={(evnt) => previewPhoto(evnt.target)}
+                  title={filePreview.url ? filePreview.name : 'Add an image'}
                   type='file'
                 />
               </FormControl>

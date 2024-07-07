@@ -9,7 +9,7 @@
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { GoTrash } from 'react-icons/go';
 
@@ -60,9 +60,7 @@ const Question = (props) => {
 const EditGig = () => {
   const wallet = useAnchorWallet();
   const { gigId } = useParams();
-  const { data: gigInfo } = useGetFreelancerGigById(gigId);
-
-  console.log({ gigInfo });
+  const { data: gigInfo, refetch: refetchGig } = useGetFreelancerGigById(gigId);
 
   const categories_list = [
     {
@@ -454,8 +452,6 @@ const EditGig = () => {
     }
   }, [gigInfo, auth]);
 
-  console.log({ formInfo }, gigInfo?.gallery);
-
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
 
@@ -520,6 +516,87 @@ const EditGig = () => {
     setDocumentFiles(newDocumentFiles);
   };
 
+  const getFileNameFromUrl = (url) => {
+    if (url) {
+      const parsedUrl = new URL(url);
+      const pathname = parsedUrl.pathname;
+      const filename = pathname.substring(pathname.lastIndexOf('/') + 1);
+      const cleanFilename = filename.split('?')[0].split('#')[0];
+
+      return cleanFilename;
+    } else {
+      return '';
+    }
+  };
+
+  const getFile = useCallback(async (url) => {
+    try {
+      const fileName = getFileNameFromUrl(url);
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const blob = await response.blob();
+      const file = new File([blob], fileName, { type: blob.type });
+
+      return file;
+    } catch (error) {
+      console.error('Error fetching image:', error);
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    const func = async () => {
+      if (formInfo.images.length > 0) {
+        formInfo.images.map(async (imageUrl) => {
+          const file = await getFile(imageUrl);
+          setImageFiles((prev) => {
+            if (!prev.map((i) => i.size).includes(file.size)) {
+              return [...prev, file];
+            }
+
+            return prev;
+          });
+        });
+      }
+    };
+
+    func();
+  }, [formInfo.images, getFile]);
+
+  useEffect(() => {
+    const func = async () => {
+      if (formInfo.documents.length > 0) {
+        formInfo.documents.map(async (docUrl) => {
+          const file = await getFile(docUrl);
+          setDocumentFiles((prev) => {
+            if (!prev.map((i) => i.size).includes(file.size)) {
+              return [...prev, file];
+            }
+
+            return prev;
+          });
+        });
+      }
+    };
+
+    func();
+  }, [formInfo.documents, getFile]);
+
+  useEffect(() => {
+    const func = async () => {
+      if (formInfo.video) {
+        const file = await getFile(formInfo.video);
+        setVideoFile(file);
+      }
+    };
+
+    func();
+  }, [formInfo.video, getFile]);
+
   async function onSubmit() {
     if (!wallet) {
       toast({
@@ -581,6 +658,8 @@ const EditGig = () => {
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
+        await refetchGig();
+
         router.push('../');
       })
       .catch((err) => {
@@ -863,7 +942,8 @@ const EditGig = () => {
                 <DropFile
                   acceptOnly='video'
                   className='aspect-video max-h-80'
-                  fileType='video'
+                  fileName={getFileNameFromUrl(formInfo.video)}
+                  fileType={formInfo.video || null}
                   fileUrl={formInfo.video || null}
                   inputName='video'
                   onFileUpload={handleVideoUpload}
@@ -881,9 +961,10 @@ const EditGig = () => {
                       <DropFile
                         acceptOnly='image'
                         className='aspect-video'
+                        fileName={getFileNameFromUrl(image)}
                         fileType='image'
                         fileUrl={image}
-                        inputName={`gig_image_1_${index}`}
+                        inputName={`gig_image_${index}`}
                         key={index}
                         onFileUpload={(files) => handleImageUpload(files, index)}
                         placeHolderPlusIconSize={40}
@@ -893,9 +974,11 @@ const EditGig = () => {
                     <DropFile
                       acceptOnly='image'
                       className='aspect-video'
-                      inputName={`gig_image_2_${indx}`}
+                      inputName={`gig_image_${indx + (formInfo.images?.length || 0)}`}
                       key={indx}
-                      onFileUpload={(files) => handleImageUpload(files, indx)}
+                      onFileUpload={(files) =>
+                        handleImageUpload(files, indx + (formInfo.images?.length || 0))
+                      }
                       placeHolderPlusIconSize={40}
                     />
                   ))}
@@ -912,20 +995,23 @@ const EditGig = () => {
                       <DropFile
                         acceptOnly='other'
                         className='h-12'
+                        fileName={getFileNameFromUrl(doc)}
                         fileUrl={doc}
-                        inputName={`gig_document_1_${index}`}
+                        inputName={`gig_document_${index}`}
                         key={index}
                         onFileUpload={(files) => handleDocumentUpload(files, index)}
                         placeHolderPlusIconSize={40}
                       />
                     ))}
-                  {Array.from({ length: 2 - (formInfo.documents?.length ?? 0) }, (_, indx) => (
+                  {Array.from({ length: 2 - (formInfo.documents?.length || 0) }, (_, indx) => (
                     <DropFile
                       acceptOnly='other'
                       className='h-12'
-                      inputName={`gig_document_2_${indx}`}
+                      inputName={`gig_document_${indx + (formInfo.documents?.length || 0)}`}
                       key={indx}
-                      onFileUpload={(files) => handleDocumentUpload(files, indx)}
+                      onFileUpload={(files) =>
+                        handleDocumentUpload(files, indx + (formInfo.documents?.length || 0))
+                      }
                       placeHolderPlusIconSize={40}
                     />
                   ))}
