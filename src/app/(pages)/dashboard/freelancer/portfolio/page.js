@@ -62,15 +62,15 @@ const FreelancerPortfolio = () => {
       <div className='flex gap-3 rounded-2xl bg-[#10191d] p-7 mobile:flex-wrap mobile:gap-x-0 mobile:gap-y-5 mobile:p-4'>
         <div className='flex w-full flex-col gap-3 mobile:w-1/3'>
           <p className='text-xl text-[#96B0BD] mobile:text-center mobile:text-sm'>Total earnings</p>
-          <p className='text-4xl font-bold text-white mobile:text-center mobile:text-3xl'>$9K+</p>
+          <p className='text-4xl font-bold text-white mobile:text-center mobile:text-3xl'>$0</p>
         </div>
         <div className='flex w-full flex-col gap-3 mobile:w-1/3'>
           <p className='text-xl text-[#96B0BD] mobile:text-center mobile:text-sm'>Total jobs</p>
-          <p className='text-4xl font-bold text-white mobile:text-center mobile:text-3xl'>44</p>
+          <p className='text-4xl font-bold text-white mobile:text-center mobile:text-3xl'>0</p>
         </div>
         <div className='flex w-full flex-col gap-3 mobile:w-1/3'>
           <p className='text-xl text-[#96B0BD] mobile:text-center mobile:text-sm'>Total hours</p>
-          <p className='text-4xl font-bold text-white mobile:text-center mobile:text-3xl'>240</p>
+          <p className='text-4xl font-bold text-white mobile:text-center mobile:text-3xl'>0</p>
         </div>
         <div className='flex w-fit items-center justify-center gap-3 mobile:w-full'>
           <Link
