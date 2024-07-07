@@ -7,41 +7,58 @@ import CreateRow from './CreateRow';
 import TabView from './TabView';
 
 import { useCustomContext } from '@/context/use-custom';
-import api from '@/utils/api';
+import { useGetFLGigsPostedByProfileId } from '@/hooks/useGetFLGigsPostedByProfileId';
 
 const GigsPage = () => {
   const auth = useCustomContext();
   const [allGigs, setAllGigs] = useState([]);
+  const [page, setPage] = useState(1);
+  const [canLoadMore, setCanLoadMore] = useState(false);
+  const itemsPerPage = 3;
+
+  const { data: flGigs } = useGetFLGigsPostedByProfileId(
+    auth?.currentProfile?._id,
+    page,
+    itemsPerPage
+  );
 
   useEffect(() => {
-    const func = async () => {
-      if (auth.user) {
-        const res = await api.get(
-          `/api/v1/freelancer_gig/find_all_gigs_by_email/${auth.user.email}`
-        );
+    if (flGigs?.length > 0) {
+      setCanLoadMore(true);
+      if (page === 1) {
+        setAllGigs(flGigs);
+      } else {
+        setAllGigs((prev) => {
+          let result = [...prev];
+          const ids = prev.map((item) => item._id);
 
-        if (res.data) {
-          setAllGigs(res.data.data);
-        }
+          flGigs.map((gig) => {
+            if (!ids.includes(gig._id)) {
+              result = [...result, gig];
+            }
+          });
+
+          return result;
+        });
       }
-    };
-
-    func();
-  }, [auth]);
+    } else {
+      if (page === 1) {
+        setAllGigs([]);
+      }
+      setCanLoadMore(false);
+    }
+  }, [flGigs, page]);
 
   return (
     <div className='p-8 mobile:p-0'>
       {allGigs.length ? (
         <>
           <CreateRow />
-          <TabView allGigs={allGigs} />
+          <TabView allGigs={allGigs} canLoadMore={canLoadMore} setPage={setPage} />
         </>
       ) : (
         <BlankView />
       )}
-      <div className='mx-auto mt-8 w-full max-w-full cursor-pointer rounded-xl border border-[#28373E] px-10 py-5 text-center transition hover:bg-[#28373E] md:text-xl mobile:px-5'>
-        Load more +
-      </div>
     </div>
   );
 };

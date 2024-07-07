@@ -559,7 +559,7 @@ const CreateGig = () => {
       .then(async (gigData) => {
         await api
           .post(
-            `/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${gigData.data.gigId}`,
+            `/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${gigData.data.data._id}`,
             formData,
             config
           )

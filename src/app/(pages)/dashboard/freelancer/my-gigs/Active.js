@@ -18,10 +18,14 @@ import {
 import { Separator } from '@/components/ui/seperator';
 import { minutesDifference } from '@/utils/Helpers';
 
-const ActiveView = ({ allGigs }) => {
+const ActiveView = ({ allGigs, canLoadMore, setPage }) => {
   const router = useRouter();
   const handleEdit = (gigId) => {
     router.push(`/dashboard/freelancer/my-gigs/edit/${gigId}`);
+  };
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
   };
 
   return (
@@ -36,7 +40,7 @@ const ActiveView = ({ allGigs }) => {
               alt='Gig Image'
               className='h-full w-full rounded-xl object-cover'
               height={250}
-              src='/assets/images/portfolio_works/portfolio.jpeg'
+              src={gig.gallery?.images[0] || '/assets/images/portfolio_works/portfolio.jpeg'}
               width={250}
             />
           </div>
@@ -95,6 +99,14 @@ const ActiveView = ({ allGigs }) => {
           </div>
         </div>
       ))}
+      {canLoadMore && (
+        <div
+          className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+          onClick={handleLoadMore}
+        >
+          Load More +
+        </div>
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
+import { APIS } from '@/utils/constants';
 import { getStatus } from '@/utils/gigInfo';
 
 export const useFreelancerInfo = (profileId) => {
@@ -11,7 +12,7 @@ export const useFreelancerInfo = (profileId) => {
       if (profileId) {
         try {
           const { data } = await api.get(
-            `/api/v1/freelancer_gig/find_all_gigs_by_profile_id/${profileId}`
+            `${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}`
           );
 
           let activeOrders = [];
