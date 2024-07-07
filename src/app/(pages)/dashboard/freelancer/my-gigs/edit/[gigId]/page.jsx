@@ -62,6 +62,8 @@ const EditGig = () => {
   const { gigId } = useParams();
   const { data: gigInfo } = useGetFreelancerGigById(gigId);
 
+  console.log({ gigInfo });
+
   const categories_list = [
     {
       label: 'Accounting & Consulting',
@@ -452,6 +454,8 @@ const EditGig = () => {
     }
   }, [gigInfo, auth]);
 
+  console.log({ formInfo }, gigInfo?.gallery);
+
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
 
@@ -557,18 +561,23 @@ const EditGig = () => {
         'Content-Type': 'multipart/form-data',
       },
     };
+
     await api
       .put(`/api/v1/freelancer_gig/edit_gig/${gigId}`, formInfo)
-      .then(async (gigData) => {
+      .then(async () => {
         await api
-          .post(`/api/v1/freelancer_gig/upload_attachment/${gigId}`, formData, config)
+          .post(
+            `/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${gigId}`,
+            formData,
+            config
+          )
           .then(async (data) => {
             console.log(data);
           });
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Successfully posted gig titled {formInfo.gigTitle}</h3>,
+          description: <h3>Successfully updated gig titled {formInfo.gigTitle}</h3>,
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
@@ -854,21 +863,12 @@ const EditGig = () => {
                 <DropFile
                   acceptOnly='video'
                   className='aspect-video max-h-80'
+                  fileType='video'
+                  fileUrl={formInfo.video || null}
                   inputName='video'
                   onFileUpload={handleVideoUpload}
                   placeHolderPlusIconSize={60}
                 />
-                {formInfo.video && (
-                  <DropFile
-                    acceptOnly='video'
-                    className='aspect-video max-h-80'
-                    fileType='video'
-                    fileUrl={video}
-                    inputName='video'
-                    onFileUpload={handleVideoUpload}
-                    placeHolderPlusIconSize={60}
-                  />
-                )}
               </div>
               <div className='flex flex-col gap-4'>
                 <p className='text-2xl text-[#F5F5F5]'>Images (up to 4)</p>
@@ -883,17 +883,17 @@ const EditGig = () => {
                         className='aspect-video'
                         fileType='image'
                         fileUrl={image}
-                        inputName={`gig_image_${index}`}
+                        inputName={`gig_image_1_${index}`}
                         key={index}
                         onFileUpload={(files) => handleImageUpload(files, index)}
                         placeHolderPlusIconSize={40}
                       />
                     ))}
-                  {Array.from({ length: 4 - (formInfo.images?.length ?? 0) }, (_, indx) => (
+                  {Array.from({ length: 4 - (formInfo.images?.length || 0) }, (_, indx) => (
                     <DropFile
                       acceptOnly='image'
                       className='aspect-video'
-                      inputName={`gig_image_${indx}`}
+                      inputName={`gig_image_2_${indx}`}
                       key={indx}
                       onFileUpload={(files) => handleImageUpload(files, indx)}
                       placeHolderPlusIconSize={40}
@@ -913,9 +913,9 @@ const EditGig = () => {
                         acceptOnly='other'
                         className='h-12'
                         fileUrl={doc}
-                        inputName={`gig_document_${index}`}
+                        inputName={`gig_document_1_${index}`}
                         key={index}
-                        onFileUpload={(files) => handleDocumentUpload(files, indx)}
+                        onFileUpload={(files) => handleDocumentUpload(files, index)}
                         placeHolderPlusIconSize={40}
                       />
                     ))}
@@ -923,7 +923,7 @@ const EditGig = () => {
                     <DropFile
                       acceptOnly='other'
                       className='h-12'
-                      inputName={`gig_document_${indx}`}
+                      inputName={`gig_document_2_${indx}`}
                       key={indx}
                       onFileUpload={(files) => handleDocumentUpload(files, indx)}
                       placeHolderPlusIconSize={40}

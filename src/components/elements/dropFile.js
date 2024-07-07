@@ -62,44 +62,44 @@ const DropFile = ({
 
   return (
     <div className={className}>
-      {filePreview.type === 'video' ? (
-        <video
-          className='relative flex h-full w-full items-center justify-center rounded-xl border-[#526872] object-cover'
-          controls
-          src={filePreview.url}
-        />
-      ) : filePreview.type === 'image' ? (
-        <img
-          alt='Preview'
-          className='relative flex h-full w-full items-center justify-center rounded-xl border border-white object-cover'
-          src={filePreview.url}
-        />
-      ) : filePreview.url ? (
-        <div className='relative flex h-full w-full items-center justify-center rounded-xl bg-white'>
-          <p className='text-black'>{filePreview.name}</p>
-        </div>
-      ) : (
-        <div className='relative flex h-full w-full items-center justify-center rounded-xl border border-dashed border-[#526872] bg-[#1B272C]'>
-          <GoPlus fill='#526872' size={placeHolderPlusIconSize} />
-          <FormField
-            name={inputName}
-            render={({ field }) => (
-              <FormItem className='absolute left-0 top-0 h-full w-full opacity-0'>
-                <FormControl>
-                  <Input
-                    {...field}
-                    className='absolute left-0 top-0 h-full w-full bg-black'
-                    name={inputName}
-                    onChange={(evnt) => previewPhoto(evnt.target)}
-                    type='file'
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+      <div className='relative flex h-full w-full items-center justify-center rounded-xl border border-dashed border-[#526872] bg-[#1B272C]'>
+        {filePreview.type === 'video' ? (
+          <video
+            className='absolute flex h-full w-full items-center justify-center rounded-xl border-[#526872] object-cover'
+            controls
+            src={filePreview.url}
           />
-        </div>
-      )}
+        ) : filePreview.type === 'image' ? (
+          <img
+            alt='Preview'
+            className='absolute left-0 top-0 h-full w-full cursor-pointer'
+            src={filePreview.url}
+          />
+        ) : filePreview.url ? (
+          <div className='absolute flex h-full w-full items-center justify-center rounded-xl bg-white'>
+            <p className='text-black'>{filePreview.name}</p>
+          </div>
+        ) : (
+          <GoPlus fill='#526872' size={placeHolderPlusIconSize} />
+        )}
+        <FormField
+          name={inputName}
+          render={({ field }) => (
+            <FormItem className='absolute left-0 top-0 h-full w-full opacity-0'>
+              <FormControl>
+                <Input
+                  {...field}
+                  className='absolute left-0 top-0 h-full w-full bg-black'
+                  name={inputName}
+                  onChange={(evnt) => previewPhoto(evnt.target)}
+                  type='file'
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
     </div>
   );
 };
