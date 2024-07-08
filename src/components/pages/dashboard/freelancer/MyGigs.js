@@ -19,6 +19,7 @@ const MyGigs = ({
   setProfileData,
   viewMode,
   title,
+  profileId
 }) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -110,7 +111,7 @@ const MyGigs = ({
     <div className='h-full space-y-3'>
       <div className='realative flex h-full items-center justify-center'>
         <label
-          className={`flex h-full w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
+          className={`flex h-72 w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
           // htmlFor='dropzone-file'
         >
           {loading && (
@@ -135,10 +136,10 @@ const MyGigs = ({
           )}
 
           {imagePath && !loading && (
-            <div className='relative space-y-2 text-center'>
+            <div className='h-full w-full text-center' onClick={() => router.push(`../my-gigs/edit/${gigId}`)}>
               <Image
                 alt='uploaded image'
-                className='h-full w-full rounded-xl object-contain opacity-70'
+                className='h-full w-full rounded-xl aspect-square object-cover opacity-70'
                 height={1000}
                 key={imagePath}
                 src={imagePath}

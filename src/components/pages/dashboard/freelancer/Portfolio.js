@@ -10,7 +10,7 @@ import { backend_url } from '@/utils/variables';
 import { useRouter } from 'next/navigation';
 
 
-const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, viewMode }) => {
+const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, viewMode, title, profileId, portfolioId }) => {
   const [loading, setLoading] = useState(false);
   // const [progress, setProgress] = useState(0);
   const progress = 0;
@@ -82,16 +82,16 @@ const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, vie
     },
     [email, setProfileData, setUploadedImagePath]
   );
-
+  console.log("imagePath", imagePath);
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
     <div className='h-full space-y-3'>
-      <div {...getRootProps()} className='h-full'>
+      <div className='realative flex h-full items-center justify-center'>
         <label
-          className={`flex h-72 w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
+          className={`flex h-72 w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] cursor-pointer transition hover:bg-[#23343b]`}
           htmlFor='dropzone-file1'
-          onClick={(e) => e.stopPropagation()}
+          
         >
           {loading && (
             <div className='max-w-md text-center'>
@@ -112,18 +112,20 @@ const Portfolio = ({ imagePath, setUploadedImagePath, email, setProfileData, vie
           )}
 
           {imagePath && !loading && (
-            <div className='space-y-2 text-center'>
+            <div className='text-center h-full w-full' onClick={() => router.push(`../portfolio-view/${profileId}/${portfolioId}`)}>
               <Image
                 alt='uploaded image'
-                className='w-full rounded-xl object-contain opacity-70'
+                className='w-full rounded-xl aspect-square object-cover opacity-70 h-full'
                 height={1000}
                 key={imagePath}
-                src={`${backend_url}/${imagePath}`}
+                src={`${imagePath}`}
                 width={1000}
               />
             </div>
           )}
         </label>
+        <div className='absolute z-50 text-center text-base cursor-pointer'>{title}</div>
+
         {/* {viewMode === 'edit' && (
           <Input
             {...getInputProps()}
