@@ -433,12 +433,12 @@ const EditGig = () => {
   const form = useForm();
 
   useEffect(() => {
-    if (gigInfo) {
+    if (gigInfo && auth) {
       setFormInfo({
         currentCategory: gigInfo.gigCategory,
         deliveryTime: gigInfo.deliveryTime,
         documents: gigInfo.gallery?.documents,
-        email: auth.user.email,
+        email: auth.user?.email,
         gigDescription: gigInfo.gigDescription,
         gigPrice: gigInfo.gigPrice,
         gigTitle: gigInfo.gigTitle,
@@ -554,7 +554,7 @@ const EditGig = () => {
         formInfo.images.map(async (imageUrl) => {
           const file = await getFile(imageUrl);
           setImageFiles((prev) => {
-            if (!prev.map((i) => i.size).includes(file.size)) {
+            if (!prev.map((i) => i?.size).includes(file?.size)) {
               return [...prev, file];
             }
 
