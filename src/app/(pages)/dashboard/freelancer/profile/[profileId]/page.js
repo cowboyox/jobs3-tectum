@@ -2,7 +2,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { GoChevronDown } from 'react-icons/go';
+import { GoChevronDown, GoChevronUp } from 'react-icons/go';
 import { IoCameraOutline, IoInformationCircleOutline } from 'react-icons/io5';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -182,8 +182,18 @@ const FreelancerProfile = () => {
     userId: '',
     zkpId: '',
   });
+  const [portfolioShowNumber, setPortfolioShowNumber] = useState(3);
+  const [gigShowNumber, setGigShowNumber] = useState(3);
 
   const router = useRouter();
+  const min = (a, b) => {
+    return a < b ? a : b;
+  };
+
+  useEffect(() => {
+    setPortfolioShowNumber(3);
+    setGigShowNumber(3);
+  }, [viewMode])
 
   useEffect(() => {
     if (auth?.currentProfile?._id === profileId) {
@@ -196,6 +206,7 @@ const FreelancerProfile = () => {
   }, [auth, profileId]);
   console.log('isAuth', isAuth);
   console.log('viewMode', viewMode);
+
 
   useEffect(() => {
     (async () => {
@@ -210,6 +221,13 @@ const FreelancerProfile = () => {
         setProfileData((prev) => ({
           ...prev,
           myGigs: data1.data.data,
+        }));
+        const data2 = await api.get(
+          `/api/v1/freelancer_portfolio/find_all_portfolios_by_email/${data.data.profile.email}`
+        );
+        setProfileData((prev) => ({
+          ...prev,
+          portfolio: data2.data.data,
         }));
 
         if (data.data.profile.freelancerBio) {
@@ -498,6 +516,7 @@ const FreelancerProfile = () => {
   const { getRootProps: getAvatarRootProps, getInputProps: getAvatarInputProps } = useDropzone({
     onDrop: onDropHandleAvatarUpload,
   });
+  console.log('profileData', profileData);
 
   return !isLoading ? (
     <div className='p-0'>
@@ -926,18 +945,27 @@ const FreelancerProfile = () => {
                         </div>
                       )}
                     </div>
-                    <div className='hidden grid-cols-3 gap-4 md:grid'>
+                    <div className='hidden grid-cols-1 gap-4 md:grid lg:grid-cols-2 xl:grid-cols-3'>
                       {profileData.portfolio.length > 0 &&
-                        profileData.portfolio.map((imagePath, index) => (
-                          <Portfolio
-                            email={profileData.email}
-                            imagePath={imagePath}
-                            key={index}
-                            setProfileData={setProfileData}
-                            setUploadedImagePath={setUploadedImagePath}
-                            viewMode={'preview'}
-                          />
-                        ))}
+                        profileData.portfolio
+                          .slice(0, min(portfolioShowNumber, profileData.portfolio.length))
+                          .map((index, key) => (
+                            <Portfolio
+                              email={profileData.email}
+                              imagePath={
+                                index.gallery?.images[0]
+                                  ? index.gallery?.images[0]
+                                  : '/assets/images/portfolio_works/portfolio.jpeg'
+                              }
+                              key={key}
+                              setProfileData={setProfileData}
+                              setUploadedImagePath={setUploadedImagePath}
+                              viewMode={isAuth ? 'edit' : 'preview'}
+                              title={index.portfolioTitle}
+                              profileId={profileData._id}
+                              portfolioId={index._id}
+                            />
+                          ))}
                     </div>
                     {profileData.portfolio.length === 0 && (
                       <div className='mb-20 mt-10 text-center text-3xl font-bold'>
@@ -946,23 +974,46 @@ const FreelancerProfile = () => {
                     )}
                     <div className='md:hidden'>
                       <Swiper slidesPerView={1.2} spaceBetween={20}>
-                        <SwiperSlide>
-                          {' '}
-                          <Portfolio />{' '}
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          {' '}
-                          <Portfolio />{' '}
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          {' '}
-                          <Portfolio />{' '}
-                        </SwiperSlide>
+                        {profileData.portfolio.length > 0 &&
+                          profileData.portfolio
+                            .slice(0, min(portfolioShowNumber, profileData.portfolio.length))
+                            .map((index, key) => (
+                              <SwiperSlide>
+                                {' '}
+                                <Portfolio
+                                  email={profileData.email}
+                                  imagePath={
+                                    index.gallery?.images[0]
+                                      ? index.gallery?.images[0]
+                                      : '/assets/images/portfolio_works/portfolio.jpeg'
+                                  }
+                                  key={key}
+                                  setProfileData={setProfileData}
+                                  setUploadedImagePath={setUploadedImagePath}
+                                  viewMode={isAuth ? 'edit' : 'preview'}
+                                  title={index.portfolioTitle}
+                                  profileId={profileData._id}
+                                  portfolioId={index._id}
+                                />{' '}
+                              </SwiperSlide>
+                            ))}
                       </Swiper>
                     </div>
                     {profileData.portfolio.length > 3 && (
-                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                        Show more <GoChevronDown />
+                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex' onClick={() => {
+                        if(portfolioShowNumber < profileData.portfolio.length) setPortfolioShowNumber(portfolioShowNumber + 3);
+                        else setPortfolioShowNumber(3);
+                      }}>
+                        {
+                          portfolioShowNumber >= profileData.portfolio.length
+                           ? 'Show Less' 
+                            : 'Show More'
+                        }
+                        {
+                          portfolioShowNumber >= profileData.portfolio.length
+                          ?<GoChevronUp />
+                          :<GoChevronDown />
+                        }
                       </span>
                     )}
                   </div>
@@ -988,24 +1039,26 @@ const FreelancerProfile = () => {
                         </div>
                       )}
                     </div>
-                    <div className='hidden grid-cols-3 justify-center gap-4 md:grid'>
+                    <div className='hidden grid-cols-1 justify-center gap-4 md:grid lg:grid-cols-2 xl:grid-cols-3'>
                       {profileData.myGigs?.length > 0 &&
-                        profileData.myGigs.map((myGig, index) => (
-                          <MyGigs
-                            email={profileData.email}
-                            gigId={myGig._id}
-                            imagePath={
-                              myGig.gallery?.images[0]
-                                ? myGig.gallery?.images[0]
-                                : '/assets/images/portfolio_works/portfolio.jpeg'
-                            }
-                            key={index}
-                            setProfileData={setProfileData}
-                            setUploadedGigPath={setUploadedGigPath}
-                            title={myGig.gigTitle}
-                            viewMode={'preview'}
-                          />
-                        ))}
+                        profileData.myGigs
+                          .slice(0, min(gigShowNumber, profileData.myGigs.length))
+                          .map((index, key) => (
+                            <MyGigs
+                              email={profileData.email}
+                              gigId={myGig._id}
+                              imagePath={
+                                myGig.gallery?.images[0]
+                                  ? myGig.gallery?.images[0]
+                                  : '/assets/images/portfolio_works/portfolio.jpeg'
+                              }
+                              key={index}
+                              setProfileData={setProfileData}
+                              setUploadedGigPath={setUploadedGigPath}
+                              title={myGig.gigTitle}
+                              viewMode={'preview'}
+                            />
+                          ))}
                     </div>
                     {profileData.myGigs.length === 0 && (
                       <div className='mb-20 mt-10 text-center text-3xl font-bold'>
@@ -1014,23 +1067,45 @@ const FreelancerProfile = () => {
                     )}
                     <div className='md:hidden'>
                       <Swiper slidesPerView={1.2} spaceBetween={20}>
-                        <SwiperSlide>
-                          {' '}
-                          <MyGigs />{' '}
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          {' '}
-                          <MyGigs />{' '}
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          {' '}
-                          <MyGigs />{' '}
-                        </SwiperSlide>
+                        {profileData.myGigs?.length > 0 &&
+                          profileData.myGigs
+                            .slice(0, min(gigShowNumber, profileData.myGigs.length))
+                            .map((index, key) => (
+                              <SwiperSlide>
+                                {' '}
+                                <MyGigs
+                                  email={profileData.email}
+                                  gigId={myGig._id}
+                                  imagePath={
+                                    myGig.gallery?.images[0]
+                                      ? myGig.gallery?.images[0]
+                                      : '/assets/images/portfolio_works/portfolio.jpeg'
+                                  }
+                                  key={index}
+                                  setProfileData={setProfileData}
+                                  setUploadedGigPath={setUploadedGigPath}
+                                  title={myGig.gigTitle}
+                                  viewMode={'preview'}
+                                />{' '}
+                              </SwiperSlide>
+                            ))}
                       </Swiper>
                     </div>
                     {profileData.myGigs.length > 3 && (
-                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                        Show more <GoChevronDown />
+                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex' onClick={() => {
+                        if(gigShowNumber < profileData.myGigs.length) setGigShowNumber(gigShowNumber + 3);
+                        else setGigShowNumber(3);
+                      }}>
+                        {
+                          gigShowNumber >= profileData.myGigs.length
+                           ? 'Show Less' 
+                            : 'Show More'
+                        }
+                        {
+                          gigShowNumber >= profileData.myGigs.length
+                          ?<GoChevronUp />
+                          :<GoChevronDown />
+                        }
                       </span>
                     )}
                   </div>
@@ -1136,18 +1211,27 @@ const FreelancerProfile = () => {
                         </div>
                       )}
                     </div>
-                    <div className='hidden grid-cols-3 gap-4 md:grid'>
+                    <div className='hidden grid-cols-1 gap-4 md:grid lg:grid-cols-2 xl:grid-cols-3'>
                       {profileData.portfolio.length > 0 &&
-                        profileData.portfolio.map((imagePath, index) => (
-                          <Portfolio
-                            email={profileData.email}
-                            imagePath={imagePath}
-                            key={index}
-                            setProfileData={setProfileData}
-                            setUploadedImagePath={setUploadedImagePath}
-                            viewMode={isAuth ? 'edit' : 'preview'}
-                          />
-                        ))}
+                        profileData.portfolio
+                          .slice(0, min(portfolioShowNumber, profileData.portfolio.length))
+                          .map((index, key) => (
+                            <Portfolio
+                              email={profileData.email}
+                              imagePath={
+                                index.gallery?.images[0]
+                                  ? index.gallery?.images[0]
+                                  : '/assets/images/portfolio_works/portfolio.jpeg'
+                              }
+                              key={key}
+                              setProfileData={setProfileData}
+                              setUploadedImagePath={setUploadedImagePath}
+                              viewMode={isAuth ? 'edit' : 'preview'}
+                              title={index.portfolioTitle}
+                              profileId={profileData._id}
+                              portfolioId={index._id}
+                            />
+                          ))}
                       <Portfolio
                         email={profileData.email}
                         imagePath=''
@@ -1158,24 +1242,60 @@ const FreelancerProfile = () => {
                       />
                     </div>
                     <div className='md:hidden'>
-                      <Swiper slidesPerView={1.2} spaceBetween={20}>
-                        <SwiperSlide>
-                          {' '}
-                          <Portfolio />{' '}
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          {' '}
-                          <Portfolio />{' '}
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          {' '}
-                          <Portfolio />{' '}
-                        </SwiperSlide>
-                      </Swiper>
+                      <div className='md:hidden'>
+                        <Swiper slidesPerView={1.2} spaceBetween={20}>
+                          {profileData.portfolio.length > 0 &&
+                            profileData.portfolio
+                              .slice(0, min(portfolioShowNumber, profileData.portfolio.length))
+                              .map((index, key) => (
+                                <SwiperSlide>
+                                  {' '}
+                                  <Portfolio
+                                    email={profileData.email}
+                                    imagePath={
+                                      index.gallery?.images[0]
+                                        ? index.gallery?.images[0]
+                                        : '/assets/images/portfolio_works/portfolio.jpeg'
+                                    }
+                                    key={key}
+                                    setProfileData={setProfileData}
+                                    setUploadedImagePath={setUploadedImagePath}
+                                    viewMode={isAuth ? 'edit' : 'preview'}
+                                    title={index.portfolioTitle}
+                                    profileId={profileData._id}
+                                    portfolioId={index._id}
+                                  />{' '}
+                                </SwiperSlide>
+                              ))}
+                          <SwiperSlide>
+                            {' '}
+                            <Portfolio
+                              email={profileData.email}
+                              imagePath=''
+                              key={`extra-${uploadedImagePath.length}`}
+                              setProfileData={setProfileData}
+                              setUploadedImagePath={setUploadedImagePath}
+                              viewMode={isAuth ? 'edit' : 'preview'}
+                            />{' '}
+                          </SwiperSlide>
+                        </Swiper>
+                      </div>
                     </div>
                     {profileData.portfolio.length > 3 && (
-                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
-                        Show more <GoChevronDown />
+                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex' onClick={() => {
+                        if(portfolioShowNumber < profileData.portfolio.length) setPortfolioShowNumber(portfolioShowNumber + 3);
+                        else setPortfolioShowNumber(3);
+                      }}>
+                        {
+                          portfolioShowNumber >= profileData.portfolio.length
+                           ? 'Show Less' 
+                            : 'Show More'
+                        }
+                        {
+                          portfolioShowNumber >= profileData.portfolio.length
+                          ?<GoChevronUp />
+                          :<GoChevronDown />
+                        }
                       </span>
                     )}
                   </div>
@@ -1202,24 +1322,26 @@ const FreelancerProfile = () => {
                         </div>
                       )}
                     </div>
-                    <div className='hidden grid-cols-3 gap-4 md:grid'>
+                    <div className='hidden grid-cols-1 gap-4 md:grid lg:grid-cols-2 xl:grid-cols-3'>
                       {profileData.myGigs?.length > 0 &&
-                        profileData.myGigs.map((myGig, index) => (
-                          <MyGigs
-                            email={profileData.email}
-                            gigId={myGig._id}
-                            imagePath={
-                              myGig.gallery?.images[0]
-                                ? myGig.gallery?.images[0]
-                                : '/assets/images/portfolio_works/portfolio.jpeg'
-                            }
-                            key={index}
-                            setProfileData={setProfileData}
-                            setUploadedGigPath={setUploadedGigPath}
-                            title={myGig.gigTitle}
-                            viewMode={isAuth ? 'edit' : 'preview'}
-                          />
-                        ))}
+                        profileData.myGigs
+                          .slice(0, min(gigShowNumber, profileData.myGigs.length))
+                          .map((myGig, index) => (
+                            <MyGigs
+                              email={profileData.email}
+                              gigId={myGig._id}
+                              imagePath={
+                                myGig.gallery?.images[0]
+                                  ? myGig.gallery?.images[0]
+                                  : '/assets/images/portfolio_works/portfolio.jpeg'
+                              }
+                              key={index}
+                              setProfileData={setProfileData}
+                              setUploadedGigPath={setUploadedGigPath}
+                              title={myGig.gigTitle}
+                              viewMode={isAuth ? 'edit' : 'preview'}
+                            />
+                          ))}
                       <MyGigs
                         email={profileData.email}
                         imagePath=''
@@ -1232,23 +1354,63 @@ const FreelancerProfile = () => {
                     </div>
                     <div className='md:hidden'>
                       <Swiper slidesPerView={1.2} spaceBetween={20}>
+                        {profileData.myGigs?.length > 0 &&
+                          profileData.myGigs
+                            .slice(0, min(gigShowNumber, profileData.myGigs.length))
+                            .map((myGig, index) => (
+                              <SwiperSlide>
+                                {' '}
+                                <MyGigs
+                                  email={profileData.email}
+                                  gigId={myGig._id}
+                                  imagePath={
+                                    myGig.gallery?.images[0]
+                                      ? myGig.gallery?.images[0]
+                                      : '/assets/images/portfolio_works/portfolio.jpeg'
+                                  }
+                                  key={index}
+                                  setProfileData={setProfileData}
+                                  setUploadedGigPath={setUploadedGigPath}
+                                  title={myGig.gigTitle}
+                                  viewMode={'preview'}
+                                />{' '}
+                              </SwiperSlide>
+                            ))}
                         <SwiperSlide>
-                          {' '}
-                          <MyGigs />{' '}
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          {' '}
-                          <MyGigs />{' '}
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          {' '}
-                          <MyGigs />{' '}
+                          {''}
+                          <MyGigs
+                            email={profileData.email}
+                            imagePath=''
+                            key={`extra-${uploadedGigPath.length}`}
+                            setProfileData={setProfileData}
+                            setUploadedGigPath={setUploadedGigPath}
+                            title={''}
+                            viewMode={isAuth ? 'edit' : 'preview'}
+                          />
+                          {''}
                         </SwiperSlide>
                       </Swiper>
                     </div>
                     {profileData.myGigs.length > 3 && (
-                      <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex'>
                         Show more <GoChevronDown />
+                      </span>
+                    )}
+                    {profileData.myGigs.length > 3 && (
+                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex' onClick={() => {
+                        if(gigShowNumber < profileData.myGigs.length) setGigShowNumber(gigShowNumber + 3);
+                        else setGigShowNumber(3);
+                      }}>
+                        {
+                          gigShowNumber >= profileData.myGigs.length
+                           ? 'Show Less' 
+                            : 'Show More'
+                        }
+                        {
+                          gigShowNumber >= profileData.myGigs.length
+                          ?<GoChevronUp />
+                          :<GoChevronDown />
+                        }
                       </span>
                     )}
                   </div>
@@ -1285,7 +1447,7 @@ const FreelancerProfile = () => {
                               </div>
                             </div>
                           ))}
-                          <span className='mx-auto flex cursor-pointer items-center gap-2 shadow-inner'>
+                          <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex'>
                             Show more <GoChevronDown />
                           </span>
                         </>
