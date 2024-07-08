@@ -25,12 +25,14 @@ import { timeSincePublication } from '@/utils/Helpers';
 const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
     <div className='flex cursor-pointer items-center gap-4 p-0'>
-      <Checkbox
-        checked={isChecked}
-        className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
-        id={props.category_id}
-        onCheckedChange={onCheckedChange}
-      />
+      {props.type === 1 && (
+        <Checkbox
+          checked={isChecked}
+          className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
+          id={props.category_id}
+          onCheckedChange={onCheckedChange}
+        />
+      )}
       <label className='cursor-pointer text-sm text-[#96B0BD]' htmlFor={props.category_id}>
         {props.category_name}
       </label>
@@ -87,6 +89,14 @@ const Stats = ({ searchText, setSearchText }) => {
   const filterCategories = [
     {
       content: [
+        { category_id: 'most_recent', category_name: 'Most Recent' },
+        { category_id: 'most_relevant', category_name: 'Most Relevant' },
+      ],
+      title: 'Sorted By',
+      type: 0,
+    },
+    {
+      content: [
         { category_id: 'any_category', category_name: 'Any Category' },
         { category_id: 'customer_service', category_name: 'Customer Service' },
         { category_id: 'design_creative', category_name: 'Design And Creative' },
@@ -95,75 +105,87 @@ const Stats = ({ searchText, setSearchText }) => {
         { category_id: 'animator', category_name: 'Animator' },
       ],
       title: 'Category',
-    },
-    {
-      content: [
-        { category_id: 'any_amount', category_name: 'Any Amount' },
-        { category_id: 'over_1_earned', category_name: '$1+ Earned' },
-        { category_id: 'over_100_earned', category_name: '$100+ Earned' },
-        { category_id: 'over_1k_earned', category_name: '$1k+ Earned' },
-        { category_id: 'over_10k_earned', category_name: '$10k+ Earned' },
-        { category_id: 'no_earning_yet', category_name: 'No Earning Yet' },
-      ],
-      title: 'Earned Amount',
+      type: 1,
     },
     {
       content: [
         { category_id: 'any_job_success', category_name: 'Any Job Success' },
-        { category_id: '80_up', category_name: '80% & UP' },
-        { category_id: '90_up', category_name: '90% & UP' },
         { category_id: 'top_rated', category_name: 'Top Rated' },
-        { category_id: 'rising_talent', category_name: 'Rising Talent' },
+        { category_id: 'riging_talent', category_name: 'Rising Talent' },
       ],
       title: 'Job Success',
+      type: 1,
     },
     {
       content: [
-        { category_id: 'any_hourly_rate', category_name: 'Any Hourly Rate' },
-        { category_id: '10_below', category_name: '$10 and Below' },
-        { category_id: '10_30', category_name: '$10 - $30' },
-        { category_id: '30_60', category_name: '$30 - $60' },
-        { category_id: '60_above', category_name: '$60 and Above' },
+        { category_id: 'entry_level', category_name: 'Entry-Level' },
+        { category_id: 'intermidiate', category_name: 'Intermidiate' },
+        { category_id: 'expert', category_name: 'Expert' },
       ],
-      title: 'Hourly rate',
+      title: 'Experience',
+      type: 1,
     },
     {
       content: [
-        { category_id: 'over_1_hour', category_name: '1+ Hours Billed' },
-        { category_id: 'over_100_hour', category_name: '100+ Hours Billed' },
-        { category_id: 'over_1000_hour', category_name: '1000+ Hours Billed' },
+        { category_id: 'less_than_5', category_name: 'Less than 5' },
+        { category_id: '5_to_10', category_name: '5 to 10' },
+        { category_id: '10_to_15', category_name: '10 to 15' },
+        { category_id: '15_to_20', category_name: '15 to 20' },
+        { category_id: '20_to_50', category_name: '20 to 50' },
+        { category_id: 'more_than_50', category_name: 'More than 50' },
       ],
-      title: 'Hours billed',
-    },
-
-    {
-      content: [
-        { category_id: 'any_level', category_name: 'Any Level' },
-        { category_id: 'basic', category_name: 'Basic' },
-        { category_id: 'conversational', category_name: 'Conversational' },
-        { category_id: 'fluent', category_name: 'Fluent' },
-        { category_id: 'native_bilingual', category_name: 'Native Or Bilingual' },
-      ],
-      title: 'English Level',
+      title: 'Number Of Applicants',
+      type: 1,
     },
     {
       content: [
-        { category_id: 'freelancers_agencies', category_name: 'Freelancers & Agencies' },
-        { category_id: 'freelancers', category_name: 'Freelancers' },
-        { category_id: 'agencies', category_name: 'Agencies' },
+        { category_id: 'hourly_rate', category_name: 'Hourly Rate' },
+        { category_id: 'fixed_price', category_name: 'Fixed Price' },
       ],
-      title: 'Talent Type',
+      title: 'Job Type',
+      type: 0,
     },
     {
       content: [
-        { category_id: 'any_time', category_name: 'Any Time' },
-        { category_id: '2_weeks', category_name: 'Within 2 Weeks' },
-        { category_id: '1_month', category_name: 'Within 1 Month' },
-        { category_id: '2_month', category_name: 'Within 2 Month' },
+        { category_id: 'less_than_30', category_name: 'Less than 30 hrs/week' },
+        { category_id: 'more_than_30', category_name: 'More than 30 hrs/week' },
       ],
-      title: 'Notice Period',
+      title: 'Hours Per Week',
+      type: 0,
+    },
+    {
+      content: [
+        { category_id: 'US', category_name: 'United States' },
+        { category_id: 'england', category_name: 'England' },
+        { category_id: 'india', category_name: 'India' },
+        { category_id: 'singapore', category_name: 'Singapore' },
+      ],
+      title: 'Client Location',
+      type: 2,
+      choose: 'Select Location',
+    },
+    {
+      content: [
+        { category_id: 'US', category_name: 'GMT+0' },
+        { category_id: 'england', category_name: 'GMT+1' },
+        { category_id: 'india', category_name: 'GMT+5' },
+        { category_id: 'singapore', category_name: 'GMT+8' },
+      ],
+      title: 'Client Timezones',
+      type: 2,
+      choose: 'Select client time zones',
+    },
+    {
+      content: [
+        { category_id: 'previous_client', category_name: 'My Previous clients' },
+        { category_id: 'payment_verified', category_name: 'Payment Verified' },
+      ],
+      title: 'Client Info',
+      type: 0,
     },
   ];
+  const [currentLocation, setCurrentLocation] = useState('United States');
+  const [currentTimeZone, setCurrentTimeZone] = useState('GMT+1');
 
   return (
     <div className='mt-10 flex min-h-96 w-full flex-col font-roboto'>
@@ -225,26 +247,80 @@ const Stats = ({ searchText, setSearchText }) => {
               </PopoverTrigger>
               <PopoverContent
                 align='end'
-                className='my-5 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
+                className='my-5 flex w-full flex-col gap-4 rounded-xl bg-[#10191D] px-6 py-4'
               >
-                <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
+                <div className='grid grid-cols-1 gap-4'>
                   {filterCategories.map((item, index) => {
                     return (
                       <div className='flex flex-col gap-2' key={index}>
                         <div>{item.title}</div>
-                        {item.content.map((con, i) => {
-                          return (
-                            <DropdownItem
-                              category_id={con.category_id}
-                              category_name={con.category_name}
-                              isChecked={filterItems.includes(con.category_name)}
-                              key={i}
-                              onCheckedChange={(value) =>
-                                onCheckedChange(value, con.category_id, con.category_name)
-                              }
-                            />
-                          );
-                        })}
+                        {item.type === 2 && (
+                          <div>
+                            <Select
+                              onValueChange={(e) => {
+                                const prev = filterItems.filter((_fItem) => item.content.map((_item) => _item.category_name).indexOf(_fItem) === -1);
+                                setFilterItems([...prev, e]);
+                              }}
+                            >
+                              <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                                <SelectValue placeholder={item.choose} />
+                              </SelectTrigger>
+                              <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                                <SelectGroup>
+                                  {item.content.map((job_category) => (
+                                    <SelectItem
+                                      key={job_category.category_id}
+                                      value={job_category.category_name}
+                                    >
+                                      {job_category.category_name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
+                        {item.type === 1 && (
+                          <div className='grid md:grid-cols-2 gap-5 grid-cols-1'>
+                            {item.content.map((con, i) => {
+                              return (
+                                <DropdownItem
+                                  category_id={con.category_id}
+                                  category_name={con.category_name}
+                                  isChecked={filterItems.includes(con.category_name)}
+                                  key={i}
+                                  onCheckedChange={(value) =>
+                                    onCheckedChange(value, con.category_id, con.category_name)
+                                  }
+                                  type={item.type}
+                                />
+                              );
+                            })}
+                          </div>
+                        )}
+                        {item.type === 0 && (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                          {item.content.map((con, i) => (
+                            <div key={i} className="flex items-center gap-3">
+                              <input
+                                type="radio"
+                                id={con.category_id}
+                                name={item.title}
+                                value={con.category_name}
+                                checked={filterItems.includes(con.category_name)}
+                                onChange={() => {
+                                  const prev = filterItems.filter((_fItem) => item.content.map((_item) => _item.category_name).indexOf(_fItem) === -1);
+                                  setFilterItems([...prev, con.category_name]);
+                                }}
+                                className="text-[#96B0BD] w-[24px] h-[24px]  accent-[#DC4F13]"
+                              />
+                              <label htmlFor={con.category_id} className='text-[#96B0BD]'>
+                                {con.category_name}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                        )}
                       </div>
                     );
                   })}
