@@ -978,7 +978,7 @@ const FreelancerProfile = () => {
                           profileData.portfolio
                             .slice(0, min(portfolioShowNumber, profileData.portfolio.length))
                             .map((index, key) => (
-                              <SwiperSlide>
+                              <SwiperSlide key={key}>
                                 {' '}
                                 <Portfolio
                                   email={profileData.email}
@@ -987,7 +987,7 @@ const FreelancerProfile = () => {
                                       ? index.gallery?.images[0]
                                       : '/assets/images/portfolio_works/portfolio.jpeg'
                                   }
-                                  key={key}
+                                  
                                   setProfileData={setProfileData}
                                   setUploadedImagePath={setUploadedImagePath}
                                   viewMode={isAuth ? 'edit' : 'preview'}
@@ -1071,7 +1071,7 @@ const FreelancerProfile = () => {
                           profileData.myGigs
                             .slice(0, min(gigShowNumber, profileData.myGigs.length))
                             .map((index, key) => (
-                              <SwiperSlide>
+                              <SwiperSlide key={key}>
                                 {' '}
                                 <MyGigs
                                   email={profileData.email}
@@ -1081,7 +1081,6 @@ const FreelancerProfile = () => {
                                       ? myGig.gallery?.images[0]
                                       : '/assets/images/portfolio_works/portfolio.jpeg'
                                   }
-                                  key={index}
                                   setProfileData={setProfileData}
                                   setUploadedGigPath={setUploadedGigPath}
                                   title={myGig.gigTitle}
@@ -1248,7 +1247,7 @@ const FreelancerProfile = () => {
                             profileData.portfolio
                               .slice(0, min(portfolioShowNumber, profileData.portfolio.length))
                               .map((index, key) => (
-                                <SwiperSlide>
+                                <SwiperSlide key={key}>
                                   {' '}
                                   <Portfolio
                                     email={profileData.email}
@@ -1257,7 +1256,6 @@ const FreelancerProfile = () => {
                                         ? index.gallery?.images[0]
                                         : '/assets/images/portfolio_works/portfolio.jpeg'
                                     }
-                                    key={key}
                                     setProfileData={setProfileData}
                                     setUploadedImagePath={setUploadedImagePath}
                                     viewMode={isAuth ? 'edit' : 'preview'}
@@ -1358,7 +1356,7 @@ const FreelancerProfile = () => {
                           profileData.myGigs
                             .slice(0, min(gigShowNumber, profileData.myGigs.length))
                             .map((myGig, index) => (
-                              <SwiperSlide>
+                              <SwiperSlide key={key}>
                                 {' '}
                                 <MyGigs
                                   email={profileData.email}
@@ -1368,7 +1366,6 @@ const FreelancerProfile = () => {
                                       ? myGig.gallery?.images[0]
                                       : '/assets/images/portfolio_works/portfolio.jpeg'
                                   }
-                                  key={index}
                                   setProfileData={setProfileData}
                                   setUploadedGigPath={setUploadedGigPath}
                                   title={myGig.gigTitle}
@@ -1423,14 +1420,14 @@ const FreelancerProfile = () => {
                             <div className='flex w-full gap-6' key={review.id}>
                               <div className='flex w-full flex-col gap-2 border-b border-[#28373e] pb-6'>
                                 <div className='flex flex-wrap items-center gap-4 md:flex-nowrap'>
-                                  <img
+                                  <Image
                                     alt='user'
                                     className='aspect-square h-10 w-10 rounded-full object-cover'
                                     src={review.imgSrc}
                                   />
                                   <div className='flex w-auto items-center gap-2'>
                                     <p className='text-xl'>{review.name}</p>
-                                    <img
+                                    <Image
                                       alt='flag'
                                       className='h-fit w-6 bg-white'
                                       src={review.flagSrc}
