@@ -29,6 +29,34 @@ const skillSets = [
   'Vue.JS',
 ];
 
+export const TimeZone = {
+  UTC: 'UTC',
+  'UTC+1': 'UTC+1',
+  'UTC+10': 'UTC+10',
+  'UTC+11': 'UTC+11',
+  'UTC+12': 'UTC+12',
+  'UTC+2': 'UTC+2',
+  'UTC+3': 'UTC+3',
+  'UTC+4': 'UTC+4',
+  'UTC+5': 'UTC+5',
+  'UTC+6': 'UTC+6',
+  'UTC+7': 'UTC+7',
+  'UTC+8': 'UTC+8',
+  'UTC+9': 'UTC+9',
+  'UTC-1': 'UTC-1',
+  'UTC-10': 'UTC-10',
+  'UTC-11': 'UTC-11',
+  'UTC-12': 'UTC-12',
+  'UTC-2': 'UTC-2',
+  'UTC-3': 'UTC-3',
+  'UTC-4': 'UTC-4',
+  'UTC-5': 'UTC-5',
+  'UTC-6': 'UTC-6',
+  'UTC-7': 'UTC-7',
+  'UTC-8': 'UTC-8',
+  'UTC-9': 'UTC-9',
+};
+
 const languages = ['English', 'Germany', 'Russian', 'Spanish', 'Portugues'];
 
 const ContractStatus = {
@@ -40,6 +68,7 @@ const ContractStatus = {
   PENDING: 'Pending',
   RELEASED: 'Released',
   STARTED: 'Started',
+  CONFIRMED: 'Confirmed',
 };
 
 const PROGRAM_ID = 'GuqgMVMCLi9daQMHyhnLRGTpgpwNGU4yZXs9GK4SYrbS'; // devnet and mainnet
@@ -73,4 +102,9 @@ export const USER_ROLE = {
   EMPLOYEE: 1,
   EMPLOYER: 2,
   FREELANCER: 0,
+};
+
+export const APIS = {
+  FL_FIND_GIGS_POSTED_BY_PROFILE_ID: '/api/v1/freelancer_gig/find_gigs_posted_by_profile_id',
+  FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID: '/api/v1/freelancer_gig/find_gigs_proposed_by_profile_id',
 };

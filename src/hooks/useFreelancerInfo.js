@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
+import { APIS } from '@/utils/constants';
+import { getStatus } from '@/utils/gigInfo';
 
 export const useFreelancerInfo = (profileId) => {
   return useQuery({
@@ -10,44 +12,42 @@ export const useFreelancerInfo = (profileId) => {
       if (profileId) {
         try {
           const { data } = await api.get(
-            `/api/v1/freelancer_gig/find_all_gigs_by_profile_id/${profileId}`
+            `${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}`
           );
+
           let activeOrders = [];
           let earnings = [];
 
-          if (data?.data) {
-            data.data.map((d) => {
-              d.bidInfos.map((info) => {
-                activeOrders.push({
-                  flFullName: info.fullName,
-                  flId: info.freelancerId,
-                  gigDescription: d.gigDescription,
-                  gigId: d._id,
-                  gigPostDate: d.gigPostDate,
-                  gigPrice: d.gigPrice,
-                  gigTitle: d.gigTitle,
-                });
+          if (data?.submissions) {
+            data.submissions.map((sub) => {
+              activeOrders.push({
+                gigId: sub.clientGig._id,
+                gigPostDate: sub.clientGig.gigPostDate,
+                gigStatus: getStatus(sub.clientGig.gigStatus),
+                gigTitle: sub.clientGig.gigTitle,
+              });
 
-                if (info.hired && info.earns.length > 0) {
-                  info.earns.map((earn) => {
+              if (sub.accepted && sub.proposer.flHistory.length > 0) {
+                sub.proposer.flHistory.map((earns) => {
+                  earns.map((earn) => {
                     if (earn.amount > 0) {
                       earnings.push({
                         amount: earn.amount,
-                        timeStamp: earn.timeStamp,
+                        earnedAt: earn.earnedAt,
                       });
                     }
                   });
-                }
-              });
+                });
+              }
             });
           }
 
           activeOrders = activeOrders.sort(
             (a, b) => new Date(a.gigPostDate) - new Date(b.gigPostDate)
           );
-          earnings = earnings.sort((a, b) => new Date(a.timeStamp) - new Date(b.timeStamp));
+          earnings = earnings.sort((a, b) => new Date(a.earnedAt) - new Date(b.earnedAt));
 
-          return { proposals, recentHires };
+          return { activeOrders, earnings };
         } catch (e) {
           console.error(e);
 

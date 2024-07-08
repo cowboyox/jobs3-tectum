@@ -2,14 +2,16 @@ import React from 'react';
 
 import { NextStep, PrevStep } from '@/components/elements/formSteps/StepContext';
 
-const FormNavigation = () => {
+const FormNavigation = (props) => {
   return (
-    <div className='flex items-center justify-end gap-7'>
-      <PrevStep className='cursor-pointer text-base text-slate-500 transition hover:text-white' />
-      <NextStep
-        className='cursor-pointer rounded-xl bg-[#DC4F13] px-12 py-2 transition hover:bg-white hover:text-black'
-        max={6}
-      />
+    <div className='flex w-full items-center justify-end gap-7'>
+      <div className='flex w-full gap-3 rounded-2xl bg-[#1B272C] p-2'>
+        <PrevStep className='w-full cursor-pointer rounded-2xl py-5 text-center text-white transition hover:bg-white hover:text-black mobile:py-3' />
+        <NextStep
+          className='w-full cursor-pointer rounded-2xl bg-[#DC4F13] py-5 text-center text-white mobile:py-3'
+          max={props.max?props.max:6}
+        />
+      </div>
     </div>
   );
 };

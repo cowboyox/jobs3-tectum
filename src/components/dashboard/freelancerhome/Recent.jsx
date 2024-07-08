@@ -23,7 +23,7 @@ import api from '@/utils/api';
 import { skillSets } from '@/utils/constants';
 import { getDeadline } from '@/utils/gigInfo';
 
-const Recent = ({ search }) => {
+const Recent = ({ searchText }) => {
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [allGigs, setAllGigs] = useState([]);
   const [page, setPage] = useState(1);
@@ -31,8 +31,9 @@ const Recent = ({ search }) => {
   const { toast } = useToast();
   const [canLoadMore, setCanLoadMore] = useState(true);
   const itemsPerPage = 2;
-  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, selectedSkills);
+  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, searchText, selectedSkills);
 
+  console.log(clientGigs);
   useEffect(() => {
     if (clientGigs?.length > 0) {
       setCanLoadMore(true);
@@ -59,6 +60,10 @@ const Recent = ({ search }) => {
       setCanLoadMore(false);
     }
   }, [clientGigs, page]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchText]);
 
   const handleSkillClick = (skill) => {
     setPage(1);

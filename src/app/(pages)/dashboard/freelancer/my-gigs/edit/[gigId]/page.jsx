@@ -7,8 +7,9 @@
 */
 
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
-import { useRouter } from 'next/navigation';
-import React, { useRef, useState } from 'react';
+import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { GoTrash } from 'react-icons/go';
 
@@ -22,7 +23,6 @@ import {
   Form,
   FormControl,
   FormDescription,
-  FormField,
   FormItem,
   FormLabel,
   FormMessage,
@@ -39,6 +39,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
+import { useGetFreelancerGigById } from '@/hooks/useGetFreelancerGigById';
 import api from '@/utils/api';
 
 const Question = (props) => {
@@ -56,8 +57,10 @@ const Question = (props) => {
   );
 };
 
-const CreateGig = () => {
+const EditGig = () => {
   const wallet = useAnchorWallet();
+  const { gigId } = useParams();
+  const { data: gigInfo, refetch: refetchGig } = useGetFreelancerGigById(gigId);
 
   const categories_list = [
     {
@@ -406,36 +409,48 @@ const CreateGig = () => {
       ],
     },
   ];
-  const [currentCategory, setCurrentCategory] = useState('Accounting & Consulting');
-  const [currentSub, setCurrentSub] = useState('Personal Coaching');
+
+  const [formInfo, setFormInfo] = useState({
+    currentCategory: '',
+    deliveryTime: 0,
+    documents: [],
+    email: '',
+    gigDescription: '',
+    gigPrice: 0,
+    gigTitle: '',
+    images: [],
+    question: [],
+    revision: 0,
+    subCategory: '',
+    tags: [],
+    video: '',
+  });
 
   const { toast } = useToast();
   const auth = useCustomContext();
   const router = useRouter();
 
   const form = useForm();
-  const [tags, setTags] = useState([]);
-  const [requirementQuestions, setRequirementQuestions] = useState([
-    {
-      answer_placeholder: '3D design, e-commerce, accounting, marketing, etc',
-      id: 0,
-      question: 'If you are ordering for a business, what’s your industry?',
-    },
-    {
-      answer_placeholder: 'Building a mobile app, creating an animation, developing a game, etc',
-      id: 1,
-      question: 'Is this order part of a bigger project you’re working on?',
-    },
-  ]);
 
-  // const [profile, setProfileData] = useState(null);
-  // useEffect(() => {
-  //   if (auth.user) {
-  //     api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then((res) => {
-  //       setProfileData(res.data.profile);
-  //     });
-  //   }
-  // }, [auth]);
+  useEffect(() => {
+    if (gigInfo && auth) {
+      setFormInfo({
+        currentCategory: gigInfo.gigCategory,
+        deliveryTime: gigInfo.deliveryTime,
+        documents: gigInfo.gallery?.documents,
+        email: auth.user?.email,
+        gigDescription: gigInfo.gigDescription,
+        gigPrice: gigInfo.gigPrice,
+        gigTitle: gigInfo.gigTitle,
+        images: gigInfo.gallery?.images,
+        question: gigInfo.question,
+        revision: gigInfo.revision,
+        subCategory: gigInfo.subCategory,
+        tags: gigInfo.searchKeywords,
+        video: gigInfo.gallery?.video,
+      });
+    }
+  }, [gigInfo, auth]);
 
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
@@ -447,10 +462,10 @@ const CreateGig = () => {
     if (newQuestion && newAnswerPlaceholder) {
       const newQuestionObject = {
         answer_placeholder: newAnswerPlaceholder,
-        id: requirementQuestions.length + 1,
+        id: gigInfo.question.length + 1,
         question: newQuestion,
       };
-      setRequirementQuestions((prevState) => [...prevState, newQuestionObject]);
+      setFormInfo((prev) => ({ ...prev, question: [...prev.question, newQuestionObject] }));
 
       // Clear input fields
       newQuestionRef.current.value = '';
@@ -459,7 +474,7 @@ const CreateGig = () => {
   };
 
   const deleteQuestion = (id) => {
-    setRequirementQuestions((prevState) => prevState.filter((question) => question.id !== id));
+    setFormInfo((prev) => ({ ...prev, question: prev.question.filter((q) => q.id !== id) }));
   };
 
   const [tagInputValue, setTagInputValue] = useState('');
@@ -467,15 +482,18 @@ const CreateGig = () => {
   const tagsInputFocus = (event) => {
     if (event.key === 'Enter' && tagInputValue.trim()) {
       event.preventDefault();
-      if (tags.length < 5) {
-        setTags([...tags, tagInputValue.trim()]);
+      if (formInfo.tags.length < 5) {
+        setFormInfo((prev) => ({ ...prev, tags: [...prev.tags, tagInputValue.trim()] }));
         setTagInputValue('');
       }
     }
   };
 
   const removeTag = (indexToRemove) => {
-    setTags(tags.filter((_, index) => index !== indexToRemove));
+    setFormInfo((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((_, index) => index !== indexToRemove),
+    }));
   };
 
   const [videoFile, setVideoFile] = useState(null);
@@ -497,7 +515,89 @@ const CreateGig = () => {
     newDocumentFiles[index] = files[0]; // Assuming single file for each document slot
     setDocumentFiles(newDocumentFiles);
   };
-  async function onSubmit(values) {
+
+  const getFileNameFromUrl = (url) => {
+    if (url) {
+      const parsedUrl = new URL(url);
+      const pathname = parsedUrl.pathname;
+      const filename = pathname.substring(pathname.lastIndexOf('/') + 1);
+      const cleanFilename = filename.split('?')[0].split('#')[0];
+
+      return cleanFilename;
+    } else {
+      return '';
+    }
+  };
+
+  const getFile = useCallback(async (url) => {
+    try {
+      const fileName = getFileNameFromUrl(url);
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const blob = await response.blob();
+      const file = new File([blob], fileName, { type: blob.type });
+
+      return file;
+    } catch (error) {
+      console.error('Error fetching image:', error);
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    const func = async () => {
+      if (formInfo.images.length > 0) {
+        formInfo.images.map(async (imageUrl) => {
+          const file = await getFile(imageUrl);
+          setImageFiles((prev) => {
+            if (!prev.map((i) => i?.size).includes(file?.size)) {
+              return [...prev, file];
+            }
+
+            return prev;
+          });
+        });
+      }
+    };
+
+    func();
+  }, [formInfo.images, getFile]);
+
+  useEffect(() => {
+    const func = async () => {
+      if (formInfo.documents.length > 0) {
+        formInfo.documents.map(async (docUrl) => {
+          const file = await getFile(docUrl);
+          setDocumentFiles((prev) => {
+            if (!prev.map((i) => i.size).includes(file.size)) {
+              return [...prev, file];
+            }
+
+            return prev;
+          });
+        });
+      }
+    };
+
+    func();
+  }, [formInfo.documents, getFile]);
+
+  useEffect(() => {
+    const func = async () => {
+      if (formInfo.video) {
+        const file = await getFile(formInfo.video);
+        setVideoFile(file);
+      }
+    };
+
+    func();
+  }, [formInfo.video, getFile]);
+
+  async function onSubmit() {
     if (!wallet) {
       toast({
         className:
@@ -509,25 +609,7 @@ const CreateGig = () => {
       return;
     }
 
-    /* Selmani: I didn't check if all the values are being passed here
-     * And i'm sure not all, so please make sure all necessary inputs are being passed
-     * NOTE: Make sure to check the ShadCN documentation
-     * https://ui.shadcn.com/docs/components
-     * I know you know but just wanted to mention :D
-     */
-    let postData = values;
-    postData.gigCategory = currentCategory;
-    postData.subCategory = currentSub;
-    values.question = requirementQuestions;
-    values.searchKeywords = tags;
-    values.email = auth.user.email;
-    values.creator = auth.currentProfile._id;
-    values.walletPubkey = wallet.publicKey;
-    // if (profile) {
-    //   values.creator = profile._id;
-    // }
-
-    if (!values.gigTitle || !values.gigDescription) {
+    if (!formInfo.gigTitle || !formInfo.gigDescription) {
       return toast({
         className:
           'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -538,6 +620,7 @@ const CreateGig = () => {
     }
 
     const formData = new FormData();
+
     if (videoFile) {
       formData.append('file', videoFile);
     }
@@ -545,6 +628,7 @@ const CreateGig = () => {
     imageFiles.forEach((file) => {
       if (file) formData.append('file', file);
     });
+
     documentFiles.forEach((file) => {
       if (file) formData.append('file', file);
     });
@@ -554,35 +638,29 @@ const CreateGig = () => {
         'Content-Type': 'multipart/form-data',
       },
     };
+
     await api
-      .post('/api/v1/freelancer_gig/post_gig', values)
-      .then(async (gigData) => {
+      .put(`/api/v1/freelancer_gig/edit_gig/${gigId}`, formInfo)
+      .then(async () => {
         await api
           .post(
-            `/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${gigData.data.data._id}`,
+            `/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${gigId}`,
             formData,
             config
           )
           .then(async (data) => {
-            console.log('Successfully uploaded', data.data.msg[0]);
-            await api.post('/api/v1/freelancer_gig/send_tg_bot', {
-              gigDescription: values.gigDescription,
-              gigId: gigData.data.gigId,
-              gigTitle: values.gigTitle,
-              imageURL:
-                auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
-              profileName: auth.user.name,
-              profileType: 'Freelancer',
-            });
+            console.log(data);
           });
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Successfully posted gig titled {values.gigTitle}</h3>,
+          description: <h3>Successfully updated gig titled {formInfo.gigTitle}</h3>,
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
-        router.push('./');
+        await refetchGig();
+
+        router.push('../');
       })
       .catch((err) => {
         console.error('Error corrupted during posting gig', err);
@@ -600,12 +678,12 @@ const CreateGig = () => {
     <StepProvider>
       <div className='flex w-full flex-col'>
         <nav className='flex w-full flex-nowrap rounded-t-xl bg-[#10191d] mobile:overflow-x-scroll'>
-          <StepNavItem name='Overview' num={1} />
-          <StepNavItem name='Pricing' num={2} />
-          <StepNavItem name='Description' num={3} />
-          <StepNavItem name='Requirements' num={4} />
-          <StepNavItem name='Gallery' num={5} />
-          <StepNavItem name='Publish' num={6} />
+          <StepNavItem isEdit name='Overview' num={1} />
+          <StepNavItem isEdit name='Pricing' num={2} />
+          <StepNavItem isEdit name='Description' num={3} />
+          <StepNavItem isEdit name='Requirements' num={4} />
+          <StepNavItem isEdit name='Gallery' num={5} />
+          <StepNavItem isEdit name='Publish' num={6} />
         </nav>
         <Form {...form}>
           <form
@@ -613,122 +691,106 @@ const CreateGig = () => {
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormStep stepOrder={1}>
-              <FormField
-                name='gigTitle'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Gig title</FormLabel>
-                    <FormDescription className='text-base text-[#96B0BD]'>
-                      As your Gig storefront, your title is the most important place to include
-                      words that buyers would likely use to search for a service like yours
-                    </FormDescription>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        className='h-18 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
-                        placeholder='I will do something im really good at...'
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem className='flex flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Gig title</FormLabel>
+                <FormDescription className='text-base text-[#96B0BD]'>
+                  As your Gig storefront, your title is the most important place to include words
+                  that buyers would likely use to search for a service like yours
+                </FormDescription>
+                <FormControl>
+                  <Textarea
+                    className='h-18 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
+                    onChange={(e) => setFormInfo((prev) => ({ ...prev, gigTitle: e.target.value }))}
+                    placeholder='I will do something im really good at...'
+                    value={formInfo.gigTitle}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
               <div className='flex flex-col gap-2'>
                 <p className='text-2xl text-[#F5F5F5]'>Category</p>
                 <p className='text-base text-[#96B0BD]'>
                   Choose the category and subcategory most suitable for your Gig
                 </p>
                 <div className='flex gap-3 mobile:flex-col'>
-                  <FormField
-                    name='gigCategory'
-                    render={() => (
-                      <FormItem className='flex w-full flex-col gap-2'>
-                        <FormControl>
-                          <Select
-                            onValueChange={(e) => {
-                              setCurrentCategory(e);
-                            }}
-                          >
-                            <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                              <SelectValue placeholder='Select a Category' />
-                            </SelectTrigger>
-                            <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                              <SelectGroup>
-                                {categories_list.map((job_category) => (
-                                  <SelectItem key={job_category.value} value={job_category.label}>
-                                    {job_category.label}
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <Select
+                        defaultValue={formInfo.currentCategory}
+                        onValueChange={(e) =>
+                          setFormInfo((prev) => ({ ...prev, currentCategory: e }))
+                        }
+                        value={formInfo.currentCategory}
+                      >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Select a Category' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {categories_list.map((job_category) => (
+                              <SelectItem key={job_category.value} value={job_category.label}>
+                                {job_category.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <Select
+                        defaultValue={formInfo.subCategory}
+                        onValueChange={(e) => setFormInfo((prev) => ({ ...prev, subCategory: e }))}
+                        value={formInfo.subCategory}
+                      >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Select a Sub Category' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {subcategory_list.map((subcat) => {
+                              if (subcat.parent === formInfo.currentCategory) {
+                                return subcat.value.map((item, index) => (
+                                  <SelectItem key={index} value={item}>
+                                    {item} {/* Displaying the item instead of index */}
                                   </SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name='subCategory'
-                    render={() => (
-                      <FormItem className='flex w-full flex-col gap-2'>
-                        <FormControl>
-                          <Select
-                            onValueChange={(e) => {
-                              setCurrentSub(e);
-                            }}
-                          >
-                            <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                              <SelectValue placeholder='Select a Sub Category' />
-                            </SelectTrigger>
-                            <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                              <SelectGroup>
-                                {subcategory_list.map((subcat) => {
-                                  if (subcat.parent === currentCategory) {
-                                    return subcat.value.map((item, index) => (
-                                      <SelectItem key={index} value={item}>
-                                        {item} {/* Displaying the item instead of index */}
-                                      </SelectItem>
-                                    ));
-                                  }
-                                  return null; // Return null if condition is not met
-                                })}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                                ));
+                              }
+                              return null; // Return null if condition is not met
+                            })}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 </div>
               </div>
               <div className='flex w-full flex-col gap-4'>
-                <FormField
-                  name='gig_tags'
-                  render={({ field }) => (
-                    <FormItem className='flex flex-col gap-2'>
-                      <FormLabel className='text-2xl text-[#F5F5F5]'>
-                        Search tags, positive keywords
-                      </FormLabel>
-                      <FormDescription className='text-base text-[#96B0BD]'>
-                        Enter search terms you feel buyers will use when looking for service.
-                      </FormDescription>
-                      <FormControl>
-                        <Input defaultValue={tags.join(', ')} type='hidden' {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <FormItem className='flex flex-col gap-2'>
+                  <FormLabel className='text-2xl text-[#F5F5F5]'>
+                    Search tags, positive keywords
+                  </FormLabel>
+                  <FormDescription className='text-base text-[#96B0BD]'>
+                    Enter search terms you feel buyers will use when looking for service.
+                  </FormDescription>
+                  <FormControl>
+                    <Input defaultValue={formInfo.tags.join(', ')} type='hidden' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+
                 <input
-                  className={`h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base ${tags.length >= 5 ? 'cursor-not-allowed opacity-15' : ''}`}
+                  className={`h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base ${formInfo.tags.length >= 5 ? 'cursor-not-allowed opacity-15' : ''}`}
                   onChange={(event) => setTagInputValue(event.target.value)}
                   onKeyDown={tagsInputFocus}
                   placeholder='Enter tag'
                   value={tagInputValue}
                 />
                 <div className='flex flex-wrap items-center gap-3'>
-                  {tags.map((tag, index) => (
+                  {formInfo.tags.map((tag, index) => (
                     <div
                       className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-white px-2 py-1 text-sm text-black'
                       key={index}
@@ -745,102 +807,86 @@ const CreateGig = () => {
               </div>
             </FormStep>
             <FormStep stepOrder={2}>
-              <FormField
-                name='gigPrice'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Setup price</FormLabel>
-                    <FormControl>
-                      <Input
-                        className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
-                        placeholder='Price'
-                        type='number'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name='revision'
-                render={({ field }) => (
-                  <FormItem className='flex w-full flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Revisions</FormLabel>
-                    <FormControl>
-                      <Select defaultValue={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                          <SelectValue placeholder='Revisions' />
-                        </SelectTrigger>
-                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                          <SelectGroup>
-                            {Array.from({ length: 31 }, (_, i) => (
-                              <SelectItem key={i + 1} value={`${i + 1}`}>
-                                {i}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name='deliveryTime'
-                render={({ field }) => (
-                  <FormItem className='flex w-full flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Delivery time</FormLabel>
-                    <FormControl>
-                      <Select defaultValue={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                          <SelectValue placeholder='Delivery time' />
-                        </SelectTrigger>
-                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                          <SelectGroup>
-                            {Array.from({ length: 60 }, (_, i) => (
-                              <SelectItem key={i + 1} value={`${i + 1} days`}>
-                                {i + 1} day{i + 1 > 1 ? 's' : ''}
-                              </SelectItem>
-                            ))}
-                            <SelectItem value='+ 2 months'>+ 2 Months</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem className='flex flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Setup price</FormLabel>
+                <FormControl>
+                  <Input
+                    className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
+                    onChange={(e) => setFormInfo((prev) => ({ ...prev, gigPrice: e.target.value }))}
+                    placeholder='Price'
+                    type='number'
+                    value={formInfo.gigPrice}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+
+              <FormItem className='flex w-full flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Revisions</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={(e) => setFormInfo((prev) => ({ ...prev, revision: e }))}
+                    value={formInfo.revision}
+                  >
+                    <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                      <SelectValue placeholder='Revisions' />
+                    </SelectTrigger>
+                    <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                      <SelectGroup>
+                        {Array.from({ length: 31 }, (_, i) => (
+                          <SelectItem key={i + 1} value={`${i + 1}`}>
+                            {i + 1}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+              <FormItem className='flex w-full flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Delivery time</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={(e) => setFormInfo((prev) => ({ ...prev, deliveryTime: e }))}
+                    value={formInfo.deliveryTime}
+                  >
+                    <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                      <SelectValue placeholder='Delivery time' />
+                    </SelectTrigger>
+                    <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                      <SelectGroup>
+                        {Array.from({ length: 60 }, (_, i) => (
+                          <SelectItem key={i + 1} value={`${i + 1} days`}>
+                            {i + 1} day{i + 1 > 1 ? 's' : ''}
+                          </SelectItem>
+                        ))}
+                        <SelectItem value='+ 2 months'>+ 2 Months</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             </FormStep>
             <FormStep stepOrder={3}>
-              <FormField
-                name='gigDescription'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>
-                      Briefly describe your Gig
-                    </FormLabel>
-                    <FormDescription className='text-base text-[#96B0BD]'>
-                      0/1200 characters
-                      {/* 
-                        * Selmani: Needs to be functional for sure, just 
-                        didn't got a chance to complete it 
-                        * And it would be better to create a reusable component!
-                      */}
-                    </FormDescription>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        className='h-60 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
-                        placeholder='Add info here...'
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem className='flex flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Briefly describe your Gig</FormLabel>
+                <FormDescription className='text-base text-[#96B0BD]'>
+                  0/1200 characters
+                </FormDescription>
+                <FormControl>
+                  <Textarea
+                    className='h-60 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
+                    onChange={(e) =>
+                      setFormInfo((prev) => ({ ...prev, gigDescription: e.target.value }))
+                    }
+                    placeholder='Add info here...'
+                    value={formInfo.gigDescription}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             </FormStep>
             <FormStep stepOrder={4}>
               <div className='text-2xl text-[#F5F5F5]'>
@@ -850,7 +896,7 @@ const CreateGig = () => {
                 Add questions to help buyers provide you with exactly what you need to start working
                 on their order
               </div>
-              {requirementQuestions.map((requirement_question, q_indx) => (
+              {formInfo.question.map((requirement_question, q_indx) => (
                 <Question
                   answer_placeholder={requirement_question.answer_placeholder}
                   id={requirement_question.id}
@@ -896,6 +942,9 @@ const CreateGig = () => {
                 <DropFile
                   acceptOnly='video'
                   className='aspect-video max-h-80'
+                  fileName={getFileNameFromUrl(formInfo.video)}
+                  fileType={formInfo.video || null}
+                  fileUrl={formInfo.video || null}
                   inputName='video'
                   onFileUpload={handleVideoUpload}
                   placeHolderPlusIconSize={60}
@@ -907,13 +956,29 @@ const CreateGig = () => {
                   Het noticed by the right buyers with visual examples of your services
                 </p>
                 <div className='grid gap-5 md:grid-cols-2'>
-                  {Array.from({ length: 4 }, (_, indx) => (
+                  {formInfo.images?.length > 0 &&
+                    formInfo.images?.map((image, index) => (
+                      <DropFile
+                        acceptOnly='image'
+                        className='aspect-video'
+                        fileName={getFileNameFromUrl(image)}
+                        fileType='image'
+                        fileUrl={image}
+                        inputName={`gig_image_${index}`}
+                        key={index}
+                        onFileUpload={(files) => handleImageUpload(files, index)}
+                        placeHolderPlusIconSize={40}
+                      />
+                    ))}
+                  {Array.from({ length: 4 - (formInfo.images?.length || 0) }, (_, indx) => (
                     <DropFile
                       acceptOnly='image'
                       className='aspect-video'
-                      inputName={`gig_image_${indx}`}
+                      inputName={`gig_image_${indx + (formInfo.images?.length || 0)}`}
                       key={indx}
-                      onFileUpload={(files) => handleImageUpload(files, indx)}
+                      onFileUpload={(files) =>
+                        handleImageUpload(files, indx + (formInfo.images?.length || 0))
+                      }
                       placeHolderPlusIconSize={40}
                     />
                   ))}
@@ -925,13 +990,28 @@ const CreateGig = () => {
                   Show some the best work you created in a document. Format: PDF
                 </p>
                 <div className='grid gap-5 md:grid-cols-2'>
-                  {Array.from({ length: 2 }, (_, indx) => (
+                  {formInfo.documents?.length > 0 &&
+                    formInfo.documents?.map((doc, index) => (
+                      <DropFile
+                        acceptOnly='other'
+                        className='h-12'
+                        fileName={getFileNameFromUrl(doc)}
+                        fileUrl={doc}
+                        inputName={`gig_document_${index}`}
+                        key={index}
+                        onFileUpload={(files) => handleDocumentUpload(files, index)}
+                        placeHolderPlusIconSize={40}
+                      />
+                    ))}
+                  {Array.from({ length: 2 - (formInfo.documents?.length || 0) }, (_, indx) => (
                     <DropFile
                       acceptOnly='other'
                       className='h-12'
-                      inputName={`gig_document_${indx}`}
+                      inputName={`gig_document_${indx + (formInfo.documents?.length || 0)}`}
                       key={indx}
-                      onFileUpload={(files) => handleDocumentUpload(files, indx)}
+                      onFileUpload={(files) =>
+                        handleDocumentUpload(files, indx + (formInfo.documents?.length || 0))
+                      }
                       placeHolderPlusIconSize={40}
                     />
                   ))}
@@ -956,7 +1036,13 @@ const CreateGig = () => {
                   Let’s publish your Gig and get you ready to start selling
                 </div>
               </div>
-              <img className='mx-auto w-1/2' src='/assets/images/publish_image.png' />
+              <Image
+                alt='publish_img'
+                className='mx-auto w-1/2'
+                height={500}
+                src='/assets/images/publish_image.png'
+                width={500}
+              />
             </FormStep>
             <FormNavigation />
           </form>
@@ -966,4 +1052,4 @@ const CreateGig = () => {
   );
 };
 
-export default CreateGig;
+export default EditGig;

@@ -3,7 +3,7 @@ import React from 'react';
 import { Separator } from '@/components/ui/seperator';
 import { minutesDifference } from '@/utils/Helpers';
 
-const DraftsView = ({ allGigs }) => {
+const DraftsView = ({ allGigs, canLoadMore }) => {
   return (
     <div className='flex flex-col gap-2'>
       {allGigs.map((gig, index) => (

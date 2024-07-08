@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
+import { APIS } from '@/utils/constants';
 
 export const useGetAllFreelancerGigsProposed = (profileId) => {
   return useQuery({
@@ -9,10 +10,8 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
     queryFn: async () => {
       if (profileId) {
         try {
-          const result = await api.get(
-            `/api/v1/freelancer_gig/find_all_gigs_by_profile_id/${profileId}`
-          );
-          console.log('result in useGetAllFreelancerGigsProposed:', result);
+          const result = await api.get(`${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}`);
+
           const submissions = [];
           const lives = [];
 
@@ -21,7 +20,7 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
               submissions.push({
                 clientId: submission.gigOwner,
                 creator: {
-                  fullName: submission.gigOwner.fullName,
+                  fullName: submission.gigOwner?.fullName,
                 },
                 gigDescription: submission.clientGig.gigDescription,
                 gigId: submission.clientGig._id,
@@ -39,7 +38,7 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
               lives.push({
                 contractId: contract.contractId,
                 creator: {
-                  fullName: contract.gigOwner.fullName,
+                  fullName: contract.gigOwner?.fullName,
                 },
                 freelancerId: contract.proposer,
                 gigDescription: contract.clientGig.gigDescription,

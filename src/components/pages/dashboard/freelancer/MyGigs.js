@@ -1,15 +1,27 @@
+'use client';
+
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { FaX } from 'react-icons/fa6';
 import { GoPlus } from 'react-icons/go';
 
-import { Input } from '@/components/ui/input';
 import RadialProgress from '@/components/ui/progress';
+import { useToast } from '@/components/ui/use-toast';
 import api from '@/utils/api';
-import { backend_url } from '@/utils/variables';
-import { useRouter } from 'next/navigation';
 
-const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode, title }) => {
+const MyGigs = ({
+  imagePath,
+  setUploadedGigPath,
+  email,
+  gigId,
+  setProfileData,
+  viewMode,
+  title,
+  profileId
+}) => {
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   // const [progress, setProgress] = useState(0);
   const router = useRouter();
@@ -83,11 +95,23 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
+  const handleDeleteGig = (gigId) => {
+    api.delete(`/api/v1/freelancer_gig/delete_gig/${gigId}`).then((data) => {
+      return toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully removed gig!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
+      });
+    });
+  };
+
   return (
     <div className='h-full space-y-3'>
-      <div className='h-full realative flex justify-center items-center'>
+      <div className='realative flex h-full items-center justify-center'>
         <label
-          className={`flex h-full w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
+          className={`flex h-72 w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
           // htmlFor='dropzone-file'
         >
           {loading && (
@@ -112,20 +136,25 @@ const MyGigs = ({ imagePath, setUploadedGigPath, email, setProfileData, viewMode
           )}
 
           {imagePath && !loading && (
-            <div className='space-y-2 text-center'>
+            <div className='h-full w-full text-center' onClick={() => router.push(`../my-gigs/edit/${gigId}`)}>
               <Image
                 alt='uploaded image'
-                className='h-full w-full rounded-xl object-contain opacity-70'
+                className='h-full w-full rounded-xl aspect-square object-cover opacity-70'
+                height={1000}
                 key={imagePath}
                 src={imagePath}
                 width={1000}
-                height={1000}
               />
+              {viewMode === 'edit' && (
+                <FaX
+                  className='absolute right-2 top-0 rounded-full bg-[#3E525B] p-[4px]'
+                  onClick={() => handleDeleteGig(gigId)}
+                />
+              )}
             </div>
           )}
-          
         </label>
-        <div className='absolute text-center text-base z-50'>{title}</div>
+        <div className='absolute z-50 text-center text-base'>{title}</div>
       </div>
 
       {/* {!!uploadedImagePath && (
