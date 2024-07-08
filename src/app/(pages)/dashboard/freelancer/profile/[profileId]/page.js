@@ -1356,7 +1356,7 @@ const FreelancerProfile = () => {
                         {profileData.myGigs?.length > 0 &&
                           profileData.myGigs
                             .slice(0, min(gigShowNumber, profileData.myGigs.length))
-                            .map((myGig, index) => (
+                            .map((myGig, key) => (
                               <SwiperSlide key={key}>
                                 {' '}
                                 <MyGigs
