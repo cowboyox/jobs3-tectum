@@ -54,7 +54,6 @@ const FindJob = () => {
   const auth = useCustomContext();
   const { toast } = useToast();
   const [sortOrder, setSortOrder] = useState('');
-  const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
 
   const [gigList, setGigList] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -66,70 +65,52 @@ const FindJob = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState([]);
+  const [isAiSearch, setIsAiSearch] = useState(false);
 
   const itemsPerPage = 2;
-  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, '');
+  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, '', filters);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
   const filterCategories = [
     {
       content: [
-        { category_id: 'earned', category_name: 'Any Earned', category_value: 0 },
-        { category_id: 'earned', category_name: '$1+ Earned', category_value: 1 },
-        { category_id: 'earned', category_name: '$100+ Earned', category_value: 100 },
-        { category_id: 'earned', category_name: '$1k+ Earned', category_value: 1000 },
-        { category_id: 'earned', category_name: '$10k+ Earned', category_value: 10000 },
+        { category_id: 'payment', category_name: 'Any Type', category_value: 'any' },
+        { category_id: 'payment', category_name: 'Hourly', category_value: 'hourly' },
+        { category_id: 'payment', category_name: 'Fixed', category_value: 'fixed' },
       ],
-      title: 'Earned Amount',
+      title: 'Payment',
+    },
+    {
+      content: [
+        { category_id: 'applicants', category_name: 'Any Applicants', category_value: 0 },
+        { category_id: 'applicants', category_name: '1+ Applicants', category_value: 1 },
+        { category_id: 'applicants', category_name: '10+ Applicants', category_value: 10 },
+        { category_id: 'applicants', category_name: '100+ Applicants', category_value: 100 },
+      ],
+      title: 'Applicants',
     },
     {
       content: [
         {
-          category_id: 'languages',
-          category_name: 'Any Language',
+          category_id: 'skills',
+          category_name: 'Any Skills',
           category_value: 'any',
         },
-        { category_id: 'languages', category_name: 'English', category_value: 'English' },
-        { category_id: 'languages', category_name: 'Germany', category_value: 'Germany' },
-        { category_id: 'languages', category_name: 'Russian', category_value: 'Russian' },
-        { category_id: 'languages', category_name: 'Spanish', category_value: 'Spanish' },
-        { category_id: 'languages', category_name: 'Portugues', category_value: 'Portugues' },
-      ],
-      title: 'Languages',
-    },
-    {
-      content: [
         {
-          category_id: 'hourlyRate',
-          category_name: 'Any Rate',
-          category_value: 'any',
+          category_id: 'skills',
+          category_name: 'Web Development',
+          category_value: 'Web Development',
         },
-        { category_id: 'hourlyRate', category_name: '$10 and Below', category_value: [0, 10] },
-        { category_id: 'hourlyRate', category_name: '$10 - $30', category_value: [10, 30] },
-        { category_id: 'hourlyRate', category_name: '$30 - $60', category_value: [30, 60] },
+        { category_id: 'skills', category_name: 'JavaScript', category_value: 'JavaScript' },
         {
-          category_id: 'hourlyRate',
-          category_name: '$60 and Above',
-          category_value: [60, 99999999],
+          category_id: 'skills',
+          category_name: 'Desktop Application',
+          category_value: 'Desktop Application',
         },
+        { category_id: 'skills', category_name: 'Python', category_value: 'Python' },
+        { category_id: 'skills', category_name: 'MongoDB', category_value: 'MongoDB' },
       ],
-      title: 'Hourly rate',
-    },
-    {
-      content: [
-        { category_id: 'hoursBilled', category_name: '1+ Hours Billed', category_value: 1 },
-        { category_id: 'hoursBilled', category_name: '100+ Hours Billed', category_value: 100 },
-        { category_id: 'hoursBilled', category_name: '1000+ Hours Billed', category_value: 1000 },
-      ],
-      title: 'Hours billed',
-    },
-    {
-      content: [
-        { category_id: 'jobSuccess', category_name: 'Any Score', category_value: 0 },
-        { category_id: 'jobSuccess', category_name: '80% & UP', category_value: 80 },
-        { category_id: 'jobSuccess', category_name: '90% & UP', category_value: 90 },
-      ],
-      title: 'Job Success',
+      title: 'Skills',
     },
   ];
 
@@ -306,6 +287,10 @@ const FindJob = () => {
     }
   };
 
+  const handleClearAll = () => {
+    setFilters([]);
+  };
+
   return loaded ? (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d]'>
@@ -335,7 +320,7 @@ const FindJob = () => {
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
-              <button className='flex flex-row items-center justify-center gap-3'>
+              <button className='m-3 flex flex-row items-center justify-center gap-3'>
                 <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
                 {!isSmallScreen && (
                   <div className='flex flex-row gap-2'>
@@ -353,7 +338,7 @@ const FindJob = () => {
               align='end'
               className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
             >
-              <div className='grid grid-cols-1 gap-4 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+              <div className='grid grid-cols-1 gap-4 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-3'>
                 {filterCategories.map((item, index) => {
                   return (
                     <div className='flex flex-col gap-2' key={index}>
