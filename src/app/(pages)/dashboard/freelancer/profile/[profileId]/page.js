@@ -25,6 +25,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 import { languages, skillSets, TimeZone, USER_ROLE } from '@/utils/constants';
+import Image from 'next/image';
 
 import 'swiper/css';
 // import './remove_horizontal_padding.css';

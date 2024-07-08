@@ -87,6 +87,17 @@ const Stats = ({ searchText, setSearchText }) => {
   const filterCategories = [
     {
       content: [
+        { category_id: 'any_category', category_name: 'Any Category' },
+        { category_id: 'customer_service', category_name: 'Customer Service' },
+        { category_id: 'design_creative', category_name: 'Design And Creative' },
+        { category_id: 'accounting', category_name: 'Acounting' },
+        { category_id: 'ai', category_name: 'AI' },
+        { category_id: 'animator', category_name: 'Animator' },
+      ],
+      title: 'Category',
+    },
+    {
+      content: [
         { category_id: 'any_amount', category_name: 'Any Amount' },
         { category_id: 'over_1_earned', category_name: '$1+ Earned' },
         { category_id: 'over_100_earned', category_name: '$100+ Earned' },
@@ -124,15 +135,7 @@ const Stats = ({ searchText, setSearchText }) => {
       ],
       title: 'Hours billed',
     },
-    {
-      content: [
-        { category_id: 'any_category', category_name: 'Any Category' },
-        { category_id: 'customer_service', category_name: 'Customer Service' },
-        { category_id: 'design_creative', category_name: 'Design And Creative' },
-        { category_id: 'web_mobile_software', category_name: 'Web, Mobile & Software' },
-      ],
-      title: 'Category',
-    },
+
     {
       content: [
         { category_id: 'any_level', category_name: 'Any Level' },
