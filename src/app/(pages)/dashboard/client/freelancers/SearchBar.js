@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FaArrowRight, FaX } from 'react-icons/fa6';
 
 import searchOptions from './searchOptions';
@@ -30,55 +30,9 @@ export const SearchBar = ({
   searchType,
   setIsAiSearch,
   setSearchType,
+  filters,
+  setFilters,
 }) => {
-  // const [filterItems, setFilterItems] = useState([]);
-  const [filters, setFilters] = useState({
-    earned: [],
-    hourlyRate: [],
-    hoursBilled: [],
-    jobSuccess: [],
-    languages: [],
-  });
-
-  const setKey = (e) => {
-    setSearchText(e.target.value);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && searchType === searchOptions[1]) {
-      setIsAiSearch(true);
-    } else {
-      setIsAiSearch(false);
-    }
-  };
-
-  const onCheckedChange = (isChecked, id, name, value) => {
-    if (isChecked) {
-      if (id === 'languages' || id === 'hourlyRate') {
-        setFilters((prev) => ({
-          ...prev,
-          [id]: prev.includes('any') ? [value] : [...prev[id], value],
-        }));
-      } else {
-        setFilters((prev) => ({ ...prev, [id]: [...prev[id], value] }));
-      }
-    } else {
-      if (id === 'hourlyRate') {
-        setFilters((prev) => ({
-          ...prev,
-          [id]: prev[id].filter((item) => JSON.stringify(item) !== JSON.stringify(value)),
-        }));
-      } else {
-        setFilters((prev) => ({
-          ...prev,
-          [id]: prev[id].filter((v) => v !== value),
-        }));
-      }
-    }
-  };
-
-  console.log({ filters });
-
   const filterCategories = [
     {
       content: [
@@ -141,14 +95,40 @@ export const SearchBar = ({
     },
   ];
 
+  const setKey = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && searchType === searchOptions[1]) {
+      setIsAiSearch(true);
+    } else {
+      setIsAiSearch(false);
+    }
+  };
+
+  const onCheckedChange = (isChecked, id, name, value) => {
+    if (isChecked) {
+      setFilters((prev) => [...prev, { id, name, value }]);
+    } else {
+      setFilters((prev) =>
+        prev.filter(
+          (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+        )
+      );
+    }
+  };
+
   const handleClearAll = () => {
-    setFilters({
-      earned: [],
-      hourlyRate: [],
-      hoursBilled: [],
-      jobSuccess: [],
-      languages: [],
-    });
+    setFilters([]);
+  };
+
+  const handleRemove = (id, name, value) => {
+    setFilters((prev) =>
+      prev.filter(
+        (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+      )
+    );
   };
 
   return (
@@ -196,13 +176,13 @@ export const SearchBar = ({
             <Popover>
               <PopoverTrigger asChild>
                 <button className='flex flex-row items-center justify-center gap-3'>
-                  <FilterIcon isFiltered={filterItems.length > 0} isSmallScreen={isSmallScreen} />
+                  <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
                   {!isSmallScreen && (
                     <div className='flex flex-row gap-2'>
                       <div>Filter</div>
-                      {filterItems.length > 0 && (
+                      {filters.length > 0 && (
                         <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
-                          {filterItems.length}
+                          {filters.length}
                         </div>
                       )}
                     </div>
@@ -223,7 +203,14 @@ export const SearchBar = ({
                             <DropdownItem
                               category_id={con.category_id + con.category_value}
                               category_name={con.category_name}
-                              isChecked={filterItems.includes(con.category_name)}
+                              isChecked={
+                                !!filters.find(
+                                  (f) =>
+                                    f.id === con.category_id &&
+                                    f.name === con.category_name &&
+                                    JSON.stringify(f.value) === JSON.stringify(con.category_value)
+                                )
+                              }
                               key={i}
                               onCheckedChange={(value) =>
                                 onCheckedChange(
@@ -255,9 +242,9 @@ export const SearchBar = ({
           </div>
         )}
       </div>
-      {filterItems.length > 0 && (
+      {filters.length > 0 && (
         <div className='mt-4 flex touch-pan-x flex-row flex-wrap items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
-          {filterItems.map((item, index) => {
+          {filters.map((filter, index) => {
             return (
               <span
                 className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
@@ -265,9 +252,9 @@ export const SearchBar = ({
               >
                 <FaX
                   className='rounded-full bg-[#3E525B] p-[2px]'
-                  onClick={() => setFilterItems((prev) => prev.filter((_item) => _item !== item))}
+                  onClick={() => handleRemove(filter.id, filter.name, filter.value)}
                 />
-                {item}
+                {filter.name}
               </span>
             );
           })}
