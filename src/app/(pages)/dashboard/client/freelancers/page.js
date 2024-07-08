@@ -19,7 +19,6 @@ import api from '@/utils/api';
 
 const Freelancers = () => {
   const [allFreelancers, setAllFreelancers] = useState([]);
-  const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const [searchText, setSearchText] = useState('');
   const [filters, setFilters] = useState([]);
@@ -32,23 +31,15 @@ const Freelancers = () => {
   const { data: freelancers } = useGetFreelancers(page, itemsPerPage, debouncedSearchText, filters);
   const [loading, setLoading] = useState(false);
 
+  console.log({ freelancers });
+
   useEffect(() => {
     setPage(1);
     setCanLoadMore(true);
   }, [debouncedSearchText]);
 
   useEffect(() => {
-    if (searchType == searchOptions[0]) {
-      const filtered = allFreelancers.filter(
-        (fl) =>
-          fl.email?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
-          fl.freelancerBio?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
-          fl.fullName?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
-          fl.location?.toLowerCase().includes(debouncedSearchText.toLowerCase())
-      );
-
-      setFilteredFreelancers(filtered);
-    } else if (isAiSearch) {
+    if (isAiSearch) {
       setIsAiSearch(false);
       setLoading(true);
       api.get(`/api/v1/profile/ai-search-profile/${searchText}`).then((data) => {
@@ -60,7 +51,7 @@ const Freelancers = () => {
             return profile;
           });
           console.log('new', profiles);
-          setFilteredFreelancers(profiles);
+          setAllFreelancers(profiles);
           setLoading(false);
         }
       });
@@ -122,8 +113,8 @@ const Freelancers = () => {
             </div>
           </div>
         )}
-        {!loading && filteredFreelancers && filteredFreelancers.length > 0
-          ? filteredFreelancers.map((freelancer, index) => {
+        {!loading && allFreelancers && allFreelancers.length > 0
+          ? allFreelancers.map((freelancer, index) => {
               return (
                 <div key={`freelancers_ext_${index}`}>
                   <div
