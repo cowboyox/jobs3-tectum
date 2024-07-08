@@ -1044,7 +1044,7 @@ const FreelancerProfile = () => {
                       {profileData.myGigs?.length > 0 &&
                         profileData.myGigs
                           .slice(0, min(gigShowNumber, profileData.myGigs.length))
-                          .map((index, key) => (
+                          .map((myGig, key) => (
                             <MyGigs
                               email={profileData.email}
                               gigId={myGig._id}
@@ -1053,7 +1053,7 @@ const FreelancerProfile = () => {
                                   ? myGig.gallery?.images[0]
                                   : '/assets/images/portfolio_works/portfolio.jpeg'
                               }
-                              key={index}
+                              key={key}
                               setProfileData={setProfileData}
                               setUploadedGigPath={setUploadedGigPath}
                               title={myGig.gigTitle}
@@ -1071,7 +1071,7 @@ const FreelancerProfile = () => {
                         {profileData.myGigs?.length > 0 &&
                           profileData.myGigs
                             .slice(0, min(gigShowNumber, profileData.myGigs.length))
-                            .map((index, key) => (
+                            .map((myGig, key) => (
                               <SwiperSlide key={key}>
                                 {' '}
                                 <MyGigs
