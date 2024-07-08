@@ -22,16 +22,14 @@ const Page = () => {
     }
   }, [router, pathname]);
 
-  const { gigTitle, gigPostDate, gigPrice, creator: freelancer, walletPubkey } = gigData.data;
-
   return (
     <GigPage
-      freelancerFullName={freelancer?.fullName}
-      freelancerLocation={freelancer?.location}
-      gigPostDate={gigPostDate}
-      gigPrice={gigPrice}
-      gigTitle={gigTitle}
-      walletPubkey={walletPubkey}
+      freelancerFullName={gigData?.creator?.fullName}
+      freelancerLocation={gigData?.creator?.location}
+      gigPostDate={gigData?.gigPostDate}
+      gigPrice={gigData?.gigPrice}
+      gigTitle={gigData?.gigTitle}
+      walletPubkey={gigData?.walletPubkey}
     />
   );
 };

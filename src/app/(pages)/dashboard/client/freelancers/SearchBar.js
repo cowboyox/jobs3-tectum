@@ -222,7 +222,7 @@ export const SearchBar = ({
         {isSmallScreen && searchType === searchOptions[1] && (
           <div className='flex'>
             <button
-              class='flex w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white'
+              className='flex w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white'
               onClick={aiSearch}
             >
               <FaArrowRight />

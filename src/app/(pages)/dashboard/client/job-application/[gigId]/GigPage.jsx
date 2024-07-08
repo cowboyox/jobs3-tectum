@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import { FileUploader } from 'react-drag-drop-files';
 import { FaStar } from 'react-icons/fa6';
 import { GoPlus } from 'react-icons/go';
-import { MdAccessTime } from 'react-icons/md';
+import { MdAccessTime, MdOutlineAttachFile } from 'react-icons/md';
 
 import Coverletter from './Coverletter';
 import Payment from './Payment';
@@ -20,10 +21,41 @@ const GigPage = ({
 }) => {
   const [coverLetter, setCoverLetter] = useState('');
   const [quantity, setQuantity] = useState(1);
+  const [files, setFiles] = useState([]);
 
   const handleChange = (value) => {
     setCoverLetter(value);
   };
+
+  const createFileObjectsFromUrls = async (data) => {
+    const attachmentUrls = data;
+    const filePromises = attachmentUrls.map(async (url) => {
+      const response = await fetch(url, { mode: 'no-cors' });
+
+      const blob = await response.blob();
+      const fileName = url.split('/').pop();
+      return new File([blob], fileName, { type: blob.type });
+    });
+
+    const fileObjects = await Promise.all(filePromises);
+    setFiles(fileObjects);
+  };
+
+  const FileChanged = (file) => {
+    console.log('file', file);
+    console.log('file.length', file.length);
+    let tmp = [];
+    const filesArray = Array.from(file);
+    console.log('filesArray', filesArray);
+    filesArray.map((fi) => tmp.push(fi));
+    setFiles(filesArray);
+    console.log('tmp', tmp);
+  };
+
+  const onRemoveImage = (id) => {
+    setFiles(files.filter((_, i) => i !== id));
+  };
+
   return (
     <div className='flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-center'>
       <div className='w-full md:w-[65%] md:max-w-[690px]'>
@@ -162,7 +194,7 @@ const GigPage = ({
                 </div>
                 <div className='flex w-full items-center justify-between gap-4 md:w-auto'>
                   <button
-                    class='flex h-10 w-10 items-center justify-center rounded-full bg-orange text-lg text-white'
+                    className='flex h-10 w-10 items-center justify-center rounded-full bg-orange text-lg text-white'
                     onClick={() => {
                       if (quantity > 1) {
                         setQuantity((prev) => prev - 1);
@@ -173,7 +205,7 @@ const GigPage = ({
                   </button>
                   <p className='text-xl font-[500] text-medGray'>{quantity}</p>
                   <button
-                    class='flex h-10 w-10 items-center justify-center rounded-full bg-orange text-lg text-white'
+                    className='flex h-10 w-10 items-center justify-center rounded-full bg-orange text-lg text-white'
                     onClick={() => setQuantity((prev) => prev + 1)}
                   >
                     +
@@ -189,34 +221,79 @@ const GigPage = ({
             <p className='text-medGray'>
               Show some the best work you createdin a document. Format: PDF
             </p>
+
             <div className='hidden grid-cols-2 gap-4 md:grid'>
-              <div className='h-full space-y-3'>
-                <div className='h-full'>
-                  <label
-                    className={`h-15 flex w-full cursor-pointer items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] transition hover:bg-[#23343b]`}
-                    htmlFor='dropzone-file'
-                  >
-                    <div className='text-center'>
-                      <div className='mx-auto max-w-min rounded-md p-2'>
-                        <GoPlus size='2.6em' />
+              <div className='rounded-xl border border-dashed border-slate-500'>
+                <FileUploader
+                  fileOrFiles={files}
+                  handleChange={(e) => FileChanged(e)}
+                  label={''}
+                  multiple={true}
+                  types={['jpg', 'jpeg', 'png', 'pdf']}
+                >
+                  <div className='h-full cursor-pointer space-y-3'>
+                    <div className='h-full'>
+                      <div className='text-center'>
+                        <div className='mx-auto max-w-min rounded-md p-2'>
+                          <GoPlus size='2.6em' />
+                        </div>
                       </div>
                     </div>
-                  </label>
-                </div>
+                  </div>
+                </FileUploader>
+                {files.length > 0 && (
+                  <div className='mt-5 flex w-full flex-wrap justify-center gap-0 rounded-xl border border-slate-500'>
+                    {files.map((item, index) => {
+                      return (
+                        <div
+                          aria-hidden
+                          className='flex w-full cursor-pointer items-center justify-center gap-2 p-3 md:w-1/2 lg:w-1/3'
+                          key={index}
+                          onClick={() => onRemoveImage(index)}
+                        >
+                          <MdOutlineAttachFile size={'20px'} />
+                          <span className='overflow-hidden mobile:w-[80%]'>{item.name}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-              <div className='h-full space-y-3'>
-                <div className='h-full'>
-                  <label
-                    className={`h-15 flex w-full cursor-pointer items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] transition hover:bg-[#23343b]`}
-                    htmlFor='dropzone-file'
-                  >
-                    <div className='text-center'>
-                      <div className='mx-auto max-w-min rounded-md p-2'>
-                        <GoPlus size='2.6em' />
+              <div className='rounded-xl border border-dashed border-slate-500'>
+                <FileUploader
+                  fileOrFiles={files}
+                  handleChange={(e) => FileChanged(e)}
+                  label={''}
+                  multiple={true}
+                  types={['pdf']}
+                >
+                  <div className='h-full cursor-pointer space-y-3'>
+                    <div className='h-full'>
+                      <div className='text-center'>
+                        <div className='mx-auto max-w-min rounded-md p-2'>
+                          <GoPlus size='2.6em' />
+                        </div>
                       </div>
                     </div>
-                  </label>
-                </div>
+                  </div>
+                </FileUploader>
+                {files.length > 0 && (
+                  <div className='mt-5 flex w-full flex-wrap justify-center gap-0 rounded-xl border border-slate-500'>
+                    {files.map((item, index) => {
+                      return (
+                        <div
+                          aria-hidden
+                          className='flex w-full cursor-pointer items-center justify-center gap-2 p-3 md:w-1/2 lg:w-1/3'
+                          key={index}
+                          onClick={() => onRemoveImage(index)}
+                        >
+                          <MdOutlineAttachFile size={'20px'} />
+                          <span className='overflow-hidden mobile:w-[80%]'>{item.name}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -226,6 +303,7 @@ const GigPage = ({
       <div className='w-full md:w-[35%] md:max-w-[420px]'>
         <Payment
           coverLetter={coverLetter}
+          files={files}
           gigPrice={gigPrice}
           quantity={quantity}
           walletPubkey={walletPubkey}
