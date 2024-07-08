@@ -288,7 +288,7 @@ const OfferItem = ({
   };
 
   return (
-    <div className='mx-auto flex w-full flex-col gap-2 rounded-xl bg-[#10191D] p-4 sm:p-8'>
+    <div className='mx-auto flex w-full flex-col gap-2 rounded-xl bg-[#10191D] p-4 sm:p-8 mb-5'>
       {
         status ? 
           <div className='flex items-center justify-between'>
