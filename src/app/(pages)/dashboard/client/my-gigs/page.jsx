@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
 
@@ -93,14 +94,17 @@ const MyGigs = () => {
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [page, setPage] = useState(1);
   const itemsPerPage = 2;
+  const auth = useCustomContext();
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (!tmp) {
       router.push(`/?redirect=${pathname}`);
-    } else {
+    } else if (auth?.currentProfile?._id) {
       api
-        .get(`/api/v1/client_gig/get-gig-by-userId?page=${page}&limit=${itemsPerPage}`)
+        .get(
+          `/api/v1/client_gig/get_gigs_posted_by_profile_id/${auth?.currentProfile?._id}?page=${page}&limit=${itemsPerPage}`
+        )
         .then((data) => {
           if (data.data.data && data.data.data.length > 0) {
             setCanLoadMore(true);
@@ -111,7 +115,7 @@ const MyGigs = () => {
           }
         });
     }
-  }, [router, pathname, page]);
+  }, [router, pathname, page, auth?.currentProfile?._id]);
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);

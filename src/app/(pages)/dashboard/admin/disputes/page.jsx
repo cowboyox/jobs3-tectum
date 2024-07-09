@@ -1,6 +1,8 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+
+import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 
 const GigCard = ({}) => {
@@ -31,11 +33,15 @@ const GigCard = ({}) => {
 
 const Disputes = () => {
   const [myGigs, setMyGigs] = useState([]);
+  const auth = useCustomContext();
+
   useEffect(() => {
-    api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
-      setMyGigs(data.data.data);
-    });
-  }, []);
+    api
+      .get(`/api/v1/client_gig/get_gigs_posted_by_profile_id/${auth?.currentProfile?._id}`)
+      .then((data) => {
+        setMyGigs(data.data.data);
+      });
+  }, [auth?.currentProfile?._id]);
 
   return (
     <div className='flex flex-col gap-8'>

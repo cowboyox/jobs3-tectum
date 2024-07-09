@@ -18,10 +18,12 @@ import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaArrowRight, FaEllipsis, FaX } from 'react-icons/fa6';
+import { IoLocationOutline } from 'react-icons/io5';
 import { v4 as uuid } from 'uuid';
 
 import searchOptions from '../freelancers/searchOptions';
 
+import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -42,7 +44,9 @@ import {
 import { Separator } from '@/components/ui/seperator';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
+import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllClientGigsProposed } from '@/hooks/useGetAllClientGigsProposed';
+import { useHandleResize } from '@/hooks/useHandleResize';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
 import {
@@ -52,9 +56,6 @@ import {
   PAYTOKEN_MINT,
   PROGRAM_ID,
 } from '@/utils/constants';
-import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
-import { CiFilter, CiReceipt } from 'react-icons/ci';
-import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
@@ -81,123 +82,152 @@ const Orders = () => {
   const { connection } = useConnection();
 
   const [program, setProgram] = useState();
-  const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
   const [searchType, setSearchType] = useState('normal');
-  const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
+  const [searchKeywords, setSearchKeyWords] = useState('');
+  const debouncedSearchText = useDebounce(searchKeywords);
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const [filters, setFilters] = useState([]);
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllClientGigsProposed(
-    auth?.currentProfile?._id
+    auth?.currentProfile?._id,
+    page,
+    itemsPerPage,
+    debouncedSearchText,
+    filters
   );
 
   const { toast } = useToast();
-  const [searchKeywords, setSearchKeyWords] = useState('');
+
   const [filteredLiveList, setFilteredLiveList] = useState([]);
   const [filteredProposalsList, setFilteredProposalsList] = useState([]);
-  const [filters, setFilters] = useState([]);
-  const filterItems = [
+
+  const { isSmallScreen } = useHandleResize();
+  const filterCategories = [
     {
       content: [
-        { category_id: 'any_amount', category_name: 'Any Amount' },
-        { category_id: 'over_1_earned', category_name: '$1+ Earned' },
-        { category_id: 'over_100_earned', category_name: '$100+ Earned' },
-        { category_id: 'over_1k_earned', category_name: '$1k+ Earned' },
-        { category_id: 'over_10k_earned', category_name: '$10k+ Earned' },
-        { category_id: 'no_earning_yet', category_name: 'No Earning Yet' },
+        { category_id: 'earned', category_name: 'Any Earned', category_value: 0 },
+        { category_id: 'earned', category_name: '$1+ Earned', category_value: 1 },
+        { category_id: 'earned', category_name: '$100+ Earned', category_value: 100 },
+        { category_id: 'earned', category_name: '$1k+ Earned', category_value: 1000 },
+        { category_id: 'earned', category_name: '$10k+ Earned', category_value: 10000 },
       ],
       title: 'Earned Amount',
     },
     {
       content: [
-        { category_id: 'any_job_success', category_name: 'Any Job Success' },
-        { category_id: '80_up', category_name: '80% & UP' },
-        { category_id: '90_up', category_name: '90% & UP' },
-        { category_id: 'top_rated', category_name: 'Top Rated' },
-        { category_id: 'rising_talent', category_name: 'Rising Talent' },
+        {
+          category_id: 'languages',
+          category_name: 'Any Language',
+          category_value: 'any',
+        },
+        { category_id: 'languages', category_name: 'English', category_value: 'English' },
+        { category_id: 'languages', category_name: 'Germany', category_value: 'Germany' },
+        { category_id: 'languages', category_name: 'Russian', category_value: 'Russian' },
+        { category_id: 'languages', category_name: 'Spanish', category_value: 'Spanish' },
+        { category_id: 'languages', category_name: 'Portugues', category_value: 'Portugues' },
       ],
-      title: 'Job Success',
+      title: 'Languages',
     },
     {
       content: [
-        { category_id: 'any_hourly_rate', category_name: 'Any Hourly Rate' },
-        { category_id: '10_below', category_name: '$10 and Below' },
-        { category_id: '10_30', category_name: '$10 - $30' },
-        { category_id: '30_60', category_name: '$30 - $60' },
-        { category_id: '60_above', category_name: '$60 and Above' },
+        {
+          category_id: 'hourlyRate',
+          category_name: 'Any Rate',
+          category_value: 'any',
+        },
+        { category_id: 'hourlyRate', category_name: '$10 and Below', category_value: [0, 10] },
+        { category_id: 'hourlyRate', category_name: '$10 - $30', category_value: [10, 30] },
+        { category_id: 'hourlyRate', category_name: '$30 - $60', category_value: [30, 60] },
+        {
+          category_id: 'hourlyRate',
+          category_name: '$60 and Above',
+          category_value: [60, 99999999],
+        },
       ],
       title: 'Hourly rate',
     },
     {
       content: [
-        { category_id: 'over_1_hour', category_name: '1+ Hours Billed' },
-        { category_id: 'over_100_hour', category_name: '100+ Hours Billed' },
-        { category_id: 'over_1000_hour', category_name: '1000+ Hours Billed' },
+        { category_id: 'hoursBilled', category_name: '1+ Hours Billed', category_value: 1 },
+        { category_id: 'hoursBilled', category_name: '100+ Hours Billed', category_value: 100 },
+        { category_id: 'hoursBilled', category_name: '1000+ Hours Billed', category_value: 1000 },
       ],
       title: 'Hours billed',
     },
     {
       content: [
-        { category_id: 'any_category', category_name: 'Any Category' },
-        { category_id: 'customer_service', category_name: 'Customer Service' },
-        { category_id: 'design_creative', category_name: 'Design And Creative' },
-        { category_id: 'web_mobile_software', category_name: 'Web, Mobile & Software' },
+        { category_id: 'jobSuccess', category_name: 'Any Score', category_value: 0 },
+        { category_id: 'jobSuccess', category_name: '80% & UP', category_value: 80 },
+        { category_id: 'jobSuccess', category_name: '90% & UP', category_value: 90 },
       ],
-      title: 'Category',
-    },
-    {
-      content: [
-        { category_id: 'any_level', category_name: 'Any Level' },
-        { category_id: 'basic', category_name: 'Basic' },
-        { category_id: 'conversational', category_name: 'Conversational' },
-        { category_id: 'fluent', category_name: 'Fluent' },
-        { category_id: 'native_bilingual', category_name: 'Native Or Bilingual' },
-      ],
-      title: 'English Level',
-    },
-    {
-      content: [
-        { category_id: 'freelancers_agencies', category_name: 'Freelancers & Agencies' },
-        { category_id: 'freelancers', category_name: 'Freelancers' },
-        { category_id: 'agencies', category_name: 'Agencies' },
-      ],
-      title: 'Talent Type',
-    },
-    {
-      content: [
-        { category_id: 'any_time', category_name: 'Any Time' },
-        { category_id: '2_weeks', category_name: 'Within 2 Weeks' },
-        { category_id: '1_month', category_name: 'Within 1 Month' },
-        { category_id: '2_month', category_name: 'Within 2 Month' },
-      ],
-      title: 'Notice Period',
+      title: 'Job Success',
     },
   ];
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsSmallScree(true);
-      } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
-        setIsSmallScree(false);
-      } else {
-        setIsSmallScree(false);
-      }
-    };
-
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+    setPage(1);
+    setCanLoadMore(true);
+  }, [debouncedSearchText, mode]);
 
   useEffect(() => {
-    if (gigs) {
-      setFilteredLiveList(gigs.lives);
-      setFilteredProposalsList(gigs.proposals);
+    if (mode === 'live') {
+      if (gigs?.lives?.length > 0) {
+        setCanLoadMore(true);
+        if (page === 1) {
+          setFilteredLiveList(gigs.lives);
+        } else {
+          setFilteredLiveList((prev) => {
+            let result = [...prev];
+            const ids = prev.map((item) => item._id);
+
+            gigs.lives.map((lv) => {
+              if (!ids.includes(lv._id)) {
+                result = [...result, lv];
+              }
+            });
+
+            return result;
+          });
+        }
+      } else {
+        if (page === 1) {
+          setFilteredLiveList([]);
+        }
+        setCanLoadMore(false);
+      }
+    } else {
+      if (gigs?.proposals?.length > 0) {
+        setCanLoadMore(true);
+        if (page === 1) {
+          setFilteredProposalsList(gigs.proposals);
+        } else {
+          setFilteredProposalsList((prev) => {
+            let result = [...prev];
+            const ids = prev.map((item) => item._id);
+
+            gigs.proposals.map((lv) => {
+              if (!ids.includes(lv._id)) {
+                result = [...result, lv];
+              }
+            });
+
+            return result;
+          });
+        }
+      } else {
+        if (page === 1) {
+          setFilteredProposalsList([]);
+        }
+        setCanLoadMore(false);
+      }
     }
-  }, [gigs]);
+  }, [gigs, page, mode]);
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
 
   useEffect(() => {
     if (wallet) {
@@ -492,16 +522,33 @@ const Orders = () => {
       aiSearch();
     }
   };
-  const onCheckedChange = (value, id, name) => {
-    if (value) {
-      setFilters((prev) => [...prev, name]);
+
+  const onCheckedChange = (isChecked, id, name, value) => {
+    if (isChecked) {
+      setFilters((prev) => [...prev, { id, name, value }]);
     } else {
-      setFilters((prev) => prev.filter((item) => item !== name));
+      setFilters((prev) =>
+        prev.filter(
+          (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+        )
+      );
     }
   };
 
   const onChangeType = (e) => {
     setSearchType(e);
+  };
+
+  const handleClearAll = () => {
+    setFilters([]);
+  };
+
+  const handleRemove = (id, name, value) => {
+    setFilters((prev) =>
+      prev.filter(
+        (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+      )
+    );
   };
 
   return (
@@ -533,38 +580,50 @@ const Orders = () => {
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
-                <button className='flex flex-row items-center justify-center gap-3'>
-                  <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
-                  {!isSmallScreen && (
-                    <div className='flex flex-row gap-2'>
-                      <span className='text-[#96B0BD] hidden md:block'>Filter</span>
-                      {filters.length > 0 && (
-                        <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
-                          {filters.length}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </button>
-              </PopoverTrigger>
+              <button className='flex flex-row items-center justify-center gap-3'>
+                <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
+                {!isSmallScreen && (
+                  <div className='flex flex-row gap-2'>
+                    <span className='hidden text-[#96B0BD] md:block'>Filter</span>
+                    {filters.length > 0 && (
+                      <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
+                        {filters.length}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </button>
+            </PopoverTrigger>
             <PopoverContent
               align='end'
               className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
             >
               <div className='grid grid-cols-1 gap-4 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-                {filterItems.map((item, index) => {
+                {filterCategories.map((item, index) => {
                   return (
                     <div className='flex flex-col gap-2' key={index}>
                       <div>{item.title}</div>
                       {item.content.map((con, i) => {
                         return (
                           <DropdownItem
-                            category_id={con.category_id}
+                            category_id={con.category_id + con.category_value}
                             category_name={con.category_name}
-                            checked={filters.includes(con.category_name)}
+                            isChecked={
+                              !!filters.find(
+                                (f) =>
+                                  f.id === con.category_id &&
+                                  f.name === con.category_name &&
+                                  JSON.stringify(f.value) === JSON.stringify(con.category_value)
+                              )
+                            }
                             key={i}
                             onCheckedChange={(value) =>
-                              onCheckedChange(value, con.category_id, con.category_name)
+                              onCheckedChange(
+                                value,
+                                con.category_id,
+                                con.category_name,
+                                con.category_value
+                              )
                             }
                           />
                         );
@@ -600,7 +659,7 @@ const Orders = () => {
       )}
       {filters.length > 0 && (
         <div className='mt-[30px] flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
-          {filters.map((item, index) => {
+          {filters.map((filter, index) => {
             return (
               <span
                 className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
@@ -608,14 +667,14 @@ const Orders = () => {
               >
                 <FaX
                   className='rounded-full bg-[#3E525B] p-[2px]'
-                  onClick={() => setFilters((prev) => prev.filter((_item) => _item !== item))}
+                  onClick={() => handleRemove(filter.id, filter.name, filter.value)}
                 />
-                {item}
+                {filter.name}
               </span>
             );
           })}
 
-          <span className='cursor-pointer' onClick={() => setFilters([])}>
+          <span className='cursor-pointer' onClick={handleClearAll}>
             Clear&nbsp;All
           </span>
         </div>
@@ -1002,9 +1061,14 @@ const Orders = () => {
                   </div>
                 );
               })}
-              <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
-                Load more +{' '}
-              </button>
+              {canLoadMore && (
+                <div
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  onClick={handleLoadMore}
+                >
+                  Load More +
+                </div>
+              )}
             </>
           ) : (
             <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
@@ -1360,9 +1424,14 @@ const Orders = () => {
                   </div>
                 );
               })}
-              <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
-                Load more +{' '}
-              </button>
+              {canLoadMore && (
+                <div
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  onClick={handleLoadMore}
+                >
+                  Load More +
+                </div>
+              )}
             </>
           ) : (
             <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
