@@ -554,6 +554,9 @@ const CreateGig = () => {
         'Content-Type': 'multipart/form-data',
       },
     };
+
+    console.log("values", values);
+
     await api
       .post('/api/v1/freelancer_gig/post_gig', values)
       .then(async (gigData) => {
