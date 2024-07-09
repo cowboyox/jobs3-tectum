@@ -3,23 +3,27 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { CiFilter } from 'react-icons/ci';
 import { FaArrowRight, FaEllipsis, FaX } from 'react-icons/fa6';
+import { IoLocationOutline } from 'react-icons/io5';
 
 import searchOptions from '../../client/freelancers/searchOptions';
 
+import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -29,20 +33,16 @@ import { useCustomContext } from '@/context/use-custom';
 import { useGetClientGigs } from '@/hooks/useGetClientGigs';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
-import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CiFilter, CiReceipt } from 'react-icons/ci';
-import { Checkbox } from '@/components/ui/checkbox';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
-    <div className='flex items-center gap-4 p-0 cursor-pointer'>
-    <Checkbox
-      className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
-      id={props.category_id}
-      onCheckedChange={onCheckedChange}
-      checked={props.checked}
-    />
+    <div className='flex cursor-pointer items-center gap-4 p-0'>
+      <Checkbox
+        checked={props.checked}
+        className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
+        id={props.category_id}
+        onCheckedChange={onCheckedChange}
+      />
       <label className='cursor-pointer text-sm text-[#96B0BD]' htmlFor={props.category_id}>
         {props.category_name}
       </label>
@@ -50,13 +50,11 @@ const DropdownItem = ({ onCheckedChange, ...props }) => {
   );
 };
 
-
 const FindJob = () => {
   const router = useRouter();
   const auth = useCustomContext();
   const { toast } = useToast();
   const [sortOrder, setSortOrder] = useState('');
-  const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
 
   const [gigList, setGigList] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -68,87 +66,52 @@ const FindJob = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState([]);
-
+  const [isAiSearch, setIsAiSearch] = useState(false);
 
   const itemsPerPage = 2;
-  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, "");
+  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, '', filters);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
   const filterItems = [
     {
       content: [
-        { category_id: 'any_amount', category_name: 'Any Amount' },
-        { category_id: 'over_1_earned', category_name: '$1+ Earned' },
-        { category_id: 'over_100_earned', category_name: '$100+ Earned' },
-        { category_id: 'over_1k_earned', category_name: '$1k+ Earned' },
-        { category_id: 'over_10k_earned', category_name: '$10k+ Earned' },
-        { category_id: 'no_earning_yet', category_name: 'No Earning Yet' },
+        { category_id: 'payment', category_name: 'Any Type', category_value: 'any' },
+        { category_id: 'payment', category_name: 'Hourly', category_value: 'hourly' },
+        { category_id: 'payment', category_name: 'Fixed', category_value: 'fixed' },
       ],
-      title: 'Earned Amount',
+      title: 'Payment',
     },
     {
       content: [
-        { category_id: 'any_job_success', category_name: 'Any Job Success' },
-        { category_id: '80_up', category_name: '80% & UP' },
-        { category_id: '90_up', category_name: '90% & UP' },
-        { category_id: 'top_rated', category_name: 'Top Rated' },
-        { category_id: 'rising_talent', category_name: 'Rising Talent' },
+        { category_id: 'applicants', category_name: 'Any Applicants', category_value: 0 },
+        { category_id: 'applicants', category_name: '1+ Applicants', category_value: 1 },
+        { category_id: 'applicants', category_name: '10+ Applicants', category_value: 10 },
+        { category_id: 'applicants', category_name: '100+ Applicants', category_value: 100 },
       ],
-      title: 'Job Success',
+      title: 'Applicants',
     },
     {
       content: [
-        { category_id: 'any_hourly_rate', category_name: 'Any Hourly Rate' },
-        { category_id: '10_below', category_name: '$10 and Below' },
-        { category_id: '10_30', category_name: '$10 - $30' },
-        { category_id: '30_60', category_name: '$30 - $60' },
-        { category_id: '60_above', category_name: '$60 and Above' },
+        {
+          category_id: 'skills',
+          category_name: 'Any Skills',
+          category_value: 'any',
+        },
+        {
+          category_id: 'skills',
+          category_name: 'Web Development',
+          category_value: 'Web Development',
+        },
+        { category_id: 'skills', category_name: 'JavaScript', category_value: 'JavaScript' },
+        {
+          category_id: 'skills',
+          category_name: 'Desktop Application',
+          category_value: 'Desktop Application',
+        },
+        { category_id: 'skills', category_name: 'Python', category_value: 'Python' },
+        { category_id: 'skills', category_name: 'MongoDB', category_value: 'MongoDB' },
       ],
-      title: 'Hourly rate',
-    },
-    {
-      content: [
-        { category_id: 'over_1_hour', category_name: '1+ Hours Billed' },
-        { category_id: 'over_100_hour', category_name: '100+ Hours Billed' },
-        { category_id: 'over_1000_hour', category_name: '1000+ Hours Billed' },
-      ],
-      title: 'Hours billed',
-    },
-    {
-      content: [
-        { category_id: 'any_category', category_name: 'Any Category' },
-        { category_id: 'customer_service', category_name: 'Customer Service' },
-        { category_id: 'design_creative', category_name: 'Design And Creative' },
-        { category_id: 'web_mobile_software', category_name: 'Web, Mobile & Software' },
-      ],
-      title: 'Category',
-    },
-    {
-      content: [
-        { category_id: 'any_level', category_name: 'Any Level' },
-        { category_id: 'basic', category_name: 'Basic' },
-        { category_id: 'conversational', category_name: 'Conversational' },
-        { category_id: 'fluent', category_name: 'Fluent' },
-        { category_id: 'native_bilingual', category_name: 'Native Or Bilingual' },
-      ],
-      title: 'English Level',
-    },
-    {
-      content: [
-        { category_id: 'freelancers_agencies', category_name: 'Freelancers & Agencies' },
-        { category_id: 'freelancers', category_name: 'Freelancers' },
-        { category_id: 'agencies', category_name: 'Agencies' },
-      ],
-      title: 'Talent Type',
-    },
-    {
-      content: [
-        { category_id: 'any_time', category_name: 'Any Time' },
-        { category_id: '2_weeks', category_name: 'Within 2 Weeks' },
-        { category_id: '1_month', category_name: 'Within 1 Month' },
-        { category_id: '2_month', category_name: 'Within 2 Month' },
-      ],
-      title: 'Notice Period',
+      title: 'Skills',
     },
   ];
 
@@ -223,19 +186,6 @@ const FindJob = () => {
 
   const setKey = (e) => {
     setSearchKeyWords(e.target.value);
-    if (searchType == 'normal') {
-      const filtered = gigList.filter(
-        (gig) =>
-          gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.location?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.requiredSkills
-            ?.map((item) => item.toLowerCase())
-            .includes(e.target.value.toLowerCase())
-      );
-      setFilteredGigList(filtered);
-      setFilteredGigShowModeList(new Array(filtered.length).fill(false));
-    }
   };
 
   const setOrder = (value) => {
@@ -269,6 +219,8 @@ const FindJob = () => {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && searchType === 'ai') {
       aiSearch();
+    } else {
+      setIsAiSearch(false);
     }
   };
 
@@ -324,18 +276,26 @@ const FindJob = () => {
     setPage((prev) => prev + 1);
   };
 
-  const onCheckedChange = (value, id, name) => {
-    if (value) {
-      setFilters((prev) => [...prev, name]);
+  const onCheckedChange = (isChecked, id, name, value) => {
+    if (isChecked) {
+      setFilters((prev) => [...prev, { id, name, value }]);
     } else {
-      setFilters((prev) => prev.filter((item) => item !== name));
+      setFilters((prev) =>
+        prev.filter(
+          (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+        )
+      );
     }
+  };
+
+  const handleClearAll = () => {
+    setFilters([]);
   };
 
   return loaded ? (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d]'>
-        <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
+        <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -348,7 +308,7 @@ const FindJob = () => {
             </SelectContent>
           </Select>
           <input
-            className='w-full text-white bg-transparent outline-none mobile:text-sm'
+            className='w-full bg-transparent text-white outline-none mobile:text-sm'
             onChange={(e) => setKey(e)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
@@ -361,19 +321,25 @@ const FindJob = () => {
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
-              <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
-                <CiFilter className='mobile:max-w-4' fill='#96B0BD' size={20} />
-                <span className='text-[#96B0BD] mobile:text-sm'>Filter</span>
-                <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
-                  {filters.length}
-                </span>
-              </div>
+              <button className='m-3 flex flex-row items-center justify-center gap-3'>
+                <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
+                {!isSmallScreen && (
+                  <div className='flex flex-row gap-2'>
+                    <div>Filter</div>
+                    {filters.length > 0 && (
+                      <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
+                        {filters.length}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </button>
             </PopoverTrigger>
             <PopoverContent
               align='end'
               className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
             >
-              <div className='grid lg:grid-cols-4 md:grid-cols-3 xxs:grid-cols-2 grid-cols-1 gap-4'>
+              <div className='grid grid-cols-1 gap-4 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
                 {filterItems.map((item, index) => {
                   return (
                     <div className='flex flex-col gap-2' key={index}>
@@ -381,12 +347,24 @@ const FindJob = () => {
                       {item.content.map((con, i) => {
                         return (
                           <DropdownItem
-                            category_id={con.category_id}
+                            category_id={con.category_id + con.category_value}
                             category_name={con.category_name}
-                            checked={filters.includes(con.category_name)}
+                            isChecked={
+                              !!filters.find(
+                                (f) =>
+                                  f.id === con.category_id &&
+                                  f.name === con.category_name &&
+                                  JSON.stringify(f.value) === JSON.stringify(con.category_value)
+                              )
+                            }
                             key={i}
                             onCheckedChange={(value) =>
-                              onCheckedChange(value, con.category_id, con.category_name)
+                              onCheckedChange(
+                                value,
+                                con.category_id,
+                                con.category_name,
+                                con.category_value
+                              )
                             }
                           />
                         );
@@ -401,7 +379,7 @@ const FindJob = () => {
         {searchType === 'ai' && (
           <div className='flex'>
             <button
-              class='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
+              className='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
               onClick={aiSearch}
             >
               <FaArrowRight />
@@ -410,8 +388,8 @@ const FindJob = () => {
         )}
       </div>
       {filters.length > 0 && (
-        <div className='flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
-          {filters.map((item, index) => {
+        <div className='mt-4 flex touch-pan-x flex-row flex-wrap items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
+          {filters.map((filter, index) => {
             return (
               <span
                 className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
@@ -419,26 +397,26 @@ const FindJob = () => {
               >
                 <FaX
                   className='rounded-full bg-[#3E525B] p-[2px]'
-                  onClick={() => setFilters((prev) => prev.filter((_item) => _item !== item))}
+                  onClick={() => handleRemove(filter.id, filter.name, filter.value)}
                 />
-                {item}
+                {filter.name}
               </span>
             );
           })}
 
-          <span className='cursor-pointer' onClick={() => setFilters([])}>
+          <span className='cursor-pointer' onClick={handleClearAll}>
             Clear&nbsp;All
           </span>
         </div>
       )}
       {loading && (
-        <div className='flex justify-center h-screen pt-6 space-x-2 z-1'>
+        <div className='z-1 flex h-screen justify-center space-x-2 pt-6'>
           <div className='mt-8 flex h-fit items-baseline text-[20px]'>
             <p className='mr-3'>The neural network is thinking</p>
             <div className='flex gap-1'>
               <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.3s]'></div>
               <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.15s]'></div>
-              <div className='w-2 h-2 bg-white rounded-full animate-bounce'></div>
+              <div className='h-2 w-2 animate-bounce rounded-full bg-white'></div>
             </div>
           </div>
         </div>
@@ -517,7 +495,7 @@ const FindJob = () => {
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button
-                                  className='bg-transparent border-none hover:bg-transparent'
+                                  className='border-none bg-transparent hover:bg-transparent'
                                   variant='outline'
                                 >
                                   <FaEllipsis />
@@ -691,12 +669,17 @@ const FindJob = () => {
                           </div>
                         )}
                         {!isSmallScreen && (
-                          <div className='flex flex-col justify-between w-full'>
-                            <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
-                              <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl cursor-pointer' onClick={() => router.push(`/dashboard/freelancer/job-application/${gig._id}`)}>
+                          <div className='flex w-full flex-col justify-between'>
+                            <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                              <div
+                                className='mt-3 flex-1 cursor-pointer text-left text-[20px] md:mt-0 md:text-2xl'
+                                onClick={() =>
+                                  router.push(`/dashboard/freelancer/job-application/${gig._id}`)
+                                }
+                              >
                                 {gig.gigTitle}
                               </div>
-                              <div className='flex flex-row items-center flex-none gap-2'>
+                              <div className='flex flex-none flex-row items-center gap-2'>
                                 {!gig?.likeUsers?.includes(
                                   auth?.currentProfile?.userId?.toString()
                                 ) ? (
@@ -752,7 +735,7 @@ const FindJob = () => {
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
                                     <Button
-                                      className='bg-transparent border-none hover:bg-transparent'
+                                      className='border-none bg-transparent hover:bg-transparent'
                                       variant='outline'
                                     >
                                       <FaEllipsis />
@@ -925,7 +908,7 @@ const FindJob = () => {
                                 </DropdownMenu>
                               </div>
                             </div>
-                            <div className='flex flex-row-reverse items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
+                            <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
                               <div className='flex flex-row items-center gap-2'>
                                 <svg
                                   fill='none'
@@ -1037,13 +1020,13 @@ const FindJob = () => {
                         )}
                       </div>
                       {isSmallScreen && (
-                        <div className='flex flex-col justify-between w-full'>
-                          <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
+                        <div className='flex w-full flex-col justify-between'>
+                          <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
                             <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                               {gig.gigTitle}
                             </div>
                           </div>
-                          <div className='flex flex-row-reverse items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
+                          <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
                             <div className='flex flex-row items-center gap-2'>
                               <svg
                                 fill='none'
@@ -1091,7 +1074,7 @@ const FindJob = () => {
                               {gig.location}
                             </div>
                           </div>
-                          <div className='flex items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
+                          <div className='mt-3 flex items-start justify-between gap-6 md:flex-row md:justify-start'>
                             <div className='flex flex-row items-center gap-2'>
                               <svg
                                 fill='none'
@@ -1231,7 +1214,7 @@ const FindJob = () => {
                       </div>
                     </div>
                     {gig.reason && (
-                      <div className='p-4 text-white text-md rounded-b-xl bg-orange'>
+                      <div className='text-md rounded-b-xl bg-orange p-4 text-white'>
                         {gig.reason}
                       </div>
                     )}

@@ -18,6 +18,7 @@ const FreelancerPortfolio = ({params}) => {
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
   };
+  const [totalNumber, setTotalNumber] = useState(0);
   useEffect(() => {
       api
         .get(`/api/v1/freelancer_portfolio/find_all_portfolios_by_profileId/${params.id}?page=${page}&limit=${itemsPerPage}`)
@@ -25,16 +26,23 @@ const FreelancerPortfolio = ({params}) => {
           if (data.data.data) {
             setPortfolioAllList(data.data.data);
           }
+            setTotalNumber(data.data.countNumber);
+          
         })
         .catch((err) => {
           console.error('Error corrupted while getting all gigs: ', err);
         });
   }, [page, params.id]);
+  console.log("totalNumber", totalNumber);
   useEffect(() => {
     if (portfolioAllList?.length > 0) {
       setCanLoadMore(true);
       if (page === 1) {
         setPortfolioList(portfolioAllList);
+        if(totalNumber > portfolioAllList.length){
+          setCanLoadMore(true);
+        }
+        else setCanLoadMore(false);
       } else {
         setPortfolioList((prev) => {
           let result = [...prev];
@@ -45,6 +53,7 @@ const FreelancerPortfolio = ({params}) => {
               result = [...result, fl];
             }
           });
+          if(result.length === totalNumber) setCanLoadMore(false);
           return result;
         });
       }
@@ -54,7 +63,7 @@ const FreelancerPortfolio = ({params}) => {
       }
       setCanLoadMore(false);
     }
-  }, [portfolioAllList, page]);
+  }, [portfolioAllList, page, totalNumber]);
   return (
     <div className='freelancer-portfolio flex flex-col py-6 md:px-4'>
       <div className='flex gap-3 rounded-2xl bg-[#10191d] p-7 mobile:flex-wrap mobile:gap-x-0 mobile:gap-y-5 mobile:p-4'>
@@ -98,7 +107,7 @@ const FreelancerPortfolio = ({params}) => {
       </div>
       {canLoadMore && (
         <div
-          className='mx-auto mt-4 max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:w-1/3 md:text-xl mobile:w-full mobile:px-5'
+          className='mx-auto mt-4 max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black w-full md:text-xl mobile:w-full mobile:px-5'
           onClick={handleLoadMore}
         >
           Load more +
