@@ -149,7 +149,7 @@ const SideBar = () => {
       name: 'Gig Search',
     },
     {
-      href: `/dashboard/freelancer/my-gigs`,
+      href: `/dashboard/freelancer/my-gigs/${auth?.currentProfile?._id}`,
       icon: (
         <svg
           fill='none'

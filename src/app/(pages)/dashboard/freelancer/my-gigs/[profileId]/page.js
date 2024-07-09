@@ -9,7 +9,7 @@ import TabView from './TabView';
 import { useCustomContext } from '@/context/use-custom';
 import { useGetFLGigsPostedByProfileId } from '@/hooks/useGetFLGigsPostedByProfileId';
 
-const GigsPage = () => {
+const GigsPage = ({params}) => {
   const auth = useCustomContext();
   const [allGigs, setAllGigs] = useState([]);
   const [page, setPage] = useState(1);
@@ -17,7 +17,7 @@ const GigsPage = () => {
   const itemsPerPage = 3;
 
   const { data: flGigs } = useGetFLGigsPostedByProfileId(
-    auth?.currentProfile?._id,
+    params.profileId,
     page,
     itemsPerPage
   );
@@ -53,7 +53,7 @@ const GigsPage = () => {
     <div className='p-8 mobile:p-0'>
       {allGigs.length ? (
         <>
-          <CreateRow />
+          <CreateRow Id={params.profileId}/>
           <TabView allGigs={allGigs} canLoadMore={canLoadMore} setPage={setPage} />
         </>
       ) : (
