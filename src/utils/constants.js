@@ -63,12 +63,12 @@ const ContractStatus = {
   ACTIVE: 'Active',
   CANCELLED: 'Cancelled',
   COMPLETED: 'Completed',
+  CONFIRMED: 'Confirmed',
   DELIVERED: 'Delivered',
   PENDING: 'Pending',
   PENDING: 'Pending',
   RELEASED: 'Released',
   STARTED: 'Started',
-  CONFIRMED: 'Confirmed',
 };
 
 const PROGRAM_ID = 'GuqgMVMCLi9daQMHyhnLRGTpgpwNGU4yZXs9GK4SYrbS'; // devnet and mainnet
@@ -105,6 +105,7 @@ export const USER_ROLE = {
 };
 
 export const APIS = {
+  CL_FIND_GIGS: '/api/v1/client_gig/get_gigs',
   FL_FIND_GIGS_POSTED_BY_PROFILE_ID: '/api/v1/freelancer_gig/find_gigs_posted_by_profile_id',
   FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID: '/api/v1/freelancer_gig/find_gigs_proposed_by_profile_id',
 };
