@@ -254,7 +254,7 @@ const Offer = () => {
           </Select>
           <input
             className='w-full bg-transparent text-white outline-none mobile:text-sm'
-            onChange={(e) => setKey(e)}
+            // onChange={(e) => setKey(e)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
           />
