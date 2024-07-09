@@ -17,28 +17,27 @@ import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapte
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { FaEllipsis, FaX } from 'react-icons/fa6';
+import { CiFilter } from 'react-icons/ci';
+import { FaArrowRight, FaEllipsis, FaX } from 'react-icons/fa6';
+import { IoLocationOutline } from 'react-icons/io5';
 import { v4 as uuid } from 'uuid';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Checkbox } from '@/components/ui/checkbox';
-import { FaArrowRight } from 'react-icons/fa6';
-
 
 import searchOptions from '../freelancers/searchOptions';
 
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -51,9 +50,9 @@ import api from '@/utils/api';
 import {
   ADMIN_ADDRESS,
   CONTRACT_SEED,
+  ContractStatus,
   PAYTOKEN_MINT,
   PROGRAM_ID,
-  ContractStatus,
 } from '@/utils/constants';
 import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
 import { CiFilter, CiReceipt } from 'react-icons/ci';
@@ -74,7 +73,6 @@ const DropdownItem = ({ onCheckedChange, ...props }) => {
     </div>
   );
 };
-
 
 const Orders = () => {
   const router = useRouter();
@@ -399,15 +397,15 @@ const Orders = () => {
       const transaction = await program.methods
         .buyerApprove(contractId, false)
         .accounts({
-          buyer: wallet.publicKey,
-          contract,
-          sellerAta,
-          buyerAta,
           adminAta,
-          contractAta,
-          tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          buyer: wallet.publicKey,
+          buyerAta,
+          contract,
+          contractAta,
+          sellerAta,
           systemProgram: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
         })
         .transaction();
 
@@ -583,7 +581,7 @@ const Orders = () => {
         {searchType === 'ai' && (
           <div className='flex'>
             <button
-              class='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
+              className='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
               onClick={aiSearch}
             >
               <FaArrowRight />
@@ -603,7 +601,7 @@ const Orders = () => {
         </div>
       )}
       {filters.length > 0 && (
-        <div className='flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5] mt-[30px]'>
+        <div className='mt-[30px] flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
           {filters.map((item, index) => {
             return (
               <span

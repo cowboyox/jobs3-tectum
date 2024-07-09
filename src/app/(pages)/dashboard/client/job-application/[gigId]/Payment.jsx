@@ -1,32 +1,18 @@
 'use client';
 
-import {
-  AnchorProvider,
-  BN,
-  getProvider,
-  Program,
-  setProvider,
-  utils,
-} from '@project-serum/anchor';
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  getAssociatedTokenAddressSync,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token';
+import { AnchorProvider, getProvider, Program, setProvider } from '@project-serum/anchor';
 import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import { useGetFreelancerGigById } from '@/hooks/useGetFreelancerGigById';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
-import { CONTRACT_SEED, PAYTOKEN_MINT, PROGRAM_ID } from '@/utils/constants';
+import { PROGRAM_ID } from '@/utils/constants';
 
-const Payment = ({ coverLetter, gigPrice, walletPubkey, quantity }) => {
+const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity }) => {
   const auth = useCustomContext();
   const { gigId } = useParams();
   const { toast } = useToast();
@@ -148,7 +134,24 @@ const Payment = ({ coverLetter, gigPrice, walletPubkey, quantity }) => {
       values.ownerId = gigInfo.creator;
       values.quantity = quantity;
 
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+
+      const formData = new FormData();
+
+      documentFiles.forEach((file) => {
+        if (file) formData.append('file', file);
+      });
+
       await api.post(`/api/v1/bidding/${gigId}/apply-to-freelancergig`, values);
+      await api.post(
+        `/api/v1/bidding/upload_attachment/${auth.currentProfile._id}/${gigId}`,
+        formData,
+        config
+      );
 
       toast({
         className:
@@ -165,7 +168,7 @@ const Payment = ({ coverLetter, gigPrice, walletPubkey, quantity }) => {
         return;
       }
 
-      if (err?.response?.data?.message == "You already applied to this gig!") {
+      if (err?.response?.data?.message == 'You already applied to this gig!') {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -187,7 +190,7 @@ const Payment = ({ coverLetter, gigPrice, walletPubkey, quantity }) => {
   };
 
   return (
-    <div className='flex flex-col gap-4 px-6 py-6 text-white rounded-2xl bg-deepGreen'>
+    <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
       <div className='flex flex-col gap-3'>
         <div className='flex items-center justify-center gap-2 rounded-xl bg-[#1B272C] p-3'>
           <svg
