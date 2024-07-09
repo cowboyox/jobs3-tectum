@@ -995,7 +995,7 @@ const FreelancerProfile = () => {
                               key={key}
                               setProfileData={setProfileData}
                               setUploadedImagePath={setUploadedImagePath}
-                              viewMode={isAuth ? 'edit' : 'preview'}
+                              viewMode={viewMode}
                               title={index.portfolioTitle}
                               profileId={profileData._id}
                               portfolioId={index._id}
@@ -1024,7 +1024,7 @@ const FreelancerProfile = () => {
                                   }
                                   setProfileData={setProfileData}
                                   setUploadedImagePath={setUploadedImagePath}
-                                  viewMode={isAuth ? 'edit' : 'preview'}
+                                  viewMode={viewMode}
                                   title={index.portfolioTitle}
                                   profileId={profileData._id}
                                   portfolioId={index._id}
@@ -1299,7 +1299,7 @@ const FreelancerProfile = () => {
                               key={key}
                               setProfileData={setProfileData}
                               setUploadedImagePath={setUploadedImagePath}
-                              viewMode={isAuth ? 'edit' : 'preview'}
+                              viewMode={viewMode}
                               title={index.portfolioTitle}
                               profileId={profileData._id}
                               portfolioId={index._id}
@@ -1311,7 +1311,7 @@ const FreelancerProfile = () => {
                         key={`extra-${uploadedImagePath.length}`}
                         setProfileData={setProfileData}
                         setUploadedImagePath={setUploadedImagePath}
-                        viewMode={isAuth ? 'edit' : 'preview'}
+                        viewMode={viewMode}
                       />
                     </div>
                     <div className='md:hidden'>
@@ -1332,7 +1332,7 @@ const FreelancerProfile = () => {
                                     }
                                     setProfileData={setProfileData}
                                     setUploadedImagePath={setUploadedImagePath}
-                                    viewMode={isAuth ? 'edit' : 'preview'}
+                                    viewMode={viewMode}
                                     title={index.portfolioTitle}
                                     profileId={profileData._id}
                                     portfolioId={index._id}
@@ -1347,7 +1347,7 @@ const FreelancerProfile = () => {
                               key={`extra-${uploadedImagePath.length}`}
                               setProfileData={setProfileData}
                               setUploadedImagePath={setUploadedImagePath}
-                              viewMode={isAuth ? 'edit' : 'preview'}
+                              viewMode={viewMode}
                             />{' '}
                           </SwiperSlide>
                         </Swiper>
@@ -1413,7 +1413,7 @@ const FreelancerProfile = () => {
                               setProfileData={setProfileData}
                               setUploadedGigPath={setUploadedGigPath}
                               title={myGig.gigTitle}
-                              viewMode={isAuth ? 'edit' : 'preview'}
+                              viewMode={viewMode}
                             />
                           ))}
                       <MyGigs
@@ -1423,7 +1423,7 @@ const FreelancerProfile = () => {
                         setProfileData={setProfileData}
                         setUploadedGigPath={setUploadedGigPath}
                         title={''}
-                        viewMode={isAuth ? 'edit' : 'preview'}
+                        viewMode={viewMode}
                       />
                     </div>
                     <div className='md:hidden'>
@@ -1458,17 +1458,12 @@ const FreelancerProfile = () => {
                             setProfileData={setProfileData}
                             setUploadedGigPath={setUploadedGigPath}
                             title={''}
-                            viewMode={isAuth ? 'edit' : 'preview'}
+                            viewMode={viewMode}
                           />
                           {''}
                         </SwiperSlide>
                       </Swiper>
                     </div>
-                    {profileData.myGigs.length > 3 && (
-                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex'>
-                        Show more <GoChevronDown />
-                      </span>
-                    )}
                     {profileData.myGigs.length > 3 && (
                       <span
                         className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex'
