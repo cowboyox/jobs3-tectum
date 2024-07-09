@@ -554,6 +554,9 @@ const CreateGig = () => {
         'Content-Type': 'multipart/form-data',
       },
     };
+
+    console.log("values", values);
+
     await api
       .post('/api/v1/freelancer_gig/post_gig', values)
       .then(async (gigData) => {
@@ -582,7 +585,7 @@ const CreateGig = () => {
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
-        router.push('./');
+        router.push(`./${auth.currentProfile._id}`);
       })
       .catch((err) => {
         console.error('Error corrupted during posting gig', err);

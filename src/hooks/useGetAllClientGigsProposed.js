@@ -2,16 +2,43 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetAllClientGigsProposed = (profileId) => {
+export const useGetAllClientGigsProposed = (
+  profileId,
+  pageNum,
+  itemsPerPage,
+  searchText = '',
+  filters = []
+) => {
   return useQuery({
     cacheTime: Infinity,
     enabled: !!profileId,
     queryFn: async () => {
-      if (profileId) {
+      if (profileId && pageNum > 0 && itemsPerPage > 0) {
         try {
+          let earned = 0;
+          let languages = ['any'];
+          let hourlyRate = ['any'];
+          let hoursBilled = 0;
+          let jobSuccess = 0;
+
+          filters.map((filter) => {
+            if (filter.id === 'earned' && filter.value > earned) {
+              earned = filter.value;
+            } else if (filter.id === 'hoursBilled' && filter.value > hoursBilled) {
+              hoursBilled = filter.value;
+            } else if (filter.id === 'jobSuccess' && filter.value > jobSuccess) {
+              jobSuccess = filter.value;
+            } else if (filter.id === 'languages' && filter.value !== 'any') {
+              languages = [...languages, filter.value].filter((lang) => lang !== 'any');
+            } else if (filter.id === 'hourlyRate' && filter.value !== 'any') {
+              hourlyRate = [...hourlyRate, filter.value].filter((lang) => lang !== 'any');
+            }
+          });
+
           const result = await api.get(
-            `/api/v1/client_gig/find_all_gigs_by_profile_id/${profileId}`
+            `/api/v1/client_gig/find_all_gigs_by_profile_id/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
           );
+
           console.log('result in useGetAllClientGigsProposed:', result);
           const proposals = [];
           const lives = [];
@@ -66,7 +93,14 @@ export const useGetAllClientGigsProposed = (profileId) => {
         return null;
       }
     },
-    queryKey: ['useGetAllClientGigsProposed', profileId],
+    queryKey: [
+      'useGetAllClientGigsProposed',
+      profileId,
+      pageNum,
+      itemsPerPage,
+      searchText,
+      filters,
+    ],
     staleTime: Infinity,
   });
 };

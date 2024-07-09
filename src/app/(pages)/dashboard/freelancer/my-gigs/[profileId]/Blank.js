@@ -7,7 +7,7 @@ const BlankView = () => {
   const router = useRouter();
 
   const onCreate = () => {
-    router.push('./my-gigs/create');
+    router.push('./create');
   };
 
   return (

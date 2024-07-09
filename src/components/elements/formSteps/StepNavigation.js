@@ -10,6 +10,7 @@ const FormNavigation = (props) => {
         <NextStep
           className='w-full cursor-pointer rounded-2xl bg-[#DC4F13] py-5 text-center text-white mobile:py-3'
           max={props.max?props.max:6}
+          isAuth={props.isAuth}
         />
       </div>
     </div>

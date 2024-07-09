@@ -86,23 +86,33 @@ const Stats = ({ searchText, setSearchText }) => {
     }
   };
 
+  console.log({ filterItems });
+
   const filterCategories = [
     {
       content: [
-        { category_id: 'most_recent', category_name: 'Most Recent' },
-        { category_id: 'most_relevant', category_name: 'Most Relevant' },
+        { category_id: 'most_recent', category_name: 'Most Recent', category_value: 0 },
+        { category_id: 'most_relevant', category_name: 'Most Relevant', category_value: 1 },
       ],
       title: 'Sorted By',
       type: 0,
     },
     {
       content: [
-        { category_id: 'any_category', category_name: 'Any Category' },
-        { category_id: 'customer_service', category_name: 'Customer Service' },
-        { category_id: 'design_creative', category_name: 'Design And Creative' },
-        { category_id: 'accounting', category_name: 'Acounting' },
-        { category_id: 'ai', category_name: 'AI' },
-        { category_id: 'animator', category_name: 'Animator' },
+        { category_id: 'any_category', category_name: 'Any Category', category_value: 'any' },
+        {
+          category_id: 'customer_service',
+          category_name: 'Customer Service',
+          category_value: 'Customer Service',
+        },
+        {
+          category_id: 'design_creative',
+          category_name: 'Design And Creative',
+          category_value: 'Design And Creative',
+        },
+        { category_id: 'accounting', category_name: 'Acounting', category_value: 'Acounting' },
+        { category_id: 'ai', category_name: 'AI', category_value: 'AI' },
+        { category_id: 'animator', category_name: 'Animator', category_value: 'Animator' },
       ],
       title: 'Category',
       type: 1,
@@ -154,6 +164,7 @@ const Stats = ({ searchText, setSearchText }) => {
       type: 0,
     },
     {
+      choose: 'Select Location',
       content: [
         { category_id: 'US', category_name: 'United States' },
         { category_id: 'england', category_name: 'England' },
@@ -162,9 +173,9 @@ const Stats = ({ searchText, setSearchText }) => {
       ],
       title: 'Client Location',
       type: 2,
-      choose: 'Select Location',
     },
     {
+      choose: 'Select client time zones',
       content: [
         { category_id: 'US', category_name: 'GMT+0' },
         { category_id: 'england', category_name: 'GMT+1' },
@@ -173,7 +184,6 @@ const Stats = ({ searchText, setSearchText }) => {
       ],
       title: 'Client Timezones',
       type: 2,
-      choose: 'Select client time zones',
     },
     {
       content: [
@@ -258,7 +268,12 @@ const Stats = ({ searchText, setSearchText }) => {
                           <div>
                             <Select
                               onValueChange={(e) => {
-                                const prev = filterItems.filter((_fItem) => item.content.map((_item) => _item.category_name).indexOf(_fItem) === -1);
+                                const prev = filterItems.filter(
+                                  (_fItem) =>
+                                    item.content
+                                      .map((_item) => _item.category_name)
+                                      .indexOf(_fItem) === -1
+                                );
                                 setFilterItems([...prev, e]);
                               }}
                             >
@@ -281,7 +296,7 @@ const Stats = ({ searchText, setSearchText }) => {
                           </div>
                         )}
                         {item.type === 1 && (
-                          <div className='grid md:grid-cols-2 gap-5 grid-cols-1'>
+                          <div className='grid grid-cols-1 gap-5 md:grid-cols-2'>
                             {item.content.map((con, i) => {
                               return (
                                 <DropdownItem
@@ -299,27 +314,32 @@ const Stats = ({ searchText, setSearchText }) => {
                           </div>
                         )}
                         {item.type === 0 && (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                          {item.content.map((con, i) => (
-                            <div key={i} className="flex items-center gap-3">
-                              <input
-                                type="radio"
-                                id={con.category_id}
-                                name={item.title}
-                                value={con.category_name}
-                                checked={filterItems.includes(con.category_name)}
-                                onChange={() => {
-                                  const prev = filterItems.filter((_fItem) => item.content.map((_item) => _item.category_name).indexOf(_fItem) === -1);
-                                  setFilterItems([...prev, con.category_name]);
-                                }}
-                                className="text-[#96B0BD] w-[24px] h-[24px]  accent-[#DC4F13]"
-                              />
-                              <label htmlFor={con.category_id} className='text-[#96B0BD]'>
-                                {con.category_name}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
+                          <div className='grid grid-cols-1 gap-5 md:grid-cols-2'>
+                            {item.content.map((con, i) => (
+                              <div className='flex items-center gap-3' key={i}>
+                                <input
+                                  checked={filterItems.includes(con.category_name)}
+                                  className='h-[24px] w-[24px] text-[#96B0BD] accent-[#DC4F13]'
+                                  id={con.category_id}
+                                  name={item.title}
+                                  onChange={() => {
+                                    const prev = filterItems.filter(
+                                      (_fItem) =>
+                                        item.content
+                                          .map((_item) => _item.category_name)
+                                          .indexOf(_fItem) === -1
+                                    );
+                                    setFilterItems([...prev, con.category_name]);
+                                  }}
+                                  type='radio'
+                                  value={con.category_name}
+                                />
+                                <label className='text-[#96B0BD]' htmlFor={con.category_id}>
+                                  {con.category_name}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
                         )}
                       </div>
                     );

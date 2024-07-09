@@ -20,14 +20,19 @@ export const StepNumber = () => {
   return stepNumber;
 };
 
-export const NextStep = ({ max, className }) => {
+export const NextStep = ({ max, className, isAuth }) => {
   const { stepNumber, setStepNumber } = useStep();
 
   return (
     <>
       {stepNumber < max && (
         <div className={className} onClick={() => setStepNumber((prev) => prev + 1)}>
-          Save and continue
+          {
+            isAuth === false ?
+            'Continue'
+            :
+            'Save and continue'
+          }
         </div>
       )}
       {stepNumber == max && (
@@ -36,7 +41,12 @@ export const NextStep = ({ max, className }) => {
           // onClick={() => setStepNumber(prev => prev + 1)}
           type='submit'
         >
-          Publish
+          {
+            isAuth === false ?
+            'End'
+            :
+            'Publish'
+          }
         </button>
       )}
     </>

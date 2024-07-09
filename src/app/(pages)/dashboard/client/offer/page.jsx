@@ -1,62 +1,27 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { FaArrowRight, FaX } from 'react-icons/fa6';
+import { IoLocationOutline } from 'react-icons/io5';
+
+import searchOptions from '../freelancers/searchOptions';
+
 import OfferItem from '@/components/dashboard/offerItem';
-import { useCustomContext } from '@/context/use-custom';
-import { useGetAllFreelancerOrdersProposed } from '@/hooks/useGetAllFreelancerOrdersProposed';
-import {
-  AnchorProvider,
-  BN,
-  getProvider,
-  Program,
-  setProvider,
-  utils,
-} from '@project-serum/anchor';
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  getAssociatedTokenAddressSync,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token';
-import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
-import { useRouter } from 'next/navigation';
-import { FaEllipsis, FaX } from 'react-icons/fa6';
-import { v4 as uuid } from 'uuid';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
 import { Checkbox } from '@/components/ui/checkbox';
-import { FaArrowRight } from 'react-icons/fa6';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Separator } from '@/components/ui/seperator';
-import { useToast } from '@/components/ui/use-toast';
-import { useGetAllClientGigsProposed } from '@/hooks/useGetAllClientGigsProposed';
-import IDL from '@/idl/gig_basic_contract.json';
-import api from '@/utils/api';
-import {
-  ADMIN_ADDRESS,
-  CONTRACT_SEED,
-  PAYTOKEN_MINT,
-  PROGRAM_ID,
-  ContractStatus,
-} from '@/utils/constants';
-import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
-import { CiFilter, CiReceipt } from 'react-icons/ci';
-import searchOptions from '../freelancers/searchOptions';
-import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
+import { useCustomContext } from '@/context/use-custom';
+import { useDebounce } from '@/hooks/useDebounce';
+import { useGetAllFreelancerOrdersProposed } from '@/hooks/useGetAllFreelancerOrdersProposed';
+import { useHandleResize } from '@/hooks/useHandleResize';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
@@ -79,123 +44,188 @@ const Offer = () => {
   const [proposals, setProposals] = useState([]);
   const [lives, setLives] = useState([]);
   const [searchType, setSearchType] = useState('normal');
-  const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
   const [filters, setFilters] = useState([]);
-  const filterItems = [
+  const { isSmallScreen } = useHandleResize();
+  const [searchKeywords, setSearchKeyWords] = useState('');
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
+  const debouncedSearchText = useDebounce(searchKeywords);
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const filterCategories = [
     {
       content: [
-        { category_id: 'any_amount', category_name: 'Any Amount' },
-        { category_id: 'over_1_earned', category_name: '$1+ Earned' },
-        { category_id: 'over_100_earned', category_name: '$100+ Earned' },
-        { category_id: 'over_1k_earned', category_name: '$1k+ Earned' },
-        { category_id: 'over_10k_earned', category_name: '$10k+ Earned' },
-        { category_id: 'no_earning_yet', category_name: 'No Earning Yet' },
+        { category_id: 'earned', category_name: 'Any Earned', category_value: 0 },
+        { category_id: 'earned', category_name: '$1+ Earned', category_value: 1 },
+        { category_id: 'earned', category_name: '$100+ Earned', category_value: 100 },
+        { category_id: 'earned', category_name: '$1k+ Earned', category_value: 1000 },
+        { category_id: 'earned', category_name: '$10k+ Earned', category_value: 10000 },
       ],
       title: 'Earned Amount',
     },
     {
       content: [
-        { category_id: 'any_job_success', category_name: 'Any Job Success' },
-        { category_id: '80_up', category_name: '80% & UP' },
-        { category_id: '90_up', category_name: '90% & UP' },
-        { category_id: 'top_rated', category_name: 'Top Rated' },
-        { category_id: 'rising_talent', category_name: 'Rising Talent' },
+        {
+          category_id: 'languages',
+          category_name: 'Any Language',
+          category_value: 'any',
+        },
+        { category_id: 'languages', category_name: 'English', category_value: 'English' },
+        { category_id: 'languages', category_name: 'Germany', category_value: 'Germany' },
+        { category_id: 'languages', category_name: 'Russian', category_value: 'Russian' },
+        { category_id: 'languages', category_name: 'Spanish', category_value: 'Spanish' },
+        { category_id: 'languages', category_name: 'Portugues', category_value: 'Portugues' },
       ],
-      title: 'Job Success',
+      title: 'Languages',
     },
     {
       content: [
-        { category_id: 'any_hourly_rate', category_name: 'Any Hourly Rate' },
-        { category_id: '10_below', category_name: '$10 and Below' },
-        { category_id: '10_30', category_name: '$10 - $30' },
-        { category_id: '30_60', category_name: '$30 - $60' },
-        { category_id: '60_above', category_name: '$60 and Above' },
+        {
+          category_id: 'hourlyRate',
+          category_name: 'Any Rate',
+          category_value: 'any',
+        },
+        { category_id: 'hourlyRate', category_name: '$10 and Below', category_value: [0, 10] },
+        { category_id: 'hourlyRate', category_name: '$10 - $30', category_value: [10, 30] },
+        { category_id: 'hourlyRate', category_name: '$30 - $60', category_value: [30, 60] },
+        {
+          category_id: 'hourlyRate',
+          category_name: '$60 and Above',
+          category_value: [60, 99999999],
+        },
       ],
       title: 'Hourly rate',
     },
     {
       content: [
-        { category_id: 'over_1_hour', category_name: '1+ Hours Billed' },
-        { category_id: 'over_100_hour', category_name: '100+ Hours Billed' },
-        { category_id: 'over_1000_hour', category_name: '1000+ Hours Billed' },
+        { category_id: 'hoursBilled', category_name: '1+ Hours Billed', category_value: 1 },
+        { category_id: 'hoursBilled', category_name: '100+ Hours Billed', category_value: 100 },
+        { category_id: 'hoursBilled', category_name: '1000+ Hours Billed', category_value: 1000 },
       ],
       title: 'Hours billed',
     },
     {
       content: [
-        { category_id: 'any_category', category_name: 'Any Category' },
-        { category_id: 'customer_service', category_name: 'Customer Service' },
-        { category_id: 'design_creative', category_name: 'Design And Creative' },
-        { category_id: 'web_mobile_software', category_name: 'Web, Mobile & Software' },
+        { category_id: 'jobSuccess', category_name: 'Any Score', category_value: 0 },
+        { category_id: 'jobSuccess', category_name: '80% & UP', category_value: 80 },
+        { category_id: 'jobSuccess', category_name: '90% & UP', category_value: 90 },
       ],
-      title: 'Category',
-    },
-    {
-      content: [
-        { category_id: 'any_level', category_name: 'Any Level' },
-        { category_id: 'basic', category_name: 'Basic' },
-        { category_id: 'conversational', category_name: 'Conversational' },
-        { category_id: 'fluent', category_name: 'Fluent' },
-        { category_id: 'native_bilingual', category_name: 'Native Or Bilingual' },
-      ],
-      title: 'English Level',
-    },
-    {
-      content: [
-        { category_id: 'freelancers_agencies', category_name: 'Freelancers & Agencies' },
-        { category_id: 'freelancers', category_name: 'Freelancers' },
-        { category_id: 'agencies', category_name: 'Agencies' },
-      ],
-      title: 'Talent Type',
-    },
-    {
-      content: [
-        { category_id: 'any_time', category_name: 'Any Time' },
-        { category_id: '2_weeks', category_name: 'Within 2 Weeks' },
-        { category_id: '1_month', category_name: 'Within 1 Month' },
-        { category_id: '2_month', category_name: 'Within 2 Month' },
-      ],
-      title: 'Notice Period',
+      title: 'Job Success',
     },
   ];
 
   const { data: orders, refetch: refetchAllOrdersProposed } = useGetAllFreelancerOrdersProposed(
-    auth?.currentProfile?._id
+    auth?.currentProfile?._id,
+    page,
+    itemsPerPage,
+    debouncedSearchText,
+    filters
   );
-  const onCheckedChange = (value, id, name) => {
-    if (value) {
-      setFilters((prev) => [...prev, name]);
+
+  useEffect(() => {
+    setPage(1);
+    setCanLoadMore(true);
+  }, [debouncedSearchText, mode]);
+
+  useEffect(() => {
+    if (mode === 'live') {
+      if (orders?.lives?.length > 0) {
+        setCanLoadMore(true);
+        if (page === 1) {
+          setLives(orders.lives);
+        } else {
+          setLives((prev) => {
+            let result = [...prev];
+            const ids = prev.map((item) => item._id);
+
+            orders.lives.map((lv) => {
+              if (!ids.includes(lv._id)) {
+                result = [...result, lv];
+              }
+            });
+
+            return result;
+          });
+        }
+      } else {
+        if (page === 1) {
+          setLives([]);
+        }
+        setCanLoadMore(false);
+      }
     } else {
-      setFilters((prev) => prev.filter((item) => item !== name));
+      if (orders?.proposals?.length > 0) {
+        setCanLoadMore(true);
+        if (page === 1) {
+          setProposals(orders.proposals);
+        } else {
+          setProposals((prev) => {
+            let result = [...prev];
+            const ids = prev.map((item) => item._id);
+
+            orders.proposals.map((lv) => {
+              if (!ids.includes(lv._id)) {
+                result = [...result, lv];
+              }
+            });
+
+            return result;
+          });
+        }
+      } else {
+        if (page === 1) {
+          setProposals([]);
+        }
+        setCanLoadMore(false);
+      }
+    }
+  }, [orders, page, mode]);
+
+  const onCheckedChange = (isChecked, id, name, value) => {
+    if (isChecked) {
+      setFilters((prev) => [...prev, { id, name, value }]);
+    } else {
+      setFilters((prev) =>
+        prev.filter(
+          (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+        )
+      );
     }
   };
-  useEffect(() => {
-    if (orders) {
-      setLives(orders?.lives);
-      setProposals(orders?.proposals);
-    }
-  }, [orders]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsSmallScree(true);
-      } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
-        setIsSmallScree(false);
+  const aiSearch = () => {
+    api.get(`/api/v1/freelancer_gig/ai-search/${searchKeywords}`).then((data) => {
+      let ai_ids = [];
+      if (data.data.profileIDs) ai_ids = data.data.profileIDs;
+      if (mode === 'live') {
+        const ai_filtered = ai_ids
+          .map((id) => orders.lives.find((order) => order.gigId.toString() === id))
+          .filter((order) => order != undefined);
+        setFilteredLiveList(ai_filtered);
       } else {
-        setIsSmallScree(false);
+        const ai_filtered = ai_ids
+          .map((id) => orders.proposals.find((order) => order.gigId.toString() === id))
+          .filter((order) => order != undefined);
+        setFilteredProposalsList(ai_filtered);
       }
-    };
+    });
+  };
 
-    handleResize();
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
 
-    window.addEventListener('resize', handleResize);
+  const handleClearAll = () => {
+    setFilters([]);
+  };
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  const handleRemove = (id, name, value) => {
+    setFilters((prev) =>
+      prev.filter(
+        (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+      )
+    );
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && searchType === 'ai') {
@@ -207,7 +237,7 @@ const Offer = () => {
   };
 
   return (
-    <div className='p-0 lg:mt-8 sm:p-0 xl:mt-8'>
+    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d] pr-4'>
         <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
@@ -223,50 +253,62 @@ const Offer = () => {
           </Select>
           <input
             className='w-full bg-transparent text-white outline-none mobile:text-sm'
-            onChange={(e) => setKey(e)}
+            onChange={(e) => setSearchKeyWords(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
           />
         </div>
         <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
           <IoLocationOutline size={20} stroke='#96B0BD' />
-          <span className='text-[#96B0BD] hidden md:block'>Anywhere</span>
+          <span className='hidden text-[#96B0BD] md:block'>Anywhere</span>
         </div>
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
-                <button className='flex flex-row items-center justify-center gap-3'>
-                  <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
-                  {!isSmallScreen && (
-                    <div className='flex flex-row gap-2'>
-                      <span className='text-[#96B0BD] hidden md:block'>Filter</span>
-                      {filters.length > 0 && (
-                        <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
-                          {filters.length}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </button>
-              </PopoverTrigger>
+              <button className='flex flex-row items-center justify-center gap-3'>
+                <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
+                {!isSmallScreen && (
+                  <div className='flex flex-row gap-2'>
+                    <span className='hidden text-[#96B0BD] md:block'>Filter</span>
+                    {filters.length > 0 && (
+                      <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
+                        {filters.length}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </button>
+            </PopoverTrigger>
             <PopoverContent
               align='end'
               className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
             >
               <div className='grid grid-cols-1 gap-4 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-                {filterItems.map((item, index) => {
+                {filterCategories.map((item, index) => {
                   return (
                     <div className='flex flex-col gap-2' key={index}>
                       <div>{item.title}</div>
                       {item.content.map((con, i) => {
                         return (
                           <DropdownItem
-                            category_id={con.category_id}
+                            category_id={con.category_id + con.category_value}
                             category_name={con.category_name}
-                            checked={filters.includes(con.category_name)}
+                            isChecked={
+                              !!filters.find(
+                                (f) =>
+                                  f.id === con.category_id &&
+                                  f.name === con.category_name &&
+                                  JSON.stringify(f.value) === JSON.stringify(con.category_value)
+                              )
+                            }
                             key={i}
                             onCheckedChange={(value) =>
-                              onCheckedChange(value, con.category_id, con.category_name)
+                              onCheckedChange(
+                                value,
+                                con.category_id,
+                                con.category_name,
+                                con.category_value
+                              )
                             }
                           />
                         );
@@ -291,18 +333,16 @@ const Offer = () => {
       </div>
       {mode == 'live' ? (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{lives.length}</span>{' '}
-          Accepteds😊
+          You have <span className='font-bold text-[#DC4F13]'>{lives.length}</span> Accepteds😊
         </div>
       ) : (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{proposals.length}</span>{' '}
-          Proposals😊
+          You have <span className='font-bold text-[#DC4F13]'>{proposals.length}</span> Proposals😊
         </div>
       )}
       {filters.length > 0 && (
-        <div className='flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5] mt-[30px]'>
-          {filters.map((item, index) => {
+        <div className='mt-[30px] flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
+          {filters.map((filter, index) => {
             return (
               <span
                 className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
@@ -310,28 +350,26 @@ const Offer = () => {
               >
                 <FaX
                   className='rounded-full bg-[#3E525B] p-[2px]'
-                  onClick={() => setFilters((prev) => prev.filter((_item) => _item !== item))}
+                  onClick={() => handleRemove(filter.id, filter.name, filter.value)}
                 />
-                {item}
+                {filter.name}
               </span>
             );
           })}
 
-          <span className='cursor-pointer' onClick={() => setFilters([])}>
+          <span className='cursor-pointer' onClick={handleClearAll}>
             Clear&nbsp;All
           </span>
         </div>
       )}
-      <div className='flex items-center justify-center w-full pt-10 pb-5'>
+      <div className='flex w-full items-center justify-center pb-5 pt-10'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
-                {lives.length}
-              </span>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>{lives.length}</span>
               &nbsp; Live
             </h1>
           ) : (
@@ -344,7 +382,7 @@ const Offer = () => {
         >
           {mode == 'proposal' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
                 {proposals.length}
               </span>
               &nbsp; Proposals
@@ -356,81 +394,85 @@ const Offer = () => {
       </div>
       {mode == 'live' ? (
         <>
-          {
-            lives.length > 0 ? 
-            (
-              <>
-                {lives.map((order, index) => (
-                  <OfferItem 
-                    key={index}
-                    gigId={order.gigId}
-                    clientId={auth?.currentProfile?._id}
-                    freelancerId={order.freelancer._id}
-                    proposalId={order.proposalId} 
-                    gigTitle={order.gigTitle} 
-                    gigPrice={order.gigPrice} 
-                    deliveryTime={order.deliveryTime} 
-                    proposal={order.proposal} 
-                    avatarURL={order.freelancer.avatarURL}
-                    fullName={order.freelancer.fullName}
-                    refetchAllOrdersProposed={refetchAllOrdersProposed}
-                    accepted={true}
-                    status={order.status}
-                    clientSide={true}
-                  />
-                ))}
-                <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
-                  Load more +{' '}
-                </button>
-              </>
-            ) : (
-              <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
-                <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
-                <p className='text-[18px] text-slate-600'>Accepted proposals will be here</p>
-              </div>
-            )
-          }
+          {lives.length > 0 ? (
+            <>
+              {lives.map((order, index) => (
+                <OfferItem
+                  accepted={true}
+                  avatarURL={order.freelancer.avatarURL}
+                  clientId={auth?.currentProfile?._id}
+                  clientSide={true}
+                  deliveryTime={order.deliveryTime}
+                  freelancerId={order.freelancer._id}
+                  fullName={order.freelancer.fullName}
+                  gigId={order.gigId}
+                  gigPrice={order.gigPrice}
+                  gigTitle={order.gigTitle}
+                  key={index}
+                  proposal={order.proposal}
+                  proposalId={order.proposalId}
+                  refetchAllOrdersProposed={refetchAllOrdersProposed}
+                  status={order.status}
+                />
+              ))}
+              {canLoadMore && (
+                <div
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  onClick={handleLoadMore}
+                >
+                  Load More +
+                </div>
+              )}
+            </>
+          ) : (
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+              <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
+              <p className='text-[18px] text-slate-600'>Accepted proposals will be here</p>
+            </div>
+          )}
         </>
       ) : (
         <>
-          {
-            proposals.length > 0 ? 
-            (
-              <>
-                {proposals.map((proposal, index) => (
-                  <OfferItem 
-                    key={index}
-                    gigId={proposal.gigId}
-                    clientId={auth?.currentProfile?._id}
-                    freelancerId={proposal.freelancer._id}
-                    proposalId={proposal.proposalId} 
-                    gigTitle={proposal.gigTitle} 
-                    gigPrice={proposal.gigPrice} 
-                    deliveryTime={proposal.deliveryTime} 
-                    proposal={proposal.proposal}
-                    avatarURL={proposal.freelancer.avatarURL}
-                    fullName={proposal.freelancer.fullName}
-                    refetchAllOrdersProposed={refetchAllOrdersProposed}
-                    accepted={false}
-                    status={proposal.status}
-                    clientSide={true}
-                  />
-                ))}
-                <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
-                  Load more +{' '}
-                </button>
-              </>
-            ) : (
-              <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
-                <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
-                <p className='text-[18px] text-slate-600'>Proposals will be here</p>
-              </div>
-            )
-          }
+          {proposals.length > 0 ? (
+            <>
+              {proposals.map((proposal, index) => (
+                <OfferItem
+                  accepted={false}
+                  avatarURL={proposal.freelancer.avatarURL}
+                  clientId={auth?.currentProfile?._id}
+                  clientSide={true}
+                  deliveryTime={proposal.deliveryTime}
+                  freelancerId={proposal.freelancer._id}
+                  fullName={proposal.freelancer.fullName}
+                  gigId={proposal.gigId}
+                  gigPrice={proposal.gigPrice}
+                  gigTitle={proposal.gigTitle}
+                  key={index}
+                  proposal={proposal.proposal}
+                  proposalId={proposal.proposalId}
+                  refetchAllOrdersProposed={refetchAllOrdersProposed}
+                  status={proposal.status}
+                />
+              ))}
+              {canLoadMore && (
+                <div
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  onClick={handleLoadMore}
+                >
+                  Load More +
+                </div>
+              )}
+            </>
+          ) : (
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+              <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
+              <p className='text-[18px] text-slate-600'>Proposals will be here</p>
+            </div>
+          )}
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Offer
+export default Offer;

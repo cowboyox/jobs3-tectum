@@ -61,6 +61,7 @@ const EditGig = () => {
   const wallet = useAnchorWallet();
   const { gigId } = useParams();
   const { data: gigInfo, refetch: refetchGig } = useGetFreelancerGigById(gigId);
+  const [isAuth, setIsAuth] = useState(false);
 
   const categories_list = [
     {
@@ -449,6 +450,7 @@ const EditGig = () => {
         tags: gigInfo.searchKeywords,
         video: gigInfo.gallery?.video,
       });
+      setIsAuth(auth.currentProfile?._id === gigInfo.creator?._id);
     }
   }, [gigInfo, auth]);
 
@@ -474,7 +476,8 @@ const EditGig = () => {
   };
 
   const deleteQuestion = (id) => {
-    setFormInfo((prev) => ({ ...prev, question: prev.question.filter((q) => q.id !== id) }));
+    isAuth &&
+      setFormInfo((prev) => ({ ...prev, question: prev.question.filter((q) => q.id !== id) }));
   };
 
   const [tagInputValue, setTagInputValue] = useState('');
@@ -490,10 +493,11 @@ const EditGig = () => {
   };
 
   const removeTag = (indexToRemove) => {
-    setFormInfo((prev) => ({
-      ...prev,
-      tags: prev.tags.filter((_, index) => index !== indexToRemove),
-    }));
+    isAuth &&
+      setFormInfo((prev) => ({
+        ...prev,
+        tags: prev.tags.filter((_, index) => index !== indexToRemove),
+      }));
   };
 
   const [videoFile, setVideoFile] = useState(null);
@@ -550,7 +554,7 @@ const EditGig = () => {
 
   useEffect(() => {
     const func = async () => {
-      if (formInfo.images.length > 0) {
+      if (formInfo.images?.length > 0) {
         formInfo.images.map(async (imageUrl) => {
           const file = await getFile(imageUrl);
           setImageFiles((prev) => {
@@ -569,7 +573,7 @@ const EditGig = () => {
 
   useEffect(() => {
     const func = async () => {
-      if (formInfo.documents.length > 0) {
+      if (formInfo.documents?.length > 0) {
         formInfo.documents.map(async (docUrl) => {
           const file = await getFile(docUrl);
           setDocumentFiles((prev) => {
@@ -598,96 +602,100 @@ const EditGig = () => {
   }, [formInfo.video, getFile]);
 
   async function onSubmit() {
-    if (!wallet) {
-      toast({
-        className:
-          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Please connect your wallet!</h3>,
-        title: <h1 className='text-center'>Error</h1>,
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (!formInfo.gigTitle || !formInfo.gigDescription) {
-      return toast({
-        className:
-          'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3 className='text-center'>Input Gig Title and Description</h3>,
-        title: <h1 className='text-center'>Warning</h1>,
-        variant: 'default',
-      });
-    }
-
-    const formData = new FormData();
-
-    if (videoFile) {
-      formData.append('file', videoFile);
-    }
-
-    imageFiles.forEach((file) => {
-      if (file) formData.append('file', file);
-    });
-
-    documentFiles.forEach((file) => {
-      if (file) formData.append('file', file);
-    });
-
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    };
-
-    await api
-      .put(`/api/v1/freelancer_gig/edit_gig/${gigId}`, formInfo)
-      .then(async () => {
-        await api
-          .post(
-            `/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${gigId}`,
-            formData,
-            config
-          )
-          .then(async (data) => {
-            console.log(data);
-          });
-        toast({
-          className:
-            'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Successfully updated gig titled {formInfo.gigTitle}</h3>,
-          title: <h1 className='text-center'>Success</h1>,
-          variant: 'default',
-        });
-        await refetchGig();
-
-        router.push('../');
-      })
-      .catch((err) => {
-        console.error('Error corrupted during posting gig', err);
+    if(isAuth){
+      if (!wallet) {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Internal Server Error</h3>,
+          description: <h3>Please connect your wallet!</h3>,
           title: <h1 className='text-center'>Error</h1>,
           variant: 'destructive',
         });
+        return;
+      }
+  
+      if (!formInfo.gigTitle || !formInfo.gigDescription) {
+        return toast({
+          className:
+            'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3 className='text-center'>Input Gig Title and Description</h3>,
+          title: <h1 className='text-center'>Warning</h1>,
+          variant: 'default',
+        });
+      }
+  
+      const formData = new FormData();
+  
+      if (videoFile) {
+        formData.append('file', videoFile);
+      }
+  
+      imageFiles.forEach((file) => {
+        if (file) formData.append('file', file);
       });
+  
+      documentFiles.forEach((file) => {
+        if (file) formData.append('file', file);
+      });
+  
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+  
+      await api
+        .put(`/api/v1/freelancer_gig/edit_gig/${gigId}`, formInfo)
+        .then(async () => {
+          await api
+            .post(
+              `/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${gigId}`,
+              formData,
+              config
+            )
+            .then(async (data) => {
+              console.log(data);
+            });
+          toast({
+            className:
+              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Successfully updated gig titled {formInfo.gigTitle}</h3>,
+            title: <h1 className='text-center'>Success</h1>,
+            variant: 'default',
+          });
+          await refetchGig();
+          router.push(`../${auth.currentProfile._id}`);
+        })
+        .catch((err) => {
+          console.error('Error corrupted during posting gig', err);
+          toast({
+            className:
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
+          });
+        });
+    }
+    else{
+      router.back();
+    }
   }
 
   return (
     <StepProvider>
       <div className='flex w-full flex-col'>
-        <nav className='flex w-full flex-nowrap rounded-t-xl bg-[#10191d] mobile:overflow-x-scroll'>
+        <nav className='mobile:overflow-x-scroll flex w-full flex-nowrap rounded-t-xl bg-[#10191d]'>
           <StepNavItem isEdit name='Overview' num={1} />
           <StepNavItem isEdit name='Pricing' num={2} />
           <StepNavItem isEdit name='Description' num={3} />
           <StepNavItem isEdit name='Requirements' num={4} />
           <StepNavItem isEdit name='Gallery' num={5} />
-          <StepNavItem isEdit name='Publish' num={6} />
+          {isAuth && <StepNavItem isEdit name='Publish' num={6} />}
         </nav>
         <Form {...form}>
           <form
-            className='mx-auto mt-10 flex w-full max-w-3xl flex-col gap-6 rounded-xl bg-[#10191d] p-7 mobile:px-3'
+            className='mobile:px-3 mx-auto mt-10 flex w-full max-w-3xl flex-col gap-6 rounded-xl bg-[#10191d] p-7'
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormStep stepOrder={1}>
@@ -703,6 +711,7 @@ const EditGig = () => {
                     onChange={(e) => setFormInfo((prev) => ({ ...prev, gigTitle: e.target.value }))}
                     placeholder='I will do something im really good at...'
                     value={formInfo.gigTitle}
+                    disabled={!isAuth}
                   />
                 </FormControl>
                 <FormMessage />
@@ -712,7 +721,7 @@ const EditGig = () => {
                 <p className='text-base text-[#96B0BD]'>
                   Choose the category and subcategory most suitable for your Gig
                 </p>
-                <div className='flex gap-3 mobile:flex-col'>
+                <div className='mobile:flex-col flex gap-3'>
                   <FormItem className='flex w-full flex-col gap-2'>
                     <FormControl>
                       <Select
@@ -721,6 +730,7 @@ const EditGig = () => {
                           setFormInfo((prev) => ({ ...prev, currentCategory: e }))
                         }
                         value={formInfo.currentCategory}
+                        disabled={!isAuth}
                       >
                         <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                           <SelectValue placeholder='Select a Category' />
@@ -744,6 +754,7 @@ const EditGig = () => {
                         defaultValue={formInfo.subCategory}
                         onValueChange={(e) => setFormInfo((prev) => ({ ...prev, subCategory: e }))}
                         value={formInfo.subCategory}
+                        disabled={!isAuth}
                       >
                         <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                           <SelectValue placeholder='Select a Sub Category' />
@@ -788,6 +799,7 @@ const EditGig = () => {
                   onKeyDown={tagsInputFocus}
                   placeholder='Enter tag'
                   value={tagInputValue}
+                  disabled={!isAuth}
                 />
                 <div className='flex flex-wrap items-center gap-3'>
                   {formInfo.tags.map((tag, index) => (
@@ -816,6 +828,7 @@ const EditGig = () => {
                     placeholder='Price'
                     type='number'
                     value={formInfo.gigPrice}
+                    disabled={!isAuth}
                   />
                 </FormControl>
                 <FormMessage />
@@ -827,6 +840,7 @@ const EditGig = () => {
                   <Select
                     onValueChange={(e) => setFormInfo((prev) => ({ ...prev, revision: e }))}
                     value={formInfo.revision}
+                    disabled={!isAuth}
                   >
                     <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                       <SelectValue placeholder='Revisions' />
@@ -850,6 +864,7 @@ const EditGig = () => {
                   <Select
                     onValueChange={(e) => setFormInfo((prev) => ({ ...prev, deliveryTime: e }))}
                     value={formInfo.deliveryTime}
+                    disabled={!isAuth}
                   >
                     <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                       <SelectValue placeholder='Delivery time' />
@@ -883,6 +898,7 @@ const EditGig = () => {
                     }
                     placeholder='Add info here...'
                     value={formInfo.gigDescription}
+                    disabled={!isAuth}
                   />
                 </FormControl>
                 <FormMessage />
@@ -906,27 +922,29 @@ const EditGig = () => {
                   question_num={q_indx + 1}
                 />
               ))}
-              <div className='flex flex-col gap-3 rounded-xl border border-[#526872] p-3'>
-                <input
-                  className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
-                  placeholder='Add question here'
-                  ref={newQuestionRef}
-                />
-                <input
-                  className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
-                  placeholder='Answer example (For the client to know how to answer)'
-                  ref={newAnswerPlaceholderRef}
-                />
-                <div
-                  className='h-14 w-full cursor-pointer rounded-xl bg-slate-700 px-4 py-4 text-center text-base text-white transition hover:bg-white hover:text-black'
-                  onClick={addNewQuestion}
-                >
-                  Add new question
+              {isAuth && (
+                <div className='flex flex-col gap-3 rounded-xl border border-[#526872] p-3'>
+                  <input
+                    className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
+                    placeholder='Add question here'
+                    ref={newQuestionRef}
+                  />
+                  <input
+                    className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
+                    placeholder='Answer example (For the client to know how to answer)'
+                    ref={newAnswerPlaceholderRef}
+                  />
+                  <div
+                    className='h-14 w-full cursor-pointer rounded-xl bg-slate-700 px-4 py-4 text-center text-base text-white transition hover:bg-white hover:text-black'
+                    onClick={addNewQuestion}
+                  >
+                    Add new question
+                  </div>
                 </div>
-              </div>
+              )}
             </FormStep>
             <FormStep stepOrder={5}>
-              <div className='text-3xl text-[#F5F5F5] mobile:text-xl'>
+              <div className='mobile:text-xl text-3xl text-[#F5F5F5]'>
                 Showcase your services in a Gig gallery. Drag and drop your files here or{' '}
                 <span className='main_color'>browse</span> to upload
               </div>
@@ -948,6 +966,7 @@ const EditGig = () => {
                   inputName='video'
                   onFileUpload={handleVideoUpload}
                   placeHolderPlusIconSize={60}
+                  isAuth={isAuth}
                 />
               </div>
               <div className='flex flex-col gap-4'>
@@ -968,6 +987,7 @@ const EditGig = () => {
                         key={index}
                         onFileUpload={(files) => handleImageUpload(files, index)}
                         placeHolderPlusIconSize={40}
+                        isAuth={isAuth}
                       />
                     ))}
                   {Array.from({ length: 4 - (formInfo.images?.length || 0) }, (_, indx) => (
@@ -980,6 +1000,7 @@ const EditGig = () => {
                         handleImageUpload(files, indx + (formInfo.images?.length || 0))
                       }
                       placeHolderPlusIconSize={40}
+                      isAuth={isAuth}
                     />
                   ))}
                 </div>
@@ -1001,6 +1022,7 @@ const EditGig = () => {
                         key={index}
                         onFileUpload={(files) => handleDocumentUpload(files, index)}
                         placeHolderPlusIconSize={40}
+                        isAuth={isAuth}
                       />
                     ))}
                   {Array.from({ length: 2 - (formInfo.documents?.length || 0) }, (_, indx) => (
@@ -1013,6 +1035,7 @@ const EditGig = () => {
                         handleDocumentUpload(files, indx + (formInfo.documents?.length || 0))
                       }
                       placeHolderPlusIconSize={40}
+                      isAuth={isAuth}
                     />
                   ))}
                 </div>
@@ -1044,7 +1067,7 @@ const EditGig = () => {
                 width={500}
               />
             </FormStep>
-            <FormNavigation />
+            <FormNavigation isAuth={isAuth}/>
           </form>
         </Form>
       </div>
