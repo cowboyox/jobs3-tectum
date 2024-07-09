@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { CiFilter } from 'react-icons/ci';
 import { FaArrowRight, FaEllipsis, FaX } from 'react-icons/fa6';
 import { IoLocationOutline } from 'react-icons/io5';
 
@@ -338,8 +339,8 @@ const FindJob = () => {
               align='end'
               className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
             >
-              <div className='grid grid-cols-1 gap-4 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-3'>
-                {filterCategories.map((item, index) => {
+              <div className='grid grid-cols-1 gap-4 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+                {filterItems.map((item, index) => {
                   return (
                     <div className='flex flex-col gap-2' key={index}>
                       <div>{item.title}</div>
@@ -378,7 +379,7 @@ const FindJob = () => {
         {searchType === 'ai' && (
           <div className='flex'>
             <button
-              class='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
+              className='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
               onClick={aiSearch}
             >
               <FaArrowRight />
