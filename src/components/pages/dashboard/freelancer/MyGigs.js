@@ -84,8 +84,8 @@ const MyGigs = ({
 
             {imagePath && !loading && (
               <div
-                className='z-10 h-full w-full cursor-pointer text-center'
-                onClick={() => router.push(`../my-gigs/edit/${gigId}`)}
+                className='relative z-10 h-full w-full cursor-pointer text-center'
+                
               >
                 <Image
                   alt='uploaded image'
@@ -94,10 +94,11 @@ const MyGigs = ({
                   key={imagePath}
                   src={imagePath}
                   width={1000}
+                  onClick={() => router.push(`../my-gigs/edit/${gigId}`)}
                 />
                 {viewMode === 'edit' && (
                   <DialogTrigger>
-                    <RiCloseLine className='absolute right-[10px] top-[10px] z-50 h-[32px] w-[32px] rounded-full p-[4px] text-white' />
+                    <RiCloseLine className='absolute right-[3px] top-[3px] z-50 h-[32px] w-[32px] rounded-full p-[4px] text-white bg-[#3E525B] border' />
                   </DialogTrigger>
                 )}
               </div>
@@ -107,8 +108,8 @@ const MyGigs = ({
         </div>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Are you sure to delete this portfolio?</DialogTitle>
-            <DialogDescription>It will delete your portfolio permanently.</DialogDescription>
+            <DialogTitle>Are you sure to delete this gig?</DialogTitle>
+            <DialogDescription>It will delete your gig permanently.</DialogDescription>
           </DialogHeader>
           <DialogFooter className='flex justify-center gap-3'>
             <DialogClose asChild>

@@ -1465,11 +1465,6 @@ const FreelancerProfile = () => {
                       </Swiper>
                     </div>
                     {profileData.myGigs.length > 3 && (
-                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex'>
-                        Show more <GoChevronDown />
-                      </span>
-                    )}
-                    {profileData.myGigs.length > 3 && (
                       <span
                         className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex'
                         onClick={() => {

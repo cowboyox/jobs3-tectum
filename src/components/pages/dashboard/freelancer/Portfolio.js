@@ -91,7 +91,7 @@ const Portfolio = ({
                 />
                 {viewMode === 'edit' && (
                   <DialogTrigger>
-                    <RiCloseLine className='absolute right-[10px] top-[10px] z-50 h-[32px] w-[32px] rounded-full p-[4px] text-white' />
+                    <RiCloseLine className='absolute right-[3px] top-[3px] z-50 h-[32px] w-[32px] rounded-full p-[4px] text-white bg-[#3E525B] border' />
                   </DialogTrigger>
                 )}
               </div>
