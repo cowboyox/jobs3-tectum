@@ -57,6 +57,8 @@ import {
 } from '@/utils/constants';
 import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
 import { CiFilter, CiReceipt } from 'react-icons/ci';
+import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
+
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
     <div className='flex cursor-pointer items-center gap-4 p-0'>
@@ -508,7 +510,7 @@ const Orders = () => {
 
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
-      <div className='flex gap-2 rounded-xl bg-[#10191d]'>
+      <div className='flex gap-2 rounded-xl bg-[#10191d] pr-4'>
         <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
@@ -535,14 +537,20 @@ const Orders = () => {
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
-              <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
-                <CiFilter className='mobile:max-w-4' fill='#96B0BD' size={20} />
-                <span className='text-[#96B0BD] mobile:text-sm'>Filter</span>
-                <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
-                  {filters.length}
-                </span>
-              </div>
-            </PopoverTrigger>
+                <button className='flex flex-row items-center justify-center gap-3'>
+                  <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
+                  {!isSmallScreen && (
+                    <div className='flex flex-row gap-2'>
+                      <span className='text-[#96B0BD] hidden md:block'>Filter</span>
+                      {filters.length > 0 && (
+                        <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
+                          {filters.length}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </button>
+              </PopoverTrigger>
             <PopoverContent
               align='end'
               className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
