@@ -229,7 +229,6 @@ const Offer = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && searchType === 'ai') {
-      aiSearch();
     }
   };
 
@@ -254,7 +253,7 @@ const Offer = () => {
           </Select>
           <input
             className='w-full bg-transparent text-white outline-none mobile:text-sm'
-            // onChange={(e) => setKey(e)}
+            onChange={(e) => setSearchKeyWords(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
           />
