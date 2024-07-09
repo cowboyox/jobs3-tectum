@@ -28,7 +28,7 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
             `${APIS.CL_FIND_GIGS}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&applicants=${applicants}&skills=${skills}`
           );
 
-          return data?.data;
+          return data?.data || null;
         } catch (e) {
           console.error(e);
 
