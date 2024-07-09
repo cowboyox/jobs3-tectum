@@ -63,10 +63,8 @@ const ClientDashboard = () => {
   useEffect(() => {
     if (auth?.currentProfile?._id === profileId) {
       setIsAuth(true);
-      setViewMode('edit');
     } else {
       setIsAuth(false);
-      setViewMode('preview');
     }
   }, [auth, profileId]);
 
