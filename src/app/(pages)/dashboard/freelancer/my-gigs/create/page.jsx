@@ -582,7 +582,7 @@ const CreateGig = () => {
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
-        router.push('./');
+        router.push(`./${auth.currentProfile._id}`);
       })
       .catch((err) => {
         console.error('Error corrupted during posting gig', err);

@@ -136,7 +136,7 @@ const MyGigs = ({
           )}
 
           {imagePath && !loading && (
-            <div className='h-full w-full text-center' onClick={() => router.push(`../my-gigs/edit/${gigId}`)}>
+            <div className='h-full w-full text-center cursor-pointer' onClick={() => router.push(`../my-gigs/edit/${gigId}`)}>
               <Image
                 alt='uploaded image'
                 className='h-full w-full rounded-xl aspect-square object-cover opacity-70'
