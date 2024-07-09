@@ -12,7 +12,7 @@ import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
 import { PROGRAM_ID } from '@/utils/constants';
 
-const Payment = ({ coverLetter, gigPrice, files, walletPubkey, quantity }) => {
+const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity }) => {
   const auth = useCustomContext();
   const { gigId } = useParams();
   const { toast } = useToast();
@@ -134,22 +134,21 @@ const Payment = ({ coverLetter, gigPrice, files, walletPubkey, quantity }) => {
       values.ownerId = gigInfo.creator;
       values.quantity = quantity;
 
-      let tmp = localStorage.getItem('jobs_2024_token');
       const config = {
         headers: {
-          Authorization: `Bearer ${JSON.parse(tmp).data.token}`,
           'Content-Type': 'multipart/form-data',
         },
       };
 
       const formData = new FormData();
-      files.map((file) => {
-        formData.append('files', file);
+
+      documentFiles.forEach((file) => {
+        if (file) formData.append('file', file);
       });
 
-      const gig = await api.post(`/api/v1/bidding/${gigId}/apply-to-freelancergig`, values);
+      await api.post(`/api/v1/bidding/${gigId}/apply-to-freelancergig`, values);
       await api.post(
-        `/api/v1/bidding/upload_attachment/${auth.currentProfile._id}/${gigInfo._id}`,
+        `/api/v1/bidding/upload_attachment/${auth.currentProfile._id}/${gigId}`,
         formData,
         config
       );
