@@ -72,7 +72,7 @@ const FindJob = () => {
   const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, '', filters);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
-  const filterCategories = [
+  const filterItems = [
     {
       content: [
         { category_id: 'payment', category_name: 'Any Type', category_value: 'any' },
