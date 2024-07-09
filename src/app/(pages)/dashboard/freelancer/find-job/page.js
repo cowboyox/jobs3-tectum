@@ -9,6 +9,7 @@ import { IoLocationOutline } from 'react-icons/io5';
 
 import searchOptions from '../../client/freelancers/searchOptions';
 
+import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -54,7 +55,6 @@ const FindJob = () => {
   const auth = useCustomContext();
   const { toast } = useToast();
   const [sortOrder, setSortOrder] = useState('');
-  const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
 
   const [gigList, setGigList] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -66,86 +66,52 @@ const FindJob = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState([]);
+  const [isAiSearch, setIsAiSearch] = useState(false);
 
   const itemsPerPage = 2;
-  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, '');
+  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, '', filters);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
   const filterItems = [
     {
       content: [
-        { category_id: 'any_amount', category_name: 'Any Amount' },
-        { category_id: 'over_1_earned', category_name: '$1+ Earned' },
-        { category_id: 'over_100_earned', category_name: '$100+ Earned' },
-        { category_id: 'over_1k_earned', category_name: '$1k+ Earned' },
-        { category_id: 'over_10k_earned', category_name: '$10k+ Earned' },
-        { category_id: 'no_earning_yet', category_name: 'No Earning Yet' },
+        { category_id: 'payment', category_name: 'Any Type', category_value: 'any' },
+        { category_id: 'payment', category_name: 'Hourly', category_value: 'hourly' },
+        { category_id: 'payment', category_name: 'Fixed', category_value: 'fixed' },
       ],
-      title: 'Earned Amount',
+      title: 'Payment',
     },
     {
       content: [
-        { category_id: 'any_job_success', category_name: 'Any Job Success' },
-        { category_id: '80_up', category_name: '80% & UP' },
-        { category_id: '90_up', category_name: '90% & UP' },
-        { category_id: 'top_rated', category_name: 'Top Rated' },
-        { category_id: 'rising_talent', category_name: 'Rising Talent' },
+        { category_id: 'applicants', category_name: 'Any Applicants', category_value: 0 },
+        { category_id: 'applicants', category_name: '1+ Applicants', category_value: 1 },
+        { category_id: 'applicants', category_name: '10+ Applicants', category_value: 10 },
+        { category_id: 'applicants', category_name: '100+ Applicants', category_value: 100 },
       ],
-      title: 'Job Success',
+      title: 'Applicants',
     },
     {
       content: [
-        { category_id: 'any_hourly_rate', category_name: 'Any Hourly Rate' },
-        { category_id: '10_below', category_name: '$10 and Below' },
-        { category_id: '10_30', category_name: '$10 - $30' },
-        { category_id: '30_60', category_name: '$30 - $60' },
-        { category_id: '60_above', category_name: '$60 and Above' },
+        {
+          category_id: 'skills',
+          category_name: 'Any Skills',
+          category_value: 'any',
+        },
+        {
+          category_id: 'skills',
+          category_name: 'Web Development',
+          category_value: 'Web Development',
+        },
+        { category_id: 'skills', category_name: 'JavaScript', category_value: 'JavaScript' },
+        {
+          category_id: 'skills',
+          category_name: 'Desktop Application',
+          category_value: 'Desktop Application',
+        },
+        { category_id: 'skills', category_name: 'Python', category_value: 'Python' },
+        { category_id: 'skills', category_name: 'MongoDB', category_value: 'MongoDB' },
       ],
-      title: 'Hourly rate',
-    },
-    {
-      content: [
-        { category_id: 'over_1_hour', category_name: '1+ Hours Billed' },
-        { category_id: 'over_100_hour', category_name: '100+ Hours Billed' },
-        { category_id: 'over_1000_hour', category_name: '1000+ Hours Billed' },
-      ],
-      title: 'Hours billed',
-    },
-    {
-      content: [
-        { category_id: 'any_category', category_name: 'Any Category' },
-        { category_id: 'customer_service', category_name: 'Customer Service' },
-        { category_id: 'design_creative', category_name: 'Design And Creative' },
-        { category_id: 'web_mobile_software', category_name: 'Web, Mobile & Software' },
-      ],
-      title: 'Category',
-    },
-    {
-      content: [
-        { category_id: 'any_level', category_name: 'Any Level' },
-        { category_id: 'basic', category_name: 'Basic' },
-        { category_id: 'conversational', category_name: 'Conversational' },
-        { category_id: 'fluent', category_name: 'Fluent' },
-        { category_id: 'native_bilingual', category_name: 'Native Or Bilingual' },
-      ],
-      title: 'English Level',
-    },
-    {
-      content: [
-        { category_id: 'freelancers_agencies', category_name: 'Freelancers & Agencies' },
-        { category_id: 'freelancers', category_name: 'Freelancers' },
-        { category_id: 'agencies', category_name: 'Agencies' },
-      ],
-      title: 'Talent Type',
-    },
-    {
-      content: [
-        { category_id: 'any_time', category_name: 'Any Time' },
-        { category_id: '2_weeks', category_name: 'Within 2 Weeks' },
-        { category_id: '1_month', category_name: 'Within 1 Month' },
-        { category_id: '2_month', category_name: 'Within 2 Month' },
-      ],
-      title: 'Notice Period',
+      title: 'Skills',
     },
   ];
 
@@ -220,19 +186,6 @@ const FindJob = () => {
 
   const setKey = (e) => {
     setSearchKeyWords(e.target.value);
-    if (searchType == 'normal') {
-      const filtered = gigList.filter(
-        (gig) =>
-          gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.location?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          gig.requiredSkills
-            ?.map((item) => item.toLowerCase())
-            .includes(e.target.value.toLowerCase())
-      );
-      setFilteredGigList(filtered);
-      setFilteredGigShowModeList(new Array(filtered.length).fill(false));
-    }
   };
 
   const setOrder = (value) => {
@@ -266,6 +219,8 @@ const FindJob = () => {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && searchType === 'ai') {
       aiSearch();
+    } else {
+      setIsAiSearch(false);
     }
   };
 
@@ -321,12 +276,20 @@ const FindJob = () => {
     setPage((prev) => prev + 1);
   };
 
-  const onCheckedChange = (value, id, name) => {
-    if (value) {
-      setFilters((prev) => [...prev, name]);
+  const onCheckedChange = (isChecked, id, name, value) => {
+    if (isChecked) {
+      setFilters((prev) => [...prev, { id, name, value }]);
     } else {
-      setFilters((prev) => prev.filter((item) => item !== name));
+      setFilters((prev) =>
+        prev.filter(
+          (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+        )
+      );
     }
+  };
+
+  const handleClearAll = () => {
+    setFilters([]);
   };
 
   return loaded ? (
@@ -358,13 +321,19 @@ const FindJob = () => {
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
-              <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
-                <CiFilter className='mobile:max-w-4' fill='#96B0BD' size={20} />
-                <span className='text-[#96B0BD] mobile:text-sm'>Filter</span>
-                <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
-                  {filters.length}
-                </span>
-              </div>
+              <button className='m-3 flex flex-row items-center justify-center gap-3'>
+                <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
+                {!isSmallScreen && (
+                  <div className='flex flex-row gap-2'>
+                    <div>Filter</div>
+                    {filters.length > 0 && (
+                      <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
+                        {filters.length}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </button>
             </PopoverTrigger>
             <PopoverContent
               align='end'
@@ -378,12 +347,24 @@ const FindJob = () => {
                       {item.content.map((con, i) => {
                         return (
                           <DropdownItem
-                            category_id={con.category_id}
+                            category_id={con.category_id + con.category_value}
                             category_name={con.category_name}
-                            checked={filters.includes(con.category_name)}
+                            isChecked={
+                              !!filters.find(
+                                (f) =>
+                                  f.id === con.category_id &&
+                                  f.name === con.category_name &&
+                                  JSON.stringify(f.value) === JSON.stringify(con.category_value)
+                              )
+                            }
                             key={i}
                             onCheckedChange={(value) =>
-                              onCheckedChange(value, con.category_id, con.category_name)
+                              onCheckedChange(
+                                value,
+                                con.category_id,
+                                con.category_name,
+                                con.category_value
+                              )
                             }
                           />
                         );
@@ -407,8 +388,8 @@ const FindJob = () => {
         )}
       </div>
       {filters.length > 0 && (
-        <div className='flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
-          {filters.map((item, index) => {
+        <div className='mt-4 flex touch-pan-x flex-row flex-wrap items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
+          {filters.map((filter, index) => {
             return (
               <span
                 className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
@@ -416,14 +397,14 @@ const FindJob = () => {
               >
                 <FaX
                   className='rounded-full bg-[#3E525B] p-[2px]'
-                  onClick={() => setFilters((prev) => prev.filter((_item) => _item !== item))}
+                  onClick={() => handleRemove(filter.id, filter.name, filter.value)}
                 />
-                {item}
+                {filter.name}
               </span>
             );
           })}
 
-          <span className='cursor-pointer' onClick={() => setFilters([])}>
+          <span className='cursor-pointer' onClick={handleClearAll}>
             Clear&nbsp;All
           </span>
         </div>
