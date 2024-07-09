@@ -17,9 +17,7 @@ import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapte
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { CiFilter } from 'react-icons/ci';
 import { FaArrowRight, FaEllipsis, FaX } from 'react-icons/fa6';
-import { IoLocationOutline } from 'react-icons/io5';
 import { v4 as uuid } from 'uuid';
 
 import searchOptions from '../freelancers/searchOptions';
