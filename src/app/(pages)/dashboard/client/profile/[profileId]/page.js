@@ -278,14 +278,13 @@ const ClientDashboard = () => {
     };
     saveToDB(tmp);
   };
-
-  const calculateClientHistory = () => {
+  const calculateClientHistory = (profileData) => {
     let totalSpentAmount = 0;
     let totalJobsCount = 0;
     let totalHoursCount = 0;
     let totalHiresCount = 0;
     let totalPaidAmount = 0;
-
+  
     profileData.clHistory?.forEach((item) => {
       totalJobsCount += 1;
       totalHiresCount += item.pays.length;
@@ -295,18 +294,25 @@ const ClientDashboard = () => {
         totalPaidAmount += pay.amount;
       });
     });
+  
+    return {
+      totalSpentAmount,
+      totalJobsCount,
+      totalHoursCount,
+      totalHiresCount,
+      totalPaidAmount,
+    };
+  };
 
+  useEffect(() => {
+    const { totalSpentAmount, totalJobsCount, totalHoursCount, totalHiresCount, totalPaidAmount } = calculateClientHistory(profileData);
     setTotalSpent(totalSpentAmount);
     setTotalJobs(totalJobsCount);
     setTotalHours(totalHoursCount);
     setTotalHires(totalHiresCount);
-    setHireRate(!totalHiresCount?0:totalHiresCount * 100 / totalJobsCount);
-    setHourlyRate(!totalPaidAmount?0:totalPaidAmount / totalHoursCount);
-  }
-
-  useEffect(() => {
-    calculateClientHistory();
-  }, [profileData])
+    setHireRate(!totalHiresCount ? 0 : totalHiresCount * 100 / totalJobsCount);
+    setHourlyRate(!totalPaidAmount ? 0 : totalPaidAmount / totalHoursCount);
+  }, [profileData]);
 
   return !isLoading ? (
     <div className='p-0'>
