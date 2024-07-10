@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaX } from 'react-icons/fa6';
 
@@ -27,6 +28,7 @@ const Freelancers = () => {
   const [isAiSearch, setIsAiSearch] = useState(false);
   const debouncedSearchText = useDebounce(searchText);
   const [page, setPage] = useState(1);
+  const router = useRouter();
   const itemsPerPage = 2;
   const { isSmallScreen } = useHandleResize();
   const { data: freelancers } = useGetFreelancers(page, itemsPerPage, debouncedSearchText, filters);
@@ -96,6 +98,10 @@ const Freelancers = () => {
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
+  };
+
+  const handleMessage = (freelancerId) => {
+    router.push(`/dashboard/client/inbox/${freelancerId}`);
   };
 
   return (
@@ -214,7 +220,12 @@ const Freelancers = () => {
                         </div>
                       </div>
                       <div className='mt-2 flex-1 rounded-xl bg-[#1B272C] p-1 md:mt-0 md:flex-none'>
-                        <button className='p-4 px-8 md:p-5'>Message</button>
+                        <button
+                          className='p-4 px-8 md:p-5'
+                          onClick={() => handleMessage(freelancer._id)}
+                        >
+                          Message
+                        </button>
                         <button className='bg-[#DC4F13] p-4 px-8 md:p-5'>Invite to Gig</button>
                       </div>
                     </div>

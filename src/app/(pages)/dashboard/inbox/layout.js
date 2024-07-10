@@ -1,6 +1,8 @@
 'use client';
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import './layout.css';
+
+import Link from 'next/link';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { FaRegStar, FaStar } from 'react-icons/fa';
 import { IoIosSearch } from 'react-icons/io';
@@ -15,8 +17,6 @@ import {
 import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
-
-import './layout.css';
 
 const chats_filters = [
   // Please keep value unique as it's the identifier
@@ -171,7 +171,7 @@ const MessageItem = ({ message }) => {
               className={`absolute bottom-1 right-1 h-[10px] w-[10px] rounded-full ${
                 message.online ? 'bg-green-500' : 'bg-gray-500'
               }`}
-            />
+            ></div>
           </div>
           <div className='flex w-full flex-col gap-2'>
             <p className='flex items-center gap-3 text-nowrap text-sm font-semibold text-white'>
@@ -180,7 +180,7 @@ const MessageItem = ({ message }) => {
             </p>
             <p className='relative w-full text-nowrap text-xs font-light text-white'>
               {truncateText(message.message, 17)}
-              <span className='absolute right-0 top-0 h-full w-1/2 bg-opacity-60 bg-gradient-to-r from-transparent to-black transition group-hover:to-[#1a272c]' />
+              <span className='absolute right-0 top-0 h-full w-1/2 bg-opacity-60 bg-gradient-to-r from-transparent to-black transition group-hover:to-[#1a272c]'></span>
             </p>
           </div>
         </div>
@@ -279,7 +279,7 @@ const InboxPage = ({ children }) => {
         }
       `}</style>
       <div className='inbox-container flex w-full overflow-hidden'>
-        <div className='left-o top-0x chats_col mobile:h-full mobile:p-3 absolute flex w-full flex-col gap-4 border-r border-[#28373E] p-6 md:relative md:w-1/3'>
+        <div className='mobile:p-3 left-o top-0x mobile:h-full chats_col absolute flex w-full flex-col gap-4 border-r border-[#28373E] p-6 md:relative md:w-1/3'>
           {/* Search chats */}
           <div className='flex h-auto items-center rounded-xl border border-[#526872] px-4'>
             <IoIosSearch />
@@ -309,7 +309,7 @@ const InboxPage = ({ children }) => {
               filteredUsers.map((message, index) => <MessageItem key={index} message={message} />)}
           </div>
         </div>
-        <div className='chat_content mobile:h-full w-full transition md:w-2/3 md:translate-x-0'>
+        <div className='mobile:h-full chat_content w-full transition md:w-2/3 md:translate-x-0'>
           {children}
         </div>
       </div>

@@ -220,22 +220,24 @@ const InboxPage = ({ children }) => {
       try {
         api.get(`/api/v1/user/get-all-users`).then((res) => {
           let data = res.data;
+          console.log({ data });
           for (let i = 0; i < data.length; i++) {
             if (data[i]._id == auth.user._id) {
               data.splice(i, 1);
               i--;
               continue;
             }
-            (data[i].id = i),
-              (data[i].name = data[i].chosen_visible_name),
-              (data[i].isVerified = true),
-              (data[i].avatar = '/assets/images/users/user-14.png'),
-              (data[i].online = true),
-              (data[i].unreadCount = 0),
-              (data[i].starred = true),
-              (data[i].message = ''),
-              (data[i].timestamp = ''),
-              (data[i].starred = true);
+            console.log('a', { data });
+            data[i].id = i;
+            data[i].name = data[i].chosen_visible_name;
+            data[i].isVerified = true;
+            data[i].avatar = '/assets/images/users/user-14.png';
+            data[i].online = true;
+            data[i].unreadCount = 0;
+            data[i].starred = true;
+            data[i].message = '';
+            data[i].timestamp = '';
+            data[i].starred = true;
           }
           setUsers(Array.isArray(res.data) ? res.data : []);
           setFilteredUsers(Array.isArray(res.data) ? res.data : []);
@@ -279,7 +281,7 @@ const InboxPage = ({ children }) => {
         }
       `}</style>
       <div className='inbox-container flex w-full overflow-hidden'>
-        <div className='left-o top-0x chats_col absolute flex w-full flex-col gap-4 border-r border-[#28373E] p-6 md:relative md:w-1/3 mobile:h-full mobile:p-3'>
+        <div className='left-o top-0x chats_col mobile:h-full mobile:p-3 absolute flex w-full flex-col gap-4 border-r border-[#28373E] p-6 md:relative md:w-1/3'>
           {/* Search chats */}
           <div className='flex h-auto items-center rounded-xl border border-[#526872] px-4'>
             <IoIosSearch />
@@ -309,7 +311,7 @@ const InboxPage = ({ children }) => {
               filteredUsers.map((message, index) => <MessageItem key={index} message={message} />)}
           </div>
         </div>
-        <div className='chat_content w-full transition md:w-2/3 md:translate-x-0 mobile:h-full'>
+        <div className='chat_content mobile:h-full w-full transition md:w-2/3 md:translate-x-0'>
           {children}
         </div>
       </div>

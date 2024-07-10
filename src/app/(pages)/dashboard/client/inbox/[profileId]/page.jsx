@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { FaRegStar, FaStar } from 'react-icons/fa';
@@ -18,7 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
-import api from '@/utils/api';
+import { useGetUserInfo } from '@/hooks/useGetUserInfo';
 
 /* For backend:
  * I used the same messages from the parent to simulate like a backend query
@@ -213,43 +214,48 @@ const MessageText = (props) => {
 //   );
 // };
 
-const ChatPage = (parameters) => {
+const ChatPage = () => {
   const socket = useSocket();
+  const { profileId } = useParams();
   const auth = useCustomContext();
   const [receiver, setRceiver] = useState(null);
   const [conversations, setConversation] = useState([]);
   const [input, setInput] = useState('');
-  useEffect(() => {
-    api.get(`/api/v1/user/get-user/${parameters.params.contact_username}`).then((res) => {
-      let data = res.data;
-      (data.name = data.chosen_visible_name),
-        (data.isVerified = true),
-        (data.avatar = '/assets/images/users/user-14.png'),
-        (data.online = true),
-        (data.unreadCount = 0),
-        (data.starred = true),
-        (data.message = ''),
-        (data.timestamp = ''),
-        (data.starred = true);
-      setRceiver(data);
-      if (auth.user) {
-        let from = auth.user._id;
-        let to = data._id;
-        socket.emit('getHistory', { from, to });
-      }
-    });
+  const { data: userInfo } = useGetUserInfo(profileId);
 
-    socket?.on('history', (history) => {
-      setConversation(history);
-    });
-    // Handle incoming messages
-    socket?.on('newMessage', (message) => {
-      setConversation((prevMessages) => [...prevMessages, message]);
-    });
-    return () => {
-      socket?.off('newMessage');
-    };
-  }, [auth, parameters.params.contact_username, socket]);
+  console.log({ userInfo });
+
+  useEffect(() => {
+    if (userInfo && auth?.currentProfile) {
+      setRceiver({
+        avatar: userInfo.avatarURL,
+        isVerified: userInfo.userId?.verified || false,
+        message: '',
+        name: userInfo.fullName,
+        online: userInfo.userId?.status === 'Online' ? true : false,
+        starred: true,
+        timestamp: userInfo.userId?.timestamp,
+        unreadCount: 0,
+      });
+
+      let from = auth.currentProfile._id;
+      let to = userInfo._id;
+
+      socket.emit('getHistory', { from, to });
+
+      socket?.on('history', (history) => {
+        setConversation(history);
+      });
+      // Handle incoming messages
+      socket?.on('newMessage', (message) => {
+        setConversation((prevMessages) => [...prevMessages, message]);
+      });
+
+      return () => {
+        socket?.off('newMessage');
+      };
+    }
+  }, [userInfo, auth?.currentProfile, socket]);
 
   const sendMessage = () => {
     const message = { messageText: input, receiverId: receiver._id, senderId: auth.user._id };
@@ -282,7 +288,7 @@ const ChatPage = (parameters) => {
       {receiver && (
         <>
           {/* Chat header */}
-          <div className='flex h-24 border-b border-[#28373E] px-8 mobile:px-5 mobile:py-3'>
+          <div className='mobile:px-5 mobile:py-3 flex h-24 border-b border-[#28373E] px-8'>
             <div className='flex w-3/5 items-center gap-3'>
               <Link className='md:hidden' href='../inbox'>
                 <FaAngleLeft />
@@ -300,11 +306,11 @@ const ChatPage = (parameters) => {
                 />
               </div>
               <div className='flex w-full flex-col gap-1'>
-                <p className='flex items-center gap-3 text-nowrap text-xl font-semibold text-white mobile:text-base'>
+                <p className='mobile:text-base flex items-center gap-3 text-nowrap text-xl font-semibold text-white'>
                   {receiver.name}
                   {receiver.isVerified && <BsPatchCheckFill fill='#148fe8' />}
                 </p>
-                <p className='relative w-full text-nowrap text-sm text-[#526872] mobile:text-xs'>
+                <p className='mobile:text-xs relative w-full text-nowrap text-sm text-[#526872]'>
                   @{receiver.name}
                 </p>
               </div>
@@ -344,7 +350,7 @@ const ChatPage = (parameters) => {
           </div>
           {/* Chat Content */}
           <div className='relative flex flex-col items-center overflow-scroll'>
-            <div className='flex max-w-[464px] flex-col gap-9 pb-3 pt-8 mobile:px-5'>
+            <div className='mobile:px-5 flex max-w-[464px] flex-col gap-9 pb-3 pt-8'>
               {/* Chat */}
               {conversations.map((conv, id) => (
                 <div className='flex flex-col gap-3' key={id}>
@@ -400,7 +406,7 @@ const ChatPage = (parameters) => {
             </div>
           </div>
           {/* Message Input */}
-          <div className='flex h-24 w-full items-center justify-center mobile:p-2'>
+          <div className='mobile:p-2 flex h-24 w-full items-center justify-center'>
             <div className='mx-auto flex h-14 w-full max-w-[684px] items-center gap-4 overflow-hidden rounded-2xl border border-[#526872] py-2 pl-4 pr-2'>
               <IoMdAttach className='h-6 w-6 cursor-pointer transition hover:fill-[#dc4f14]' />
               <textarea
