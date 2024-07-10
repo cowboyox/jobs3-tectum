@@ -190,7 +190,7 @@ const Orders = () => {
       const contractAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, contract, true);
 
       const transaction = await program.methods
-        .activateContract(contractId)
+        .activateContract(contractId, true)
         .accounts({
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           contract,

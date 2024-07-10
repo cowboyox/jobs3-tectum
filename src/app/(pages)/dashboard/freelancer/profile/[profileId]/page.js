@@ -188,6 +188,7 @@ const FreelancerProfile = () => {
   const [portfolioShowNumber, setPortfolioShowNumber] = useState(3);
   const [gigShowNumber, setGigShowNumber] = useState(3);
 
+
   const router = useRouter();
   const min = (a, b) => {
     return a < b ? a : b;

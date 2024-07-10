@@ -3,7 +3,7 @@
   "name": "gig_basic_contract",
   "instructions": [
     {
-      "name": "startContract",
+      "name": "startContractOnBuyer",
       "accounts": [
         {
           "name": "buyer",
@@ -76,6 +76,125 @@
       ]
     },
     {
+      "name": "startContractOnSeller",
+      "accounts": [
+        {
+          "name": "seller",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "contract",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyer",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payTokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "sellerAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "contractAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "contractId",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "dispute",
+          "type": "u64"
+        },
+        {
+          "name": "deadline",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "acceptContractOnBuyer",
+      "accounts": [
+        {
+          "name": "buyer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "contract",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyerAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "contractAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "contractId",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "activateContract",
       "accounts": [
         {
@@ -118,6 +237,10 @@
         {
           "name": "contractId",
           "type": "string"
+        },
+        {
+          "name": "withDispute",
+          "type": "bool"
         }
       ]
     },
@@ -382,6 +505,9 @@
             "name": "Active"
           },
           {
+            "name": "Accepted"
+          },
+          {
             "name": "Pending"
           },
           {
@@ -407,31 +533,36 @@
     },
     {
       "code": 6002,
+      "name": "InvalidAcceptor",
+      "msg": "Invalid buyer is trying to accept contract!"
+    },
+    {
+      "code": 6003,
       "name": "InvalidBuyer",
       "msg": "Invalid buyer is trying to release funds!"
     },
     {
-      "code": 6003,
+      "code": 6004,
       "name": "InvalidAdmin",
       "msg": "Invalid admin is trying to release funds!"
     },
     {
-      "code": 6004,
+      "code": 6005,
       "name": "InvalidDisputeAmount",
       "msg": "Dispute Amount should be 50 cent!"
     },
     {
-      "code": 6005,
+      "code": 6006,
       "name": "CantRelease",
       "msg": "Contract is not active yet or already completed!"
     },
     {
-      "code": 6006,
+      "code": 6007,
       "name": "NotReadyYet",
       "msg": "Contract is not pending or disputed yet so admin can't approve now or already completed!"
     },
     {
-      "code": 6007,
+      "code": 6008,
       "name": "PayTokenMintError",
       "msg": "Invalid payment token!"
     }
