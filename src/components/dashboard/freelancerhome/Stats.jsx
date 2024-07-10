@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
 import { useCustomContext } from '@/context/use-custom';
-import { useFreelancerInfo } from '@/hooks/useFreelancerInfo';
+import { useGetClientGigsContractedWithFreelancer } from '@/hooks/useGetClientGigsContractedWithFreelancer';
 import { useGetClientGigsProposedByFreelancer } from '@/hooks/useGetClientGigsProposedByFreelancer';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import { timeSincePublication } from '@/utils/Helpers';
@@ -41,53 +41,208 @@ const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   );
 };
 
-const Stats = ({ searchText, setSearchText }) => {
+const ActiveOrders = ({ searchText, filters }) => {
   const auth = useCustomContext();
   const [canLoadMore, setCanLoadMore] = useState(true);
-  // const [canLoadMoreEarnings, setCanLoadMoreEarnings] = useState(true);
-  const [searchType, setSearchType] = useState('normal');
-  const [filteredActiveOrders, setFilteredActiveOrders] = useState([]);
-  const [filters, setFilters] = useState([]);
-  const { isSmallScreen } = useHandleResize();
+  const [gigsActive, setGigsActive] = useState([]);
   const [page, setPage] = useState(1);
   const itemsPerPage = 2;
-  const { data: flInfo } = useFreelancerInfo(
+
+  const { data: gigsProposed } = useGetClientGigsProposedByFreelancer(
     auth?.currentProfile?._id,
     page,
     itemsPerPage,
     searchText,
     filters
   );
-
-  const { data: gigsContracted } = useGetClientGigsProposedByFreelancer(
-    auth?.currentProfile?._id,
-    page,
-    itemsPerPage,
-    searchText,
-    filters
-  );
-
-  console.log({ gigsContracted });
 
   useEffect(() => {
-    if (flInfo?.activeOrders?.length > 0) {
-      if (searchText) {
-        setFilteredActiveOrders(
-          flInfo.activeOrders.filter(
-            (item) =>
-              item?.gigTitle?.toLowerCase().includes(searchText.toLowerCase()) ||
-              item?.gigStatus?.toLowerCase().includes(searchText.toLowerCase())
-          )
-        );
+    setPage(1);
+    setCanLoadMore(true);
+  }, [searchText]);
+
+  useEffect(() => {
+    if (gigsProposed?.length > 0) {
+      setCanLoadMore(true);
+      if (page === 1) {
+        setGigsActive(gigsProposed);
       } else {
-        setFilteredActiveOrders(flInfo.activeOrders);
+        setGigsActive((prev) => {
+          let result = [...prev];
+          const ids = prev.map((item) => item._id);
+
+          gigsProposed.map((gp) => {
+            if (!ids.includes(gp._id)) {
+              result = [...result, gp];
+            }
+          });
+
+          return result;
+        });
       }
+    } else {
+      if (page === 1) {
+        setGigsActive([]);
+      }
+      setCanLoadMore(false);
     }
-  }, [flInfo, searchText]);
+  }, [gigsProposed, page]);
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    setPage(1);
+    setCanLoadMore(true);
+  }, [searchText]);
+
+  return (
+    <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[70%]'>
+      <div className='flex h-1/6 items-center justify-between'>
+        <h3 className='text-2xl font-semibold text-white'>Active Orders</h3>
+        {/* <p className='text-medGray'>See All</p> */}
+      </div>
+      <div className='mt-6 flex flex-1 flex-col justify-between gap-2'>
+        {gigsActive.length ? (
+          gigsActive.map((order, index) => (
+            <div className='flex flex-col' key={index}>
+              <Separator className='my-4' />
+              <div className='flex items-center gap-1 rounded-2xl px-3'>
+                <div className='flex flex-1 flex-col items-center justify-between md:flex-row'>
+                  <div className='flex items-center gap-4'>
+                    <h3 className='text-md whitespace-nowrap font-semibold text-white md:text-xl'>
+                      {order.gigTitle}
+                    </h3>
+                  </div>
+                  <div className='flex w-full items-center justify-between gap-4 px-4 md:w-auto md:px-0'>
+                    <p className='text-xl font-[500] text-medGray'>{order.gigPrice}</p>
+                    <div className='flex items-center gap-1 rounded-[6px] border-2 border-yellow-500 px-3 text-yellow-500'>
+                      <p>{timeSincePublication(new Date(order.gigPostDate).getTime() / 1000)}</p>
+                    </div>
+                    <div className='flex items-center gap-1 rounded-[6px] border-2 border-green-500 px-3 text-green-500'>
+                      <p>{order.status}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
+            Not yet
+          </div>
+        )}
+      </div>
+      {canLoadMore && gigsActive.length > 0 && (
+        <div
+          className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+          onClick={handleLoadMore}
+        >
+          Load More +
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Earnings = ({ searchText, filters }) => {
+  const auth = useCustomContext();
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const [earnings, setEarnings] = useState([]);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
+
+  const { data: gigs } = useGetClientGigsContractedWithFreelancer(
+    auth?.currentProfile?._id,
+    page,
+    itemsPerPage,
+    searchText,
+    filters
+  );
+
+  useEffect(() => {
+    setPage(1);
+    setCanLoadMore(true);
+  }, [searchText]);
+
+  useEffect(() => {
+    if (gigs?.earnings?.length > 0) {
+      setCanLoadMore(true);
+      if (page === 1) {
+        setEarnings(gigs?.earnings);
+      } else {
+        setEarnings((prev) => {
+          let result = [...prev];
+          const ats = prev.map((item) => item.earnedAt);
+
+          gigs?.earnings.map((earning) => {
+            if (!ats.includes(earning.earnedAt)) {
+              result = [...result, earning];
+            }
+          });
+
+          return result;
+        });
+      }
+    } else {
+      if (page === 1) {
+        setEarnings([]);
+      }
+      setCanLoadMore(false);
+    }
+  }, [gigs, page]);
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
+
+  useEffect(() => {
+    setPage(1);
+    setCanLoadMore(true);
+  }, [searchText]);
+
+  return (
+    <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[30%]'>
+      <div className='flex h-1/6 items-center justify-between'>
+        <h3 className='text-2xl font-semibold text-white'>Earnings</h3>
+        {/* <p className='text-medGray'>See All</p> */}
+      </div>
+      <div className='mt-6 flex-1'>
+        {earnings.length ? (
+          earnings.map((earning, index) => (
+            <div
+              className='mb-2 flex h-[45px] flex-1 items-center justify-between gap-1 rounded-xl bg-darkGray px-3'
+              key={index}
+            >
+              <p className='text-xl font-[500] text-white'>
+                {new Date(earning.earnedAt).getMonth() + 1}
+              </p>
+              <p className='text-xl font-[500] text-medGray'>{earning.amount}</p>
+            </div>
+          ))
+        ) : (
+          <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
+            Not yet
+          </div>
+        )}
+      </div>
+      {canLoadMore && earnings.length > 0 && (
+        <div
+          className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+          onClick={handleLoadMore}
+        >
+          Load More +
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Stats = ({ searchText, setSearchText }) => {
+  const [searchType, setSearchType] = useState('normal');
+  const [filters, setFilters] = useState([]);
+  const { isSmallScreen } = useHandleResize();
 
   const onChangeType = (e) => {
     setSearchType(e);
@@ -103,31 +258,6 @@ const Stats = ({ searchText, setSearchText }) => {
     }
   };
 
-  useEffect(() => {
-    if (flInfo?.activeOrders?.length > 0) {
-      setCanLoadMore(true);
-      if (page === 1) {
-        // setLives(orders.lives);
-      } else {
-        // setLives((prev) => {
-        //   let result = [...prev];
-        //   const ids = prev.map((item) => item._id);
-        //   orders.lives.map((lv) => {
-        //     if (!ids.includes(lv._id)) {
-        //       result = [...result, lv];
-        //     }
-        //   });
-        //   return result;
-        // });
-      }
-    } else {
-      if (page === 1) {
-        // setLives([]);
-      }
-      setCanLoadMore(false);
-    }
-  }, [flInfo, page]);
-
   const onCheckedChange = (isChecked, id, name, value) => {
     if (isChecked) {
       setFilters((prev) => [...prev, { id, name, value }]);
@@ -140,15 +270,13 @@ const Stats = ({ searchText, setSearchText }) => {
     }
   };
 
-  const onRadioChange = (isSelected, id, name, value) => {
+  const onRadioChange = (radioValue, id, name, value) => {
     setFilters((prev) => {
       let tmp = prev.filter((f) => f.id !== id);
 
       return [...tmp, { id, name, value }];
     });
   };
-
-  console.log({ filters });
 
   const filterCategories = [
     {
@@ -267,11 +395,13 @@ const Stats = ({ searchText, setSearchText }) => {
       type: 0,
     },
   ];
-  const [currentLocation, setCurrentLocation] = useState('United States');
-  const [currentTimeZone, setCurrentTimeZone] = useState('GMT+1');
 
-  const onSelectChange = (isSelected, id, name, value) => {
-    console.log(value, id, name, value);
+  const onSelectChange = (e) => {
+    setFilters((prev) => {
+      let tmp = prev.filter((f) => f.id !== e.category_id);
+
+      return [...tmp, { id: e.category_id, name: e.category_name, value: e.category_value }];
+    });
   };
 
   const handleRemove = (id, name, value) => {
@@ -355,25 +485,18 @@ const Stats = ({ searchText, setSearchText }) => {
                         <div>{item.title}</div>
                         {item.type === 2 && (
                           <div>
-                            <Select>
+                            <Select
+                              id={item.title}
+                              onValueChange={(e) => onSelectChange(e)}
+                              // value={filters.find((f) => f.id === item.content[0].category_id)}
+                            >
                               <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                                 <SelectValue placeholder={item.choose} />
                               </SelectTrigger>
                               <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
                                 <SelectGroup>
-                                  {item.content.map((con, indx) => (
-                                    <SelectItem
-                                      key={indx}
-                                      onValueChange={(value) =>
-                                        onSelectChange(
-                                          value,
-                                          con.category_id,
-                                          con.category_name,
-                                          con.category_value
-                                        )
-                                      }
-                                      value={con.category_value}
-                                    >
+                                  {item.content.map((con) => (
+                                    <SelectItem key={con.category_name} value={con}>
                                       {con.category_name}
                                     </SelectItem>
                                   ))}
@@ -430,16 +553,16 @@ const Stats = ({ searchText, setSearchText }) => {
                                   className='h-[24px] w-[24px] text-[#96B0BD] accent-[#DC4F13]'
                                   id={con.category_id}
                                   name={item.title}
-                                  onChange={(value) =>
+                                  onChange={(e) =>
                                     onRadioChange(
-                                      value,
+                                      e.target.value,
                                       con.category_id,
                                       con.category_name,
                                       con.category_value
                                     )
                                   }
                                   type='radio'
-                                  value={con.category_name}
+                                  value={con.category_value}
                                 />
                                 <label className='text-[#96B0BD]' htmlFor={con.category_id}>
                                   {con.category_name}
@@ -469,7 +592,7 @@ const Stats = ({ searchText, setSearchText }) => {
                   className='rounded-full bg-[#3E525B] p-[2px]'
                   onClick={() => handleRemove(item.id, item.name, item.value)}
                 />
-                {item}
+                {item.name}
               </span>
             );
           })}
@@ -482,82 +605,8 @@ const Stats = ({ searchText, setSearchText }) => {
       <div className='mt-2 flex flex-col gap-4'>
         {/* <h1 className='text-2xl font-semibold'>Your Stats</h1> */}
         <div className='mt-2 flex flex-col gap-4 md:flex-row'>
-          <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[70%]'>
-            <div className='flex h-1/6 items-center justify-between'>
-              <h3 className='text-2xl font-semibold text-white'>Active Orders</h3>
-              {/* <p className='text-medGray'>See All</p> */}
-            </div>
-            <div className='mt-6 flex flex-1 flex-col justify-between gap-2'>
-              {filteredActiveOrders.length ? (
-                filteredActiveOrders.map((order, index) => (
-                  <div className='flex flex-col' key={index}>
-                    <Separator className='my-4' />
-                    <div className='flex items-center gap-1 rounded-2xl px-3'>
-                      {/* <Image
-                      className='md:hidden'
-                      height={45}
-                      src={'/assets/icons/ActiveOrder.png'}
-                      width={45}
-                    /> */}
-                      <div className='flex flex-1 flex-col items-center justify-between md:flex-row'>
-                        <div className='flex items-center gap-4'>
-                          {/* <Image
-                          className='hidden md:block'
-                          height={45}
-                          src={'/assets/icons/ActiveOrder.png'}
-                          width={45}
-                        /> */}
-                          <h3 className='text-md whitespace-nowrap font-semibold text-white md:text-xl'>
-                            {order.gigTitle}
-                          </h3>
-                        </div>
-                        <div className='flex w-full items-center justify-between gap-4 px-4 md:w-auto md:px-0'>
-                          <p className='text-xl font-[500] text-medGray'>{order.gigPrice}</p>
-                          <div className='flex items-center gap-1 rounded-[6px] border-2 border-yellow-500 px-3 text-yellow-500'>
-                            <p>
-                              {timeSincePublication(new Date(order.gigPostDate).getTime() / 1000)}
-                            </p>
-                          </div>
-                          <div className='flex items-center gap-1 rounded-[6px] border-2 border-green-500 px-3 text-green-500'>
-                            <p>{order.gigStatus}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
-                  Not yet
-                </div>
-              )}
-            </div>
-          </div>
-          <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[30%]'>
-            <div className='flex h-1/6 items-center justify-between'>
-              <h3 className='text-2xl font-semibold text-white'>Earnings</h3>
-              {/* <p className='text-medGray'>See All</p> */}
-            </div>
-            <div className='mt-6 flex-1'>
-              {flInfo?.earnings?.length ? (
-                flInfo?.earnings?.map((earning, index) => (
-                  <div
-                    className='mb-2 flex h-[45px] flex-1 items-center justify-between gap-1 rounded-xl bg-darkGray px-3'
-                    key={index}
-                  >
-                    <p className='text-xl font-[500] text-white'>
-                      {new Date(earning.earnedAt).getMonth() + 1}
-                    </p>
-                    <p className='text-xl font-[500] text-medGray'>{earning.amount}</p>
-                  </div>
-                ))
-              ) : (
-                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
-                  Not yet
-                </div>
-              )}
-            </div>
-          </div>
+          <ActiveOrders filters={filters} searchText={searchText} />
+          <Earnings filters={filters} searchText={searchText} />
         </div>
       </div>
     </div>
