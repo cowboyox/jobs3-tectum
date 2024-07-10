@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetAllFreelancerOrdersProposed = (
-  profileId,
+export const useGetClientGigsContractedWithFreelancer = (
+  freelancerId,
   pageNum,
   itemsPerPage,
   searchText = '',
@@ -11,9 +11,9 @@ export const useGetAllFreelancerOrdersProposed = (
 ) => {
   return useQuery({
     cacheTime: Infinity,
-    enabled: !!profileId && pageNum > 0 && itemsPerPage > 0,
+    enabled: !!freelancerId && pageNum > 0 && itemsPerPage > 0,
     queryFn: async () => {
-      if (profileId && pageNum > 0 && itemsPerPage > 0) {
+      if (freelancerId && pageNum > 0 && itemsPerPage > 0) {
         try {
           let earned = 0;
           let languages = ['any'];
@@ -36,9 +36,9 @@ export const useGetAllFreelancerOrdersProposed = (
           });
 
           const result = await api.get(
-            `/api/v1/freelancer_gig/find_all_orders_on_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
+            `/api/v1/client_gig/get_gigs_contracted_with_freelancer/${freelancerId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
           );
-          console.log('result in useGetAllFreelancerOrdersProposed:', result);
+          console.log('result in useGetClientGigsContractedWithFreelancer:', result);
           const proposals = [];
           const lives = [];
 
@@ -100,7 +100,7 @@ export const useGetAllFreelancerOrdersProposed = (
         return null;
       }
     },
-    queryKey: ['useGetAllClientOrdersProposed', profileId],
+    queryKey: ['useGetAllClientOrdersProposed', freelancerId],
     staleTime: Infinity,
   });
 };

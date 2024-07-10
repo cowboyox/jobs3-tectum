@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select';
 import { useCustomContext } from '@/context/use-custom';
 import { useDebounce } from '@/hooks/useDebounce';
-import { useGetAllFreelancerOrdersProposed } from '@/hooks/useGetAllFreelancerOrdersProposed';
+import { useGetClientGigsContractedWithFreelancer } from '@/hooks/useGetClientGigsContractedWithFreelancer';
 import { useHandleResize } from '@/hooks/useHandleResize';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
@@ -114,13 +114,14 @@ const Offer = () => {
     },
   ];
 
-  const { data: orders, refetch: refetchAllOrdersProposed } = useGetAllFreelancerOrdersProposed(
-    auth?.currentProfile?._id,
-    page,
-    itemsPerPage,
-    debouncedSearchText,
-    filters
-  );
+  const { data: orders, refetch: refetchAllOrdersProposed } =
+    useGetClientGigsContractedWithFreelancer(
+      auth?.currentProfile?._id,
+      page,
+      itemsPerPage,
+      debouncedSearchText,
+      filters
+    );
 
   useEffect(() => {
     setPage(1);
@@ -239,9 +240,9 @@ const Offer = () => {
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d] pr-4'>
-        <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
+        <div className='mobile:m-1 m-3 flex flex-1 gap-2'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
-            <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
+            <SelectTrigger className='mobile:w-14 mobile:p-2 w-20 rounded-xl bg-[#1B272C]'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className='rounded-xl bg-[#1B272C]'>
@@ -252,13 +253,13 @@ const Offer = () => {
             </SelectContent>
           </Select>
           <input
-            className='w-full bg-transparent text-white outline-none mobile:text-sm'
+            className='mobile:text-sm w-full bg-transparent text-white outline-none'
             onChange={(e) => setSearchKeyWords(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
           />
         </div>
-        <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
+        <div className='mobile:hidden m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C]'>
           <IoLocationOutline size={20} stroke='#96B0BD' />
           <span className='hidden text-[#96B0BD] md:block'>Anywhere</span>
         </div>
@@ -323,7 +324,7 @@ const Offer = () => {
         {searchType === 'ai' && (
           <div className='flex'>
             <button
-              class='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
+              class='mobile:flex hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white'
               onClick={aiSearch}
             >
               <FaArrowRight />

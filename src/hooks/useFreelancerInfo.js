@@ -4,15 +4,41 @@ import api from '@/utils/api';
 import { APIS } from '@/utils/constants';
 import { getStatus } from '@/utils/gigInfo';
 
-export const useFreelancerInfo = (profileId) => {
+export const useFreelancerInfo = (
+  profileId,
+  pageNum,
+  itemsPerPage,
+  searchText = '',
+  filters = []
+) => {
   return useQuery({
     cacheTime: Infinity,
-    enabled: !!profileId,
+    enabled: !!profileId && pageNum > 0 && itemsPerPage > 0,
     queryFn: async () => {
       if (profileId) {
         try {
+          let earned = 0;
+          let languages = ['any'];
+          let hourlyRate = ['any'];
+          let hoursBilled = 0;
+          let jobSuccess = 0;
+
+          filters.map((filter) => {
+            if (filter.id === 'earned' && filter.value > earned) {
+              earned = filter.value;
+            } else if (filter.id === 'hoursBilled' && filter.value > hoursBilled) {
+              hoursBilled = filter.value;
+            } else if (filter.id === 'jobSuccess' && filter.value > jobSuccess) {
+              jobSuccess = filter.value;
+            } else if (filter.id === 'languages' && filter.value !== 'any') {
+              languages = [...languages, filter.value].filter((lang) => lang !== 'any');
+            } else if (filter.id === 'hourlyRate' && filter.value !== 'any') {
+              hourlyRate = [...hourlyRate, filter.value].filter((lang) => lang !== 'any');
+            }
+          });
+
           const { data } = await api.get(
-            `${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}`
+            `${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
           );
 
           let activeOrders = [];

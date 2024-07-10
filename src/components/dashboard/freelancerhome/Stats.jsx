@@ -19,6 +19,7 @@ import {
 import { Separator } from '@/components/ui/seperator';
 import { useCustomContext } from '@/context/use-custom';
 import { useFreelancerInfo } from '@/hooks/useFreelancerInfo';
+import { useGetClientGigsProposedByFreelancer } from '@/hooks/useGetClientGigsProposedByFreelancer';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import { timeSincePublication } from '@/utils/Helpers';
 
@@ -42,11 +43,31 @@ const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
 
 const Stats = ({ searchText, setSearchText }) => {
   const auth = useCustomContext();
-  const { data: flInfo } = useFreelancerInfo(auth?.currentProfile?._id);
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  // const [canLoadMoreEarnings, setCanLoadMoreEarnings] = useState(true);
   const [searchType, setSearchType] = useState('normal');
   const [filteredActiveOrders, setFilteredActiveOrders] = useState([]);
-  const [filterItems, setFilterItems] = useState([]);
+  const [filters, setFilters] = useState([]);
   const { isSmallScreen } = useHandleResize();
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
+  const { data: flInfo } = useFreelancerInfo(
+    auth?.currentProfile?._id,
+    page,
+    itemsPerPage,
+    searchText,
+    filters
+  );
+
+  const { data: gigsContracted } = useGetClientGigsProposedByFreelancer(
+    auth?.currentProfile?._id,
+    page,
+    itemsPerPage,
+    searchText,
+    filters
+  );
+
+  console.log({ gigsContracted });
 
   useEffect(() => {
     if (flInfo?.activeOrders?.length > 0) {
@@ -64,6 +85,10 @@ const Stats = ({ searchText, setSearchText }) => {
     }
   }, [flInfo, searchText]);
 
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
+
   const onChangeType = (e) => {
     setSearchType(e);
   };
@@ -78,15 +103,52 @@ const Stats = ({ searchText, setSearchText }) => {
     }
   };
 
-  const onCheckedChange = (value, id, name) => {
-    if (value) {
-      setFilterItems((prev) => [...prev, name]);
+  useEffect(() => {
+    if (flInfo?.activeOrders?.length > 0) {
+      setCanLoadMore(true);
+      if (page === 1) {
+        // setLives(orders.lives);
+      } else {
+        // setLives((prev) => {
+        //   let result = [...prev];
+        //   const ids = prev.map((item) => item._id);
+        //   orders.lives.map((lv) => {
+        //     if (!ids.includes(lv._id)) {
+        //       result = [...result, lv];
+        //     }
+        //   });
+        //   return result;
+        // });
+      }
     } else {
-      setFilterItems((prev) => prev.filter((item) => item !== name));
+      if (page === 1) {
+        // setLives([]);
+      }
+      setCanLoadMore(false);
+    }
+  }, [flInfo, page]);
+
+  const onCheckedChange = (isChecked, id, name, value) => {
+    if (isChecked) {
+      setFilters((prev) => [...prev, { id, name, value }]);
+    } else {
+      setFilters((prev) =>
+        prev.filter(
+          (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+        )
+      );
     }
   };
 
-  console.log({ filterItems });
+  const onRadioChange = (isSelected, id, name, value) => {
+    setFilters((prev) => {
+      let tmp = prev.filter((f) => f.id !== id);
+
+      return [...tmp, { id, name, value }];
+    });
+  };
+
+  console.log({ filters });
 
   const filterCategories = [
     {
@@ -208,6 +270,22 @@ const Stats = ({ searchText, setSearchText }) => {
   const [currentLocation, setCurrentLocation] = useState('United States');
   const [currentTimeZone, setCurrentTimeZone] = useState('GMT+1');
 
+  const onSelectChange = (isSelected, id, name, value) => {
+    console.log(value, id, name, value);
+  };
+
+  const handleRemove = (id, name, value) => {
+    setFilters((prev) =>
+      prev.filter(
+        (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+      )
+    );
+  };
+
+  const handleClearAll = () => {
+    setFilters([]);
+  };
+
   return (
     <div className='mt-10 flex min-h-96 w-full flex-col font-roboto'>
       <div className='flex items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4 md:h-16'>
@@ -253,13 +331,13 @@ const Stats = ({ searchText, setSearchText }) => {
             <Popover>
               <PopoverTrigger asChild>
                 <button className='flex flex-row items-center justify-center gap-3'>
-                  <FilterIcon isFiltered={filterItems.length > 0} isSmallScreen={isSmallScreen} />
+                  <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
                   {!isSmallScreen && (
                     <div className='flex flex-row gap-2'>
                       <div className='text-medGray'>Filter</div>
-                      {filterItems.length > 0 && (
+                      {filters.length > 0 && (
                         <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
-                          {filterItems.length}
+                          {filters.length}
                         </div>
                       )}
                     </div>
@@ -277,28 +355,26 @@ const Stats = ({ searchText, setSearchText }) => {
                         <div>{item.title}</div>
                         {item.type === 2 && (
                           <div>
-                            <Select
-                              onValueChange={(e) => {
-                                const prev = filterItems.filter(
-                                  (_fItem) =>
-                                    item.content
-                                      .map((_item) => _item.category_name)
-                                      .indexOf(_fItem) === -1
-                                );
-                                setFilterItems([...prev, e]);
-                              }}
-                            >
+                            <Select>
                               <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                                 <SelectValue placeholder={item.choose} />
                               </SelectTrigger>
                               <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
                                 <SelectGroup>
-                                  {item.content.map((job_category) => (
+                                  {item.content.map((con, indx) => (
                                     <SelectItem
-                                      key={job_category.category_id}
-                                      value={job_category.category_name}
+                                      key={indx}
+                                      onValueChange={(value) =>
+                                        onSelectChange(
+                                          value,
+                                          con.category_id,
+                                          con.category_name,
+                                          con.category_value
+                                        )
+                                      }
+                                      value={con.category_value}
                                     >
-                                      {job_category.category_name}
+                                      {con.category_name}
                                     </SelectItem>
                                   ))}
                                 </SelectGroup>
@@ -311,12 +387,25 @@ const Stats = ({ searchText, setSearchText }) => {
                             {item.content.map((con, i) => {
                               return (
                                 <DropdownItem
-                                  category_id={con.category_id}
+                                  category_id={con.category_id + con.category_value}
                                   category_name={con.category_name}
-                                  isChecked={filterItems.includes(con.category_name)}
+                                  isChecked={
+                                    !!filters.find(
+                                      (f) =>
+                                        f.id === con.category_id &&
+                                        f.name === con.category_name &&
+                                        JSON.stringify(f.value) ===
+                                          JSON.stringify(con.category_value)
+                                    )
+                                  }
                                   key={i}
                                   onCheckedChange={(value) =>
-                                    onCheckedChange(value, con.category_id, con.category_name)
+                                    onCheckedChange(
+                                      value,
+                                      con.category_id,
+                                      con.category_name,
+                                      con.category_value
+                                    )
                                   }
                                   type={item.type}
                                 />
@@ -329,19 +418,26 @@ const Stats = ({ searchText, setSearchText }) => {
                             {item.content.map((con, i) => (
                               <div className='flex items-center gap-3' key={i}>
                                 <input
-                                  checked={filterItems.includes(con.category_name)}
+                                  checked={
+                                    !!filters.find(
+                                      (f) =>
+                                        f.id === con.category_id &&
+                                        f.name === con.category_name &&
+                                        JSON.stringify(f.value) ===
+                                          JSON.stringify(con.category_value)
+                                    )
+                                  }
                                   className='h-[24px] w-[24px] text-[#96B0BD] accent-[#DC4F13]'
                                   id={con.category_id}
                                   name={item.title}
-                                  onChange={() => {
-                                    const prev = filterItems.filter(
-                                      (_fItem) =>
-                                        item.content
-                                          .map((_item) => _item.category_name)
-                                          .indexOf(_fItem) === -1
-                                    );
-                                    setFilterItems([...prev, con.category_name]);
-                                  }}
+                                  onChange={(value) =>
+                                    onRadioChange(
+                                      value,
+                                      con.category_id,
+                                      con.category_name,
+                                      con.category_value
+                                    )
+                                  }
                                   type='radio'
                                   value={con.category_name}
                                 />
@@ -361,9 +457,9 @@ const Stats = ({ searchText, setSearchText }) => {
           </div>
         </div>
       </div>
-      {filterItems.length > 0 && (
+      {filters.length > 0 && (
         <div className='mt-4 flex touch-pan-x flex-row flex-wrap items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
-          {filterItems.map((item, index) => {
+          {filters.map((item, index) => {
             return (
               <span
                 className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
@@ -371,14 +467,14 @@ const Stats = ({ searchText, setSearchText }) => {
               >
                 <FaX
                   className='rounded-full bg-[#3E525B] p-[2px]'
-                  onClick={() => setFilterItems((prev) => prev.filter((_item) => _item !== item))}
+                  onClick={() => handleRemove(item.id, item.name, item.value)}
                 />
                 {item}
               </span>
             );
           })}
 
-          <span className='cursor-pointer' onClick={() => setFilterItems([])}>
+          <span className='cursor-pointer' onClick={handleClearAll}>
             Clear&nbsp;All
           </span>
         </div>
