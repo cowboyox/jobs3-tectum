@@ -493,7 +493,7 @@ const Createportfolio = () => {
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
-        router.push('/dashboard/freelancer/portfolio');
+        router.push(`/dashboard/freelancer/portfolio/${auth.currentProfile._id}`);
       })
       .catch((err) => {
         console.error('Error corrupted during creating portfolio', err);

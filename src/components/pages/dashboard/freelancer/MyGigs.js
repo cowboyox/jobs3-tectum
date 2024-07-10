@@ -59,7 +59,7 @@ const MyGigs = ({
       <Dialog>
         <div className='realative flex h-full items-center justify-center'>
           <label
-            className={`flex h-72 w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] ${viewMode === 'edit' ? 'cursor-pointer' : 'cursor-not-allowed'} transition hover:bg-[#23343b]`}
+            className={`flex h-72 w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c]  transition hover:bg-[#23343b]`}
           >
             {loading && (
               <div className='max-w-md text-center'>
@@ -84,7 +84,7 @@ const MyGigs = ({
 
             {imagePath && !loading && (
               <div
-                className='relative z-10 h-full w-full cursor-pointer text-center'
+                className='relative z-10 h-full w-full text-center'
                 
               >
                 <Image
@@ -104,7 +104,7 @@ const MyGigs = ({
               </div>
             )}
           </label>
-          <div className='absolute z-50 text-center text-base'>{title}</div>
+          <div className='absolute z-50 text-center text-base cursor-pointer' onClick={() => router.push(`../my-gigs/edit/${gigId}`)}>{title}</div>
         </div>
         <DialogContent>
           <DialogHeader>
