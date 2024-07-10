@@ -91,74 +91,77 @@ const Stats = ({ searchText, setSearchText }) => {
   const filterCategories = [
     {
       content: [
-        { category_id: 'most_recent', category_name: 'Most Recent', category_value: 0 },
-        { category_id: 'most_relevant', category_name: 'Most Relevant', category_value: 1 },
+        { category_id: 'sort', category_name: 'Most Recent', category_value: 0 },
+        { category_id: 'sort', category_name: 'Most Relevant', category_value: 1 },
       ],
       title: 'Sorted By',
       type: 0,
     },
     {
       content: [
-        { category_id: 'any_category', category_name: 'Any Category', category_value: 'any' },
+        { category_id: 'category', category_name: 'Any Category', category_value: 'any' },
         {
-          category_id: 'customer_service',
+          category_id: 'category',
           category_name: 'Customer Service',
-          category_value: 'Customer Service',
+          category_value: 'customer service',
         },
         {
-          category_id: 'design_creative',
+          category_id: 'category',
           category_name: 'Design And Creative',
-          category_value: 'Design And Creative',
+          category_value: 'design and creative',
         },
-        { category_id: 'accounting', category_name: 'Acounting', category_value: 'Acounting' },
-        { category_id: 'ai', category_name: 'AI', category_value: 'AI' },
-        { category_id: 'animator', category_name: 'Animator', category_value: 'Animator' },
+        { category_id: 'category', category_name: 'Acounting', category_value: 'acounting' },
+        { category_id: 'category', category_name: 'AI', category_value: 'ai' },
+        { category_id: 'category', category_name: 'Animator', category_value: 'animator' },
       ],
       title: 'Category',
       type: 1,
     },
     {
       content: [
-        { category_id: 'any_job_success', category_name: 'Any Job Success' },
-        { category_id: 'top_rated', category_name: 'Top Rated' },
-        { category_id: 'riging_talent', category_name: 'Rising Talent' },
-      ],
-      title: 'Job Success',
-      type: 1,
-    },
-    {
-      content: [
-        { category_id: 'entry_level', category_name: 'Entry-Level' },
-        { category_id: 'intermidiate', category_name: 'Intermidiate' },
-        { category_id: 'expert', category_name: 'Expert' },
+        { category_id: 'experience', category_name: 'Entry-Level', category_value: 0 },
+        { category_id: 'experience', category_name: 'Intermidiate', category_value: 1 },
+        { category_id: 'experience', category_name: 'Expert', category_value: 2 },
       ],
       title: 'Experience',
       type: 1,
     },
     {
       content: [
-        { category_id: 'less_than_5', category_name: 'Less than 5' },
-        { category_id: '5_to_10', category_name: '5 to 10' },
-        { category_id: '10_to_15', category_name: '10 to 15' },
-        { category_id: '15_to_20', category_name: '15 to 20' },
-        { category_id: '20_to_50', category_name: '20 to 50' },
-        { category_id: 'more_than_50', category_name: 'More than 50' },
+        { category_id: 'applicants', category_name: 'Less than 5', category_value: [0, 5] },
+        { category_id: 'applicants', category_name: '5 to 10', category_value: [5, 10] },
+        { category_id: 'applicants', category_name: '10 to 15', category_value: [10, 15] },
+        { category_id: 'applicants', category_name: '15 to 20', category_value: [15, 20] },
+        { category_id: 'applicants', category_name: '20 to 50', category_value: [20, 50] },
+        {
+          category_id: 'applicants',
+          category_name: 'More than 50',
+          category_value: [50, 99999999],
+        },
       ],
       title: 'Number Of Applicants',
       type: 1,
     },
     {
       content: [
-        { category_id: 'hourly_rate', category_name: 'Hourly Rate' },
-        { category_id: 'fixed_price', category_name: 'Fixed Price' },
+        { category_id: 'job_type', category_name: 'Hourly Rate', category_value: 1 },
+        { category_id: 'job_type', category_name: 'Fixed Price', category_value: 0 },
       ],
       title: 'Job Type',
       type: 0,
     },
     {
       content: [
-        { category_id: 'less_than_30', category_name: 'Less than 30 hrs/week' },
-        { category_id: 'more_than_30', category_name: 'More than 30 hrs/week' },
+        {
+          category_id: 'hoursPerWeek',
+          category_name: 'Less than 30 hrs/week',
+          category_value: [0, 30],
+        },
+        {
+          category_id: 'hoursPerWeek',
+          category_name: 'More than 30 hrs/week',
+          category_value: [30, 99999999],
+        },
       ],
       title: 'Hours Per Week',
       type: 0,
@@ -166,10 +169,14 @@ const Stats = ({ searchText, setSearchText }) => {
     {
       choose: 'Select Location',
       content: [
-        { category_id: 'US', category_name: 'United States' },
-        { category_id: 'england', category_name: 'England' },
-        { category_id: 'india', category_name: 'India' },
-        { category_id: 'singapore', category_name: 'Singapore' },
+        {
+          category_id: 'location',
+          category_name: 'United States',
+          category_value: 'united states',
+        },
+        { category_id: 'location', category_name: 'England', category_value: 'england' },
+        { category_id: 'location', category_name: 'India', category_value: 'india' },
+        { category_id: 'location', category_name: 'Singapore', category_value: 'singapore' },
       ],
       title: 'Client Location',
       type: 2,
@@ -177,18 +184,22 @@ const Stats = ({ searchText, setSearchText }) => {
     {
       choose: 'Select client time zones',
       content: [
-        { category_id: 'US', category_name: 'GMT+0' },
-        { category_id: 'england', category_name: 'GMT+1' },
-        { category_id: 'india', category_name: 'GMT+5' },
-        { category_id: 'singapore', category_name: 'GMT+8' },
+        { category_id: 'timezone', category_name: 'GMT+0', category_value: 'GMT+0' },
+        { category_id: 'timezone', category_name: 'GMT+1', category_value: 'GMT+1' },
+        { category_id: 'timezone', category_name: 'GMT+5', category_value: 'GMT+5' },
+        { category_id: 'timezone', category_name: 'GMT+8', category_value: 'GMT+8' },
       ],
       title: 'Client Timezones',
       type: 2,
     },
     {
       content: [
-        { category_id: 'previous_client', category_name: 'My Previous clients' },
-        { category_id: 'payment_verified', category_name: 'Payment Verified' },
+        { category_id: 'info', category_name: 'My Previous clients', category_value: 'previous' },
+        {
+          category_id: 'info',
+          category_name: 'Payment Verified',
+          category_value: 'payment verified',
+        },
       ],
       title: 'Client Info',
       type: 0,
@@ -206,7 +217,7 @@ const Stats = ({ searchText, setSearchText }) => {
             defaultValue='normal'
             onValueChange={(e) => onChangeType(e)}
           >
-            <SelectTrigger className='h-full w-20 rounded-xl bg-[#1B272C] outline-none mobile:w-14 mobile:p-2'>
+            <SelectTrigger className='mobile:w-14 mobile:p-2 h-full w-20 rounded-xl bg-[#1B272C] outline-none'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className='rounded-xl bg-[#1B272C]'>
