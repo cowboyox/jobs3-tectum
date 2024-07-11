@@ -417,6 +417,7 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
 
   const handleClearAll = () => {
     setFilters([]);
+    setFiltersToQuery([]);
   };
 
   const handleFilter = () => {
@@ -425,6 +426,7 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
 
   const handleReset = () => {
     setFilters([]);
+    setFiltersToQuery([]);
   };
 
   return (
