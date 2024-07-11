@@ -69,7 +69,7 @@ const FindJob = () => {
   const [isAiSearch, setIsAiSearch] = useState(false);
 
   const itemsPerPage = 2;
-  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, '', filters);
+  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, searchKeyWords, filters);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
   const filterItems = [
@@ -185,6 +185,7 @@ const FindJob = () => {
   };
 
   const setKey = (e) => {
+    setPage(1);
     setSearchKeyWords(e.target.value);
   };
 
