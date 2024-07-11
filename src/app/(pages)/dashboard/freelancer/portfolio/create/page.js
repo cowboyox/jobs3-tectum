@@ -45,6 +45,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 import { useRouter } from 'next/navigation';
+import { LiaSpinnerSolid } from "react-icons/lia";
 
 
 const Createportfolio = () => {
@@ -404,6 +405,7 @@ const Createportfolio = () => {
   const [videoFile, setVideoFile] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
   const [documentFiles, setDocumentFiles] = useState([]);
+  const [isWaiting, setIsWaiting] = useState(false);
 
   /*------------ Toast and Form hooks ------------*/
   const { toast } = useToast();
@@ -434,6 +436,7 @@ const Createportfolio = () => {
   /*------------ Form submission handler ------------*/
   async function onSubmit(values) {
     console.log(values);
+    setIsWaiting(true);
     // if (!wallet) {
     //   toast({
     //     className:
@@ -493,10 +496,12 @@ const Createportfolio = () => {
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
+        setIsWaiting(false);
         router.push(`/dashboard/freelancer/portfolio/${auth.currentProfile._id}`);
       })
       .catch((err) => {
         console.error('Error corrupted during creating portfolio', err);
+        setIsWaiting(false);
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -594,6 +599,7 @@ const Createportfolio = () => {
                             onValueChange={(e) => {
                               setCurrentCategory(e);
                             }}
+                            value={currentCategory}
                           >
                             <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                               <SelectValue placeholder='Select a Category' />
@@ -622,6 +628,7 @@ const Createportfolio = () => {
                             onValueChange={(e) => {
                               setCurrentSub(e);
                             }}
+                            value={currentSub}
                           >
                             <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                               <SelectValue placeholder='Select a Sub Category' />
@@ -702,7 +709,7 @@ const Createportfolio = () => {
               </div>
               <img className='w-1/2 mx-auto' src='/assets/images/publish_image.png' />
             </FormStep>
-            <FormNavigation max={4}/>
+            <FormNavigation max={4} isWaiting={isWaiting}/>
           </form>
         </Form>
       </div>

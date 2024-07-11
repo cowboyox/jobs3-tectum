@@ -11,7 +11,7 @@ const NewLayout = ({ children, pageClass }) => {
   return (
     <div className='flex flex-col w-full'>
       <ProgressBar color='#dc4f14' height='4px' options={{ showSpinner: false }} shallowRouting />
-      <div className={pageClass}>
+      <div className={pageClass + ' max-w-7xl'}>
         <NewHeader />
         {children}
         <NewFooter />
