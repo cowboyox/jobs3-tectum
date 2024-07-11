@@ -1,13 +1,31 @@
 'use client';
-import Link from 'next/link';
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import gsap from 'gsap';
+import MenuLink from '@/components/elements/menuLink';
 
 import { useCustomContext } from '@/context/use-custom';
 import { USER_ROLE } from '@/utils/constants';
 
-const SideBar = () => {
-  const auth = useCustomContext();
+import { FaAngleLeft } from "react-icons/fa6";
+import { FaAngleRight } from "react-icons/fa6";
 
+
+const sideBarSettings = {
+  x_spacing: 7, // should be a tailwind css number
+  x_collapsed_width: 80, // in PX
+  active_link_classes: 'border-l-4 border-[#DC4F13] py-3'
+}
+
+
+const SideBar = () => {
+  const auth = useCustomContext(); 
+  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
+  useEffect(() => { 
+    gsap.to('.main_sidebar', { 
+      duration: 1,
+      width: desktopCollapsed ? sideBarSettings.x_collapsed_width : 300
+    });
+  }, [desktopCollapsed]);
   const freelancer_menu_data = [
     {
       href: `/dashboard/freelancer/home`,
@@ -149,7 +167,7 @@ const SideBar = () => {
       name: 'Gig Search',
     },
     {
-      href: `/dashboard/freelancer/my-gigs`,
+      href: `/dashboard/freelancer/my-gigs/${auth?.currentProfile?._id}`,
       icon: (
         <svg
           fill='none'
@@ -829,46 +847,53 @@ const SideBar = () => {
     },
   ];
   const sideBarRef = useRef(null);
-  function OpenSideBar() {
+  function MobileToggleSidebar() {
     if (window.innerWidth <= 768) {
       sideBarRef.current.classList.toggle('-translate-x-full');
     }
   }
   return (
     <div
-      className='fixed top-0 left-0 z-40 w-10/12 min-h-screen p-10 transition -translate-x-full bg-black main_sidebar md:sticky md:w-1/6 md:translate-x-0'
+      className={`main_sidebar min-h-screen fixed md:sticky top-0 left-0 z-50 py-10 transition -translate-x-full md:translate-x-0 bg-[#10191D] flex flex-col gap-8 `}
       ref={sideBarRef}
     >
-      <div className='w-10/12 mx-auto mb-10' onClick={OpenSideBar}>
-        <img className='w-100' src='/assets/images/logo.svg' />
+      <div 
+        className={`${desktopCollapsed  ? `px-0 w-[80px] max-w-full mr-auto flex justify-center` : `w-full px-${sideBarSettings.x_spacing}`}`} 
+        onClick={MobileToggleSidebar}
+      >
+        <img 
+          className={desktopCollapsed ? `w-1/2 mx-auto` : 'w-1/2 mr-auto'} 
+          src={desktopCollapsed ? '/favicon.ico' : '/assets/images/logo.svg'} 
+        />
       </div>
-      <div onClick={OpenSideBar}>
-        <div className='flex flex-col gap-3'>
+      <div 
+        className={`${desktopCollapsed  ? `px-0 flex justify-center w-[80px] max-w-full mr-auto` : `px-${sideBarSettings.x_spacing}`} w-full`} 
+      >
+        {desktopCollapsed ? (
+          <FaAngleRight size={20} className='cursor-pointer' onClick={()=> { setDesktopCollapsed(false) }} />
+        ) : ( 
+          <FaAngleLeft size={20} className='cursor-pointer' onClick={()=> { setDesktopCollapsed(true) }} />
+        )}
+      </div>
+      <div onClick={MobileToggleSidebar}>
+        <div className='flex flex-col gap-4'>
           {auth?.currentRole === USER_ROLE.FREELANCER &&
             freelancer_menu_data.map((item, index) => (
-              <Link
-                className='flex w-full gap-4 py-1 transition-all hover:pl-1'
+              <MenuLink 
+                item={item} key={index} desktopCollapsed={desktopCollapsed} sideBarSettings={sideBarSettings}
                 href={item.href}
-                key={index}
-              >
-                {item.icon}
-                <span className='text-base font-medium uppercase text-slate-500'>
-                  {item.name.toUpperCase()}
-                </span>
-              </Link>
+                icon={item.icon}
+                name={item.name}  
+              />
             ))}
           {auth?.currentRole === USER_ROLE.CLIENT &&
             client_menu_data.map((item, index) => (
-              <Link
-                className='flex w-full gap-4 py-1 transition-all hover:pl-1'
+              <MenuLink 
+                item={item} key={index} desktopCollapsed={desktopCollapsed} sideBarSettings={sideBarSettings}
                 href={item.href}
-                key={index}
-              >
-                {item.icon}
-                <span className='text-base font-medium uppercase text-slate-500'>
-                  {item.name.toUpperCase()}
-                </span>
-              </Link>
+                icon={item.icon}
+                name={item.name} 
+              />
             ))}
         </div>
       </div>

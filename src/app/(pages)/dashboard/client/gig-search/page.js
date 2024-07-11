@@ -389,7 +389,7 @@ const GigSearch = () => {
         {searchType === 'ai' && (
           <div className='flex'>
             <button
-              class='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
+              className='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
               onClick={aiSearch}
             >
               <FaArrowRight />

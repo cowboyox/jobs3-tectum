@@ -22,13 +22,14 @@ const Freelancers = () => {
   const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const [searchText, setSearchText] = useState('');
+  const [filters, setFilters] = useState([]);
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [isAiSearch, setIsAiSearch] = useState(false);
   const debouncedSearchText = useDebounce(searchText);
   const [page, setPage] = useState(1);
   const itemsPerPage = 2;
   const { isSmallScreen } = useHandleResize();
-  const { data: freelancers } = useGetFreelancers(page, itemsPerPage, debouncedSearchText);
+  const { data: freelancers } = useGetFreelancers(page, itemsPerPage, debouncedSearchText, filters);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -101,15 +102,17 @@ const Freelancers = () => {
     <div>
       <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
         <SearchBar
+          filters={filters}
           isSmallScreen={isSmallScreen}
           searchType={searchType}
+          setFilters={setFilters}
           setIsAiSearch={setIsAiSearch}
           setSearchText={setSearchText}
           setSearchType={setSearchType}
         />
         {loading && (
           <div className='z-1 flex h-screen justify-center space-x-2 pt-6'>
-            <div className='flex h-fit items-baseline text-[20px] mt-8'>
+            <div className='mt-8 flex h-fit items-baseline text-[20px]'>
               <p className='mr-3'>The neural network is thinking</p>
               <div className='flex gap-1'>
                 <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.3s]'></div>
@@ -130,7 +133,7 @@ const Freelancers = () => {
                     <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
                       <Link href={`/dashboard/freelancer/profile/${freelancer._id}`}>
                         <div className='mt-3 flex-1 text-left text-[20px] hover:underline md:mt-0 md:text-2xl'>
-                          {freelancer.freelancerBio}
+                          {freelancer.freelancerTitle}
                         </div>
                       </Link>
                     </div>

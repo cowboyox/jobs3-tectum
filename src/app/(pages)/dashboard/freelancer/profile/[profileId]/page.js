@@ -50,7 +50,7 @@ const ProfileTimeZone = ({ value, setProfileData, editable }) => {
       </div>
       {editable ? (
         <Select defaultValue={value} onValueChange={handleChange}>
-          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
+          <SelectTrigger className='mobile:hidden mobile:p-2 flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5'>
             <SelectValue />
           </SelectTrigger>
           <SelectContent align='end' className='rounded-xl bg-[#10191D] p-1'>
@@ -150,6 +150,7 @@ const FreelancerProfile = () => {
 
   const { toast } = useToast();
   const [isEditBio, setStatusBio] = useState(true);
+  const [isEditTitle, setIsEditTitle] = useState(true);
   const [isLoading, setLoading] = useState(true);
   const [fetchBanner, setFetchBanner] = useState('');
   const [isAuth, setIsAuth] = useState(false);
@@ -182,9 +183,11 @@ const FreelancerProfile = () => {
     timeZone: '',
     userId: '',
     zkpId: '',
+    freelancerTitle: '',
   });
   const [portfolioShowNumber, setPortfolioShowNumber] = useState(3);
   const [gigShowNumber, setGigShowNumber] = useState(3);
+
 
   const router = useRouter();
   const min = (a, b) => {
@@ -194,7 +197,7 @@ const FreelancerProfile = () => {
   useEffect(() => {
     setPortfolioShowNumber(3);
     setGigShowNumber(3);
-  }, [viewMode])
+  }, [viewMode]);
 
   useEffect(() => {
     if (auth?.currentProfile?._id === profileId) {
@@ -207,7 +210,6 @@ const FreelancerProfile = () => {
   }, [auth, profileId]);
   console.log('isAuth', isAuth);
   console.log('viewMode', viewMode);
-
 
   useEffect(() => {
     (async () => {
@@ -330,6 +332,33 @@ const FreelancerProfile = () => {
         });
     }
     setStatusBio(!isEditBio);
+  };
+  const handleEditTitle = () => {
+    if (isEditTitle) {
+      api
+        .put(`/api/v1/profile/update-freelancer-title/${profileData.email}`, {
+          freelancerTitle: profileData.freelancerTitle,
+        })
+        .then(() => {
+          toast({
+            className:
+              'bg-green-500 border-none rounded-xl absolute top-[-94vh] xl:w-[15vw] md:w-[30vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Successfully updated Freelancer Title</h3>,
+            title: <h1 className='text-center'>Success</h1>,
+            variant: 'default',
+          });
+        })
+        .catch(() => {
+          toast({
+            className:
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
+          });
+        });
+    }
+    setIsEditTitle(!isEditTitle);
   };
 
   const handleSetSkills = (skill) => {
@@ -914,6 +943,12 @@ const FreelancerProfile = () => {
                 <div className='flex flex-col gap-5'>
                   <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
                     <div className='flex flex-row justify-between'>
+                      <div className='text-xl text-[#96B0BD]'>Title</div>
+                    </div>
+                    <div className='text-base'>{profileData.freelancerTitle}</div>
+                  </div>
+                  <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
+                    <div className='flex flex-row justify-between'>
                       <div className='text-xl text-[#96B0BD]'>About</div>
                     </div>
                     <CollapsibleText
@@ -961,7 +996,7 @@ const FreelancerProfile = () => {
                               key={key}
                               setProfileData={setProfileData}
                               setUploadedImagePath={setUploadedImagePath}
-                              viewMode={isAuth ? 'edit' : 'preview'}
+                              viewMode={viewMode}
                               title={index.portfolioTitle}
                               profileId={profileData._id}
                               portfolioId={index._id}
@@ -988,10 +1023,9 @@ const FreelancerProfile = () => {
                                       ? index.gallery?.images[0]
                                       : '/assets/images/portfolio_works/portfolio.jpeg'
                                   }
-                                  
                                   setProfileData={setProfileData}
                                   setUploadedImagePath={setUploadedImagePath}
-                                  viewMode={isAuth ? 'edit' : 'preview'}
+                                  viewMode={viewMode}
                                   title={index.portfolioTitle}
                                   profileId={profileData._id}
                                   portfolioId={index._id}
@@ -1001,20 +1035,22 @@ const FreelancerProfile = () => {
                       </Swiper>
                     </div>
                     {profileData.portfolio.length > 3 && (
-                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex' onClick={() => {
-                        if(portfolioShowNumber < profileData.portfolio.length) setPortfolioShowNumber(portfolioShowNumber + 3);
-                        else setPortfolioShowNumber(3);
-                      }}>
-                        {
-                          portfolioShowNumber >= profileData.portfolio.length
-                           ? 'Show Less' 
-                            : 'Show More'
-                        }
-                        {
-                          portfolioShowNumber >= profileData.portfolio.length
-                          ?<GoChevronUp />
-                          :<GoChevronDown />
-                        }
+                      <span
+                        className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex'
+                        onClick={() => {
+                          if (portfolioShowNumber < profileData.portfolio.length)
+                            setPortfolioShowNumber(portfolioShowNumber + 3);
+                          else setPortfolioShowNumber(3);
+                        }}
+                      >
+                        {portfolioShowNumber >= profileData.portfolio.length
+                          ? 'Show Less'
+                          : 'Show More'}
+                        {portfolioShowNumber >= profileData.portfolio.length ? (
+                          <GoChevronUp />
+                        ) : (
+                          <GoChevronDown />
+                        )}
                       </span>
                     )}
                   </div>
@@ -1092,20 +1128,20 @@ const FreelancerProfile = () => {
                       </Swiper>
                     </div>
                     {profileData.myGigs.length > 3 && (
-                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex' onClick={() => {
-                        if(gigShowNumber < profileData.myGigs.length) setGigShowNumber(gigShowNumber + 3);
-                        else setGigShowNumber(3);
-                      }}>
-                        {
-                          gigShowNumber >= profileData.myGigs.length
-                           ? 'Show Less' 
-                            : 'Show More'
-                        }
-                        {
-                          gigShowNumber >= profileData.myGigs.length
-                          ?<GoChevronUp />
-                          :<GoChevronDown />
-                        }
+                      <span
+                        className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex'
+                        onClick={() => {
+                          if (gigShowNumber < profileData.myGigs.length)
+                            setGigShowNumber(gigShowNumber + 3);
+                          else setGigShowNumber(3);
+                        }}
+                      >
+                        {gigShowNumber >= profileData.myGigs.length ? 'Show Less' : 'Show More'}
+                        {gigShowNumber >= profileData.myGigs.length ? (
+                          <GoChevronUp />
+                        ) : (
+                          <GoChevronDown />
+                        )}
                       </span>
                     )}
                   </div>
@@ -1157,6 +1193,44 @@ const FreelancerProfile = () => {
 
               <TabsContent value='edit-profile'>
                 <div className='flex flex-col gap-5'>
+                  <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
+                    <div className='flex flex-row justify-between'>
+                      <div className='text-xl text-[#96B0BD]'>Title</div>
+                      {isAuth && (
+                        <div className='text-xl text-[#96B0BD]'>
+                          {isEditTitle ? (
+                            <img
+                              className='cursor-pointer'
+                              height={25}
+                              onClick={() => handleEditTitle()}
+                              src='/assets/images/icons/save.png'
+                              width={25}
+                            />
+                          ) : (
+                            <img
+                              className='cursor-pointer'
+                              onClick={() => handleEditTitle()}
+                              src='/assets/images/icons/edit-pen.svg'
+                            />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className='w-full'>
+                      {isEditTitle ? (
+                          <input
+                          className={`border-b bg-transparent  text-sm text-white outline-none w-full`}
+                          onChange={(e) => setProfileData({...profileData, freelancerTitle: e.target.value})}
+                          value={profileData.freelancerTitle}
+                        />
+                      ):(
+                        <div>
+                          {profileData.freelancerTitle}
+                        </div>
+                      )}
+                      
+                    </div>
+                  </div>
                   <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>
                     <div className='flex flex-row justify-between'>
                       <div className='text-xl text-[#96B0BD]'>About</div>
@@ -1226,7 +1300,7 @@ const FreelancerProfile = () => {
                               key={key}
                               setProfileData={setProfileData}
                               setUploadedImagePath={setUploadedImagePath}
-                              viewMode={isAuth ? 'edit' : 'preview'}
+                              viewMode={viewMode}
                               title={index.portfolioTitle}
                               profileId={profileData._id}
                               portfolioId={index._id}
@@ -1238,7 +1312,7 @@ const FreelancerProfile = () => {
                         key={`extra-${uploadedImagePath.length}`}
                         setProfileData={setProfileData}
                         setUploadedImagePath={setUploadedImagePath}
-                        viewMode={isAuth ? 'edit' : 'preview'}
+                        viewMode={viewMode}
                       />
                     </div>
                     <div className='md:hidden'>
@@ -1259,7 +1333,7 @@ const FreelancerProfile = () => {
                                     }
                                     setProfileData={setProfileData}
                                     setUploadedImagePath={setUploadedImagePath}
-                                    viewMode={isAuth ? 'edit' : 'preview'}
+                                    viewMode={viewMode}
                                     title={index.portfolioTitle}
                                     profileId={profileData._id}
                                     portfolioId={index._id}
@@ -1274,27 +1348,29 @@ const FreelancerProfile = () => {
                               key={`extra-${uploadedImagePath.length}`}
                               setProfileData={setProfileData}
                               setUploadedImagePath={setUploadedImagePath}
-                              viewMode={isAuth ? 'edit' : 'preview'}
+                              viewMode={viewMode}
                             />{' '}
                           </SwiperSlide>
                         </Swiper>
                       </div>
                     </div>
                     {profileData.portfolio.length > 3 && (
-                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex' onClick={() => {
-                        if(portfolioShowNumber < profileData.portfolio.length) setPortfolioShowNumber(portfolioShowNumber + 3);
-                        else setPortfolioShowNumber(3);
-                      }}>
-                        {
-                          portfolioShowNumber >= profileData.portfolio.length
-                           ? 'Show Less' 
-                            : 'Show More'
-                        }
-                        {
-                          portfolioShowNumber >= profileData.portfolio.length
-                          ?<GoChevronUp />
-                          :<GoChevronDown />
-                        }
+                      <span
+                        className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex'
+                        onClick={() => {
+                          if (portfolioShowNumber < profileData.portfolio.length)
+                            setPortfolioShowNumber(portfolioShowNumber + 3);
+                          else setPortfolioShowNumber(3);
+                        }}
+                      >
+                        {portfolioShowNumber >= profileData.portfolio.length
+                          ? 'Show Less'
+                          : 'Show More'}
+                        {portfolioShowNumber >= profileData.portfolio.length ? (
+                          <GoChevronUp />
+                        ) : (
+                          <GoChevronDown />
+                        )}
                       </span>
                     )}
                   </div>
@@ -1338,7 +1414,7 @@ const FreelancerProfile = () => {
                               setProfileData={setProfileData}
                               setUploadedGigPath={setUploadedGigPath}
                               title={myGig.gigTitle}
-                              viewMode={isAuth ? 'edit' : 'preview'}
+                              viewMode={viewMode}
                             />
                           ))}
                       <MyGigs
@@ -1348,7 +1424,7 @@ const FreelancerProfile = () => {
                         setProfileData={setProfileData}
                         setUploadedGigPath={setUploadedGigPath}
                         title={''}
-                        viewMode={isAuth ? 'edit' : 'preview'}
+                        viewMode={viewMode}
                       />
                     </div>
                     <div className='md:hidden'>
@@ -1383,32 +1459,27 @@ const FreelancerProfile = () => {
                             setProfileData={setProfileData}
                             setUploadedGigPath={setUploadedGigPath}
                             title={''}
-                            viewMode={isAuth ? 'edit' : 'preview'}
+                            viewMode={viewMode}
                           />
                           {''}
                         </SwiperSlide>
                       </Swiper>
                     </div>
                     {profileData.myGigs.length > 3 && (
-                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex'>
-                        Show more <GoChevronDown />
-                      </span>
-                    )}
-                    {profileData.myGigs.length > 3 && (
-                      <span className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex' onClick={() => {
-                        if(gigShowNumber < profileData.myGigs.length) setGigShowNumber(gigShowNumber + 3);
-                        else setGigShowNumber(3);
-                      }}>
-                        {
-                          gigShowNumber >= profileData.myGigs.length
-                           ? 'Show Less' 
-                            : 'Show More'
-                        }
-                        {
-                          gigShowNumber >= profileData.myGigs.length
-                          ?<GoChevronUp />
-                          :<GoChevronDown />
-                        }
+                      <span
+                        className='mx-auto hidden cursor-pointer items-center gap-2 shadow-inner md:flex'
+                        onClick={() => {
+                          if (gigShowNumber < profileData.myGigs.length)
+                            setGigShowNumber(gigShowNumber + 3);
+                          else setGigShowNumber(3);
+                        }}
+                      >
+                        {gigShowNumber >= profileData.myGigs.length ? 'Show Less' : 'Show More'}
+                        {gigShowNumber >= profileData.myGigs.length ? (
+                          <GoChevronUp />
+                        ) : (
+                          <GoChevronDown />
+                        )}
                       </span>
                     )}
                   </div>

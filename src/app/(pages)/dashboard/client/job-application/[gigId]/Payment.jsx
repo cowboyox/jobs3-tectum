@@ -1,32 +1,18 @@
 'use client';
 
-import {
-  AnchorProvider,
-  BN,
-  getProvider,
-  Program,
-  setProvider,
-  utils,
-} from '@project-serum/anchor';
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  getAssociatedTokenAddressSync,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token';
+import { AnchorProvider, getProvider, Program, setProvider } from '@project-serum/anchor';
 import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import { useGetFreelancerGigById } from '@/hooks/useGetFreelancerGigById';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
-import { CONTRACT_SEED, PAYTOKEN_MINT, PROGRAM_ID } from '@/utils/constants';
+import { PROGRAM_ID } from '@/utils/constants';
 
-const Payment = ({ coverLetter, gigPrice, walletPubkey, quantity }) => {
+const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity }) => {
   const auth = useCustomContext();
   const { gigId } = useParams();
   const { toast } = useToast();
@@ -71,75 +57,18 @@ const Payment = ({ coverLetter, gigPrice, walletPubkey, quantity }) => {
     //   return;
     // }
 
-    // if (!walletPubkey) {
-    //   toast({
-    //     className:
-    //       'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-    //     description: <h3>No seller pubkey provided!</h3>,
-    //     title: <h1 className='text-center'>Error</h1>,
-    //     variant: 'destructive',
-    //   });
-    //   return;
-    // }
+    if (!auth.currentProfile.walletPublicKey) {
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Please connect your wallet on the setting page!</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+      return;
+    }
 
     try {
-      // const seller = new PublicKey(walletPubkey);
-      // const contractId = uuid().slice(0, 8);
-      // const amount = new BN(gigPrice * Math.pow(10, 6));
-      // const dispute = new BN(0.5 * Math.pow(10, 6)); // 0.5 USDC for dispute fee
-      // const deadline = Math.floor(Date.now() / 1000) + 10 * 24 * 60 * 60;
-
-      // const [contract, bump] = await PublicKey.findProgramAddressSync(
-      //   [
-      //     Buffer.from(utils.bytes.utf8.encode(CONTRACT_SEED)),
-      //     Buffer.from(utils.bytes.utf8.encode(contractId)),
-      //   ],
-      //   program.programId
-      // );
-
-      // const buyerAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, wallet?.publicKey);
-
-      // // Get the token balance
-      // const info = await connection.getTokenAccountBalance(buyerAta);
-
-      // if (info.value.uiAmount < Number(gigPrice) + 0.5) {
-      //   toast({
-      //     className:
-      //       'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-      //     description: (
-      //       <h3>{`You don't have enough token. Need at least ${gigPrice + 0.5} USDC!`}</h3>
-      //     ),
-      //     title: <h1 className='text-center'>Error</h1>,
-      //     variant: 'destructive',
-      //   });
-      //   return;
-      // }
-
-      // const contractAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, contract, true);
-
-      // const transaction = await program.methods
-      //   .startContract(contractId, amount, dispute, deadline)
-      //   .accounts({
-      //     associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-      //     buyer: wallet.publicKey,
-      //     buyerAta,
-      //     contract,
-      //     contractAta,
-      //     payTokenMint: PAYTOKEN_MINT,
-      //     rent: SYSVAR_RENT_PUBKEY,
-      //     seller,
-      //     systemProgram: SystemProgram.programId,
-      //     tokenProgram: TOKEN_PROGRAM_ID,
-      //   })
-      //   .transaction();
-      // console.log(transaction, connection);
-
-      // const signature = await sendTransaction(transaction, connection, { skipPreflight: true });
-
-      // console.log('Your transaction signature for creating a new contract', signature);
-
-      // await connection.confirmTransaction(signature, 'confirmed');
-
       let values = {};
 
       values.clientId = auth.currentProfile._id;
@@ -148,12 +77,29 @@ const Payment = ({ coverLetter, gigPrice, walletPubkey, quantity }) => {
       values.ownerId = gigInfo.creator;
       values.quantity = quantity;
 
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+
+      const formData = new FormData();
+
+      documentFiles.forEach((file) => {
+        if (file) formData.append('file', file);
+      });
+
       await api.post(`/api/v1/bidding/${gigId}/apply-to-freelancergig`, values);
+      await api.post(
+        `/api/v1/bidding/upload_attachment/${auth.currentProfile._id}/${gigId}`,
+        formData,
+        config
+      );
 
       toast({
         className:
           'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Successfully confirmed!</h3>,
+        description: <h3>Successfully Applied!</h3>,
         title: <h1 className='text-center'>Success</h1>,
         variant: 'default',
       });
@@ -165,7 +111,7 @@ const Payment = ({ coverLetter, gigPrice, walletPubkey, quantity }) => {
         return;
       }
 
-      if (err?.response?.data?.message == "You already applied to this gig!") {
+      if (err?.response?.data?.message == 'You already applied to this gig!') {
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',

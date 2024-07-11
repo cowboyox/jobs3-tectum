@@ -1,51 +1,52 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 
+import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 
 const decisionResults = [
   {
     // agree with seller
     buyerDisputeFee: {
-      buyerPercentage: 0,
       adminPercentage: 100,
-    },
-    sellerDisputeFee: {
-      sellerPercentage: 100,
-      adminPercentage: 0,
+      buyerPercentage: 0,
     },
     payment: {
       buyerPercentage: 0,
+      sellerPercentage: 100,
+    },
+    sellerDisputeFee: {
+      adminPercentage: 0,
       sellerPercentage: 100,
     },
   },
   {
     // agree with buyer
     buyerDisputeFee: {
-      buyerPercentage: 100,
       adminPercentage: 0,
-    },
-    sellerDisputeFee: {
-      sellerPercentage: 0,
-      adminPercentage: 100,
+      buyerPercentage: 100,
     },
     payment: {
       buyerPercentage: 100,
+      sellerPercentage: 0,
+    },
+    sellerDisputeFee: {
+      adminPercentage: 100,
       sellerPercentage: 0,
     },
   },
   {
     // agree with split
     buyerDisputeFee: {
+      adminPercentage: 50,
       buyerPercentage: 50,
-      adminPercentage: 50,
-    },
-    sellerDisputeFee: {
-      sellerPercentage: 50,
-      adminPercentage: 50,
     },
     payment: {
       buyerPercentage: 50,
+      sellerPercentage: 50,
+    },
+    sellerDisputeFee: {
+      adminPercentage: 50,
       sellerPercentage: 50,
     },
   },
@@ -55,12 +56,15 @@ const DisputeDetail = () => {
   const [myGigs, setMyGigs] = useState([]);
   const [decision, setDecision] = useState('agree with seller');
   const [decisionResult, setDecisionResult] = useState(decisionResults[0]);
+  const auth = useCustomContext();
 
   useEffect(() => {
-    api.get(`/api/v1/client_gig/get-gig-by-userId`).then((data) => {
-      setMyGigs(data.data.data);
-    });
-  }, []);
+    api
+      .get(`/api/v1/client_gig/get_gigs_posted_by_profile_id/${auth?.currentProfile?._id}`)
+      .then((data) => {
+        setMyGigs(data.data.data);
+      });
+  }, [auth?.currentProfile?._id]);
 
   useEffect(() => {
     if (decision == 'agree with seller') {
@@ -157,9 +161,8 @@ const DisputeDetail = () => {
               <p className=''>
                 <input
                   className='w-[50px] bg-[#1B272C] text-white'
-                  type='number'
-                  min={0}
                   max={100}
+                  min={0}
                   onChange={(e) => {
                     if (e.target.value >= 0 && e.target.value <= 100) {
                       setDecisionResult((prev) => {
@@ -173,6 +176,7 @@ const DisputeDetail = () => {
                       });
                     }
                   }}
+                  type='number'
                   value={decisionResult.payment.buyerPercentage}
                 />
                 %
@@ -185,22 +189,22 @@ const DisputeDetail = () => {
               <p className=''>
                 <input
                   className='w-[50px] bg-[#1B272C] text-white'
-                  type='number'
-                  min={0}
                   max={100}
+                  min={0}
                   onChange={(e) => {
                     if (e.target.value >= 0 && e.target.value <= 100) {
                       setDecisionResult((prev) => {
                         return {
                           ...prev,
                           payment: {
-                            sellerPercentage: e.target.value,
                             buyerPercentage: 100 - e.target.value,
+                            sellerPercentage: e.target.value,
                           },
                         };
                       });
                     }
                   }}
+                  type='number'
                   value={decisionResult.payment.sellerPercentage}
                 />
                 %
@@ -211,8 +215,8 @@ const DisputeDetail = () => {
         <div className='mb-5 w-full'>
           <select
             className='w-full rounded-2xl bg-[#1B272C] p-5 text-xl text-slate-500 mobile:text-lg'
-            value={decision}
             onChange={(e) => setDecision(e.target.value)}
+            value={decision}
           >
             <option className='text-xl text-slate-500 mobile:text-lg' value='agree with seller'>
               Agree with Seller

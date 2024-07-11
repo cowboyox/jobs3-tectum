@@ -17,49 +17,49 @@ import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapte
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { FaEllipsis, FaX } from 'react-icons/fa6';
+import { FaArrowRight, FaEllipsis, FaX } from 'react-icons/fa6';
+import { IoLocationOutline } from 'react-icons/io5';
 import { v4 as uuid } from 'uuid';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Checkbox } from '@/components/ui/checkbox';
-import { FaArrowRight } from 'react-icons/fa6';
-
 
 import searchOptions from '../freelancers/searchOptions';
 
+import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
+import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllClientGigsProposed } from '@/hooks/useGetAllClientGigsProposed';
+import { useHandleResize } from '@/hooks/useHandleResize';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
 import {
   ADMIN_ADDRESS,
   CONTRACT_SEED,
+  ContractStatus,
   PAYTOKEN_MINT,
   PROGRAM_ID,
-  ContractStatus,
 } from '@/utils/constants';
-import { IoChevronDownOutline, IoLocationOutline } from 'react-icons/io5';
-import { CiFilter, CiReceipt } from 'react-icons/ci';
+
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
-    <div className='flex cursor-pointer items-center gap-4 p-0'>
+    <div className='flex items-center gap-4 p-0 cursor-pointer'>
       <Checkbox
         checked={props.checked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
@@ -73,7 +73,6 @@ const DropdownItem = ({ onCheckedChange, ...props }) => {
   );
 };
 
-
 const Orders = () => {
   const router = useRouter();
   const auth = useCustomContext();
@@ -83,123 +82,152 @@ const Orders = () => {
   const { connection } = useConnection();
 
   const [program, setProgram] = useState();
-  const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
   const [searchType, setSearchType] = useState('normal');
-  const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
+  const [searchKeywords, setSearchKeyWords] = useState('');
+  const debouncedSearchText = useDebounce(searchKeywords);
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const [filters, setFilters] = useState([]);
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllClientGigsProposed(
-    auth?.currentProfile?._id
+    auth?.currentProfile?._id,
+    page,
+    itemsPerPage,
+    debouncedSearchText,
+    filters
   );
 
   const { toast } = useToast();
-  const [searchKeywords, setSearchKeyWords] = useState('');
+
   const [filteredLiveList, setFilteredLiveList] = useState([]);
   const [filteredProposalsList, setFilteredProposalsList] = useState([]);
-  const [filters, setFilters] = useState([]);
-  const filterItems = [
+
+  const { isSmallScreen } = useHandleResize();
+  const filterCategories = [
     {
       content: [
-        { category_id: 'any_amount', category_name: 'Any Amount' },
-        { category_id: 'over_1_earned', category_name: '$1+ Earned' },
-        { category_id: 'over_100_earned', category_name: '$100+ Earned' },
-        { category_id: 'over_1k_earned', category_name: '$1k+ Earned' },
-        { category_id: 'over_10k_earned', category_name: '$10k+ Earned' },
-        { category_id: 'no_earning_yet', category_name: 'No Earning Yet' },
+        { category_id: 'earned', category_name: 'Any Earned', category_value: 0 },
+        { category_id: 'earned', category_name: '$1+ Earned', category_value: 1 },
+        { category_id: 'earned', category_name: '$100+ Earned', category_value: 100 },
+        { category_id: 'earned', category_name: '$1k+ Earned', category_value: 1000 },
+        { category_id: 'earned', category_name: '$10k+ Earned', category_value: 10000 },
       ],
       title: 'Earned Amount',
     },
     {
       content: [
-        { category_id: 'any_job_success', category_name: 'Any Job Success' },
-        { category_id: '80_up', category_name: '80% & UP' },
-        { category_id: '90_up', category_name: '90% & UP' },
-        { category_id: 'top_rated', category_name: 'Top Rated' },
-        { category_id: 'rising_talent', category_name: 'Rising Talent' },
+        {
+          category_id: 'languages',
+          category_name: 'Any Language',
+          category_value: 'any',
+        },
+        { category_id: 'languages', category_name: 'English', category_value: 'English' },
+        { category_id: 'languages', category_name: 'Germany', category_value: 'Germany' },
+        { category_id: 'languages', category_name: 'Russian', category_value: 'Russian' },
+        { category_id: 'languages', category_name: 'Spanish', category_value: 'Spanish' },
+        { category_id: 'languages', category_name: 'Portugues', category_value: 'Portugues' },
       ],
-      title: 'Job Success',
+      title: 'Languages',
     },
     {
       content: [
-        { category_id: 'any_hourly_rate', category_name: 'Any Hourly Rate' },
-        { category_id: '10_below', category_name: '$10 and Below' },
-        { category_id: '10_30', category_name: '$10 - $30' },
-        { category_id: '30_60', category_name: '$30 - $60' },
-        { category_id: '60_above', category_name: '$60 and Above' },
+        {
+          category_id: 'hourlyRate',
+          category_name: 'Any Rate',
+          category_value: 'any',
+        },
+        { category_id: 'hourlyRate', category_name: '$10 and Below', category_value: [0, 10] },
+        { category_id: 'hourlyRate', category_name: '$10 - $30', category_value: [10, 30] },
+        { category_id: 'hourlyRate', category_name: '$30 - $60', category_value: [30, 60] },
+        {
+          category_id: 'hourlyRate',
+          category_name: '$60 and Above',
+          category_value: [60, 99999999],
+        },
       ],
       title: 'Hourly rate',
     },
     {
       content: [
-        { category_id: 'over_1_hour', category_name: '1+ Hours Billed' },
-        { category_id: 'over_100_hour', category_name: '100+ Hours Billed' },
-        { category_id: 'over_1000_hour', category_name: '1000+ Hours Billed' },
+        { category_id: 'hoursBilled', category_name: '1+ Hours Billed', category_value: 1 },
+        { category_id: 'hoursBilled', category_name: '100+ Hours Billed', category_value: 100 },
+        { category_id: 'hoursBilled', category_name: '1000+ Hours Billed', category_value: 1000 },
       ],
       title: 'Hours billed',
     },
     {
       content: [
-        { category_id: 'any_category', category_name: 'Any Category' },
-        { category_id: 'customer_service', category_name: 'Customer Service' },
-        { category_id: 'design_creative', category_name: 'Design And Creative' },
-        { category_id: 'web_mobile_software', category_name: 'Web, Mobile & Software' },
+        { category_id: 'jobSuccess', category_name: 'Any Score', category_value: 0 },
+        { category_id: 'jobSuccess', category_name: '80% & UP', category_value: 80 },
+        { category_id: 'jobSuccess', category_name: '90% & UP', category_value: 90 },
       ],
-      title: 'Category',
-    },
-    {
-      content: [
-        { category_id: 'any_level', category_name: 'Any Level' },
-        { category_id: 'basic', category_name: 'Basic' },
-        { category_id: 'conversational', category_name: 'Conversational' },
-        { category_id: 'fluent', category_name: 'Fluent' },
-        { category_id: 'native_bilingual', category_name: 'Native Or Bilingual' },
-      ],
-      title: 'English Level',
-    },
-    {
-      content: [
-        { category_id: 'freelancers_agencies', category_name: 'Freelancers & Agencies' },
-        { category_id: 'freelancers', category_name: 'Freelancers' },
-        { category_id: 'agencies', category_name: 'Agencies' },
-      ],
-      title: 'Talent Type',
-    },
-    {
-      content: [
-        { category_id: 'any_time', category_name: 'Any Time' },
-        { category_id: '2_weeks', category_name: 'Within 2 Weeks' },
-        { category_id: '1_month', category_name: 'Within 1 Month' },
-        { category_id: '2_month', category_name: 'Within 2 Month' },
-      ],
-      title: 'Notice Period',
+      title: 'Job Success',
     },
   ];
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsSmallScree(true);
-      } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
-        setIsSmallScree(false);
-      } else {
-        setIsSmallScree(false);
-      }
-    };
-
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+    setPage(1);
+    setCanLoadMore(true);
+  }, [debouncedSearchText, mode]);
 
   useEffect(() => {
-    if (gigs) {
-      setFilteredLiveList(gigs.lives);
-      setFilteredProposalsList(gigs.proposals);
+    if (mode === 'live') {
+      if (gigs?.lives?.length > 0) {
+        setCanLoadMore(true);
+        if (page === 1) {
+          setFilteredLiveList(gigs.lives);
+        } else {
+          setFilteredLiveList((prev) => {
+            let result = [...prev];
+            const ids = prev.map((item) => item._id);
+
+            gigs.lives.map((lv) => {
+              if (!ids.includes(lv._id)) {
+                result = [...result, lv];
+              }
+            });
+
+            return result;
+          });
+        }
+      } else {
+        if (page === 1) {
+          setFilteredLiveList([]);
+        }
+        setCanLoadMore(false);
+      }
+    } else {
+      if (gigs?.proposals?.length > 0) {
+        setCanLoadMore(true);
+        if (page === 1) {
+          setFilteredProposalsList(gigs.proposals);
+        } else {
+          setFilteredProposalsList((prev) => {
+            let result = [...prev];
+            const ids = prev.map((item) => item._id);
+
+            gigs.proposals.map((lv) => {
+              if (!ids.includes(lv._id)) {
+                result = [...result, lv];
+              }
+            });
+
+            return result;
+          });
+        }
+      } else {
+        if (page === 1) {
+          setFilteredProposalsList([]);
+        }
+        setCanLoadMore(false);
+      }
     }
-  }, [gigs]);
+  }, [gigs, page, mode]);
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
 
   useEffect(() => {
     if (wallet) {
@@ -295,7 +323,7 @@ const Orders = () => {
       const contractAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, contract, true);
 
       const transaction = await program.methods
-        .startContract(contractId, amount, dispute, deadline)
+        .startContractOnBuyer(contractId, amount, dispute, deadline)
         .accounts({
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           buyer: wallet.publicKey,
@@ -397,15 +425,15 @@ const Orders = () => {
       const transaction = await program.methods
         .buyerApprove(contractId, false)
         .accounts({
-          buyer: wallet.publicKey,
-          contract,
-          sellerAta,
-          buyerAta,
           adminAta,
-          contractAta,
-          tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          buyer: wallet.publicKey,
+          buyerAta,
+          contract,
+          contractAta,
+          sellerAta,
           systemProgram: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
         })
         .transaction();
 
@@ -494,11 +522,16 @@ const Orders = () => {
       aiSearch();
     }
   };
-  const onCheckedChange = (value, id, name) => {
-    if (value) {
-      setFilters((prev) => [...prev, name]);
+
+  const onCheckedChange = (isChecked, id, name, value) => {
+    if (isChecked) {
+      setFilters((prev) => [...prev, { id, name, value }]);
     } else {
-      setFilters((prev) => prev.filter((item) => item !== name));
+      setFilters((prev) =>
+        prev.filter(
+          (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+        )
+      );
     }
   };
 
@@ -506,10 +539,22 @@ const Orders = () => {
     setSearchType(e);
   };
 
+  const handleClearAll = () => {
+    setFilters([]);
+  };
+
+  const handleRemove = (id, name, value) => {
+    setFilters((prev) =>
+      prev.filter(
+        (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+      )
+    );
+  };
+
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
-      <div className='flex gap-2 rounded-xl bg-[#10191d]'>
-        <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
+      <div className='flex gap-2 rounded-xl bg-[#10191d] pr-4'>
+        <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -522,7 +567,7 @@ const Orders = () => {
             </SelectContent>
           </Select>
           <input
-            className='w-full bg-transparent text-white outline-none mobile:text-sm'
+            className='w-full text-white bg-transparent outline-none mobile:text-sm'
             onChange={(e) => setKey(e)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
@@ -535,32 +580,50 @@ const Orders = () => {
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
-              <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
-                <CiFilter className='mobile:max-w-4' fill='#96B0BD' size={20} />
-                <span className='text-[#96B0BD] mobile:text-sm'>Filter</span>
-                <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
-                  {filters.length}
-                </span>
-              </div>
+              <button className='flex flex-row items-center justify-center gap-3'>
+                <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
+                {!isSmallScreen && (
+                  <div className='flex flex-row gap-2'>
+                    <span className='hidden text-[#96B0BD] md:block'>Filter</span>
+                    {filters.length > 0 && (
+                      <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
+                        {filters.length}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </button>
             </PopoverTrigger>
             <PopoverContent
               align='end'
               className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
             >
               <div className='grid grid-cols-1 gap-4 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-                {filterItems.map((item, index) => {
+                {filterCategories.map((item, index) => {
                   return (
                     <div className='flex flex-col gap-2' key={index}>
                       <div>{item.title}</div>
                       {item.content.map((con, i) => {
                         return (
                           <DropdownItem
-                            category_id={con.category_id}
+                            category_id={con.category_id + con.category_value}
                             category_name={con.category_name}
-                            checked={filters.includes(con.category_name)}
+                            isChecked={
+                              !!filters.find(
+                                (f) =>
+                                  f.id === con.category_id &&
+                                  f.name === con.category_name &&
+                                  JSON.stringify(f.value) === JSON.stringify(con.category_value)
+                              )
+                            }
                             key={i}
                             onCheckedChange={(value) =>
-                              onCheckedChange(value, con.category_id, con.category_name)
+                              onCheckedChange(
+                                value,
+                                con.category_id,
+                                con.category_name,
+                                con.category_value
+                              )
                             }
                           />
                         );
@@ -575,7 +638,7 @@ const Orders = () => {
         {searchType === 'ai' && (
           <div className='flex'>
             <button
-              class='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
+              className='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
               onClick={aiSearch}
             >
               <FaArrowRight />
@@ -595,8 +658,8 @@ const Orders = () => {
         </div>
       )}
       {filters.length > 0 && (
-        <div className='flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5] mt-[30px]'>
-          {filters.map((item, index) => {
+        <div className='mt-[30px] flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
+          {filters.map((filter, index) => {
             return (
               <span
                 className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
@@ -604,26 +667,26 @@ const Orders = () => {
               >
                 <FaX
                   className='rounded-full bg-[#3E525B] p-[2px]'
-                  onClick={() => setFilters((prev) => prev.filter((_item) => _item !== item))}
+                  onClick={() => handleRemove(filter.id, filter.name, filter.value)}
                 />
-                {item}
+                {filter.name}
               </span>
             );
           })}
 
-          <span className='cursor-pointer' onClick={() => setFilters([])}>
+          <span className='cursor-pointer' onClick={handleClearAll}>
             Clear&nbsp;All
           </span>
         </div>
       )}
-      <div className='flex w-full items-center justify-center pb-5 pt-10'>
+      <div className='flex items-center justify-center w-full pt-10 pb-5'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
+              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
                 {gigs ? gigs.lives.length : ''}
               </span>
               &nbsp; Live
@@ -638,7 +701,7 @@ const Orders = () => {
         >
           {mode == 'proposal' ? (
             <h1>
-              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
+              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
                 {gigs ? gigs.proposals.length : ''}
               </span>
               &nbsp; Proposals
@@ -655,11 +718,11 @@ const Orders = () => {
               {filteredLiveList.map((order, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {order.gigTitle}
                       </div>
-                      <div className='flex flex-none flex-row items-center justify-between gap-2 mobile:w-full'>
+                      <div className='flex flex-row items-center justify-between flex-none gap-2 mobile:w-full'>
                         <div className='flex gap-2'>
                           <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                             15 H: 30 S
@@ -671,7 +734,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='border-none bg-transparent hover:bg-transparent'
+                              className='bg-transparent border-none hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -717,7 +780,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -776,7 +839,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -812,7 +875,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -844,7 +907,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -953,8 +1016,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{order.gigDescription}</div>
                     {/* )} */}
-                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
-                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
+                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
+                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -987,7 +1050,7 @@ const Orders = () => {
                         </button>
                         {order?.status == ContractStatus.DELIVERED && (
                           <button
-                            className='bg-green-500 p-4 px-8 md:p-5'
+                            className='p-4 px-8 bg-green-500 md:p-5'
                             onClick={() => onRelease(order.id, order.contractId)}
                           >
                             Release
@@ -998,12 +1061,17 @@ const Orders = () => {
                   </div>
                 );
               })}
-              <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
-                Load more +{' '}
-              </button>
+              {canLoadMore && (
+                <div
+                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+                  onClick={handleLoadMore}
+                >
+                  Load More +
+                </div>
+              )}
             </>
           ) : (
-            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Live proposals will be here</p>
             </div>
@@ -1016,11 +1084,11 @@ const Orders = () => {
               {filteredProposalsList.map((proposal, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='mt-1 flex items-start justify-between md:flex-row md:items-center'>
+                    <div className='flex items-start justify-between mt-1 md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {proposal.gigTitle}
                       </div>
-                      <div className='flex flex-none flex-row items-center gap-2'>
+                      <div className='flex flex-row items-center flex-none gap-2'>
                         {/* <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                         15 H: 30 S
                       </div>
@@ -1030,7 +1098,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='border-none bg-transparent hover:bg-transparent'
+                              className='bg-transparent border-none hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -1076,7 +1144,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1135,7 +1203,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1171,7 +1239,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1203,7 +1271,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -1312,8 +1380,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{proposal.gigDescription}</div>
                     {/* )} */}
-                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
-                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
+                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
+                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -1356,12 +1424,17 @@ const Orders = () => {
                   </div>
                 );
               })}
-              <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
-                Load more +{' '}
-              </button>
+              {canLoadMore && (
+                <div
+                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+                  onClick={handleLoadMore}
+                >
+                  Load More +
+                </div>
+              )}
             </>
           ) : (
-            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Freelancer proposals will be here</p>
             </div>
