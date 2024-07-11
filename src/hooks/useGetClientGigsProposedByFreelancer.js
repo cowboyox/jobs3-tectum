@@ -19,12 +19,12 @@ export const useGetClientGigsProposedByFreelancer = (
           let sort = 0;
           let category = ['any'];
           let applicants = [];
-          let experience = 0;
-          let job_type = 0;
-          let hoursPerWeek = [0, 30];
-          let location = '';
-          let timezone = '';
-          let info = '';
+          let experience = 'any';
+          let job_type = 'any';
+          let hoursPerWeek = 'any';
+          let location = 'any';
+          let timezone = 'any';
+          let info = 'any';
 
           filters.map((filter) => {
             if (filter.id === 'sort') {
