@@ -5,15 +5,18 @@ import React, { useEffect, useState } from 'react';
 import { LuAlignLeft } from 'react-icons/lu';
 import { useDisconnect } from 'wagmi';
 
+import {
+  getAssociatedTokenAddressSync,
+} from '@solana/spl-token';
+import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
+
 import { usePopupFunctions } from '../../components/popups/popups';
 
 import Notifications from '@/components/elements/notifications';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -26,7 +29,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCustomContext } from '@/context/use-custom';
-import { USER_ROLE } from '@/utils/constants';
+import { USER_ROLE, PAYTOKEN_MINT } from '@/utils/constants';
 
 const menu_data = [
   {
@@ -117,6 +120,8 @@ const menu_data = [
 
 const DashboardHeader = () => {
   const { renderPopup } = usePopupFunctions();
+  const wallet = useAnchorWallet();
+  const { connection } = useConnection();
 
   function OpenSideBar() {
     document.querySelector('.main_sidebar').classList.toggle('-translate-x-full');
@@ -125,6 +130,7 @@ const DashboardHeader = () => {
 
   const [accType, setAccType] = useState([]);
   const [title, setTitle] = useState("");
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
@@ -182,6 +188,24 @@ const DashboardHeader = () => {
   useEffect(() => {
     setTitle(menu_data.find((item) => item.href == pathname.split("/").slice(0, 4).join("/"))?.name || "");
   }, [pathname]);
+
+  useEffect(() => {
+    if (wallet && connection) {
+      (async function () {
+        try {
+          const walletAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, wallet?.publicKey);
+
+          // Get the token balance
+          const info = await connection.getTokenAccountBalance(walletAta);
+
+          setBalance(info.value.uiAmount);
+        } catch (error) {
+          console.log("Error while getting balance of the wallet:", error)
+          setBalance(0);
+        }
+      })();
+    }
+  }, [wallet, connection]);
   
   if (!auth?.currentProfile) {
     return (
@@ -238,19 +262,19 @@ const DashboardHeader = () => {
           </DropdownMenuContent>
         </DropdownMenu> */}
         <Select defaultValue={auth?.currentRole} onValueChange={handleChangeRole}>
-          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
+          <SelectTrigger className='flex text-base font-normal w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
             <SelectValue />
           </SelectTrigger>
           <SelectContent align='end' className='rounded-xl bg-[#10191D] w-40'>
             <SelectGroup className='flex flex-col gap-2'>
               <SelectItem 
-                className='py-3 cursor-pointer rounded-xl'
+                className='py-3 cursor-pointer rounded-xl text-lg font-medium text-[#96B0BD]'
                 value={USER_ROLE.CLIENT}
               >
                 Client
               </SelectItem>
               <SelectItem
-                className='py-3 cursor-pointer rounded-xl'
+                className='py-3 cursor-pointer rounded-xl text-lg font-medium text-[#96B0BD]'
                 value={USER_ROLE.FREELANCER}
               >
                 Freelancer
@@ -273,10 +297,10 @@ const DashboardHeader = () => {
             className='flex w-64 flex-col gap-0 rounded-xl border-2 border-[#28373e] bg-[#10191d]'
             sideOffset={10}
           >
-            <DropdownMenuItem className='text-base rounded cursor-pointer p-3 text-[#96B0BD] hover:text-[#F5F5F5] hover:bg-[#1B272C]'>
+            <DropdownMenuItem className='text-lg font-medium rounded cursor-pointer p-3 text-[#96B0BD] hover:text-[#F5F5F5] hover:bg-[#1B272C]'>
               <h1 onClick={() => router.push(`/help`)}>Help and support</h1>
             </DropdownMenuItem>
-            <DropdownMenuItem className='text-base rounded cursor-pointer p-3 text-[#96B0BD] hover:text-[#F5F5F5] hover:bg-[#1B272C]'>
+            <DropdownMenuItem className='text-lg font-medium cursor-pointer p-3 text-[#96B0BD] hover:text-[#F5F5F5] hover:bg-[#1B272C]'>
               <h1>Community and Forums</h1>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -304,7 +328,7 @@ const DashboardHeader = () => {
             className='flex w-72 flex-col gap-0 rounded-xl border-2 border-[#28373e] bg-[#10191d]'
             sideOffset={10}
           >
-            <DropdownMenuItem className='text-base rounded hover:bg-[#1B272C] py-3'>
+            <DropdownMenuItem className='text-lg font-medium rounded hover:bg-[#1B272C] py-3'>
               <div className='flex items-center justify-between w-full text-[#96B0BD]'>
                 <div className='flex items-center gap-2'>
                   <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -315,12 +339,16 @@ const DashboardHeader = () => {
                   <h1>Balance</h1>
                 </div>
                 <div>
-                  <h1 className='text-[#F5F5F5]'>$ 1200</h1>
+                  {
+                    wallet?.publicKey ?
+                      <h1 className='text-[#F5F5F5]'>$ {balance.toFixed(2)}</h1> :
+                      <h1 className='text-[#F5F5F5] text-sm'>No Wallet Connected</h1>
+                  }
                 </div>
               </div>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='text-base rounded cursor-pointer hover:bg-[#1B272C] py-3'>
+            <DropdownMenuItem className='text-lg font-medium rounded cursor-pointer hover:bg-[#1B272C] py-3'>
               <div className='flex items-center gap-2'>
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9.5 14.25C9.5 15.22 10.25 16 11.17 16H13.05C13.85 16 14.5 15.32 14.5 14.47C14.5 13.56 14.1 13.23 13.51 13.02L10.5 11.97C9.91 11.76 9.51001 11.44 9.51001 10.52C9.51001 9.67999 10.16 8.98999 10.96 8.98999H12.84C13.76 8.98999 14.51 9.76999 14.51 10.74" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -332,7 +360,7 @@ const DashboardHeader = () => {
                 <h1 className='text-[#96B0BD]'>$THREE Wallet</h1>
               </div>
             </DropdownMenuItem>
-            <DropdownMenuItem className='text-base rounded cursor-pointer hover:bg-[#1B272C] py-3'>
+            <DropdownMenuItem className='text-lg font-medium rounded cursor-pointer hover:bg-[#1B272C] py-3'>
               <div className='flex items-center gap-2'>
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M18.5 20H14.5" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -343,7 +371,7 @@ const DashboardHeader = () => {
                 <h1 className='text-[#96B0BD]'>Refer a Friend</h1>
               </div>
             </DropdownMenuItem>
-            <DropdownMenuItem className='text-base rounded cursor-pointer hover:bg-[#1B272C] py-3' onClick={() => router.push(`/dashboard/${auth?.currentRole == 3 ? 'client': 'freelancer'}/settings`)}>
+            <DropdownMenuItem className='text-lg font-medium rounded cursor-pointer hover:bg-[#1B272C] py-3' onClick={() => router.push(`/dashboard/${auth?.currentRole == 3 ? 'client': 'freelancer'}/settings`)}>
               <div className='flex items-center gap-2'>
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 15.5C13.6569 15.5 15 14.1569 15 12.5C15 10.8431 13.6569 9.5 12 9.5C10.3431 9.5 9 10.8431 9 12.5C9 14.1569 10.3431 15.5 12 15.5Z" stroke="#96B0BD" stroke-width="1.49854" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -365,7 +393,7 @@ const DashboardHeader = () => {
                 }
               })} */}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='text-base rounded cursor-pointer hover:bg-[#1B272C] py-3' onClick={handleSignOut}>
+            <DropdownMenuItem className='text-lg font-medium rounded cursor-pointer hover:bg-[#1B272C] py-3' onClick={handleSignOut}>
               <div className='flex items-center gap-2'>
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8.90039 8.06023C9.21039 4.46023 11.0604 2.99023 15.1104 2.99023H15.2404C19.7104 2.99023 21.5004 4.78023 21.5004 9.25023V15.7702C21.5004 20.2402 19.7104 22.0302 15.2404 22.0302H15.1104C11.0904 22.0302 9.24039 20.5802 8.91039 17.0402" stroke="#96B0BD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
