@@ -247,12 +247,12 @@ const FreelancerProfile = () => {
                 expandedText += item + '\n'; // Add a line break for each item
               }
             });
-
             setPreviewBio(previewText); // Update previewBio with the formatted text
             setExpandedBio(expandedText); // Update expandedBio with the formatted text
           } else {
             setPreviewBio(data.data.profile.freelancerBio); // If the text is less than or equal to 4 lines, set previewBio to the original text
           }
+          setBio(data.data.profile.freelancerBio);
         }
 
         if (data.data.profile.clientBanner) {
