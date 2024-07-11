@@ -12,16 +12,22 @@ import Stats from '@/components/dashboard/freelancerhome/Stats';
 
 const Page = () => {
   const [searchText, setSearchText] = useState('');
+  const [filtersToQuery, setFiltersToQuery] = useState([]);
 
   return (
     <div className='flex min-h-screen w-full flex-col items-center py-10'>
       <div className='w-full px-4 md:px-0'>
         <Hero />
         <FillProfile />
-        <Stats searchText={searchText} setSearchText={setSearchText} />
+        <Stats
+          filtersToQuery={filtersToQuery}
+          searchText={searchText}
+          setFiltersToQuery={setFiltersToQuery}
+          setSearchText={setSearchText}
+        />
         <RecentlyViewed />
         <Ratings />
-        <Recent searchText={searchText} />
+        <Recent filtersToQuery={filtersToQuery} searchText={searchText} />
       </div>
     </div>
   );

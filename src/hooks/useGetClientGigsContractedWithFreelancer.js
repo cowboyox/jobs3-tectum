@@ -1,11 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
-import { APIS } from '@/utils/constants';
-import { getStatus } from '@/utils/gigInfo';
 
-export const useFreelancerInfo = (
-  profileId,
+export const useGetClientGigsContractedWithFreelancer = (
+  freelancerId,
   pageNum,
   itemsPerPage,
   searchText = '',
@@ -13,9 +11,9 @@ export const useFreelancerInfo = (
 ) => {
   return useQuery({
     cacheTime: Infinity,
-    enabled: !!profileId && pageNum > 0 && itemsPerPage > 0,
+    enabled: !!freelancerId && pageNum > 0 && itemsPerPage > 0,
     queryFn: async () => {
-      if (profileId) {
+      if (freelancerId && pageNum > 0 && itemsPerPage > 0) {
         try {
           let earned = 0;
           let languages = ['any'];
@@ -37,24 +35,17 @@ export const useFreelancerInfo = (
             }
           });
 
-          const { data } = await api.get(
-            `${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
+          const result = await api.get(
+            `/api/v1/client_gig/get_gigs_contracted_with_freelancer/${freelancerId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
           );
 
-          let activeOrders = [];
-          let earnings = [];
+          const contracts = result?.data?.contracts || [];
+          const earnings = [];
 
-          if (data?.submissions) {
-            data.submissions.map((sub) => {
-              activeOrders.push({
-                gigId: sub.clientGig._id,
-                gigPostDate: sub.clientGig.gigPostDate,
-                gigStatus: getStatus(sub.clientGig.gigStatus),
-                gigTitle: sub.clientGig.gigTitle,
-              });
-
-              if (sub.accepted && sub.proposer.flHistory.length > 0) {
-                sub.proposer.flHistory.map((earns) => {
+          if (contracts.length > 0) {
+            contracts.map((contract) => {
+              if (contract.proposer.flHistory.length > 0) {
+                contract.proposer.flHistory.map((earns) => {
                   earns.map((earn) => {
                     if (earn.amount > 0) {
                       earnings.push({
@@ -65,15 +56,22 @@ export const useFreelancerInfo = (
                   });
                 });
               }
+
+              contracts.push({
+                clientFullName: contract.gigOwner.fullName,
+                deliveryTime: contract.clientGig.gigDeadline,
+                freelancer: contract.proposer,
+                gigDescription: contract.clientGig.gigDescription,
+                gigId: contract.clientGig._id,
+                gigPostDate: contract.clientGig.gigPostDate,
+                gigTitle: contract.clientGig.gigTitle,
+                status: getStatus(contract.clientGig.gigStatus),
+                walletPubkey: contract.proposer?.walletPubkey,
+              });
             });
           }
 
-          activeOrders = activeOrders.sort(
-            (a, b) => new Date(a.gigPostDate) - new Date(b.gigPostDate)
-          );
-          earnings = earnings.sort((a, b) => new Date(a.earnedAt) - new Date(b.earnedAt));
-
-          return { activeOrders, earnings };
+          return { contracts, earnings };
         } catch (e) {
           console.error(e);
 
@@ -83,7 +81,14 @@ export const useFreelancerInfo = (
         return null;
       }
     },
-    queryKey: ['useFreelancerInfo', profileId],
+    queryKey: [
+      'useGetAllClientOrdersProposed',
+      freelancerId,
+      pageNum,
+      itemsPerPage,
+      searchText,
+      filters,
+    ],
     staleTime: Infinity,
   });
 };
