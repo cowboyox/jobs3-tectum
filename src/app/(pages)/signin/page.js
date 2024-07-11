@@ -1,26 +1,21 @@
 'use client';
 
 import { useWeb3Modal } from '@web3modal/wagmi/react';
-import Image from 'next/image';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { FaCheck } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
-import { useDebounce } from '@/hooks/useDebounce';
-import { useVerifyUsername } from '@/hooks/useVerifyUsername';
-import { USER_ROLE } from '@/utils/constants';
 
 const Signin = () => {
   const { toast } = useToast();
   const router = useRouter();
   const [postData, setPostData] = useState({
-    fullName: '',
     email: '',
-    password: '',
+    fullName: '',
     keepLogin: false,
+    password: '',
   });
   const validateEmail = (email) => {
     return String(email)
@@ -121,8 +116,6 @@ const Signin = () => {
         </div>
         <input
           className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
-          placeholder='Full name'
-          value={postData.fullName}
           onChange={(e) =>
             setPostData((prev) => ({
               ...prev,
@@ -132,12 +125,12 @@ const Signin = () => {
           onKeyDown={(e) => {
             onKeyDown(e);
           }}
+          placeholder='Full name'
+          value={postData.fullName}
         />
         <div className='flex w-full flex-col'>
           <input
             className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
-            placeholder='Email address'
-            value={postData.email}
             onChange={(e) =>
               setPostData((prev) => ({
                 ...prev,
@@ -147,6 +140,8 @@ const Signin = () => {
             onKeyDown={(e) => {
               onKeyDown(e);
             }}
+            placeholder='Email address'
+            value={postData.email}
           />
           {!validateEmail(postData.email) && postData.email && (
             <span className='text-[14px] text-[#ef3f26]'>
@@ -157,18 +152,18 @@ const Signin = () => {
         <div className='flex w-full flex-col'>
           <input
             className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
-            placeholder='Confirm password'
-            value={postData.password}
             onChange={(e) =>
               setPostData((prev) => ({
                 ...prev,
                 password: e.target.value,
               }))
             }
-            type='password'
             onKeyDown={(e) => {
               onKeyDown(e);
             }}
+            placeholder='Confirm password'
+            type='password'
+            value={postData.password}
           />
           {postData.password.length < 8 && postData.password && (
             <span className='text-[14px] text-[#ef3f26]'>
@@ -184,17 +179,17 @@ const Signin = () => {
         </button>
         <div className='flex w-full items-center justify-center'>
           <input
+            className='accent-[#DC4F13]'
             onChange={(ev) =>
               setPostData((prev) => ({
                 ...prev,
                 keepLogin: ev.target.checked,
               }))
             }
-            type='checkbox'
             onKeyDown={(e) => {
               onKeyDown(e);
             }}
-            className='accent-[#DC4F13]'
+            type='checkbox'
           />
           <span className='ml-2 text-[14px] text-[#F5F5F5]'>Keep me logged in</span>
         </div>
@@ -211,14 +206,14 @@ const Signin = () => {
         </div>
         <div className='flex w-full items-center justify-center gap-[19px]'>
           <img
-            src='assets/icons/signin/google.png'
             alt='google'
             className='h-6 w-6 cursor-pointer'
+            src='assets/icons/signin/google.png'
           />
           <img
-            src='assets/icons/signin/facebook.png'
             alt='facebook'
             className='h-6 w-6 cursor-pointer'
+            src='assets/icons/signin/facebook.png'
           />
         </div>
       </div>
@@ -227,7 +222,7 @@ const Signin = () => {
         <span className='mr-2 text-[#DC4F13]'>
           <a href='/forgot-password'>Forgot Password</a>
         </span>
-        {'Don\'t Have Account?'}
+        {"Don't Have Account?"}
         <span className='ml-2 cursor-pointer text-[#DC4F13]' onClick={() => router.push('/signup')}>
           Sign Up
         </span>

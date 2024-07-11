@@ -228,6 +228,7 @@ const ChatPage = () => {
   useEffect(() => {
     if (userInfo && auth?.currentProfile) {
       setRceiver({
+        _id: userInfo._id,
         avatar: userInfo.avatarURL,
         isVerified: userInfo.userId?.verified || false,
         message: '',
@@ -258,7 +259,11 @@ const ChatPage = () => {
   }, [userInfo, auth?.currentProfile, socket]);
 
   const sendMessage = () => {
-    const message = { messageText: input, receiverId: receiver._id, senderId: auth.user._id };
+    const message = {
+      messageText: input,
+      receiverId: receiver._id,
+      senderId: auth.currentProfile._id,
+    };
     socket.emit('sendMessage', message);
     setInput('');
     setConversation((prevMessages) => [...prevMessages, message]);
@@ -356,7 +361,7 @@ const ChatPage = () => {
                 <div className='flex flex-col gap-3' key={id}>
                   <MessageDetails
                     date='17 May 2024'
-                    sender={conv.senderId == auth.user._id ? 'me' : ''}
+                    sender={conv.senderId == auth.currentProfile._id ? 'me' : ''}
                     time='17:37'
                     user_image='/assets/images/users/user-6.png'
                   />
