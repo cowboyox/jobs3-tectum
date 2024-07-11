@@ -16,7 +16,6 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
           let category = ['any'];
           let applicants = [];
           let experience = 'any';
-          let job_type = 'any';
           let hoursPerWeek = 'any';
           let location = 'any';
           let timezone = 'any';
@@ -36,7 +35,7 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
             } else if (filter.id === 'experience') {
               experience = filter.value;
             } else if (filter.id === 'job_type') {
-              job_type = filter.value;
+              payment = [...payment, filter.value].filter((p) => p !== 'any');
             } else if (filter.id === 'hoursPerWeek') {
               hoursPerWeek = filter.value;
             } else if (filter.id === 'location') {
@@ -49,8 +48,10 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
           });
 
           const { data } = await api.get(
-            `${APIS.CL_FIND_GIGS}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&applicants=${applicants}&experience=${experience}&job_type=${job_type}&hoursPerWeek=${hoursPerWeek}&location=${location}&timezone=${timezone}&info=${info}`
+            `${APIS.CL_FIND_GIGS}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&applicants=${applicants}&experience=${experience}&hoursPerWeek=${hoursPerWeek}&location=${location}&timezone=${timezone}&info=${info}`
           );
+
+          console.log(data);
 
           return data?.data || null;
         } catch (e) {

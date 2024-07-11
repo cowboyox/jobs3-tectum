@@ -37,7 +37,7 @@ const Recent = ({ searchText, filtersToQuery }) => {
     ...filtersToQuery,
   ]);
 
-  console.log(clientGigs);
+  console.log(filtersToQuery);
   useEffect(() => {
     if (clientGigs?.length > 0) {
       setCanLoadMore(true);
@@ -67,7 +67,7 @@ const Recent = ({ searchText, filtersToQuery }) => {
 
   useEffect(() => {
     setPage(1);
-  }, [searchText]);
+  }, [searchText, selectedSkills, filtersToQuery]);
 
   const handleSkillClick = (skill) => {
     setPage(1);

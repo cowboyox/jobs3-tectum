@@ -337,8 +337,8 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
     },
     {
       content: [
-        { category_id: 'job_type', category_name: 'Hourly Rate', category_value: 0 },
-        { category_id: 'job_type', category_name: 'Fixed Price', category_value: 1 },
+        { category_id: 'job_type', category_name: 'Hourly Rate', category_value: 'hourly' },
+        { category_id: 'job_type', category_name: 'Fixed Price', category_value: 'fixed' },
       ],
       title: 'Job Type',
       type: 0,
