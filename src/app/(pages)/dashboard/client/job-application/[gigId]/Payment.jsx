@@ -57,75 +57,18 @@ const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity 
     //   return;
     // }
 
-    // if (!walletPubkey) {
-    //   toast({
-    //     className:
-    //       'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-    //     description: <h3>No seller pubkey provided!</h3>,
-    //     title: <h1 className='text-center'>Error</h1>,
-    //     variant: 'destructive',
-    //   });
-    //   return;
-    // }
+    if (!auth.currentProfile.walletPublicKey) {
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Please connect your wallet on the setting page!</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+      return;
+    }
 
     try {
-      // const seller = new PublicKey(walletPubkey);
-      // const contractId = uuid().slice(0, 8);
-      // const amount = new BN(gigPrice * Math.pow(10, 6));
-      // const dispute = new BN(0.5 * Math.pow(10, 6)); // 0.5 USDC for dispute fee
-      // const deadline = Math.floor(Date.now() / 1000) + 10 * 24 * 60 * 60;
-
-      // const [contract, bump] = await PublicKey.findProgramAddressSync(
-      //   [
-      //     Buffer.from(utils.bytes.utf8.encode(CONTRACT_SEED)),
-      //     Buffer.from(utils.bytes.utf8.encode(contractId)),
-      //   ],
-      //   program.programId
-      // );
-
-      // const buyerAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, wallet?.publicKey);
-
-      // // Get the token balance
-      // const info = await connection.getTokenAccountBalance(buyerAta);
-
-      // if (info.value.uiAmount < Number(gigPrice) + 0.5) {
-      //   toast({
-      //     className:
-      //       'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-      //     description: (
-      //       <h3>{`You don't have enough token. Need at least ${gigPrice + 0.5} USDC!`}</h3>
-      //     ),
-      //     title: <h1 className='text-center'>Error</h1>,
-      //     variant: 'destructive',
-      //   });
-      //   return;
-      // }
-
-      // const contractAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, contract, true);
-
-      // const transaction = await program.methods
-      //   .startContract(contractId, amount, dispute, deadline)
-      //   .accounts({
-      //     associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-      //     buyer: wallet.publicKey,
-      //     buyerAta,
-      //     contract,
-      //     contractAta,
-      //     payTokenMint: PAYTOKEN_MINT,
-      //     rent: SYSVAR_RENT_PUBKEY,
-      //     seller,
-      //     systemProgram: SystemProgram.programId,
-      //     tokenProgram: TOKEN_PROGRAM_ID,
-      //   })
-      //   .transaction();
-      // console.log(transaction, connection);
-
-      // const signature = await sendTransaction(transaction, connection, { skipPreflight: true });
-
-      // console.log('Your transaction signature for creating a new contract', signature);
-
-      // await connection.confirmTransaction(signature, 'confirmed');
-
       let values = {};
 
       values.clientId = auth.currentProfile._id;
@@ -190,7 +133,7 @@ const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity 
   };
 
   return (
-    <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
+    <div className='flex flex-col gap-4 px-6 py-6 text-white rounded-2xl bg-deepGreen'>
       <div className='flex flex-col gap-3'>
         <div className='flex items-center justify-center gap-2 rounded-xl bg-[#1B272C] p-3'>
           <svg

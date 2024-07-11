@@ -49,7 +49,7 @@ const Offer = () => {
   const { isSmallScreen } = useHandleResize();
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [page, setPage] = useState(1);
-  const itemsPerPage = 2;
+  const itemsPerPage = 20;
   const debouncedSearchText = useDebounce(searchKeywords);
   const [canLoadMore, setCanLoadMore] = useState(true);
   const filterCategories = [
@@ -401,8 +401,10 @@ const Offer = () => {
                 <OfferItem
                   accepted={true}
                   avatarURL={order.freelancer.avatarURL}
+                  buyerPubkey={order.walletPublicKey}
                   clientId={auth?.currentProfile?._id}
                   clientSide={true}
+                  contractId={order.contractId}
                   deliveryTime={order.deliveryTime}
                   freelancerId={order.freelancer._id}
                   fullName={order.freelancer.fullName}
@@ -412,6 +414,7 @@ const Offer = () => {
                   key={index}
                   proposal={order.proposal}
                   proposalId={order.proposalId}
+                  quantity={order.quantity}
                   refetchAllOrdersProposed={refetchAllOrdersProposed}
                   status={order.status}
                 />
@@ -440,8 +443,10 @@ const Offer = () => {
                 <OfferItem
                   accepted={false}
                   avatarURL={proposal.freelancer.avatarURL}
+                  buyerPubkey={proposal.walletPublicKey}
                   clientId={auth?.currentProfile?._id}
                   clientSide={true}
+                  contractId={proposal.contractId}
                   deliveryTime={proposal.deliveryTime}
                   freelancerId={proposal.freelancer._id}
                   fullName={proposal.freelancer.fullName}
@@ -451,6 +456,7 @@ const Offer = () => {
                   key={index}
                   proposal={proposal.proposal}
                   proposalId={proposal.proposalId}
+                  quantity={proposal.quantity}
                   refetchAllOrdersProposed={refetchAllOrdersProposed}
                   status={proposal.status}
                 />

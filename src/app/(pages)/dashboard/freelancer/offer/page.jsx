@@ -337,6 +337,9 @@ const Offer = () => {
                     accepted={true}
                     status={order.status}
                     clientSide={false}
+                    contractId={order.contractId}
+                    buyerPubkey={order.walletPublicKey}
+                    quantity={order.quantity}
                   />
                 ))}
                 <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
@@ -374,6 +377,9 @@ const Offer = () => {
                     accepted={false}
                     status={proposal.status}
                     clientSide={false}
+                    contractId={proposal.contractId}
+                    buyerPubkey={proposal.walletPublicKey}
+                    quantity={proposal.quantity}
                   />
                 ))}
                 <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>

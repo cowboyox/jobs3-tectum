@@ -102,7 +102,7 @@ const FreelancerPortfolio = ({ params }) => {
         <div className='mobile:w-full flex w-fit items-center justify-center gap-3'>
           <Link
             className='mobile:w-full mobile:text-center cursor-pointer rounded-xl bg-[#DC4F13] px-12 py-3 text-lg transition hover:bg-white hover:text-black'
-            href='./portfolio/create'
+            href='./create'
           >
             Create
           </Link>

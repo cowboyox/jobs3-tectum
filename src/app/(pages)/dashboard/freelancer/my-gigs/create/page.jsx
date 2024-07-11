@@ -439,6 +439,7 @@ const CreateGig = () => {
 
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
+  const [changedPostions, setChangedPostions] = useState([false, false, false, false]);
 
   const addNewQuestion = () => {
     const newQuestion = newQuestionRef.current.value.trim();
@@ -490,6 +491,10 @@ const CreateGig = () => {
     const newImageFiles = [...imageFiles];
     newImageFiles[index] = files[0]; // Assuming single file for each image slot
     setImageFiles(newImageFiles);
+    let tmp1 = [];
+    tmp1 = changedPostions.map((item) => item);
+    tmp1[index] = true;
+    setChangedPostions(tmp1);
   };
 
   const handleDocumentUpload = (files, index) => {
@@ -539,15 +544,25 @@ const CreateGig = () => {
 
     const formData = new FormData();
     if (videoFile) {
-      formData.append('file', videoFile);
+      formData.append('files', videoFile);
     }
 
     imageFiles.forEach((file) => {
-      if (file) formData.append('file', file);
+      if (file) formData.append('files', file);
     });
     documentFiles.forEach((file) => {
-      if (file) formData.append('file', file);
+      if (file) formData.append('files', file);
     });
+    console.log("documentFiles.length", documentFiles.length);
+    formData.append(
+      'metadata',
+      JSON.stringify({
+        video: videoFile ? 1 : 0,
+        images: imageFiles.length,
+        documents: documentFiles.length,
+        changedPostions: changedPostions,
+      })
+    );
 
     const config = {
       headers: {
