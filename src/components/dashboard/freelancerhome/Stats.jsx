@@ -241,10 +241,10 @@ const Earnings = ({ searchText, filters }) => {
   );
 };
 
-const Stats = ({ searchText, setSearchText }) => {
+const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery }) => {
   const [searchType, setSearchType] = useState('normal');
   const [filters, setFilters] = useState([]);
-  const [filtersToQuery, setFiltersToQuery] = useState([]);
+
   const { isSmallScreen } = useHandleResize();
 
   const onChangeType = (e) => {
@@ -436,7 +436,7 @@ const Stats = ({ searchText, setSearchText }) => {
             defaultValue='normal'
             onValueChange={(e) => onChangeType(e)}
           >
-            <SelectTrigger className='mobile:w-14 mobile:p-2 h-full w-20 rounded-xl bg-[#1B272C] outline-none'>
+            <SelectTrigger className='h-full w-20 rounded-xl bg-[#1B272C] outline-none mobile:w-14 mobile:p-2'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className='rounded-xl bg-[#1B272C]'>

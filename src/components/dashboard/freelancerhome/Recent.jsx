@@ -23,7 +23,7 @@ import api from '@/utils/api';
 import { skillSets } from '@/utils/constants';
 import { getDeadline } from '@/utils/gigInfo';
 
-const Recent = ({ searchText }) => {
+const Recent = ({ searchText, filtersToQuery }) => {
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [allGigs, setAllGigs] = useState([]);
   const [page, setPage] = useState(1);
@@ -31,7 +31,11 @@ const Recent = ({ searchText }) => {
   const { toast } = useToast();
   const [canLoadMore, setCanLoadMore] = useState(true);
   const itemsPerPage = 2;
-  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, searchText, selectedSkills);
+
+  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, searchText, [
+    ...selectedSkills,
+    ...filtersToQuery,
+  ]);
 
   console.log(clientGigs);
   useEffect(() => {
@@ -68,10 +72,10 @@ const Recent = ({ searchText }) => {
   const handleSkillClick = (skill) => {
     setPage(1);
     setSelectedSkills((prev) => {
-      if (prev.includes(skill)) {
-        return prev.filter((selectedSkill) => selectedSkill !== skill);
+      if (prev.filter((sk) => sk.value === skill).length > 0) {
+        return prev.filter((selectedSkill) => selectedSkill.value !== skill);
       } else {
-        return [...prev, skill];
+        return [...prev, { id: 'skills', value: skill }];
       }
     });
   };
@@ -122,7 +126,9 @@ const Recent = ({ searchText }) => {
         {skillSets.map((skill, index) => (
           <div
             className={`${
-              selectedSkills.includes(skill) ? 'bg-orange' : 'bg-darkGray'
+              selectedSkills.filter((sk) => sk.value === skill).length > 0
+                ? 'bg-orange'
+                : 'bg-darkGray'
             } cursor-pointer rounded-full border border-lightGray px-2 py-1 text-center`}
             key={index}
             onClick={() => handleSkillClick(skill)}
