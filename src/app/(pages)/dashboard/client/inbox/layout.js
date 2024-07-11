@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/select';
 import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
-import { useGetAllMessages } from '@/hooks/useGetAllMessages';
+import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
 import api from '@/utils/api';
 
 import './layout.css';
@@ -209,7 +209,7 @@ const InboxPage = ({ children }) => {
   const auth = useCustomContext();
   const [users, setUsers] = useState([]);
   const socket = useSocket();
-  const { data } = useGetAllMessages(auth?.currentProfile?._id);
+  const { data } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   console.log({ data });
 
