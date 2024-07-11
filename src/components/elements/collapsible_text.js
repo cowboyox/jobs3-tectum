@@ -22,18 +22,24 @@ const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio, bio }) 
   const toggleCollapse = () => {
     setIsOpen(!isOpen);
   };
+  const bioRef = useRef(null);
 
+  useEffect(() => {
+    if (bioRef.current) {
+      const bioWidth = bioRef.current.offsetWidth;
+      const maxWidth = Math.min(bioWidth, 900); // Set a maximum width of 900 pixels
+      bioRef.current.style.maxWidth = `${maxWidth}px`;
+    }
+  }, []);
   return (
     <div className='relative'>
       {!isEditBio ? (
-        <div>
-          {/* {previewText.split('\n').map((line, index) => (
-            <p key={index}>{line}</p>
-          ))} */}
-          <pre>
-            {bio}
-          </pre>
-        </div>
+        <div className='w-full'>
+        <pre ref={bioRef} className='whitespace-pre-line text-ellipsis'>
+          {bio}
+        </pre>
+      </div>
+  
       ) : (
         <Textarea
           className='rounded-xl outline-none'
