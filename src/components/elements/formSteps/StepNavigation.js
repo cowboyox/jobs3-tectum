@@ -8,9 +8,10 @@ const FormNavigation = (props) => {
       <div className='flex w-full gap-3 rounded-2xl bg-[#1B272C] p-2'>
         <PrevStep className='mobile:py-3 w-full cursor-pointer rounded-2xl py-5 text-center text-white transition hover:bg-white hover:text-black' />
         <NextStep
-          className='mobile:py-3 w-full cursor-pointer rounded-2xl bg-[#DC4F13] py-5 text-center text-white'
+          className='mobile:py-3 w-full cursor-pointer rounded-2xl bg-[#DC4F13] py-5 text-center text-white flex justify-center items-center gap-1'
           max={props.max ? props.max : 6}
           isAuth={props.isAuth}
+          isWaiting={props.isWaiting}
         />
       </div>
     </div>

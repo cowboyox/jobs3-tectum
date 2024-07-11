@@ -1,5 +1,6 @@
 'use client';
 import React, { createContext, useContext, useState } from 'react';
+import { Spinner } from '@/components/ui/spinner';
 const StepContext = createContext();
 export const useStep = () => useContext(StepContext);
 
@@ -20,7 +21,7 @@ export const StepNumber = () => {
   return stepNumber;
 };
 
-export const NextStep = ({ max, className, isAuth }) => {
+export const NextStep = ({ max, className, isAuth, isWaiting }) => {
   const { stepNumber, setStepNumber } = useStep();
 
   return (
@@ -41,11 +42,12 @@ export const NextStep = ({ max, className, isAuth }) => {
           // onClick={() => setStepNumber(prev => prev + 1)}
           type='submit'
         >
+          {isWaiting && <Spinner/>}
           {
             isAuth === false ?
             'End'
             :
-            'Publish'
+            'Publish'     
           }
         </button>
       )}

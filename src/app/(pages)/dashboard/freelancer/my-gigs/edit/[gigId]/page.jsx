@@ -75,6 +75,7 @@ const EditGig = () => {
   const { gigId } = useParams();
   const { data: gigInfo, refetch: refetchGig } = useGetFreelancerGigById(gigId);
   const [isAuth, setIsAuth] = useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);
 
   const categories_list = [
     {
@@ -555,6 +556,7 @@ const EditGig = () => {
           variant: 'default',
         });
       }
+      setIsWaiting(true);
 
       const formData = new FormData();
 
@@ -606,10 +608,12 @@ const EditGig = () => {
             variant: 'default',
           });
           await refetchGig();
-          router.push(`../${auth.currentProfile._id}`);
+          setIsWaiting(false);
+          router.back();
         })
         .catch((err) => {
           console.error('Error corrupted during posting gig', err);
+          setIsWaiting(false);
           toast({
             className:
               'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -1084,7 +1088,7 @@ const EditGig = () => {
                 width={500}
               />
             </FormStep>
-            <FormNavigation isAuth={isAuth} />
+            <FormNavigation isAuth={isAuth} isWaiting={isWaiting} />
           </form>
         </Form>
       </div>

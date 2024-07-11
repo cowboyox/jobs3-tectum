@@ -20,12 +20,12 @@ import {
 } from '@/components/ui/select';
 import { useCustomContext } from '@/context/use-custom';
 import { useDebounce } from '@/hooks/useDebounce';
-import { useGetAllFreelancerOrdersProposed } from '@/hooks/useGetAllFreelancerOrdersProposed';
+import { useGetClientGigsContractedWithFreelancer } from '@/hooks/useGetClientGigsContractedWithFreelancer';
 import { useHandleResize } from '@/hooks/useHandleResize';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
-    <div className='flex items-center gap-4 p-0 cursor-pointer'>
+    <div className='flex cursor-pointer items-center gap-4 p-0'>
       <Checkbox
         checked={props.checked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
@@ -114,13 +114,14 @@ const Offer = () => {
     },
   ];
 
-  const { data: orders, refetch: refetchAllOrdersProposed } = useGetAllFreelancerOrdersProposed(
-    auth?.currentProfile?._id,
-    page,
-    itemsPerPage,
-    debouncedSearchText,
-    filters
-  );
+  const { data: orders, refetch: refetchAllOrdersProposed } =
+    useGetClientGigsContractedWithFreelancer(
+      auth?.currentProfile?._id,
+      page,
+      itemsPerPage,
+      debouncedSearchText,
+      filters
+    );
 
   useEffect(() => {
     setPage(1);
@@ -239,9 +240,9 @@ const Offer = () => {
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d] pr-4'>
-        <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
+        <div className='mobile:m-1 m-3 flex flex-1 gap-2'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
-            <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
+            <SelectTrigger className='mobile:w-14 mobile:p-2 w-20 rounded-xl bg-[#1B272C]'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className='rounded-xl bg-[#1B272C]'>
@@ -252,13 +253,13 @@ const Offer = () => {
             </SelectContent>
           </Select>
           <input
-            className='w-full text-white bg-transparent outline-none mobile:text-sm'
+            className='mobile:text-sm w-full bg-transparent text-white outline-none'
             onChange={(e) => setSearchKeyWords(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
           />
         </div>
-        <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
+        <div className='mobile:hidden m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C]'>
           <IoLocationOutline size={20} stroke='#96B0BD' />
           <span className='hidden text-[#96B0BD] md:block'>Anywhere</span>
         </div>
@@ -323,7 +324,7 @@ const Offer = () => {
         {searchType === 'ai' && (
           <div className='flex'>
             <button
-              class='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
+              class='mobile:flex hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white'
               onClick={aiSearch}
             >
               <FaArrowRight />
@@ -362,14 +363,14 @@ const Offer = () => {
           </span>
         </div>
       )}
-      <div className='flex items-center justify-center w-full pt-10 pb-5'>
+      <div className='flex w-full items-center justify-center pb-5 pt-10'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>{lives.length}</span>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>{lives.length}</span>
               &nbsp; Live
             </h1>
           ) : (
@@ -382,7 +383,7 @@ const Offer = () => {
         >
           {mode == 'proposal' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
                 {proposals.length}
               </span>
               &nbsp; Proposals
@@ -400,8 +401,10 @@ const Offer = () => {
                 <OfferItem
                   accepted={true}
                   avatarURL={order.freelancer.avatarURL}
+                  buyerPubkey={order.walletPublicKey}
                   clientId={auth?.currentProfile?._id}
                   clientSide={true}
+                  contractId={order.contractId}
                   deliveryTime={order.deliveryTime}
                   freelancerId={order.freelancer._id}
                   fullName={order.freelancer.fullName}
@@ -411,16 +414,14 @@ const Offer = () => {
                   key={index}
                   proposal={order.proposal}
                   proposalId={order.proposalId}
+                  quantity={order.quantity}
                   refetchAllOrdersProposed={refetchAllOrdersProposed}
                   status={order.status}
-                  contractId={order.contractId}
-                  buyerPubkey={order.walletPublicKey}
-                  quantity={order.quantity}
                 />
               ))}
               {canLoadMore && (
                 <div
-                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -428,7 +429,7 @@ const Offer = () => {
               )}
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Accepted proposals will be here</p>
             </div>
@@ -442,8 +443,10 @@ const Offer = () => {
                 <OfferItem
                   accepted={false}
                   avatarURL={proposal.freelancer.avatarURL}
+                  buyerPubkey={proposal.walletPublicKey}
                   clientId={auth?.currentProfile?._id}
                   clientSide={true}
+                  contractId={proposal.contractId}
                   deliveryTime={proposal.deliveryTime}
                   freelancerId={proposal.freelancer._id}
                   fullName={proposal.freelancer.fullName}
@@ -453,16 +456,14 @@ const Offer = () => {
                   key={index}
                   proposal={proposal.proposal}
                   proposalId={proposal.proposalId}
+                  quantity={proposal.quantity}
                   refetchAllOrdersProposed={refetchAllOrdersProposed}
                   status={proposal.status}
-                  contractId={proposal.contractId}
-                  buyerPubkey={proposal.walletPublicKey}
-                  quantity={proposal.quantity}
                 />
               ))}
               {canLoadMore && (
                 <div
-                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -470,7 +471,7 @@ const Offer = () => {
               )}
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Proposals will be here</p>
             </div>

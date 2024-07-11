@@ -89,7 +89,7 @@ const FreelancerPortfolio = ({ params }) => {
       <div className='mobile:flex-wrap mobile:gap-x-0 mobile:gap-y-5 mobile:p-4 flex gap-3 rounded-2xl bg-[#10191d] p-7'>
         <div className='mobile:w-1/3 flex w-full flex-col gap-3'>
           <p className='mobile:text-center mobile:text-sm text-xl text-[#96B0BD]'>Total earnings</p>
-          <p className='mobile:text-center mobile:text-3xl text-4xl font-bold text-white'>${totalEarn}</p>
+          <p className='mobile:text-center mobile:text-3xl text-4xl font-bold text-white'>${totalEarn < 1000 ? totalEarn : totalEarn / 1000 + "K+"}</p>
         </div>
         <div className='mobile:w-1/3 flex w-full flex-col gap-3'>
           <p className='mobile:text-center mobile:text-sm text-xl text-[#96B0BD]'>Total jobs</p>
