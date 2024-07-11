@@ -157,43 +157,43 @@ const chats_filters = [
 const truncateText = (text, maxLength) => {
   return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 };
-const MessageItem = ({ message }) => {
+const MessageItem = ({ user }) => {
   return (
-    <Link href={'/dashboard/inbox/' + message._id} socket='socket'>
+    <Link href={user._id} socket='socket'>
       <div className='group flex cursor-pointer gap-4 rounded-xl p-4 transition hover:bg-[#1a272c]'>
         <div className='flex w-3/5 gap-3'>
           <div className='relative h-10 min-w-10'>
             <img
-              alt={message.fullName}
+              alt={user.fullName}
               className='aspect-square h-full w-full rounded-full object-cover'
-              src={message.avatarURL}
+              src={user.avatarURL}
             />
             <div
               className={`absolute bottom-1 right-1 h-[10px] w-[10px] rounded-full ${
-                message.online ? 'bg-green-500' : 'bg-gray-500'
+                user.online ? 'bg-green-500' : 'bg-gray-500'
               }`}
             />
           </div>
           <div className='flex w-full flex-col gap-2'>
             <p className='flex items-center gap-3 text-nowrap text-sm font-semibold text-white'>
-              {truncateText(message.fullName, 9)}
-              {message.isVerified && <BsPatchCheckFill fill='#148fe8' />}
+              {truncateText(user.fullName, 9)}
+              {user.isVerified && <BsPatchCheckFill fill='#148fe8' />}
             </p>
             <p className='relative w-full text-nowrap text-xs font-light text-white'>
-              {truncateText(message.message, 17)}
+              {user.message && truncateText(user.message, 17)}
               <span className='absolute right-0 top-0 h-full w-1/2 bg-opacity-60 bg-gradient-to-r from-transparent to-black transition group-hover:to-[#1a272c]' />
             </p>
           </div>
         </div>
         <div className='flex w-2/5 items-center justify-between'>
-          <span className='text-xs text-[#96B0BD]'>{message.timestamp}</span>
+          <span className='text-xs text-[#96B0BD]'>{user.timestamp}</span>
           <div className='flex items-center gap-3'>
-            {message.unreadCount > 0 && (
+            {user.unreadCount > 0 && (
               <span className='rounded-full bg-[#DC4F13] px-2 py-[1px] text-xs'>
-                {message.unreadCount}
+                {user.unreadCount}
               </span>
             )}
-            {message.starred ? (
+            {user.starred ? (
               <FaStar className='w-4 cursor-copy fill-[#96B0BD]' />
             ) : (
               <FaRegStar className='w-4 cursor-copy fill-[#96B0BD]' />
@@ -209,15 +209,23 @@ const InboxPage = ({ children }) => {
   const auth = useCustomContext();
   const [users, setUsers] = useState([]);
   const socket = useSocket();
-  const { data } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
-  console.log({ data });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredUsers, setFilteredUsers] = useState(users);
+  const { data: usersWithMessages } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   useEffect(() => {
     if (auth?.currentProfile) {
       socket.emit('add-user', auth.currentProfile._id);
     }
   }, [auth, socket]);
+
+  useEffect(() => {
+    if (usersWithMessages) {
+      setUsers(usersWithMessages.users);
+      setFilteredUsers(usersWithMessages.users);
+    }
+  }, [usersWithMessages]);
 
   useEffect(() => {
     if (auth?.currentProfile) {
@@ -248,9 +256,6 @@ const InboxPage = ({ children }) => {
       }
     }
   }, [auth]);
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredUsers, setFilteredUsers] = useState(users);
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
@@ -309,7 +314,7 @@ const InboxPage = ({ children }) => {
           {/* Chats */}
           <div className='flex flex-col gap-2 overflow-scroll'>
             {filteredUsers &&
-              filteredUsers.map((message, index) => <MessageItem key={index} message={message} />)}
+              filteredUsers.map((user, index) => <MessageItem key={index} user={user} />)}
           </div>
         </div>
         <div className='chat_content w-full transition md:w-2/3 md:translate-x-0 mobile:h-full'>
