@@ -274,7 +274,7 @@ const DashboardHeader = () => {
             sideOffset={10}
           >
             <DropdownMenuItem className='text-base rounded cursor-pointer p-3 text-[#96B0BD] hover:text-[#F5F5F5] hover:bg-[#1B272C]'>
-              <h1>Help and support</h1>
+              <h1 onClick={() => router.push(`/help`)}>Help and support</h1>
             </DropdownMenuItem>
             <DropdownMenuItem className='text-base rounded cursor-pointer p-3 text-[#96B0BD] hover:text-[#F5F5F5] hover:bg-[#1B272C]'>
               <h1>Community and Forums</h1>
