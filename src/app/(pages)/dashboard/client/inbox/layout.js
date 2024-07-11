@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select';
 import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
+import { useGetAllMessages } from '@/hooks/useGetAllMessages';
 import api from '@/utils/api';
 
 import './layout.css';
@@ -208,6 +209,9 @@ const InboxPage = ({ children }) => {
   const auth = useCustomContext();
   const [users, setUsers] = useState([]);
   const socket = useSocket();
+  const { data } = useGetAllMessages(auth?.currentProfile?._id);
+
+  console.log({ data });
 
   useEffect(() => {
     if (auth?.currentProfile) {
@@ -217,22 +221,28 @@ const InboxPage = ({ children }) => {
 
   useEffect(() => {
     if (auth?.currentProfile) {
-      console.log(auth.currentProfile)
+      console.log(auth.currentProfile);
       try {
-        api.post(`/api/v1/profile/get_profiles_by_ids`, { profileIds: auth.currentProfile.msgProfileList ? auth.currentProfile.msgProfileList : [] }).then((res) => {
-          let data = res.data.profiles;
-          data.map(item => {
-            item.online = true
-            item.isVerified = true
-            item.message = ''
-            item.unreadCount = 0
-            item.starred = true
-            return item
+        api
+          .post(`/api/v1/profile/get_profiles_by_ids`, {
+            profileIds: auth.currentProfile.msgProfileList
+              ? auth.currentProfile.msgProfileList
+              : [],
           })
-          console.log("data: ", data)
-          setUsers(Array.isArray(data) ? data : []);
-          setFilteredUsers(Array.isArray(data) ? data : []);
-        });
+          .then((res) => {
+            let data = res.data.profiles;
+            data.map((item) => {
+              item.online = true;
+              item.isVerified = true;
+              item.message = '';
+              item.unreadCount = 0;
+              item.starred = true;
+              return item;
+            });
+            console.log('data: ', data);
+            setUsers(Array.isArray(data) ? data : []);
+            setFilteredUsers(Array.isArray(data) ? data : []);
+          });
       } catch (error) {
         console.error(error);
       }
@@ -272,7 +282,7 @@ const InboxPage = ({ children }) => {
         }
       `}</style>
       <div className='inbox-container flex w-full overflow-hidden'>
-        <div className='left-o top-0x chats_col mobile:h-full mobile:p-3 absolute flex w-full flex-col gap-4 border-r border-[#28373E] p-6 md:relative md:w-1/3'>
+        <div className='left-o top-0x chats_col absolute flex w-full flex-col gap-4 border-r border-[#28373E] p-6 md:relative md:w-1/3 mobile:h-full mobile:p-3'>
           {/* Search chats */}
           <div className='flex h-auto items-center rounded-xl border border-[#526872] px-4'>
             <IoIosSearch />
@@ -302,7 +312,7 @@ const InboxPage = ({ children }) => {
               filteredUsers.map((message, index) => <MessageItem key={index} message={message} />)}
           </div>
         </div>
-        <div className='chat_content mobile:h-full w-full transition md:w-2/3 md:translate-x-0'>
+        <div className='chat_content w-full transition md:w-2/3 md:translate-x-0 mobile:h-full'>
           {children}
         </div>
       </div>
