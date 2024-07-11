@@ -56,6 +56,8 @@ const ActiveOrders = ({ searchText, filters }) => {
     filters
   );
 
+  console.log({ filters });
+
   useEffect(() => {
     setPage(1);
     setCanLoadMore(true);
@@ -242,6 +244,7 @@ const Earnings = ({ searchText, filters }) => {
 const Stats = ({ searchText, setSearchText }) => {
   const [searchType, setSearchType] = useState('normal');
   const [filters, setFilters] = useState([]);
+  const [filtersToQuery, setFiltersToQuery] = useState([]);
   const { isSmallScreen } = useHandleResize();
 
   const onChangeType = (e) => {
@@ -334,8 +337,8 @@ const Stats = ({ searchText, setSearchText }) => {
     },
     {
       content: [
-        { category_id: 'job_type', category_name: 'Hourly Rate', category_value: 1 },
-        { category_id: 'job_type', category_name: 'Fixed Price', category_value: 0 },
+        { category_id: 'job_type', category_name: 'Hourly Rate', category_value: 0 },
+        { category_id: 'job_type', category_name: 'Fixed Price', category_value: 1 },
       ],
       title: 'Job Type',
       type: 0,
@@ -413,6 +416,14 @@ const Stats = ({ searchText, setSearchText }) => {
   };
 
   const handleClearAll = () => {
+    setFilters([]);
+  };
+
+  const handleFilter = () => {
+    setFiltersToQuery(filters);
+  };
+
+  const handleReset = () => {
     setFilters([]);
   };
 
@@ -574,6 +585,17 @@ const Stats = ({ searchText, setSearchText }) => {
                       </div>
                     );
                   })}
+                  <Separator />
+                  <div className='flex h-14 w-full items-center justify-end'>
+                    <div className='flex h-full w-60 items-center gap-2 rounded-2xl bg-darkGray'>
+                      <button className='flex-1' onClick={handleReset}>
+                        Reset
+                      </button>
+                      <button className='h-12 w-[55%] bg-orange' onClick={handleFilter}>
+                        Show Results
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </PopoverContent>
             </Popover>
@@ -605,8 +627,8 @@ const Stats = ({ searchText, setSearchText }) => {
       <div className='mt-2 flex flex-col gap-4'>
         {/* <h1 className='text-2xl font-semibold'>Your Stats</h1> */}
         <div className='mt-2 flex flex-col gap-4 md:flex-row'>
-          <ActiveOrders filters={filters} searchText={searchText} />
-          <Earnings filters={filters} searchText={searchText} />
+          <ActiveOrders filters={filtersToQuery} searchText={searchText} />
+          <Earnings filters={filtersToQuery} searchText={searchText} />
         </div>
       </div>
     </div>

@@ -16,28 +16,40 @@ export const useGetClientGigsProposedByFreelancer = (
     queryFn: async () => {
       if (freelancerId && pageNum > 0 && itemsPerPage > 0) {
         try {
-          let earned = 0;
-          let languages = ['any'];
-          let hourlyRate = ['any'];
-          let hoursBilled = 0;
-          let jobSuccess = 0;
+          let sort = 0;
+          let category = ['any'];
+          let applicants = [];
+          let experience = 0;
+          let job_type = 0;
+          let hoursPerWeek = [0, 30];
+          let location = '';
+          let timezone = '';
+          let info = '';
 
           filters.map((filter) => {
-            if (filter.id === 'earned' && filter.value > earned) {
-              earned = filter.value;
-            } else if (filter.id === 'hoursBilled' && filter.value > hoursBilled) {
-              hoursBilled = filter.value;
-            } else if (filter.id === 'jobSuccess' && filter.value > jobSuccess) {
-              jobSuccess = filter.value;
-            } else if (filter.id === 'languages' && filter.value !== 'any') {
-              languages = [...languages, filter.value].filter((lang) => lang !== 'any');
-            } else if (filter.id === 'hourlyRate' && filter.value !== 'any') {
-              hourlyRate = [...hourlyRate, filter.value].filter((lang) => lang !== 'any');
+            if (filter.id === 'sort') {
+              sort = filter.value;
+            } else if (filter.id === 'category' && filter.value !== 'any') {
+              category = [...category, filter.value].filter((cv) => cv !== 'any');
+            } else if (filter.id === 'applicants') {
+              applicants = [...applicants, filter.value];
+            } else if (filter.id === 'experience') {
+              experience = filter.value;
+            } else if (filter.id === 'job_type') {
+              job_type = filter.value;
+            } else if (filter.id === 'hoursPerWeek') {
+              hoursPerWeek = filter.value;
+            } else if (filter.id === 'location') {
+              location = filter.value;
+            } else if (filter.id === 'timezone') {
+              timezone = filter.value;
+            } else if (filter.id === 'info') {
+              info = filter.value;
             }
           });
 
           const result = await api.get(
-            `/api/v1/client_gig/get_gigs_proposed_by_freelancer/${freelancerId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
+            `/api/v1/client_gig/get_gigs_proposed_by_freelancer/${freelancerId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&sort=${sort}&category=${category}&applicants=${applicants}&experience=${experience}&job_type=${job_type}&hoursPerWeek=${hoursPerWeek}&location=${location}&timezone=${timezone}&info=${info}`
           );
 
           const proposals = [];
