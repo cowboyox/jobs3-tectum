@@ -52,6 +52,7 @@ const ClientDashboard = () => {
     timeZone: '',
     userId: '',
     zkpId: '',
+    clHistory: [],
   });
 
   // const [previewBanner, setPreviewBanner] = useState(false);
@@ -59,6 +60,12 @@ const ClientDashboard = () => {
   const [fetchBanner, setFetchBanner] = useState('');
   const [fetchAvatar, setFetchAvatar] = useState('');
   const [viewMode, setViewMode] = useState('preview');
+  const [totalSpent, setTotalSpent] = useState(0);
+  const [totalJobs, setTotalJobs] = useState(0);
+  const [totalHours, setTotalHours] = useState(0);
+  const [hireRate, setHireRate] = useState(0);
+  const [totalHires, setTotalHires] = useState(0);
+  const [hourlyRate, setHourlyRate] = useState(0);
 
   useEffect(() => {
     if (auth?.currentProfile?._id === profileId) {
@@ -271,8 +278,42 @@ const ClientDashboard = () => {
     };
     saveToDB(tmp);
   };
+  const calculateClientHistory = (profileData) => {
+    let totalSpentAmount = 0;
+    let totalJobsCount = 0;
+    let totalHoursCount = 0;
+    let totalHiresCount = 0;
+    let totalPaidAmount = 0;
+  
+    profileData.clHistory?.forEach((item) => {
+      totalJobsCount += 1;
+      totalHiresCount += item.pays.length;
+      item.pays.forEach((pay) => {
+        totalSpentAmount += pay.amount;
+        totalHoursCount += 1; // Assuming each pay is for 1 hour
+        totalPaidAmount += pay.amount;
+      });
+    });
+  
+    return {
+      totalSpentAmount,
+      totalJobsCount,
+      totalHoursCount,
+      totalHiresCount,
+      totalPaidAmount,
+    };
+  };
 
-  console.log(isAuth);
+  useEffect(() => {
+    const { totalSpentAmount, totalJobsCount, totalHoursCount, totalHiresCount, totalPaidAmount } = calculateClientHistory(profileData);
+    setTotalSpent(totalSpentAmount);
+    setTotalJobs(totalJobsCount);
+    setTotalHours(totalHoursCount);
+    setTotalHires(totalHiresCount);
+    setHireRate(!totalHiresCount ? 0 : totalHiresCount * 100 / totalJobsCount);
+    setHourlyRate(!totalPaidAmount ? 0 : totalPaidAmount / totalHoursCount);
+  }, [profileData]);
+
   return !isLoading ? (
     <div className='p-0'>
       <div className='group relative cursor-pointer' {...getBannerRootProps()}>
@@ -429,27 +470,27 @@ const ClientDashboard = () => {
               {/* Sidebar */}
               <div className='flex flex-col gap-1'>
                 <p className='text-base text-[#96B0BD] md:text-center'>Total Spent</p>
-                <p className='text-2xl text-white md:text-center'>$9K+</p>
+                <p className='text-2xl text-white md:text-center'>${totalSpent < 1000 ? totalSpent : totalSpent / 1000 + "K+"}</p>
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-base text-[#96B0BD] md:text-center'>Total jobs</p>
-                <p className='text-2xl text-white md:text-center'>44</p>
+                <p className='text-2xl text-white md:text-center'>{totalJobs}</p>
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-base text-[#96B0BD] md:text-center'>Total hours</p>
-                <p className='text-2xl text-white md:text-center'>240</p>
+                <p className='text-2xl text-white md:text-center'>{totalHours}</p>
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-base text-[#96B0BD] md:text-center'>Hire rate</p>
-                <p className='text-2xl text-white md:text-center'>81%</p>
+                <p className='text-2xl text-white md:text-center'>{hireRate}%</p>
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-base text-[#96B0BD] md:text-center'>Hires</p>
-                <p className='text-2xl text-white md:text-center'>44</p>
+                <p className='text-2xl text-white md:text-center'>{totalHires}</p>
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-base text-[#96B0BD] md:text-center'>H / rate paid</p>
-                <p className='text-2xl text-white md:text-center'>~$22</p>
+                <p className='text-2xl text-white md:text-center'>~${hourlyRate}</p>
               </div>
             </div>
           </div>

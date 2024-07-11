@@ -439,6 +439,8 @@ const CreateGig = () => {
 
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
+  const [changedPostions, setChangedPostions] = useState([false, false, false, false]);
+  const [isWaiting, setIsWaiting] = useState(false);
 
   const addNewQuestion = () => {
     const newQuestion = newQuestionRef.current.value.trim();
@@ -490,6 +492,10 @@ const CreateGig = () => {
     const newImageFiles = [...imageFiles];
     newImageFiles[index] = files[0]; // Assuming single file for each image slot
     setImageFiles(newImageFiles);
+    let tmp1 = [];
+    tmp1 = changedPostions.map((item) => item);
+    tmp1[index] = true;
+    setChangedPostions(tmp1);
   };
 
   const handleDocumentUpload = (files, index) => {
@@ -536,18 +542,30 @@ const CreateGig = () => {
         variant: 'default',
       });
     }
+    setIsWaiting(true);
+
 
     const formData = new FormData();
     if (videoFile) {
-      formData.append('file', videoFile);
+      formData.append('files', videoFile);
     }
 
     imageFiles.forEach((file) => {
-      if (file) formData.append('file', file);
+      if (file) formData.append('files', file);
     });
     documentFiles.forEach((file) => {
-      if (file) formData.append('file', file);
+      if (file) formData.append('files', file);
     });
+    console.log("documentFiles.length", documentFiles.length);
+    formData.append(
+      'metadata',
+      JSON.stringify({
+        video: videoFile ? 1 : 0,
+        images: imageFiles.length,
+        documents: documentFiles.length,
+        changedPostions: changedPostions,
+      })
+    );
 
     const config = {
       headers: {
@@ -585,10 +603,12 @@ const CreateGig = () => {
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
+        setIsWaiting(false);
         router.push(`./${auth.currentProfile._id}`);
       })
       .catch((err) => {
         console.error('Error corrupted during posting gig', err);
+        setIsWaiting(false);
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -961,7 +981,7 @@ const CreateGig = () => {
               </div>
               <img className='mx-auto w-1/2' src='/assets/images/publish_image.png' />
             </FormStep>
-            <FormNavigation />
+            <FormNavigation isWaiting={isWaiting} />
           </form>
         </Form>
       </div>

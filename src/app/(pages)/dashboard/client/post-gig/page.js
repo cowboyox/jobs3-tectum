@@ -4,30 +4,12 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
 import { useForm } from 'react-hook-form';
-import { FiPlus } from 'react-icons/fi';
-import { GoChevronDown, GoTrash } from 'react-icons/go';
-import { IoIosCloseCircleOutline } from 'react-icons/io';
-import { IoIosClose } from 'react-icons/io';
-import { IoCheckmark } from 'react-icons/io5';
+import { IoIosClose, IoIosCloseCircleOutline } from 'react-icons/io';
 import { MdOutlineAttachFile } from 'react-icons/md';
+import { PiExportThin } from 'react-icons/pi';
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
+import { Command } from '@/components/ui/command';
 import {
   Form,
   FormControl,
@@ -39,14 +21,18 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
-import { cn } from '@/lib/utils';
 import api from '@/utils/api';
-import { PiExportThin } from 'react-icons/pi';
 
 // Icons
 
@@ -136,8 +122,8 @@ const all_form_structure = {
     },
   ],
   categories_placeholder: 'Choose',
-  experience_label: 'Experience Requirements',
   experience_description: 'Determine what skills you are looking for',
+  experience_label: 'Experience Requirements',
   experience_options: [
     {
       description: 'Looking for someone relatively new to this field',
@@ -160,11 +146,10 @@ const all_form_structure = {
   ],
 
   gig_description_label: 'Briefly Describe Your Gig',
-  git_description: '80/1200 characters',
   gig_description_placeholder: 'Type here',
   gig_fixed_label: 'Project Price',
-
   gig_fixed_price: '36.00',
+
   gig_from_to: {
     // From
     from_label: 'From',
@@ -173,6 +158,7 @@ const all_form_structure = {
     to_label: 'To',
     to_placeholder: '60.00',
   },
+  git_description: '80/1200 characters',
 
   location_label: 'Location',
   location_placeholder: 'Budapest, Hungary',
@@ -223,14 +209,14 @@ const all_form_structure = {
 
   skills_placeholder: 'Add tags',
 
+  title_label0: 'Your Title Is The Most Important Place',
   title_label1: 'As your Gig storefront, ',
   title_label2:
     ' to include words that buyers  would likely use to search for a service like yours',
-  title_label0: 'Your Title Is The Most Important Place',
   title_placeholder: 'Type the title here',
 
-  upload_files_label: 'Documents (Up To 2)',
   upload_files_description: 'Upload files. Format: PDF, DOC, JPG, PNG...',
+  upload_files_label: 'Documents (Up To 2)',
 };
 
 const GigPosting = () => {
@@ -251,7 +237,7 @@ const GigPosting = () => {
     gigCategory: [],
     gigDeadline: 3,
     gigDescription: '',
-    gigPaymentType: true, // hourly budget gig first
+    gigPaymentType: 1, // hourly budget gig first
     gigPrice: 0,
     gigTitle: '',
     location: '',
@@ -701,12 +687,12 @@ const GigPosting = () => {
             console.log('Successfully uploaded', data.data.msg[0]);
             await api.post('/api/v1/freelancer_gig/send_tg_bot', {
               gigDescription: postData.gigDescription,
-              profileName: auth.user.name,
-              profileType: 'Client',
-              imageURL:
-                auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
               gigId: gigData.data.gigId,
               gigTitle: postData.gigTitle,
+              imageURL:
+                auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
+              profileName: auth.user.name,
+              profileType: 'Client',
             });
           });
         toast({
@@ -864,8 +850,6 @@ const GigPosting = () => {
                       <input
                         className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
                         onChange={(e) => setSelectedSkill(e.target.value)}
-                        placeholder={all_form_structure.skills_placeholder}
-                        value={selectedSkill}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
                             if (skillSet.length < 5) {
@@ -874,6 +858,8 @@ const GigPosting = () => {
                             setSelectedSkill('');
                           }
                         }}
+                        placeholder={all_form_structure.skills_placeholder}
+                        value={selectedSkill}
                       />
                     </div>
                     <div className='mt-8 flex flex-wrap items-center gap-3'>
@@ -1024,7 +1010,6 @@ const GigPosting = () => {
                   <div className='mt-4 flex rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
                     <input
                       className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
-                      value={postData.location}
                       onChange={(e) => {
                         setPostData((prev) => ({
                           ...prev,
@@ -1032,6 +1017,7 @@ const GigPosting = () => {
                         }));
                       }}
                       placeholder={all_form_structure.location_placeholder}
+                      value={postData.location}
                     />
                     <div
                       className='cursor-pointer justify-end'
@@ -1218,7 +1204,6 @@ const GigPosting = () => {
                   <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
                     <textarea
                       className='box-border w-full resize-none bg-transparent !p-0 text-[#96B0BD] outline-none'
-                      value={postData.gigDescription}
                       onChange={(e) => {
                         setPostData((prev) => ({
                           ...prev,
@@ -1227,6 +1212,7 @@ const GigPosting = () => {
                       }}
                       placeholder={all_form_structure.gig_description_placeholder}
                       rows={7}
+                      value={postData.gigDescription}
                     />
                   </div>
                 </FormControl>
@@ -1249,6 +1235,8 @@ const GigPosting = () => {
                     <FileUploader
                       fileOrFiles={files}
                       handleChange={(e) => FileChanged(e)}
+                      label={''}
+                      multiple={true}
                       types={[
                         'jpg',
                         'jpeg',
@@ -1261,8 +1249,6 @@ const GigPosting = () => {
                         'doc',
                         'docx',
                       ]}
-                      multiple={true}
-                      label={''}
                     >
                       <FileUploadBody />
                     </FileUploader>

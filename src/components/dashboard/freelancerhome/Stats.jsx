@@ -18,7 +18,8 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
 import { useCustomContext } from '@/context/use-custom';
-import { useFreelancerInfo } from '@/hooks/useFreelancerInfo';
+import { useGetClientGigsContractedWithFreelancer } from '@/hooks/useGetClientGigsContractedWithFreelancer';
+import { useGetClientGigsProposedByFreelancer } from '@/hooks/useGetClientGigsProposedByFreelancer';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import { timeSincePublication } from '@/utils/Helpers';
 
@@ -40,29 +41,211 @@ const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   );
 };
 
-const Stats = ({ searchText, setSearchText }) => {
+const ActiveOrders = ({ searchText, filters }) => {
   const auth = useCustomContext();
-  const { data: flInfo } = useFreelancerInfo(auth?.currentProfile?._id);
-  const [searchType, setSearchType] = useState('normal');
-  const [filteredActiveOrders, setFilteredActiveOrders] = useState([]);
-  const [filterItems, setFilterItems] = useState([]);
-  const { isSmallScreen } = useHandleResize();
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const [gigsActive, setGigsActive] = useState([]);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
+
+  const { data: gigsProposed } = useGetClientGigsProposedByFreelancer(
+    auth?.currentProfile?._id,
+    page,
+    itemsPerPage,
+    searchText,
+    filters
+  );
+
+  console.log({ filters });
 
   useEffect(() => {
-    if (flInfo?.activeOrders?.length > 0) {
-      if (searchText) {
-        setFilteredActiveOrders(
-          flInfo.activeOrders.filter(
-            (item) =>
-              item?.gigTitle?.toLowerCase().includes(searchText.toLowerCase()) ||
-              item?.gigStatus?.toLowerCase().includes(searchText.toLowerCase())
-          )
-        );
+    setPage(1);
+    setCanLoadMore(true);
+  }, [searchText]);
+
+  useEffect(() => {
+    if (gigsProposed?.length > 0) {
+      setCanLoadMore(true);
+      if (page === 1) {
+        setGigsActive(gigsProposed);
       } else {
-        setFilteredActiveOrders(flInfo.activeOrders);
+        setGigsActive((prev) => {
+          let result = [...prev];
+          const ids = prev.map((item) => item._id);
+
+          gigsProposed.map((gp) => {
+            if (!ids.includes(gp._id)) {
+              result = [...result, gp];
+            }
+          });
+
+          return result;
+        });
       }
+    } else {
+      if (page === 1) {
+        setGigsActive([]);
+      }
+      setCanLoadMore(false);
     }
-  }, [flInfo, searchText]);
+  }, [gigsProposed, page]);
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
+
+  useEffect(() => {
+    setPage(1);
+    setCanLoadMore(true);
+  }, [searchText]);
+
+  return (
+    <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[70%]'>
+      <div className='flex h-1/6 items-center justify-between'>
+        <h3 className='text-2xl font-semibold text-white'>Active Orders</h3>
+        {/* <p className='text-medGray'>See All</p> */}
+      </div>
+      <div className='mt-6 flex flex-1 flex-col justify-between gap-2'>
+        {gigsActive.length ? (
+          gigsActive.map((order, index) => (
+            <div className='flex flex-col' key={index}>
+              <Separator className='my-4' />
+              <div className='flex items-center gap-1 rounded-2xl px-3'>
+                <div className='flex flex-1 flex-col items-center justify-between md:flex-row'>
+                  <div className='flex items-center gap-4'>
+                    <h3 className='text-md whitespace-nowrap font-semibold text-white md:text-xl'>
+                      {order.gigTitle}
+                    </h3>
+                  </div>
+                  <div className='flex w-full items-center justify-between gap-4 px-4 md:w-auto md:px-0'>
+                    <p className='text-xl font-[500] text-medGray'>{order.gigPrice}</p>
+                    <div className='flex items-center gap-1 rounded-[6px] border-2 border-yellow-500 px-3 text-yellow-500'>
+                      <p>{timeSincePublication(new Date(order.gigPostDate).getTime() / 1000)}</p>
+                    </div>
+                    <div className='flex items-center gap-1 rounded-[6px] border-2 border-green-500 px-3 text-green-500'>
+                      <p>{order.status}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
+            Not yet
+          </div>
+        )}
+      </div>
+      {canLoadMore && gigsActive.length > 0 && (
+        <div
+          className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+          onClick={handleLoadMore}
+        >
+          Load More +
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Earnings = ({ searchText, filters }) => {
+  const auth = useCustomContext();
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const [earnings, setEarnings] = useState([]);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
+
+  const { data: gigs } = useGetClientGigsContractedWithFreelancer(
+    auth?.currentProfile?._id,
+    page,
+    itemsPerPage,
+    searchText,
+    filters
+  );
+
+  useEffect(() => {
+    setPage(1);
+    setCanLoadMore(true);
+  }, [searchText]);
+
+  useEffect(() => {
+    if (gigs?.earnings?.length > 0) {
+      setCanLoadMore(true);
+      if (page === 1) {
+        setEarnings(gigs?.earnings);
+      } else {
+        setEarnings((prev) => {
+          let result = [...prev];
+          const ats = prev.map((item) => item.earnedAt);
+
+          gigs?.earnings.map((earning) => {
+            if (!ats.includes(earning.earnedAt)) {
+              result = [...result, earning];
+            }
+          });
+
+          return result;
+        });
+      }
+    } else {
+      if (page === 1) {
+        setEarnings([]);
+      }
+      setCanLoadMore(false);
+    }
+  }, [gigs, page]);
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
+
+  useEffect(() => {
+    setPage(1);
+    setCanLoadMore(true);
+  }, [searchText]);
+
+  return (
+    <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[30%]'>
+      <div className='flex h-1/6 items-center justify-between'>
+        <h3 className='text-2xl font-semibold text-white'>Earnings</h3>
+        {/* <p className='text-medGray'>See All</p> */}
+      </div>
+      <div className='mt-6 flex-1'>
+        {earnings.length ? (
+          earnings.map((earning, index) => (
+            <div
+              className='mb-2 flex h-[45px] flex-1 items-center justify-between gap-1 rounded-xl bg-darkGray px-3'
+              key={index}
+            >
+              <p className='text-xl font-[500] text-white'>
+                {new Date(earning.earnedAt).getMonth() + 1}
+              </p>
+              <p className='text-xl font-[500] text-medGray'>{earning.amount}</p>
+            </div>
+          ))
+        ) : (
+          <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
+            Not yet
+          </div>
+        )}
+      </div>
+      {canLoadMore && earnings.length > 0 && (
+        <div
+          className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+          onClick={handleLoadMore}
+        >
+          Load More +
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery }) => {
+  const [searchType, setSearchType] = useState('normal');
+  const [filters, setFilters] = useState([]);
+
+  const { isSmallScreen } = useHandleResize();
 
   const onChangeType = (e) => {
     setSearchType(e);
@@ -78,87 +261,100 @@ const Stats = ({ searchText, setSearchText }) => {
     }
   };
 
-  const onCheckedChange = (value, id, name) => {
-    if (value) {
-      setFilterItems((prev) => [...prev, name]);
+  const onCheckedChange = (isChecked, id, name, value) => {
+    if (isChecked) {
+      setFilters((prev) => [...prev, { id, name, value }]);
     } else {
-      setFilterItems((prev) => prev.filter((item) => item !== name));
+      setFilters((prev) =>
+        prev.filter(
+          (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+        )
+      );
     }
   };
 
-  console.log({ filterItems });
+  const onRadioChange = (radioValue, id, name, value) => {
+    setFilters((prev) => {
+      let tmp = prev.filter((f) => f.id !== id);
+
+      return [...tmp, { id, name, value }];
+    });
+  };
 
   const filterCategories = [
     {
       content: [
-        { category_id: 'most_recent', category_name: 'Most Recent', category_value: 0 },
-        { category_id: 'most_relevant', category_name: 'Most Relevant', category_value: 1 },
+        { category_id: 'sort', category_name: 'Most Recent', category_value: 0 },
+        { category_id: 'sort', category_name: 'Most Relevant', category_value: 1 },
       ],
       title: 'Sorted By',
       type: 0,
     },
     {
       content: [
-        { category_id: 'any_category', category_name: 'Any Category', category_value: 'any' },
+        { category_id: 'category', category_name: 'Any Category', category_value: 'any' },
         {
-          category_id: 'customer_service',
+          category_id: 'category',
           category_name: 'Customer Service',
-          category_value: 'Customer Service',
+          category_value: 'customer service',
         },
         {
-          category_id: 'design_creative',
+          category_id: 'category',
           category_name: 'Design And Creative',
-          category_value: 'Design And Creative',
+          category_value: 'design and creative',
         },
-        { category_id: 'accounting', category_name: 'Acounting', category_value: 'Acounting' },
-        { category_id: 'ai', category_name: 'AI', category_value: 'AI' },
-        { category_id: 'animator', category_name: 'Animator', category_value: 'Animator' },
+        { category_id: 'category', category_name: 'Acounting', category_value: 'acounting' },
+        { category_id: 'category', category_name: 'AI', category_value: 'ai' },
+        { category_id: 'category', category_name: 'Animator', category_value: 'animator' },
       ],
       title: 'Category',
       type: 1,
     },
     {
       content: [
-        { category_id: 'any_job_success', category_name: 'Any Job Success' },
-        { category_id: 'top_rated', category_name: 'Top Rated' },
-        { category_id: 'riging_talent', category_name: 'Rising Talent' },
-      ],
-      title: 'Job Success',
-      type: 1,
-    },
-    {
-      content: [
-        { category_id: 'entry_level', category_name: 'Entry-Level' },
-        { category_id: 'intermidiate', category_name: 'Intermidiate' },
-        { category_id: 'expert', category_name: 'Expert' },
+        { category_id: 'experience', category_name: 'Entry-Level', category_value: 0 },
+        { category_id: 'experience', category_name: 'Intermidiate', category_value: 1 },
+        { category_id: 'experience', category_name: 'Expert', category_value: 2 },
       ],
       title: 'Experience',
       type: 1,
     },
     {
       content: [
-        { category_id: 'less_than_5', category_name: 'Less than 5' },
-        { category_id: '5_to_10', category_name: '5 to 10' },
-        { category_id: '10_to_15', category_name: '10 to 15' },
-        { category_id: '15_to_20', category_name: '15 to 20' },
-        { category_id: '20_to_50', category_name: '20 to 50' },
-        { category_id: 'more_than_50', category_name: 'More than 50' },
+        { category_id: 'applicants', category_name: 'Less than 5', category_value: [0, 5] },
+        { category_id: 'applicants', category_name: '5 to 10', category_value: [5, 10] },
+        { category_id: 'applicants', category_name: '10 to 15', category_value: [10, 15] },
+        { category_id: 'applicants', category_name: '15 to 20', category_value: [15, 20] },
+        { category_id: 'applicants', category_name: '20 to 50', category_value: [20, 50] },
+        {
+          category_id: 'applicants',
+          category_name: 'More than 50',
+          category_value: [50, 99999999],
+        },
       ],
       title: 'Number Of Applicants',
       type: 1,
     },
     {
       content: [
-        { category_id: 'hourly_rate', category_name: 'Hourly Rate' },
-        { category_id: 'fixed_price', category_name: 'Fixed Price' },
+        { category_id: 'job_type', category_name: 'Hourly Rate', category_value: 'hourly' },
+        { category_id: 'job_type', category_name: 'Fixed Price', category_value: 'fixed' },
       ],
       title: 'Job Type',
       type: 0,
     },
     {
       content: [
-        { category_id: 'less_than_30', category_name: 'Less than 30 hrs/week' },
-        { category_id: 'more_than_30', category_name: 'More than 30 hrs/week' },
+        {
+          category_id: 'hoursPerWeek',
+          category_name: 'Less than 30 hrs/week',
+          category_value: [0, 30],
+        },
+        {
+          category_id: 'hoursPerWeek',
+          category_name: 'More than 30 hrs/week',
+          category_value: [30, 99999999],
+        },
       ],
       title: 'Hours Per Week',
       type: 0,
@@ -166,10 +362,14 @@ const Stats = ({ searchText, setSearchText }) => {
     {
       choose: 'Select Location',
       content: [
-        { category_id: 'US', category_name: 'United States' },
-        { category_id: 'england', category_name: 'England' },
-        { category_id: 'india', category_name: 'India' },
-        { category_id: 'singapore', category_name: 'Singapore' },
+        {
+          category_id: 'location',
+          category_name: 'United States',
+          category_value: 'united states',
+        },
+        { category_id: 'location', category_name: 'England', category_value: 'england' },
+        { category_id: 'location', category_name: 'India', category_value: 'india' },
+        { category_id: 'location', category_name: 'Singapore', category_value: 'singapore' },
       ],
       title: 'Client Location',
       type: 2,
@@ -177,25 +377,57 @@ const Stats = ({ searchText, setSearchText }) => {
     {
       choose: 'Select client time zones',
       content: [
-        { category_id: 'US', category_name: 'GMT+0' },
-        { category_id: 'england', category_name: 'GMT+1' },
-        { category_id: 'india', category_name: 'GMT+5' },
-        { category_id: 'singapore', category_name: 'GMT+8' },
+        { category_id: 'timezone', category_name: 'GMT+0', category_value: 'GMT+0' },
+        { category_id: 'timezone', category_name: 'GMT+1', category_value: 'GMT+1' },
+        { category_id: 'timezone', category_name: 'GMT+5', category_value: 'GMT+5' },
+        { category_id: 'timezone', category_name: 'GMT+8', category_value: 'GMT+8' },
       ],
       title: 'Client Timezones',
       type: 2,
     },
     {
       content: [
-        { category_id: 'previous_client', category_name: 'My Previous clients' },
-        { category_id: 'payment_verified', category_name: 'Payment Verified' },
+        { category_id: 'info', category_name: 'My Previous clients', category_value: 'previous' },
+        {
+          category_id: 'info',
+          category_name: 'Payment Verified',
+          category_value: 'payment verified',
+        },
       ],
       title: 'Client Info',
       type: 0,
     },
   ];
-  const [currentLocation, setCurrentLocation] = useState('United States');
-  const [currentTimeZone, setCurrentTimeZone] = useState('GMT+1');
+
+  const onSelectChange = (e) => {
+    setFilters((prev) => {
+      let tmp = prev.filter((f) => f.id !== e.category_id);
+
+      return [...tmp, { id: e.category_id, name: e.category_name, value: e.category_value }];
+    });
+  };
+
+  const handleRemove = (id, name, value) => {
+    setFilters((prev) =>
+      prev.filter(
+        (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
+      )
+    );
+  };
+
+  const handleClearAll = () => {
+    setFilters([]);
+    setFiltersToQuery([]);
+  };
+
+  const handleFilter = () => {
+    setFiltersToQuery(filters);
+  };
+
+  const handleReset = () => {
+    setFilters([]);
+    setFiltersToQuery([]);
+  };
 
   return (
     <div className='mt-10 flex min-h-96 w-full flex-col font-roboto'>
@@ -242,13 +474,13 @@ const Stats = ({ searchText, setSearchText }) => {
             <Popover>
               <PopoverTrigger asChild>
                 <button className='flex flex-row items-center justify-center gap-3'>
-                  <FilterIcon isFiltered={filterItems.length > 0} isSmallScreen={isSmallScreen} />
+                  <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
                   {!isSmallScreen && (
                     <div className='flex flex-row gap-2'>
                       <div className='text-medGray'>Filter</div>
-                      {filterItems.length > 0 && (
+                      {filters.length > 0 && (
                         <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
-                          {filterItems.length}
+                          {filters.length}
                         </div>
                       )}
                     </div>
@@ -267,27 +499,23 @@ const Stats = ({ searchText, setSearchText }) => {
                         {item.type === 2 && (
                           <div>
                             <Select
-                              onValueChange={(e) => {
-                                const prev = filterItems.filter(
-                                  (_fItem) =>
-                                    item.content
-                                      .map((_item) => _item.category_name)
-                                      .indexOf(_fItem) === -1
-                                );
-                                setFilterItems([...prev, e]);
-                              }}
+                              id={item.title}
+                              onValueChange={(e) => onSelectChange(e)}
+                              value={
+                                (() => {
+                                  const returns_value = item.content.filter((_item) => filters.map((f) => f.name).includes(_item.category_name));
+                                  return returns_value[0];
+                                })()
+                              }
                             >
                               <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                                 <SelectValue placeholder={item.choose} />
                               </SelectTrigger>
                               <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
                                 <SelectGroup>
-                                  {item.content.map((job_category) => (
-                                    <SelectItem
-                                      key={job_category.category_id}
-                                      value={job_category.category_name}
-                                    >
-                                      {job_category.category_name}
+                                  {item.content.map((con) => (
+                                    <SelectItem key={con.category_name} value={con}>
+                                      {con.category_name}
                                     </SelectItem>
                                   ))}
                                 </SelectGroup>
@@ -300,12 +528,25 @@ const Stats = ({ searchText, setSearchText }) => {
                             {item.content.map((con, i) => {
                               return (
                                 <DropdownItem
-                                  category_id={con.category_id}
+                                  category_id={con.category_id + con.category_value}
                                   category_name={con.category_name}
-                                  isChecked={filterItems.includes(con.category_name)}
+                                  isChecked={
+                                    !!filters.find(
+                                      (f) =>
+                                        f.id === con.category_id &&
+                                        f.name === con.category_name &&
+                                        JSON.stringify(f.value) ===
+                                          JSON.stringify(con.category_value)
+                                    )
+                                  }
                                   key={i}
                                   onCheckedChange={(value) =>
-                                    onCheckedChange(value, con.category_id, con.category_name)
+                                    onCheckedChange(
+                                      value,
+                                      con.category_id,
+                                      con.category_name,
+                                      con.category_value
+                                    )
                                   }
                                   type={item.type}
                                 />
@@ -318,21 +559,28 @@ const Stats = ({ searchText, setSearchText }) => {
                             {item.content.map((con, i) => (
                               <div className='flex items-center gap-3' key={i}>
                                 <input
-                                  checked={filterItems.includes(con.category_name)}
+                                  checked={
+                                    !!filters.find(
+                                      (f) =>
+                                        f.id === con.category_id &&
+                                        f.name === con.category_name &&
+                                        JSON.stringify(f.value) ===
+                                          JSON.stringify(con.category_value)
+                                    )
+                                  }
                                   className='h-[24px] w-[24px] text-[#96B0BD] accent-[#DC4F13]'
                                   id={con.category_id}
                                   name={item.title}
-                                  onChange={() => {
-                                    const prev = filterItems.filter(
-                                      (_fItem) =>
-                                        item.content
-                                          .map((_item) => _item.category_name)
-                                          .indexOf(_fItem) === -1
-                                    );
-                                    setFilterItems([...prev, con.category_name]);
-                                  }}
+                                  onChange={(e) =>
+                                    onRadioChange(
+                                      e.target.value,
+                                      con.category_id,
+                                      con.category_name,
+                                      con.category_value
+                                    )
+                                  }
                                   type='radio'
-                                  value={con.category_name}
+                                  value={con.category_value}
                                 />
                                 <label className='text-[#96B0BD]' htmlFor={con.category_id}>
                                   {con.category_name}
@@ -344,15 +592,26 @@ const Stats = ({ searchText, setSearchText }) => {
                       </div>
                     );
                   })}
+                  <Separator />
+                  <div className='flex h-14 w-full items-center justify-end'>
+                    <div className='flex h-full w-60 items-center gap-2 rounded-2xl bg-darkGray'>
+                      <button className='flex-1' onClick={handleReset}>
+                        Reset
+                      </button>
+                      <button className='h-12 w-[55%] bg-orange' onClick={handleFilter}>
+                        Show Results
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </PopoverContent>
             </Popover>
           </div>
         </div>
       </div>
-      {filterItems.length > 0 && (
+      {filters.length > 0 && (
         <div className='mt-4 flex touch-pan-x flex-row flex-wrap items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
-          {filterItems.map((item, index) => {
+          {filters.map((item, index) => {
             return (
               <span
                 className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
@@ -360,14 +619,14 @@ const Stats = ({ searchText, setSearchText }) => {
               >
                 <FaX
                   className='rounded-full bg-[#3E525B] p-[2px]'
-                  onClick={() => setFilterItems((prev) => prev.filter((_item) => _item !== item))}
+                  onClick={() => handleRemove(item.id, item.name, item.value)}
                 />
-                {item}
+                {item.name}
               </span>
             );
           })}
 
-          <span className='cursor-pointer' onClick={() => setFilterItems([])}>
+          <span className='cursor-pointer' onClick={handleClearAll}>
             Clear&nbsp;All
           </span>
         </div>
@@ -375,82 +634,8 @@ const Stats = ({ searchText, setSearchText }) => {
       <div className='mt-2 flex flex-col gap-4'>
         {/* <h1 className='text-2xl font-semibold'>Your Stats</h1> */}
         <div className='mt-2 flex flex-col gap-4 md:flex-row'>
-          <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[70%]'>
-            <div className='flex h-1/6 items-center justify-between'>
-              <h3 className='text-2xl font-semibold text-white'>Active Orders</h3>
-              {/* <p className='text-medGray'>See All</p> */}
-            </div>
-            <div className='mt-6 flex flex-1 flex-col justify-between gap-2'>
-              {filteredActiveOrders.length ? (
-                filteredActiveOrders.map((order, index) => (
-                  <div className='flex flex-col' key={index}>
-                    <Separator className='my-4' />
-                    <div className='flex items-center gap-1 rounded-2xl px-3'>
-                      {/* <Image
-                      className='md:hidden'
-                      height={45}
-                      src={'/assets/icons/ActiveOrder.png'}
-                      width={45}
-                    /> */}
-                      <div className='flex flex-1 flex-col items-center justify-between md:flex-row'>
-                        <div className='flex items-center gap-4'>
-                          {/* <Image
-                          className='hidden md:block'
-                          height={45}
-                          src={'/assets/icons/ActiveOrder.png'}
-                          width={45}
-                        /> */}
-                          <h3 className='text-md whitespace-nowrap font-semibold text-white md:text-xl'>
-                            {order.gigTitle}
-                          </h3>
-                        </div>
-                        <div className='flex w-full items-center justify-between gap-4 px-4 md:w-auto md:px-0'>
-                          <p className='text-xl font-[500] text-medGray'>{order.gigPrice}</p>
-                          <div className='flex items-center gap-1 rounded-[6px] border-2 border-yellow-500 px-3 text-yellow-500'>
-                            <p>
-                              {timeSincePublication(new Date(order.gigPostDate).getTime() / 1000)}
-                            </p>
-                          </div>
-                          <div className='flex items-center gap-1 rounded-[6px] border-2 border-green-500 px-3 text-green-500'>
-                            <p>{order.gigStatus}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
-                  Not yet
-                </div>
-              )}
-            </div>
-          </div>
-          <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[30%]'>
-            <div className='flex h-1/6 items-center justify-between'>
-              <h3 className='text-2xl font-semibold text-white'>Earnings</h3>
-              {/* <p className='text-medGray'>See All</p> */}
-            </div>
-            <div className='mt-6 flex-1'>
-              {flInfo?.earnings?.length ? (
-                flInfo?.earnings?.map((earning, index) => (
-                  <div
-                    className='mb-2 flex h-[45px] flex-1 items-center justify-between gap-1 rounded-xl bg-darkGray px-3'
-                    key={index}
-                  >
-                    <p className='text-xl font-[500] text-white'>
-                      {new Date(earning.earnedAt).getMonth() + 1}
-                    </p>
-                    <p className='text-xl font-[500] text-medGray'>{earning.amount}</p>
-                  </div>
-                ))
-              ) : (
-                <div className='mt-[100px] flex items-center justify-center text-2xl font-semibold'>
-                  Not yet
-                </div>
-              )}
-            </div>
-          </div>
+          <ActiveOrders filters={filtersToQuery} searchText={searchText} />
+          <Earnings filters={filtersToQuery} searchText={searchText} />
         </div>
       </div>
     </div>
