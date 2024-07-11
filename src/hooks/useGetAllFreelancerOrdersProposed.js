@@ -60,7 +60,9 @@ export const useGetAllFreelancerOrdersProposed = (
                 proposal: proposal.proposal,
                 proposalId: proposal._id,
                 status: null,
-                walletPubkey: proposal.proposer?.walletPubkey,
+                contractId: null,
+                walletPublicKey: proposal.proposer?.walletPublicKey,
+                quantity: proposal.quantity,
               });
             });
           }
@@ -78,14 +80,16 @@ export const useGetAllFreelancerOrdersProposed = (
                 gigId: live.freelancerGig._id,
                 gigPostDate: live.freelancerGig.gigPostDate,
                 gigPrice: live.freelancerGig.gigPrice
-                  ? `$${live.freelancerGig.gigPrice}`
+                  ? live.freelancerGig.gigPrice
                   : `$${live.freelancerGig.minBudget}/hr ~ $${live.freelancerGig.maxBudget}/hr`,
                 gigTitle: live.freelancerGig.gigTitle,
                 id: live._id,
                 proposal: live.proposal,
                 proposalId: live._id,
+                contractId: live.contractId,
                 status: live.status,
-                status: live.status,
+                walletPublicKey: live.proposer?.walletPublicKey,
+                quantity: live?.quantity,
               });
             });
           }

@@ -28,11 +28,13 @@ export const useGetAllClientOrdersProposed = (profileId) => {
                 gigTitle: proposal.freelancerGig.gigTitle,
                 maxBudget: proposal.freelancerGig.maxBudget,
                 minBudget: proposal.freelancerGig.minBudget,
-                walletPubkey: proposal.proposer?.walletPubkey,
+                walletPublicKey: proposal.proposer.walletPublicKey,
                 deliveryTime: proposal.freelancerGig.deliveryTime,
                 proposal: proposal.proposal,
                 proposalId: proposal._id,
                 status: null,
+                contractId: null,
+                quantity: proposal.quantity,
               });
             });
           }
@@ -49,7 +51,7 @@ export const useGetAllClientOrdersProposed = (profileId) => {
                 gigId: live.freelancerGig._id,
                 gigPostDate: live.freelancerGig.gigPostDate,
                 gigPrice: live.freelancerGig.gigPrice
-                  ? `$${live.freelancerGig.gigPrice}`
+                  ? live.freelancerGig.gigPrice
                   : `$${live.freelancerGig.minBudget}/hr ~ $${live.freelancerGig.maxBudget}/hr`,
                 gigTitle: live.freelancerGig.gigTitle,
                 status: live.status,
@@ -58,6 +60,9 @@ export const useGetAllClientOrdersProposed = (profileId) => {
                 proposal: live.proposal,
                 proposalId: live._id,
                 status: live.status,
+                contractId: live.contractId,
+                walletPublicKey: live.proposer?.walletPublicKey,
+                quantity: live?.quantity,
               });
             });
           }
