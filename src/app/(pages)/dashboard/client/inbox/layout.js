@@ -163,9 +163,9 @@ const MessageItem = ({ message }) => {
         <div className='flex w-3/5 gap-3'>
           <div className='relative h-10 min-w-10'>
             <img
-              alt={message.name}
+              alt={message.fullName}
               className='aspect-square h-full w-full rounded-full object-cover'
-              src={message.avatar}
+              src={message.avatarURL}
             />
             <div
               className={`absolute bottom-1 right-1 h-[10px] w-[10px] rounded-full ${
@@ -175,7 +175,7 @@ const MessageItem = ({ message }) => {
           </div>
           <div className='flex w-full flex-col gap-2'>
             <p className='flex items-center gap-3 text-nowrap text-sm font-semibold text-white'>
-              {truncateText(message.name, 9)}
+              {truncateText(message.fullName, 9)}
               {message.isVerified && <BsPatchCheckFill fill='#148fe8' />}
             </p>
             <p className='relative w-full text-nowrap text-xs font-light text-white'>
@@ -210,35 +210,28 @@ const InboxPage = ({ children }) => {
   const socket = useSocket();
 
   useEffect(() => {
-    if (auth.user) {
-      socket.emit('add-user', auth.user._id);
+    if (auth?.currentProfile) {
+      socket.emit('add-user', auth.currentProfile._id);
     }
   }, [auth, socket]);
 
   useEffect(() => {
-    if (auth.user) {
+    if (auth?.currentProfile) {
+      console.log(auth.currentProfile)
       try {
-        api.get(`/api/v1/user/get-all-users`).then((res) => {
-          let data = res.data;
-          for (let i = 0; i < data.length; i++) {
-            if (data[i]._id == auth.user._id) {
-              data.splice(i, 1);
-              i--;
-              continue;
-            }
-            (data[i].id = i),
-              (data[i].name = data[i].chosen_visible_name),
-              (data[i].isVerified = true),
-              (data[i].avatar = '/assets/images/users/user-14.png'),
-              (data[i].online = true),
-              (data[i].unreadCount = 0),
-              (data[i].starred = true),
-              (data[i].message = ''),
-              (data[i].timestamp = ''),
-              (data[i].starred = true);
-          }
-          setUsers(Array.isArray(res.data) ? res.data : []);
-          setFilteredUsers(Array.isArray(res.data) ? res.data : []);
+        api.post(`/api/v1/profile/get_profiles_by_ids`, { profileIds: auth.currentProfile.msgProfileList ? auth.currentProfile.msgProfileList : [] }).then((res) => {
+          let data = res.data.profiles;
+          data.map(item => {
+            item.online = true
+            item.isVerified = true
+            item.message = ''
+            item.unreadCount = 0
+            item.starred = true
+            return item
+          })
+          console.log("data: ", data)
+          setUsers(Array.isArray(data) ? data : []);
+          setFilteredUsers(Array.isArray(data) ? data : []);
         });
       } catch (error) {
         console.error(error);

@@ -220,11 +220,10 @@ const ChatPage = (parameters) => {
   const [conversations, setConversation] = useState([]);
   const [input, setInput] = useState('');
   useEffect(() => {
-    api.get(`/api/v1/user/get-user/${parameters.params.contact_username}`).then((res) => {
+    api.get(`/api/v1/profile/get_profile_by_id/${parameters.params.contact_username}`).then((res) => {
       let data = res.data;
-      (data.name = data.chosen_visible_name),
+      (data.name = data.fullName),
         (data.isVerified = true),
-        (data.avatar = '/assets/images/users/user-14.png'),
         (data.online = true),
         (data.unreadCount = 0),
         (data.starred = true),
@@ -232,8 +231,8 @@ const ChatPage = (parameters) => {
         (data.timestamp = ''),
         (data.starred = true);
       setRceiver(data);
-      if (auth.user) {
-        let from = auth.user._id;
+      if (auth.currentProfile) {
+        let from = auth.currentProfile._id;
         let to = data._id;
         socket.emit('getHistory', { from, to });
       }
@@ -289,9 +288,9 @@ const ChatPage = (parameters) => {
               </Link>
               <div className='relative h-10 min-w-10'>
                 <img
-                  alt={receiver.name}
+                  alt={receiver.fullName}
                   className='aspect-square h-full w-full rounded-full object-cover'
-                  src={receiver.avatar}
+                  src={receiver.avatarURL}
                 />
                 <div
                   className={`absolute bottom-0 right-0 h-[10px] w-[10px] rounded-full ${
@@ -301,11 +300,11 @@ const ChatPage = (parameters) => {
               </div>
               <div className='flex w-full flex-col gap-1'>
                 <p className='flex items-center gap-3 text-nowrap text-xl font-semibold text-white mobile:text-base'>
-                  {receiver.name}
+                  {receiver.fullName}
                   {receiver.isVerified && <BsPatchCheckFill fill='#148fe8' />}
                 </p>
                 <p className='relative w-full text-nowrap text-sm text-[#526872] mobile:text-xs'>
-                  @{receiver.name}
+                  @{receiver.fullName}
                 </p>
               </div>
             </div>
@@ -350,7 +349,7 @@ const ChatPage = (parameters) => {
                 <div className='flex flex-col gap-3' key={id}>
                   <MessageDetails
                     date='17 May 2024'
-                    sender={conv.senderId == auth.user._id ? 'me' : ''}
+                    sender={conv.senderId == auth?.currentProfile?._id ? 'me' : ''}
                     time='17:37'
                     user_image='/assets/images/users/user-6.png'
                   />

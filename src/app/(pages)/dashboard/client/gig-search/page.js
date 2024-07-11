@@ -68,6 +68,10 @@ const GigCard = (props) => {
     }
   };
 
+  const handleMessage = async (gigId) => {
+
+  }
+
   return (
     <div>
       <div
@@ -131,7 +135,12 @@ const GigCard = (props) => {
               </div>
             </div>
             <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-              <button className='p-4 px-10 md:p-5'>Message</button>
+              <Link
+                href = {`/dashboard/client/job-application/${props.info._id}`}
+                onClick={() => handleMessage(props.info.creator?._id)}
+              >
+                <button className='p-4 px-10 md:p-5'>Message</button>
+              </Link>
               <Link
                 href={`/dashboard/client/job-application/${props.info._id}`}
                 onClick={() => handleRecentView(props.info?._id)}
