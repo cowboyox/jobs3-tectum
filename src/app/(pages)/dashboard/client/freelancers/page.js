@@ -12,12 +12,14 @@ import { JobSuccessIcon } from '@/components/elements/svgs/JobSuccessIcon';
 import { TopRatedBadgeIcon } from '@/components/elements/svgs/TopRatedBadgeIcon';
 import { VerifiedIcon } from '@/components/elements/svgs/VerifiedIcon';
 import { Separator } from '@/components/ui/seperator';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useGetFreelancers } from '@/hooks/useGetFreelancers';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
 
 const Freelancers = () => {
+  const auth = useCustomContext();
   const [allFreelancers, setAllFreelancers] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const [searchText, setSearchText] = useState('');
@@ -28,10 +30,14 @@ const Freelancers = () => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 2;
   const { isSmallScreen } = useHandleResize();
-  const { data: freelancers } = useGetFreelancers(page, itemsPerPage, debouncedSearchText, filters);
+  const { data: freelancers } = useGetFreelancers(
+    auth?.user?._id,
+    page,
+    itemsPerPage,
+    debouncedSearchText,
+    filters
+  );
   const [loading, setLoading] = useState(false);
-
-  console.log({ freelancers });
 
   useEffect(() => {
     setPage(1);
