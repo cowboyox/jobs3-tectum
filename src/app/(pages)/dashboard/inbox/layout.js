@@ -1,8 +1,6 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import './layout.css';
-
 import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { FaRegStar, FaStar } from 'react-icons/fa';
 import { IoIosSearch } from 'react-icons/io';
@@ -16,7 +14,9 @@ import {
 } from '@/components/ui/select';
 import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
-import api from '@/utils/api';
+import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
+
+import './layout.css';
 
 const chats_filters = [
   // Please keep value unique as it's the identifier
@@ -154,45 +154,46 @@ const chats_filters = [
 // ];
 
 const truncateText = (text, maxLength) => {
-  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  return text?.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 };
-const MessageItem = ({ message }) => {
+const MessageItem = ({ user }) => {
+  console.log({ user });
   return (
-    <Link href={'/dashboard/inbox/' + message._id} socket='socket'>
+    <Link href={`/dashboard/inbox/${user._id}`} socket='socket'>
       <div className='group flex cursor-pointer gap-4 rounded-xl p-4 transition hover:bg-[#1a272c]'>
         <div className='flex w-3/5 gap-3'>
           <div className='relative h-10 min-w-10'>
             <img
-              alt={message.name}
+              alt={user.fullName}
               className='aspect-square h-full w-full rounded-full object-cover'
-              src={message.avatar}
+              src={user.avatarURL}
             />
             <div
               className={`absolute bottom-1 right-1 h-[10px] w-[10px] rounded-full ${
-                message.online ? 'bg-green-500' : 'bg-gray-500'
+                user.userId.status === 'online' ? 'bg-green-500' : 'bg-gray-500'
               }`}
-            ></div>
+            />
           </div>
           <div className='flex w-full flex-col gap-2'>
             <p className='flex items-center gap-3 text-nowrap text-sm font-semibold text-white'>
-              {truncateText(message.name, 9)}
-              {message.isVerified && <BsPatchCheckFill fill='#148fe8' />}
+              {truncateText(user.fullName, 9)}
+              {user.isVerified && <BsPatchCheckFill fill='#148fe8' />}
             </p>
             <p className='relative w-full text-nowrap text-xs font-light text-white'>
-              {truncateText(message.message, 17)}
-              <span className='absolute right-0 top-0 h-full w-1/2 bg-opacity-60 bg-gradient-to-r from-transparent to-black transition group-hover:to-[#1a272c]'></span>
+              {user.userId.verified && truncateText(user.message, 17)}
+              <span className='absolute right-0 top-0 h-full w-1/2 bg-opacity-60 bg-gradient-to-r from-transparent to-black transition group-hover:to-[#1a272c]' />
             </p>
           </div>
         </div>
         <div className='flex w-2/5 items-center justify-between'>
-          <span className='text-xs text-[#96B0BD]'>{message.timestamp}</span>
+          <span className='text-xs text-[#96B0BD]'>{user.userId.timestamp}</span>
           <div className='flex items-center gap-3'>
-            {message.unreadCount > 0 && (
+            {user.unreadCount > 0 && (
               <span className='rounded-full bg-[#DC4F13] px-2 py-[1px] text-xs'>
-                {message.unreadCount}
+                {user.unreadCount}
               </span>
             )}
-            {message.starred ? (
+            {user.starred ? (
               <FaStar className='w-4 cursor-copy fill-[#96B0BD]' />
             ) : (
               <FaRegStar className='w-4 cursor-copy fill-[#96B0BD]' />
@@ -209,45 +210,22 @@ const InboxPage = ({ children }) => {
   const [users, setUsers] = useState([]);
   const socket = useSocket();
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredUsers, setFilteredUsers] = useState(users);
+  const { data: usersWithMessages } = useGetMembersWithMessages(auth?.currentProfile?._id);
+
   useEffect(() => {
-    if (auth.user) {
-      socket.emit('add-user', auth.user._id);
+    if (auth?.currentProfile) {
+      socket.emit('add-user', auth.currentProfile._id);
     }
   }, [auth, socket]);
 
   useEffect(() => {
-    if (auth.user) {
-      try {
-        api.get(`/api/v1/user/get-all-users`).then((res) => {
-          let data = res.data;
-          for (let i = 0; i < data.length; i++) {
-            if (data[i]._id == auth.user._id) {
-              data.splice(i, 1);
-              i--;
-              continue;
-            }
-            (data[i].id = i),
-              (data[i].name = data[i].chosen_visible_name),
-              (data[i].isVerified = true),
-              (data[i].avatar = '/assets/images/users/user-14.png'),
-              (data[i].online = true),
-              (data[i].unreadCount = 0),
-              (data[i].starred = true),
-              (data[i].message = ''),
-              (data[i].timestamp = ''),
-              (data[i].starred = true);
-          }
-          setUsers(Array.isArray(res.data) ? res.data : []);
-          setFilteredUsers(Array.isArray(res.data) ? res.data : []);
-        });
-      } catch (error) {
-        console.error(error);
-      }
+    if (usersWithMessages) {
+      setUsers(usersWithMessages.users);
+      setFilteredUsers(usersWithMessages.users);
     }
-  }, [auth]);
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredUsers, setFilteredUsers] = useState(users);
+  }, [usersWithMessages]);
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
@@ -279,7 +257,7 @@ const InboxPage = ({ children }) => {
         }
       `}</style>
       <div className='inbox-container flex w-full overflow-hidden'>
-        <div className='mobile:p-3 left-o top-0x mobile:h-full chats_col absolute flex w-full flex-col gap-4 border-r border-[#28373E] p-6 md:relative md:w-1/3'>
+        <div className='left-o top-0x chats_col absolute flex w-full flex-col gap-4 border-r border-[#28373E] p-6 md:relative md:w-1/3 mobile:h-full mobile:p-3'>
           {/* Search chats */}
           <div className='flex h-auto items-center rounded-xl border border-[#526872] px-4'>
             <IoIosSearch />
@@ -306,10 +284,10 @@ const InboxPage = ({ children }) => {
           {/* Chats */}
           <div className='flex flex-col gap-2 overflow-scroll'>
             {filteredUsers &&
-              filteredUsers.map((message, index) => <MessageItem key={index} message={message} />)}
+              filteredUsers.map((user, index) => <MessageItem key={index} user={user} />)}
           </div>
         </div>
-        <div className='mobile:h-full chat_content w-full transition md:w-2/3 md:translate-x-0'>
+        <div className='chat_content w-full transition md:w-2/3 md:translate-x-0 mobile:h-full'>
           {children}
         </div>
       </div>

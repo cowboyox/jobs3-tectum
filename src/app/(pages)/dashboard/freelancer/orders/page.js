@@ -1,20 +1,13 @@
 'use client';
 
-import {
-  AnchorProvider,
-  BN,
-  getProvider,
-  Program,
-  setProvider,
-  utils,
-} from '@project-serum/anchor';
+import { AnchorProvider, getProvider, Program, setProvider, utils } from '@project-serum/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
+import { PublicKey, SystemProgram } from '@solana/web3.js';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaEllipsis, FaX } from 'react-icons/fa6';
@@ -41,7 +34,13 @@ import { useCustomContext } from '@/context/use-custom';
 import { useGetAllFreelancerGigsProposed } from '@/hooks/useGetAllFreelancerGigsProposed';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
-import { ADMIN_ADDRESS, CONTRACT_SEED, ContractStatus, PAYTOKEN_MINT, PROGRAM_ID } from '@/utils/constants';
+import {
+  ADMIN_ADDRESS,
+  CONTRACT_SEED,
+  ContractStatus,
+  PAYTOKEN_MINT,
+  PROGRAM_ID,
+} from '@/utils/constants';
 
 const Orders = () => {
   const router = useRouter();
@@ -137,7 +136,7 @@ const Orders = () => {
   };
 
   const handleMessage = (order) => {
-    if (auth.user) window.location.href = `/dashboard/freelancer/inbox/${order.clientID}`;
+    if (auth.user) window.location.href = `/dashboard/inbox/${order.clientID}`;
   };
 
   const getFormattedDate = (dateStr) => {
@@ -291,52 +290,43 @@ const Orders = () => {
 
     try {
       const [contract, bump] = await PublicKey.findProgramAddressSync(
-          [
-              Buffer.from(utils.bytes.utf8.encode(CONTRACT_SEED)),
-              Buffer.from(utils.bytes.utf8.encode(contractId)),
-          ],
-          program.programId
+        [
+          Buffer.from(utils.bytes.utf8.encode(CONTRACT_SEED)),
+          Buffer.from(utils.bytes.utf8.encode(contractId)),
+        ],
+        program.programId
       );
 
-      const sellerAta = getAssociatedTokenAddressSync(
-          PAYTOKEN_MINT,
-          wallet?.publicKey,
-      );
+      const sellerAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, wallet?.publicKey);
 
       const contractAccount = await program.account.contract.fetch(contract);
 
-      const buyerAta = getAssociatedTokenAddressSync(
-          PAYTOKEN_MINT,
-          contractAccount.buyer
-      );
+      const buyerAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, contractAccount.buyer);
 
-      const adminAta = getAssociatedTokenAddressSync(
-          PAYTOKEN_MINT,
-          ADMIN_ADDRESS,
-      );
-      
+      const adminAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, ADMIN_ADDRESS);
+
       const contractAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, contract, true);
 
       const transaction = await program.methods
-          .sellerApprove(contractId, false)
-          .accounts({
-              seller: wallet.publicKey,
-              contract,
-              sellerAta,
-              buyerAta,
-              adminAta,
-              contractAta,
-              tokenProgram: TOKEN_PROGRAM_ID,
-              associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-              systemProgram: SystemProgram.programId,
-          })
-          .transaction();
+        .sellerApprove(contractId, false)
+        .accounts({
+          adminAta,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          buyerAta,
+          contract,
+          contractAta,
+          seller: wallet.publicKey,
+          sellerAta,
+          systemProgram: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .transaction();
 
       const signature = await sendTransaction(transaction, connection, { skipPreflight: true });
 
-      console.log("Your transaction signature for approving the contract", signature);
+      console.log('Your transaction signature for approving the contract', signature);
 
-      await connection.confirmTransaction(signature, "confirmed");
+      await connection.confirmTransaction(signature, 'confirmed');
 
       await api.put(`/api/v1/client_gig/complete-contract/${id}`);
 
@@ -368,12 +358,12 @@ const Orders = () => {
   };
 
   return (
-    <div className='p-0 lg:mt-8 sm:p-0 xl:mt-8'>
+    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex flex-row items-center justify-between gap-5 rounded-xl bg-[#10191D] p-3'>
-        <div className='flex items-center flex-1 gap-3 ml-3'>
+        <div className='ml-3 flex flex-1 items-center gap-3'>
           <button>
             <svg
-              className='w-6 h-6'
+              className='h-6 w-6'
               fill='none'
               stroke='currentColor'
               strokeWidth={1.5}
@@ -417,7 +407,7 @@ const Orders = () => {
             </button>
           )}
         </div>
-        <div className='flex flex-row items-center flex-none gap-2'>
+        <div className='flex flex-none flex-row items-center gap-2'>
           <button className='flex flex-row items-center justify-center gap-3'>
             {!isSmallScreen ? (
               <>
@@ -588,14 +578,14 @@ const Orders = () => {
         })}
         <span>Clear&nbsp;All</span>
       </div>
-      <div className='flex items-center justify-center w-full pt-10 pb-5'>
+      <div className='flex w-full items-center justify-center pb-5 pt-10'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>{lives.length}</span>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>{lives.length}</span>
               &nbsp; Live
             </h1>
           ) : (
@@ -608,7 +598,7 @@ const Orders = () => {
         >
           {mode == 'submission' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
                 {submissions.length}
               </span>
               &nbsp; Submitted
@@ -625,11 +615,11 @@ const Orders = () => {
               {lives.map((order, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
+                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {order.gigTitle}
                       </div>
-                      <div className='flex flex-row items-center justify-between flex-none gap-2 mobile:w-full'>
+                      <div className='flex flex-none flex-row items-center justify-between gap-2 mobile:w-full'>
                         <div className='flex gap-2'>
                           <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                             15 H: 30 S
@@ -641,7 +631,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='bg-transparent border-none hover:bg-transparent'
+                              className='border-none bg-transparent hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -687,7 +677,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -746,7 +736,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -782,7 +772,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -814,7 +804,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -923,8 +913,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{order.gigDescription}</div>
                     {/* )} */}
-                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
-                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
+                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
+                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -969,7 +959,7 @@ const Orders = () => {
                         )}
                         {order?.status == ContractStatus.ACTIVE && (
                           <button
-                            className='p-4 px-8 bg-green-500 md:p-5'
+                            className='bg-green-500 p-4 px-8 md:p-5'
                             onClick={() => onDeliver(order.id)}
                           >
                             Deliver
@@ -977,7 +967,7 @@ const Orders = () => {
                         )}
                         {order?.status == ContractStatus.DELIVERED && (
                           <button
-                            className='p-4 px-8 bg-green-500 md:p-5'
+                            className='bg-green-500 p-4 px-8 md:p-5'
                             // onClick={() => onActivate(order.id, order.contractId)}
                           >
                             Request Payment
@@ -985,7 +975,7 @@ const Orders = () => {
                         )}
                         {order?.status == ContractStatus.RELEASED && (
                           <button
-                            className='p-4 px-8 bg-green-500 md:p-5'
+                            className='bg-green-500 p-4 px-8 md:p-5'
                             onClick={() => onComplete(order.id, order.contractId)}
                           >
                             Complete
@@ -1001,7 +991,7 @@ const Orders = () => {
               </button>
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Live proposals will be here</p>
             </div>
@@ -1014,11 +1004,11 @@ const Orders = () => {
               {submissions.map((submission, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='flex items-start justify-between mt-1 md:flex-row md:items-center'>
+                    <div className='mt-1 flex items-start justify-between md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {submission.gigTitle}
                       </div>
-                      <div className='flex flex-row items-center flex-none gap-2'>
+                      <div className='flex flex-none flex-row items-center gap-2'>
                         {/* <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                         15 H: 30 S
                       </div>
@@ -1028,7 +1018,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='bg-transparent border-none hover:bg-transparent'
+                              className='border-none bg-transparent hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -1074,7 +1064,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1133,7 +1123,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1169,7 +1159,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1201,7 +1191,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -1310,8 +1300,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{submission.gigDescription}</div>
                     {/* )} */}
-                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
-                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
+                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
+                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -1352,7 +1342,7 @@ const Orders = () => {
               </button>
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Submitted proposals will be here</p>
             </div>

@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
+import { useGetOneToOneMessages } from '@/hooks/useGetOneToOneMessages';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
 
 /* For backend:
@@ -222,8 +223,7 @@ const ChatPage = () => {
   const [conversations, setConversation] = useState([]);
   const [input, setInput] = useState('');
   const { data: userInfo } = useGetUserInfo(profileId);
-
-  console.log({ userInfo });
+  const { data: messages } = useGetOneToOneMessages(auth?.currentProfile?._id, profileId);
 
   useEffect(() => {
     if (userInfo && auth?.currentProfile) {
@@ -257,6 +257,8 @@ const ChatPage = () => {
       };
     }
   }, [userInfo, auth?.currentProfile, socket]);
+
+  console.log({ conversations });
 
   const sendMessage = () => {
     const message = {
@@ -293,7 +295,7 @@ const ChatPage = () => {
       {receiver && (
         <>
           {/* Chat header */}
-          <div className='mobile:px-5 mobile:py-3 flex h-24 border-b border-[#28373E] px-8'>
+          <div className='flex h-24 border-b border-[#28373E] px-8 mobile:px-5 mobile:py-3'>
             <div className='flex w-3/5 items-center gap-3'>
               <Link className='md:hidden' href='../inbox'>
                 <FaAngleLeft />
@@ -311,11 +313,11 @@ const ChatPage = () => {
                 />
               </div>
               <div className='flex w-full flex-col gap-1'>
-                <p className='mobile:text-base flex items-center gap-3 text-nowrap text-xl font-semibold text-white'>
+                <p className='flex items-center gap-3 text-nowrap text-xl font-semibold text-white mobile:text-base'>
                   {receiver.name}
                   {receiver.isVerified && <BsPatchCheckFill fill='#148fe8' />}
                 </p>
-                <p className='mobile:text-xs relative w-full text-nowrap text-sm text-[#526872]'>
+                <p className='relative w-full text-nowrap text-sm text-[#526872] mobile:text-xs'>
                   @{receiver.name}
                 </p>
               </div>
@@ -355,7 +357,7 @@ const ChatPage = () => {
           </div>
           {/* Chat Content */}
           <div className='relative flex flex-col items-center overflow-scroll'>
-            <div className='mobile:px-5 flex max-w-[464px] flex-col gap-9 pb-3 pt-8'>
+            <div className='flex max-w-[464px] flex-col gap-9 pb-3 pt-8 mobile:px-5'>
               {/* Chat */}
               {conversations.map((conv, id) => (
                 <div className='flex flex-col gap-3' key={id}>
@@ -411,7 +413,7 @@ const ChatPage = () => {
             </div>
           </div>
           {/* Message Input */}
-          <div className='mobile:p-2 flex h-24 w-full items-center justify-center'>
+          <div className='flex h-24 w-full items-center justify-center mobile:p-2'>
             <div className='mx-auto flex h-14 w-full max-w-[684px] items-center gap-4 overflow-hidden rounded-2xl border border-[#526872] py-2 pl-4 pr-2'>
               <IoMdAttach className='h-6 w-6 cursor-pointer transition hover:fill-[#dc4f14]' />
               <textarea
