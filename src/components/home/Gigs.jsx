@@ -4,17 +4,24 @@ import React, { useEffect, useState } from 'react';
 import { FaX } from 'react-icons/fa6';
 
 import { Separator } from '@/components/ui/seperator';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useGetFreelancersBySkills } from '@/hooks/useGetFreelancersBySkills';
 import { skillSets } from '@/utils/constants';
 
 const Gigs = () => {
+  const auth = useCustomContext();
   const [selectedGigs, setSelectedGigs] = useState([]);
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [allFreelancers, setAllFreelancers] = useState([]);
   const [page, setPage] = useState(1);
   const itemsPerPage = 3;
 
-  const { data: freelancers } = useGetFreelancersBySkills(page, itemsPerPage, selectedGigs);
+  const { data: freelancers } = useGetFreelancersBySkills(
+    auth?.user?._id,
+    page,
+    itemsPerPage,
+    selectedGigs
+  );
 
   useEffect(() => {
     if (freelancers?.length > 0) {
