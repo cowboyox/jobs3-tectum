@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetFreelancers = (pageNum, itemsPerPage, searchText = '', filters = []) => {
+export const useGetFreelancers = (pageNum, itemsPerPage, searchText = '', filters = [], skills) => {
   return useQuery({
     cacheTime: Infinity,
     enabled: pageNum > 0 && itemsPerPage > 0,
@@ -29,7 +29,7 @@ export const useGetFreelancers = (pageNum, itemsPerPage, searchText = '', filter
             }
           });
           const { data } = await api.get(
-            `/api/v1/profile/get-all-freelancers?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
+            `/api/v1/profile/get-all-freelancers?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}&skills=${skills}`
           );
 
           return data?.data;
@@ -42,7 +42,7 @@ export const useGetFreelancers = (pageNum, itemsPerPage, searchText = '', filter
 
       return null;
     },
-    queryKey: ['useGetFreelancers', pageNum, itemsPerPage, searchText, filters],
+    queryKey: ['useGetFreelancers', pageNum, itemsPerPage, searchText, filters, skills.sort()],
     staleTime: Infinity,
   });
 };
