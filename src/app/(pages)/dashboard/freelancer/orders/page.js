@@ -31,6 +31,7 @@ import {
 import { Separator } from '@/components/ui/seperator';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
+import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllFreelancerGigsProposed } from '@/hooks/useGetAllFreelancerGigsProposed';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
@@ -58,16 +59,40 @@ const Orders = () => {
   const [lives, setLives] = useState([]);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
+  const [searchKeywords, setSearchKeyWords] = useState('');
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const debouncedSearchText = useDebounce(searchKeywords);
+
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllFreelancerGigsProposed(
-    auth?.currentProfile?._id
+    auth?.currentProfile?._id,
+    page,
+    itemsPerPage,
+    debouncedSearchText
   );
 
   useEffect(() => {
-    if (gigs) {
-      setLives(gigs.lives);
-      setSubmissions(gigs.submissions);
+    if (mode == 'live') {
+      if (gigs?.livesTotal > page * itemsPerPage && gigs?.lives?.length > 0) {
+        setCanLoadMore(true);
+      } else {
+        setCanLoadMore(false);
+      }
+    } else {
+      if (gigs?.submissionsTotal > page * itemsPerPage && gigs?.submissions?.length > 0) {
+        setCanLoadMore(true);
+      } else {
+        setCanLoadMore(false);
+      }
     }
-  }, [gigs]);
+    setLives(gigs?.lives);
+    setSubmissions(gigs?.submissions);
+  }, [gigs, mode, page]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchText, mode]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -110,6 +135,11 @@ const Orders = () => {
     }
   }, [wallet, connection]);
 
+  const setKey = (e) => {
+    setPage(1);
+    setSearchKeyWords(e.target.value);
+  };
+
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
@@ -133,6 +163,10 @@ const Orders = () => {
         setSubmissions(filtered);
       }
     }
+  };
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
   };
 
   const handleMessage = (order) => {
@@ -379,10 +413,11 @@ const Orders = () => {
           </button>
           <input
             className='w-full bg-transparent outline-none'
-            onChange={handleSearch}
+            // onChange={handleSearch}
+            onChange={(e) => setKey(e)}
             placeholder={isSmallScreen ? 'Search' : 'Search by Order title...'}
             type='text'
-            value={search}
+            // value={search}
           />
           {isSmallScreen && (
             <button>
@@ -556,11 +591,11 @@ const Orders = () => {
       </div>
       {mode == 'live' ? (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{lives.length}</span> Orders😊
+          You have <span className='font-bold text-[#DC4F13]'>{gigs?.livesTotal}</span> Orders😊
         </div>
       ) : (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{submissions.length}</span>{' '}
+          You have <span className='font-bold text-[#DC4F13]'>{gigs?.submissionsTotal}</span>{' '}
           Submissions😊
         </div>
       )}
@@ -585,7 +620,7 @@ const Orders = () => {
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block h-6 w-6 rounded-full bg-orange'>{lives.length}</span>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>{lives?.length}</span>
               &nbsp; Live
             </h1>
           ) : (
@@ -599,7 +634,7 @@ const Orders = () => {
           {mode == 'submission' ? (
             <h1>
               <span className='inline-block h-6 w-6 rounded-full bg-orange'>
-                {submissions.length}
+                {submissions?.length}
               </span>
               &nbsp; Submitted
             </h1>
@@ -610,7 +645,7 @@ const Orders = () => {
       </div>
       {mode == 'live' ? (
         <>
-          {lives.length > 0 ? (
+          {lives?.length > 0 ? (
             <>
               {lives.map((order, index) => {
                 return (
@@ -986,9 +1021,14 @@ const Orders = () => {
                   </div>
                 );
               })}
-              <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
-                Load more +{' '}
-              </button>
+              {canLoadMore && (
+                <div
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  onClick={handleLoadMore}
+                >
+                  Load More +
+                </div>
+              )}
             </>
           ) : (
             <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
@@ -999,7 +1039,7 @@ const Orders = () => {
         </>
       ) : (
         <>
-          {submissions.length > 0 ? (
+          {submissions?.length > 0 ? (
             <>
               {submissions.map((submission, index) => {
                 return (
@@ -1337,9 +1377,14 @@ const Orders = () => {
                   </div>
                 );
               })}
-              <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
-                Load more +{' '}
-              </button>
+              {canLoadMore && (
+                <div
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  onClick={handleLoadMore}
+                >
+                  Load More +
+                </div>
+              )}
             </>
           ) : (
             <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
