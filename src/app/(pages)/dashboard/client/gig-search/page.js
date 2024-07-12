@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { CiFilter, CiReceipt } from 'react-icons/ci';
@@ -54,6 +55,7 @@ const DropDownTrigger = (props) => {
 
 const GigCard = (props) => {
   const auth = useCustomContext();
+  const router = useRouter();
 
   const handleRecentView = async (gigId) => {
     if (auth?.currentProfile?._id && gigId) {
@@ -68,9 +70,9 @@ const GigCard = (props) => {
     }
   };
 
-  const handleMessage = async (gigId) => {
-
-  }
+  const handleMessage = (freelancerId) => {
+    router.push(`/dashboard/client/inbox/${freelancerId}`);
+  };
 
   return (
     <div>
@@ -135,12 +137,12 @@ const GigCard = (props) => {
               </div>
             </div>
             <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-              <Link
-                href = {`/dashboard/client/job-application/${props.info._id}`}
+              <button
+                className='p-4 px-10 md:p-5'
                 onClick={() => handleMessage(props.info.creator?._id)}
               >
-                <button className='p-4 px-10 md:p-5'>Message</button>
-              </Link>
+                Message
+              </button>
               <Link
                 href={`/dashboard/client/job-application/${props.info._id}`}
                 onClick={() => handleRecentView(props.info?._id)}

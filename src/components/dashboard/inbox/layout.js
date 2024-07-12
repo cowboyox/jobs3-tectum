@@ -20,139 +20,10 @@ import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
 import './layout.css';
 
 const chats_filters = [
-  // Please keep value unique as it's the identifier
   { label: 'Archived', value: 'archived' },
   { label: 'Unread Messages', value: 'unread' },
   { label: 'Spam Messages', value: 'spam' },
 ];
-// const message = [
-//   {
-//     id: 1,
-//     user: {
-//       name: "Emily Rose",
-//       username: 'emily_rose',
-//       avatar: "/assets/images/users/user-6.png",
-//       online: true,
-//       isVerified: true,
-//     },
-//     message: "Thank you for your help!",
-//     timestamp: "4 hours",
-//     unreadCount: 3,
-//     starred: true,
-//   },
-//   {
-//     id: 2,
-//     user: {
-//       name: "John Doe",
-//       username: 'john_doe',
-//       avatar: "/assets/images/users/user-7.png",
-//       online: false,
-//       isVerified: true,
-//     },
-//     message: "Can we reschedule our meeting?",
-//     timestamp: "2 hours",
-//     unreadCount: 1,
-//     starred: false,
-//   },
-//   {
-//     id: 3,
-//     user: {
-//       name: "Anna Smith",
-//       username: 'anna_smith',
-//       avatar: "/assets/images/users/user-8.png",
-//       online: true,
-//       isVerified: false,
-//     },
-//     message: "I'll send the report by tomorrow.",
-//     timestamp: "1 day",
-//     unreadCount: 0,
-//     starred: true,
-//   },
-//   {
-//     id: 4,
-//     user: {
-//       name: "Michael Brown",
-//       username: 'michael_brown',
-//       avatar: "/assets/images/users/user-9.png",
-//       online: false,
-//       isVerified: false,
-//     },
-//     message: "Looking forward to our meeting.",
-//     timestamp: "3 days",
-//     unreadCount: 5,
-//     starred: true,
-//   },
-//   {
-//     id: 5,
-//     user: {
-//       name: "Lisa Johnson",
-//       username: 'lisa_johnson',
-//       avatar: "/assets/images/users/user-10.png",
-//       online: true,
-//       isVerified: false,
-//     },
-//     message: "Please review the attached document.",
-//     timestamp: "6 hours",
-//     unreadCount: 2,
-//     starred: false,
-//   },
-//   {
-//     id: 6,
-//     user: {
-//       name: "David Wilson",
-//       username: 'david_wilson',
-//       avatar: "/assets/images/users/user-11.png",
-//       online: true,
-//       isVerified: true,
-//     },
-//     message: "Happy to assist with your inquiry.",
-//     timestamp: "1 hour",
-//     unreadCount: 0,
-//     starred: false,
-//   },
-//   {
-//     id: 7,
-//     user: {
-//       name: "Sophia Lee",
-//       username: 'sophia_lee',
-//       avatar: "/assets/images/users/user-12.png",
-//       online: false,
-//       isVerified: true,
-//     },
-//     message: "Can you provide more details?",
-//     timestamp: "2 days",
-//     unreadCount: 4,
-//     starred: true,
-//   },
-//   {
-//     id: 8,
-//     user: {
-//       name: "James Martinez",
-//       username: 'james_martinez',
-//       avatar: "/assets/images/users/user-13.png",
-//       online: true,
-//       isVerified: false,
-//     },
-//     message: "I've updated the project status.",
-//     timestamp: "5 hours",
-//     unreadCount: 0,
-//     starred: false,
-//   },
-//   {
-//     id: 9,
-//     user: {
-//       name: "Mia Clark",
-//       username: 'mida_clark',
-//       avatar: "/assets/images/users/user-14.png",
-//       online: true,
-//       isVerified: true,
-//     },
-//     message: "Thank you for the prompt response.",
-//     timestamp: "8 hours",
-//     unreadCount: 1,
-//     starred: true,
-//   },
-// ];
 
 const truncateText = (text, maxLength) => {
   return text?.length > maxLength ? text.substring(0, maxLength) + '...' : text;
@@ -218,8 +89,6 @@ const InboxPage = ({ children }) => {
   const [filteredUsers, setFilteredUsers] = useState(users);
   const { data: usersWithMessages } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
-  console.log({ usersWithMessages });
-
   useEffect(() => {
     if (auth?.currentProfile) {
       socket.emit('add-user', auth.currentProfile._id);
@@ -245,11 +114,6 @@ const InboxPage = ({ children }) => {
 
   return (
     <div className='inbox-page border-t border-[#28373E]'>
-      {/*
-       * Selmani NOTE:
-       * I used this basic method to toggle chat on mobile which works just fine
-       * Any better method is welcome as well :)
-       */}
       <style>{`
         @media(max-width: 768px) { 
           .chats_col {
@@ -264,7 +128,6 @@ const InboxPage = ({ children }) => {
       `}</style>
       <div className='inbox-container flex w-full overflow-hidden'>
         <div className='left-o top-0x chats_col absolute flex w-full flex-col gap-4 border-r border-[#28373E] p-6 md:relative md:w-1/3 mobile:h-full mobile:p-3'>
-          {/* Search chats */}
           <div className='flex h-auto items-center rounded-xl border border-[#526872] px-4'>
             <IoIosSearch />
             <input
@@ -274,7 +137,6 @@ const InboxPage = ({ children }) => {
               value={searchTerm}
             />
           </div>
-          {/* Filter Chats */}
           <Select className='w-full'>
             <SelectTrigger className='w-full gap-2 rounded-[8px] bg-[#1a272c] px-2 text-left text-[#A0B4C0] md:px-4'>
               <SelectValue placeholder='All Messages' />
@@ -287,7 +149,6 @@ const InboxPage = ({ children }) => {
               ))}
             </SelectContent>
           </Select>
-          {/* Chats */}
           <div className='flex flex-col gap-2 overflow-scroll'>
             {filteredUsers &&
               filteredUsers.map((user, index) => <MessageItem key={index} user={user} />)}

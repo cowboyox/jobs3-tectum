@@ -111,7 +111,6 @@ const ChatPage = ({ profileId }) => {
         setConversation(history);
       });
       socket?.on('newMessage', (message) => {
-        console.log({ message });
         setConversation((prevMessages) => [...prevMessages, message]);
       });
 
@@ -120,8 +119,6 @@ const ChatPage = ({ profileId }) => {
       };
     }
   }, [userInfo, auth?.currentProfile, socket]);
-
-  console.log({ conversations });
 
   // Function to scroll to the bottom
   const scrollToBottom = () => {
@@ -144,8 +141,6 @@ const ChatPage = ({ profileId }) => {
     setInput('');
     setConversation((prevMessages) => [...prevMessages, message]);
   };
-
-  console.log({ receiver });
 
   return (
     <div className='flex h-full flex-col'>
