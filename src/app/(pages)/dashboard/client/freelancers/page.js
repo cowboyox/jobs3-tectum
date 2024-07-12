@@ -124,7 +124,7 @@ const Freelancers = () => {
                     <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
                       <Link href={`/dashboard/freelancer/profile/${freelancer._id}`}>
                         <div className='mt-3 flex-1 text-left text-[20px] hover:underline md:mt-0 md:text-2xl'>
-                          {freelancer.freelancerBio}
+                          {freelancer.freelancerTitle}
                         </div>
                       </Link>
                     </div>

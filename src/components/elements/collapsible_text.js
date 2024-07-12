@@ -26,11 +26,8 @@ const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio, bio }) 
   return (
     <div className='relative'>
       {!isEditBio ? (
-        <div>
-          {/* {previewText.split('\n').map((line, index) => (
-            <p key={index}>{line}</p>
-          ))} */}
-          <pre>
+        <div className='w-full'>
+          <pre className='whitespace-pre-wrap break-all'>
             {bio}
           </pre>
         </div>

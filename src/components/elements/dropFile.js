@@ -15,6 +15,7 @@ const DropFile = ({
   fileType = null,
   fileUrl = null,
   fileName = null,
+  isAuth,
 }) => {
   const { toast } = useToast();
 
@@ -96,6 +97,7 @@ const DropFile = ({
                   onChange={(evnt) => previewPhoto(evnt.target)}
                   title={filePreview.url ? filePreview.name : 'Add an image'}
                   type='file'
+                  disabled={isAuth === false}
                 />
               </FormControl>
               <FormMessage />
