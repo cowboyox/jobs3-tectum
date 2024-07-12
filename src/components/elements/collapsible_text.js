@@ -6,8 +6,11 @@ import { Textarea } from '../ui/textarea';
 
 const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio, bio }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const contentRef = useRef(null);
   const [maxHeight, setMaxHeight] = useState('0px');
+
+  const descriptionTextMaxLength = 320;
 
   useEffect(() => {
     if (contentRef.current) {
@@ -27,13 +30,33 @@ const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio, bio }) 
     <div className='relative'>
       {!isEditBio ? (
         <div className='w-full'>
-          <pre className='whitespace-pre-wrap break-all'>
-            {bio}
+          <pre className='break-all whitespace-pre-wrap'>
+          {
+            bio.length < descriptionTextMaxLength
+              ? bio
+              : showMore
+                ? bio
+                : bio.slice(0, descriptionTextMaxLength) + '...'
+          }
           </pre>
+          <div className='mt-3 text-left'>
+            {bio.length < descriptionTextMaxLength ? (
+              <></>
+            ) : !showMore ? (
+              <button onClick={() => setShowMore(true)}
+              >
+                Show more
+              </button>
+            ) : (
+              <button onClick={() => setShowMore(false)}>
+                Show less
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <Textarea
-          className='rounded-xl outline-none'
+          className='outline-none rounded-xl'
           onChange={(e) => setBio(e.target.value)}
           rows={7}
           value={bio}
