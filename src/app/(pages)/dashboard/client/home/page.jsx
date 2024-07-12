@@ -8,10 +8,9 @@ import FillProfile from '@/components/dashboard/home/FillProfile';
 import Stats from '@/components/dashboard/home/Stats';
 import Gigs from '@/components/home/Gigs';
 import RecentlyViewed from '@/components/home/RecentlyViewed';
-import { useGetFreelancersBySkills } from '@/hooks/useGetFreelancersBySkills';
+import { useGetFreelancers } from '@/hooks/useGetFreelancersBySkills';
 import searchOptions from '../freelancers/searchOptions';
 import { useHandleResize } from '@/hooks/useHandleResize';
-import { useGetFreelancers } from '@/hooks/useGetFreelancers';
 
 
 const page = () => {

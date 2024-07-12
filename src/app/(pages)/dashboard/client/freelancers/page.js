@@ -12,14 +12,15 @@ import { JobSuccessIcon } from '@/components/elements/svgs/JobSuccessIcon';
 import { TopRatedBadgeIcon } from '@/components/elements/svgs/TopRatedBadgeIcon';
 import { VerifiedIcon } from '@/components/elements/svgs/VerifiedIcon';
 import { Separator } from '@/components/ui/seperator';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useGetFreelancers } from '@/hooks/useGetFreelancers';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
 
 const Freelancers = () => {
+  const auth = useCustomContext();
   const [allFreelancers, setAllFreelancers] = useState([]);
-  const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const [searchText, setSearchText] = useState('');
   const [filters, setFilters] = useState([]);
@@ -29,7 +30,13 @@ const Freelancers = () => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 2;
   const { isSmallScreen } = useHandleResize();
-  const { data: freelancers } = useGetFreelancers(page, itemsPerPage, debouncedSearchText, filters);
+  const { data: freelancers } = useGetFreelancers(
+    auth?.user?._id,
+    page,
+    itemsPerPage,
+    debouncedSearchText,
+    filters
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -38,17 +45,7 @@ const Freelancers = () => {
   }, [debouncedSearchText]);
 
   useEffect(() => {
-    if (searchType == searchOptions[0]) {
-      const filtered = allFreelancers.filter(
-        (fl) =>
-          fl.email?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
-          fl.freelancerBio?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
-          fl.fullName?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
-          fl.location?.toLowerCase().includes(debouncedSearchText.toLowerCase())
-      );
-
-      setFilteredFreelancers(filtered);
-    } else if (isAiSearch) {
+    if (isAiSearch) {
       setIsAiSearch(false);
       setLoading(true);
       api.get(`/api/v1/profile/ai-search-profile/${searchText}`).then((data) => {
@@ -60,7 +57,7 @@ const Freelancers = () => {
             return profile;
           });
           console.log('new', profiles);
-          setFilteredFreelancers(profiles);
+          setAllFreelancers(profiles);
           setLoading(false);
         }
       });
@@ -122,8 +119,8 @@ const Freelancers = () => {
             </div>
           </div>
         )}
-        {!loading && filteredFreelancers && filteredFreelancers.length > 0
-          ? filteredFreelancers.map((freelancer, index) => {
+        {!loading && allFreelancers && allFreelancers.length > 0
+          ? allFreelancers.map((freelancer, index) => {
               return (
                 <div key={`freelancers_ext_${index}`}>
                   <div
