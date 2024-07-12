@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { FaRegStar, FaStar } from 'react-icons/fa';
@@ -157,10 +158,13 @@ const truncateText = (text, maxLength) => {
   return text?.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 };
 const MessageItem = ({ user }) => {
-  console.log({ user });
+  const pathname = usePathname();
+
   return (
-    <Link href={`/dashboard/inbox/${user._id}`} socket='socket'>
-      <div className='group flex cursor-pointer gap-4 rounded-xl p-4 transition hover:bg-[#1a272c]'>
+    <Link href={`/dashboard/client/inbox/${user._id}`} socket='socket'>
+      <div
+        className={`${pathname?.split('/').pop() === user._id ? 'bg-[#1a272c]' : ''} group flex cursor-pointer gap-4 rounded-xl p-4 transition hover:bg-[#1a272c]`}
+      >
         <div className='flex w-3/5 gap-3'>
           <div className='relative h-10 min-w-10'>
             <img

@@ -339,7 +339,7 @@ const SideBar = () => {
       name: 'Disputes',
     },
     {
-      href: `/dashboard/inbox`,
+      href: `/dashboard/freelancer/inbox`,
       icon: (
         <svg
           fill='none'
@@ -774,7 +774,7 @@ const SideBar = () => {
       name: 'Disputes',
     },
     {
-      href: `/dashboard/inbox`,
+      href: `/dashboard/client/inbox`,
       icon: (
         <svg
           fill='none'

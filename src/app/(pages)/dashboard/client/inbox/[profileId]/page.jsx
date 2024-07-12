@@ -249,6 +249,7 @@ const ChatPage = () => {
       });
       // Handle incoming messages
       socket?.on('newMessage', (message) => {
+        console.log({ message });
         setConversation((prevMessages) => [...prevMessages, message]);
       });
 

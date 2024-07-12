@@ -136,7 +136,7 @@ const Orders = () => {
   };
 
   const handleMessage = (order) => {
-    if (auth.user) window.location.href = `/dashboard/inbox/${order.clientID}`;
+    if (auth.user) window.location.href = `/dashboard/freelancer/inbox/${order.clientID}`;
   };
 
   const getFormattedDate = (dateStr) => {

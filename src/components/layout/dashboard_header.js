@@ -60,7 +60,7 @@ const menu_data = [
     name: 'Disputes',
   },
   {
-    href: `/dashboard/inbox`,
+    href: `/dashboard/freelancer/inbox`,
     name: 'Messages',
   },
   {
@@ -104,7 +104,7 @@ const menu_data = [
     name: 'Disputes',
   },
   {
-    href: `/dashboard/inbox`,
+    href: `/dashboard/client/inbox`,
     name: 'Messages',
   },
   {
@@ -182,6 +182,8 @@ const DashboardHeader = () => {
       menu_data.find((item) => item.href == pathname.split('/').slice(0, 4).join('/'))?.name || ''
     );
   }, [pathname]);
+
+  console.log(auth);
 
   if (!auth?.currentProfile) {
     return (

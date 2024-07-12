@@ -178,7 +178,7 @@ const Notifications = () => {
               />
               <div className='border-t border-[#28373E]' />
               <div className='flex justify-between'>
-                <Link className='text-lg text-[#96B0BD]' href='/dashboard/inbox'>
+                <Link className='text-lg text-[#96B0BD]' href='/dashboard/client/inbox'>
                   See all
                 </Link>
                 <div className='flex gap-2'>
@@ -219,7 +219,7 @@ const Notifications = () => {
             </div>
             <div className='border-t border-[#28373E]' />
             <div className='flex justify-between'>
-              <Link className='text-lg text-[#96B0BD]' href='/dashboard/inbox'>
+              <Link className='text-lg text-[#96B0BD]' href='/dashboard/client/inbox'>
                 See all
               </Link>
               <div className='flex gap-2'>

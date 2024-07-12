@@ -101,7 +101,7 @@ const Freelancers = () => {
   };
 
   const handleMessage = (freelancerId) => {
-    router.push(`/dashboard/inbox/${freelancerId}`);
+    router.push(`/dashboard/client/inbox/${freelancerId}`);
   };
 
   return (
