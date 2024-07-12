@@ -168,58 +168,67 @@ const Orders = () => {
 
   useEffect(() => {
     setPage(1);
-    setCanLoadMore(true);
   }, [debouncedSearchText, mode]);
 
   useEffect(() => {
     if (mode === 'live') {
       if (gigs?.lives?.length > 0) {
-        setCanLoadMore(true);
-        if (page === 1) {
-          setFilteredLiveList(gigs.lives);
+        if (gigs?.livesTotal > page * itemsPerPage) {
+          setCanLoadMore(true);
         } else {
-          setFilteredLiveList((prev) => {
-            let result = [...prev];
-            const ids = prev.map((item) => item._id);
-
-            gigs.lives.map((lv) => {
-              if (!ids.includes(lv._id)) {
-                result = [...result, lv];
-              }
-            });
-
-            return result;
-          });
+          setCanLoadMore(false);
         }
+        
+        // if (page === 1) {
+          setFilteredLiveList(gigs.lives);
+        // } else {
+        //   setFilteredLiveList((prev) => {
+        //     let result = [...prev];
+        //     const ids = prev.map((item) => item._id);
+
+        //     gigs.lives.map((lv) => {
+        //       if (!ids.includes(lv._id)) {
+        //         result = [...result, lv];
+        //       }
+        //     });
+
+        //     return result;
+        //   });
+        // }
       } else {
-        if (page === 1) {
+        // if (page === 1) {
           setFilteredLiveList([]);
-        }
+        // }
         setCanLoadMore(false);
       }
     } else {
       if (gigs?.proposals?.length > 0) {
-        setCanLoadMore(true);
-        if (page === 1) {
-          setFilteredProposalsList(gigs.proposals);
+        if (gigs?.proposalsTotal > page * itemsPerPage) {
+          setCanLoadMore(true);
         } else {
-          setFilteredProposalsList((prev) => {
-            let result = [...prev];
-            const ids = prev.map((item) => item._id);
-
-            gigs.proposals.map((lv) => {
-              if (!ids.includes(lv._id)) {
-                result = [...result, lv];
-              }
-            });
-
-            return result;
-          });
+          setCanLoadMore(false);
         }
+
+        // if (page === 1) {
+          setFilteredProposalsList(gigs.proposals);
+        // } else {
+        //   setFilteredProposalsList((prev) => {
+        //     let result = [...prev];
+        //     const ids = prev.map((item) => item._id);
+
+        //     gigs.proposals.map((lv) => {
+        //       if (!ids.includes(lv._id)) {
+        //         result = [...result, lv];
+        //       }
+        //     });
+
+        //     return result;
+        //   });
+        // }
       } else {
-        if (page === 1) {
+        // if (page === 1) {
           setFilteredProposalsList([]);
-        }
+        // }
         setCanLoadMore(false);
       }
     }
@@ -473,30 +482,31 @@ const Orders = () => {
   };
 
   const setKey = (e) => {
+    setPage(1);
     setSearchKeyWords(e.target.value);
-    if (searchType == 'normal') {
-      if (mode === 'live') {
-        const filtered = gigs.lives.filter(
-          (gig) =>
-            gig.creator.fullName?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-            gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-            gig.gigPostDate?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-            gig.gigPrice?.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
-            gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase())
-        );
-        setFilteredLiveList(filtered);
-      } else {
-        const filtered = gigs.proposals.filter(
-          (gig) =>
-            gig.creator.fullName?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-            gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-            gig.gigPostDate?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-            gig.gigPrice?.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
-            gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase())
-        );
-        setFilteredProposalsList(filtered);
-      }
-    }
+    // if (searchType == 'normal') {
+    //   if (mode === 'live') {
+    //     const filtered = gigs.lives.filter(
+    //       (gig) =>
+    //         gig.creator.fullName?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+    //         gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+    //         gig.gigPostDate?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+    //         gig.gigPrice?.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
+    //         gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase())
+    //     );
+    //     setFilteredLiveList(filtered);
+    //   } else {
+    //     const filtered = gigs.proposals.filter(
+    //       (gig) =>
+    //         gig.creator.fullName?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+    //         gig.gigDescription?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+    //         gig.gigPostDate?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+    //         gig.gigPrice?.toString().toLowerCase().includes(e.target.value.toLowerCase()) ||
+    //         gig.gigTitle?.toLowerCase().includes(e.target.value.toLowerCase())
+    //     );
+    //     setFilteredProposalsList(filtered);
+    //   }
+    // }
   };
 
   const aiSearch = () => {
@@ -648,12 +658,12 @@ const Orders = () => {
       </div>
       {mode == 'live' ? (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{filteredLiveList.length}</span>{' '}
+          You have <span className='font-bold text-[#DC4F13]'>{gigs?.livesTotal}</span>{' '}
           Orders😊
         </div>
       ) : (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{filteredProposalsList.length}</span>{' '}
+          You have <span className='font-bold text-[#DC4F13]'>{gigs?.proposalsTotal}</span>{' '}
           Proposals😊
         </div>
       )}
