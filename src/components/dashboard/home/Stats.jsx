@@ -20,7 +20,6 @@ import { useCustomContext } from '@/context/use-custom';
 import { useClientInfo } from '@/hooks/useClientInfo';
 import { FaArrowRight, FaX } from 'react-icons/fa6';
 
-
 import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
 import { Checkbox } from '@/components/ui/checkbox';
 import CustomIconDropdown from '@/components/ui/dropdown';
@@ -47,12 +46,13 @@ const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
 const Stats = () => {
   const auth = useCustomContext();
   const { data: clientInfo } = useClientInfo(auth?.currentProfile?._id);
-  const [searchType, setSearchType] = useState('normal');
+  const [searchType, setSearchType] = useState(searchOptions[0]);
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [filteredHires, setFilteredHires] = useState([]);
   const [filteredApplications, setFilteredApplications] = useState([]);
   const { isSmallScreen } = useHandleResize();
   const [filters, setFilters] = useState([]);
+  const [searchText, setSearchText] = useState('');
 
 
   useEffect(() => {
@@ -89,7 +89,6 @@ const Stats = () => {
   const onChangeType = (e) => {
     setSearchType(e);
   };
-
 
   const filterCategories = [
     {
@@ -187,141 +186,143 @@ const Stats = () => {
     }
   };
 
+  console.log("searchType", searchType);
+
   return (
     <div className='min-h-55 mt-10 flex w-full flex-col font-roboto'>
       <div>
-      <div className='flex gap-5 rounded-xl bg-[#10191D]'>
-        <div className='m-3 flex flex-1 items-center gap-3'>
-          <CustomIconDropdown
-            onChange={(v) => setSearchType(v)}
-            optionLabel={'icon'}
-            options={searchOptions}
-            value={searchType}
-          />
-          <input
-            className='w-full bg-transparent outline-none'
-            onChange={setKey}
-            onKeyDown={handleKeyDown}
-            placeholder={isSmallScreen ? 'Search' : 'Search for keywords'}
-            type='text'
-          />
-          {isSmallScreen && searchType === searchOptions[0] && (
-            <button>
-              <svg
-                fill='none'
-                height='24'
-                viewBox='0 0 25 24'
-                width='25'
-                xmlns='http://www.w3.org/2000/svg'
+        <div className='flex gap-5 rounded-xl bg-[#10191D]'>
+          <div className='m-3 flex flex-1 items-center gap-3'>
+            <CustomIconDropdown
+              onChange={(v) => setSearchType(v)}
+              optionLabel={'icon'}
+              options={searchOptions}
+              value={searchType}
+            />
+            <input
+              className='w-full bg-transparent outline-none'
+              onChange={setKey}
+              onKeyDown={handleKeyDown}
+              placeholder={isSmallScreen ? 'Search' : 'Search for keywords'}
+              type='text'
+            />
+            {isSmallScreen && searchType === searchOptions[0] && (
+              <button>
+                <svg
+                  fill='none'
+                  height='24'
+                  viewBox='0 0 25 24'
+                  width='25'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M12.1962 13.4299C13.9193 13.4299 15.3162 12.0331 15.3162 10.3099C15.3162 8.58681 13.9193 7.18994 12.1962 7.18994C10.473 7.18994 9.07617 8.58681 9.07617 10.3099C9.07617 12.0331 10.473 13.4299 12.1962 13.4299Z'
+                    stroke='#96B0BD'
+                    strokeWidth='1.5'
+                  />
+                  <path
+                    d='M3.816 8.49C5.786 -0.169998 18.616 -0.159997 20.576 8.5C21.726 13.58 18.566 17.88 15.796 20.54C13.786 22.48 10.606 22.48 8.586 20.54C5.826 17.88 2.666 13.57 3.816 8.49Z'
+                    stroke='#96B0BD'
+                    strokeWidth='1.5'
+                  />
+                </svg>
+              </button>
+            )}
+          </div>
+          {(!isSmallScreen || (isSmallScreen && searchType === searchOptions[0])) && (
+            <div className='flex flex-none flex-row items-center gap-2 px-4'>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className='flex flex-row items-center justify-center gap-3'>
+                    <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
+                    {!isSmallScreen && (
+                      <div className='flex flex-row gap-2'>
+                        <div>Filter</div>
+                        {filters.length > 0 && (
+                          <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
+                            {filters.length}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  align='end'
+                  className='mt-4 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
+                >
+                  <div className='grid grid-cols-2 gap-4 md:grid-cols-3'>
+                    {filterCategories.map((item, index) => {
+                      return (
+                        <div className='flex flex-col gap-2' key={index}>
+                          <div>{item.title}</div>
+                          {item.content.map((con, i) => {
+                            return (
+                              <DropdownItem
+                                category_id={con.category_id + con.category_value}
+                                category_name={con.category_name}
+                                isChecked={
+                                  !!filters.find(
+                                    (f) =>
+                                      f.id === con.category_id &&
+                                      f.name === con.category_name &&
+                                      JSON.stringify(f.value) === JSON.stringify(con.category_value)
+                                  )
+                                }
+                                key={i}
+                                onCheckedChange={(value) =>
+                                  onCheckedChange(
+                                    value,
+                                    con.category_id,
+                                    con.category_name,
+                                    con.category_value
+                                  )
+                                }
+                              />
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
+          {isSmallScreen && searchType === searchOptions[1] && (
+            <div className='flex'>
+              <button
+                className='flex w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white'
+                onClick={aiSearch}
               >
-                <path
-                  d='M12.1962 13.4299C13.9193 13.4299 15.3162 12.0331 15.3162 10.3099C15.3162 8.58681 13.9193 7.18994 12.1962 7.18994C10.473 7.18994 9.07617 8.58681 9.07617 10.3099C9.07617 12.0331 10.473 13.4299 12.1962 13.4299Z'
-                  stroke='#96B0BD'
-                  strokeWidth='1.5'
-                />
-                <path
-                  d='M3.816 8.49C5.786 -0.169998 18.616 -0.159997 20.576 8.5C21.726 13.58 18.566 17.88 15.796 20.54C13.786 22.48 10.606 22.48 8.586 20.54C5.826 17.88 2.666 13.57 3.816 8.49Z'
-                  stroke='#96B0BD'
-                  strokeWidth='1.5'
-                />
-              </svg>
-            </button>
+                <FaArrowRight />
+              </button>
+            </div>
           )}
         </div>
-        {(!isSmallScreen || (isSmallScreen && searchType === searchOptions[0])) && (
-          <div className='flex flex-none flex-row items-center gap-2 px-4'>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button className='flex flex-row items-center justify-center gap-3'>
-                  <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
-                  {!isSmallScreen && (
-                    <div className='flex flex-row gap-2'>
-                      <div>Filter</div>
-                      {filters.length > 0 && (
-                        <div className='flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#DC4F13] text-center align-middle'>
-                          {filters.length}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </button>
-              </PopoverTrigger>
-              <PopoverContent
-                align='end'
-                className='mt-4 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] px-6 py-4'
-              >
-                <div className='grid grid-cols-2 gap-4 md:grid-cols-3'>
-                  {filterCategories.map((item, index) => {
-                    return (
-                      <div className='flex flex-col gap-2' key={index}>
-                        <div>{item.title}</div>
-                        {item.content.map((con, i) => {
-                          return (
-                            <DropdownItem
-                              category_id={con.category_id + con.category_value}
-                              category_name={con.category_name}
-                              isChecked={
-                                !!filters.find(
-                                  (f) =>
-                                    f.id === con.category_id &&
-                                    f.name === con.category_name &&
-                                    JSON.stringify(f.value) === JSON.stringify(con.category_value)
-                                )
-                              }
-                              key={i}
-                              onCheckedChange={(value) =>
-                                onCheckedChange(
-                                  value,
-                                  con.category_id,
-                                  con.category_name,
-                                  con.category_value
-                                )
-                              }
-                            />
-                          );
-                        })}
-                      </div>
-                    );
-                  })}
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-        )}
-        {isSmallScreen && searchType === searchOptions[1] && (
-          <div className='flex'>
-            <button
-              className='flex w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white'
-              onClick={aiSearch}
-            >
-              <FaArrowRight />
-            </button>
+        {filters.length > 0 && (
+          <div className='mt-4 flex touch-pan-x flex-row flex-wrap items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
+            {filters.map((filter, index) => {
+              return (
+                <span
+                  className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
+                  key={index}
+                >
+                  <FaX
+                    className='rounded-full bg-[#3E525B] p-[2px]'
+                    onClick={() => handleRemove(filter.id, filter.name, filter.value)}
+                  />
+                  {filter.name}
+                </span>
+              );
+            })}
+
+            <span className='cursor-pointer' onClick={handleClearAll}>
+              Clear&nbsp;All
+            </span>
           </div>
         )}
       </div>
-      {filters.length > 0 && (
-        <div className='mt-4 flex touch-pan-x flex-row flex-wrap items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
-          {filters.map((filter, index) => {
-            return (
-              <span
-                className='flex flex-row items-center gap-1 rounded-full border border-[#3E525B] bg-[#28373E] p-1 pl-2 pr-2'
-                key={index}
-              >
-                <FaX
-                  className='rounded-full bg-[#3E525B] p-[2px]'
-                  onClick={() => handleRemove(filter.id, filter.name, filter.value)}
-                />
-                {filter.name}
-              </span>
-            );
-          })}
-
-          <span className='cursor-pointer' onClick={handleClearAll}>
-            Clear&nbsp;All
-          </span>
-        </div>
-      )}
-    </div>
       <div className='mt-10 flex flex-col gap-4'>
         {/* <h1>Your Stats</h1> */}
         <div className='grid gap-4 lg:grid-cols-3'>
