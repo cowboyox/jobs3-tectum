@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BsPatchCheckFill } from 'react-icons/bs';
 import { FaRegStar, FaStar } from 'react-icons/fa';
 import { FaAngleLeft } from 'react-icons/fa6';
@@ -19,7 +19,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
-import { useGetOneToOneMessages } from '@/hooks/useGetOneToOneMessages';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
 
 const MessageDetails = (props) => {
@@ -90,7 +89,7 @@ const ChatPage = () => {
   const [conversations, setConversation] = useState([]);
   const [input, setInput] = useState('');
   const { data: userInfo } = useGetUserInfo(profileId);
-  const { data: messages } = useGetOneToOneMessages(auth?.currentProfile?._id, profileId);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     if (userInfo && auth?.currentProfile) {
@@ -126,11 +125,22 @@ const ChatPage = () => {
 
   console.log({ conversations });
 
+  // Function to scroll to the bottom
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // UseEffect to scroll to the bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversations]);
+
   const sendMessage = () => {
     const message = {
       messageText: input,
       receiverId: receiver._id,
       senderId: auth.currentProfile._id,
+      timeStamp: new Date(),
     };
     socket.emit('sendMessage', message);
     setInput('');
@@ -235,6 +245,7 @@ const ChatPage = () => {
                   />
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
           </div>
           <div className='flex h-24 w-full items-center justify-center mobile:p-2'>
