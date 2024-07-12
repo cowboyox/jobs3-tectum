@@ -97,7 +97,7 @@ const FindJob = () => {
           category_name: '$5000 and Above',
         },
       ],
-      title: 'Amount',
+      title: 'Amount(Fixed)',
     },
     {
       content: [
@@ -107,7 +107,7 @@ const FindJob = () => {
         { category_id: 'hourly', category_value: [30, 60], category_name: '$30 to $60' },
         { category_id: 'hourly', category_value: [60, 99999999], category_name: '$60 and Above' },
       ],
-      title: 'Hourly Rate',
+      title: 'Amount(Hourly)',
     },
     {
       content: [
