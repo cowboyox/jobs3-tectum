@@ -4,10 +4,10 @@ import React from 'react';
 
 import ChatPage from '@/components/dashboard/inbox/ChatPage';
 
-const ClientChatPage = ({ children }) => {
+const ClientChatPage = () => {
   const { profileId } = useParams();
 
-  return <ChatPage profileId={profileId}> {children} </ChatPage>;
+  return <ChatPage profileId={profileId} />;
 };
 
 export default ClientChatPage;
