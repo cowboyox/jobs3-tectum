@@ -20,12 +20,12 @@ import {
 } from '@/components/ui/select';
 import { useCustomContext } from '@/context/use-custom';
 import { useDebounce } from '@/hooks/useDebounce';
-import { useGetClientGigsContractedWithFreelancer } from '@/hooks/useGetClientGigsContractedWithFreelancer';
+import { useGetAllFreelancerOrdersProposed } from '@/hooks/useGetAllFreelancerOrdersProposed';
 import { useHandleResize } from '@/hooks/useHandleResize';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
-    <div className='flex cursor-pointer items-center gap-4 p-0'>
+    <div className='flex items-center gap-4 p-0 cursor-pointer'>
       <Checkbox
         checked={props.checked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
@@ -49,7 +49,7 @@ const Offer = () => {
   const { isSmallScreen } = useHandleResize();
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [page, setPage] = useState(1);
-  const itemsPerPage = 20;
+  const [itemsPerPage, setItemsPerPage] = useState(2);
   const debouncedSearchText = useDebounce(searchKeywords);
   const [canLoadMore, setCanLoadMore] = useState(true);
   const filterCategories = [
@@ -114,73 +114,36 @@ const Offer = () => {
     },
   ];
 
-  const { data: orders, refetch: refetchAllOrdersProposed } =
-    useGetClientGigsContractedWithFreelancer(
-      auth?.currentProfile?._id,
-      page,
-      itemsPerPage,
-      debouncedSearchText,
-      filters
-    );
+  const { data: orders, refetch: refetchAllOrdersProposed } = useGetAllFreelancerOrdersProposed(
+    auth?.currentProfile?._id,
+    page,
+    itemsPerPage,
+    debouncedSearchText,
+    filters
+  );
 
   useEffect(() => {
-    setPage(1);
-    setCanLoadMore(true);
+    // setPage(1);
+    setItemsPerPage(2);
   }, [debouncedSearchText, mode]);
 
   useEffect(() => {
-    if (mode === 'live') {
-      if (orders?.lives?.length > 0) {
+    if (mode == "live") {
+      if (orders?.livesTotal > page * itemsPerPage && orders?.lives?.length > 0) {
         setCanLoadMore(true);
-        if (page === 1) {
-          setLives(orders.lives);
-        } else {
-          setLives((prev) => {
-            let result = [...prev];
-            const ids = prev.map((item) => item._id);
-
-            orders.lives.map((lv) => {
-              if (!ids.includes(lv._id)) {
-                result = [...result, lv];
-              }
-            });
-
-            return result;
-          });
-        }
       } else {
-        if (page === 1) {
-          setLives([]);
-        }
         setCanLoadMore(false);
       }
     } else {
-      if (orders?.proposals?.length > 0) {
+      if (orders?.proposalsTotal > page * itemsPerPage && orders?.proposals?.length > 0) {
         setCanLoadMore(true);
-        if (page === 1) {
-          setProposals(orders.proposals);
-        } else {
-          setProposals((prev) => {
-            let result = [...prev];
-            const ids = prev.map((item) => item._id);
-
-            orders.proposals.map((lv) => {
-              if (!ids.includes(lv._id)) {
-                result = [...result, lv];
-              }
-            });
-
-            return result;
-          });
-        }
       } else {
-        if (page === 1) {
-          setProposals([]);
-        }
         setCanLoadMore(false);
       }
     }
-  }, [orders, page, mode]);
+    setLives(orders?.lives);
+    setProposals(orders?.proposals);
+  }, [orders, mode, page]);
 
   const onCheckedChange = (isChecked, id, name, value) => {
     if (isChecked) {
@@ -213,7 +176,8 @@ const Offer = () => {
   };
 
   const handleLoadMore = () => {
-    setPage((prev) => prev + 1);
+    // setPage((prev) => prev + 1);
+    setItemsPerPage((prev) => prev + 2);
   };
 
   const handleClearAll = () => {
@@ -240,7 +204,7 @@ const Offer = () => {
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d] pr-4'>
-        <div className='mobile:m-1 m-3 flex flex-1 gap-2'>
+        <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='mobile:w-14 mobile:p-2 w-20 rounded-xl bg-[#1B272C]'>
               <SelectValue />
@@ -253,7 +217,7 @@ const Offer = () => {
             </SelectContent>
           </Select>
           <input
-            className='mobile:text-sm w-full bg-transparent text-white outline-none'
+            className='w-full text-white bg-transparent outline-none mobile:text-sm'
             onChange={(e) => setSearchKeyWords(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
@@ -334,11 +298,11 @@ const Offer = () => {
       </div>
       {mode == 'live' ? (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{lives.length}</span> Accepteds😊
+          You have <span className='font-bold text-[#DC4F13]'>{orders?.livesTotal}</span> Accepteds😊
         </div>
       ) : (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{proposals.length}</span> Proposals😊
+          You have <span className='font-bold text-[#DC4F13]'>{orders?.proposalsTotal}</span> Proposals😊
         </div>
       )}
       {filters.length > 0 && (
@@ -363,14 +327,14 @@ const Offer = () => {
           </span>
         </div>
       )}
-      <div className='flex w-full items-center justify-center pb-5 pt-10'>
+      <div className='flex items-center justify-center w-full pt-10 pb-5'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block h-6 w-6 rounded-full bg-orange'>{lives.length}</span>
+              <span className='inline-block w-6 h-6 rounded-full bg-orange'>{lives?.length}</span>
               &nbsp; Live
             </h1>
           ) : (
@@ -383,8 +347,8 @@ const Offer = () => {
         >
           {mode == 'proposal' ? (
             <h1>
-              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
-                {proposals.length}
+              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
+                {proposals?.length}
               </span>
               &nbsp; Proposals
             </h1>
@@ -395,7 +359,7 @@ const Offer = () => {
       </div>
       {mode == 'live' ? (
         <>
-          {lives.length > 0 ? (
+          {lives?.length > 0 ? (
             <>
               {lives.map((order, index) => (
                 <OfferItem
@@ -421,7 +385,7 @@ const Offer = () => {
               ))}
               {canLoadMore && (
                 <div
-                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -429,7 +393,7 @@ const Offer = () => {
               )}
             </>
           ) : (
-            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Accepted proposals will be here</p>
             </div>
@@ -437,7 +401,7 @@ const Offer = () => {
         </>
       ) : (
         <>
-          {proposals.length > 0 ? (
+          {proposals?.length > 0 ? (
             <>
               {proposals.map((proposal, index) => (
                 <OfferItem
@@ -463,7 +427,7 @@ const Offer = () => {
               ))}
               {canLoadMore && (
                 <div
-                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -471,7 +435,7 @@ const Offer = () => {
               )}
             </>
           ) : (
-            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Proposals will be here</p>
             </div>
