@@ -3,14 +3,19 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@/utils/api';
 import { APIS } from '@/utils/constants';
 
-export const useGetAllFreelancerGigsProposed = (profileId) => {
+export const useGetAllFreelancerGigsProposed = (
+  profileId,
+  pageNum,
+  itemsPerPage,
+  searchText = '',
+) => {
   return useQuery({
     cacheTime: Infinity,
     enabled: !!profileId,
     queryFn: async () => {
-      if (profileId) {
+      if (profileId && pageNum > 0 && itemsPerPage > 0) {
         try {
-          const result = await api.get(`${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}`);
+          const result = await api.get(`${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}`);
 
           const submissions = [];
           const lives = [];
@@ -54,7 +59,7 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
             });
           }
 
-          return { lives, submissions };
+          return { lives, submissions, livesTotal: result.data.livesTotal, submissionsTotal: result.data.submissionsTotal };
         } catch (e) {
           console.error(e);
 
@@ -64,7 +69,13 @@ export const useGetAllFreelancerGigsProposed = (profileId) => {
         return null;
       }
     },
-    queryKey: ['useGetAllFreelancerGigsProposed', profileId],
+    queryKey: [
+      'useGetAllFreelancerGigsProposed', 
+      profileId,
+      pageNum,
+      itemsPerPage,
+      searchText,
+    ],
     staleTime: Infinity,
   });
 };

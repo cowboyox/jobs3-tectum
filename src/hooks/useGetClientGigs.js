@@ -20,6 +20,7 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
           let location = 'any';
           let timezone = 'any';
           let info = 'any';
+          let amount = ['any'];
 
           filters.map((filter) => {
             if (filter.id === 'payment' && filter.value !== 'any') {
@@ -44,11 +45,14 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
               timezone = filter.value;
             } else if (filter.id === 'info') {
               info = filter.value;
+            } else if (filter.id === 'amount' && filter.value !== 'any') {
+              amount = [...amount, filter.value].filter((p) => p !== 'any');
             }
+            
           });
 
           const { data } = await api.get(
-            `${APIS.CL_FIND_GIGS}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&applicants=${applicants}&experience=${experience}&hoursPerWeek=${hoursPerWeek}&location=${location}&timezone=${timezone}&info=${info}`
+            `${APIS.CL_FIND_GIGS}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&applicants=${applicants}&experience=${experience}&hoursPerWeek=${hoursPerWeek}&location=${location}&timezone=${timezone}&info=${info}&amount=${amount}`
           );
 
           console.log(data);

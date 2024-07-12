@@ -4,48 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { FaX } from 'react-icons/fa6';
 
 import { Separator } from '@/components/ui/seperator';
-import { useGetFreelancersBySkills } from '@/hooks/useGetFreelancersBySkills';
+
 import { skillSets } from '@/utils/constants';
 
-const Gigs = () => {
-  const [selectedGigs, setSelectedGigs] = useState([]);
-  const [canLoadMore, setCanLoadMore] = useState(true);
-  const [allFreelancers, setAllFreelancers] = useState([]);
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 3;
+const Gigs = ({freelancers, selectedGigs, setSelectedGigs, page, setPage, handleLoadMore, allFreelancers, canLoadMore, setCanLoadMore}) => {
 
-  const { data: freelancers } = useGetFreelancersBySkills(page, itemsPerPage, selectedGigs);
+  console.log("freelancers", freelancers);
 
-  useEffect(() => {
-    if (freelancers?.length > 0) {
-      setCanLoadMore(true);
-      if (page === 1) {
-        setAllFreelancers(freelancers);
-      } else {
-        setAllFreelancers((prev) => {
-          let result = [...prev];
-          const ids = prev.map((item) => item._id);
-
-          freelancers.map((fl) => {
-            if (!ids.includes(fl._id)) {
-              result = [...result, fl];
-            }
-          });
-
-          return result;
-        });
-      }
-    } else {
-      if (page === 1) {
-        setAllFreelancers([]);
-      }
-      setCanLoadMore(false);
-    }
-  }, [page, freelancers]);
-
-  const handleLoadMore = () => {
-    setPage((prev) => prev + 1);
-  };
 
   const handleGigClick = (gig) => {
     setSelectedGigs((prev) => {

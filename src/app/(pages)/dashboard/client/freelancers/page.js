@@ -12,24 +12,33 @@ import { JobSuccessIcon } from '@/components/elements/svgs/JobSuccessIcon';
 import { TopRatedBadgeIcon } from '@/components/elements/svgs/TopRatedBadgeIcon';
 import { VerifiedIcon } from '@/components/elements/svgs/VerifiedIcon';
 import { Separator } from '@/components/ui/seperator';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useGetFreelancers } from '@/hooks/useGetFreelancers';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
 
 const Freelancers = () => {
+  const auth = useCustomContext();
   const [allFreelancers, setAllFreelancers] = useState([]);
-  const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchType, setSearchType] = useState(searchOptions[0]);
   const [searchText, setSearchText] = useState('');
   const [filters, setFilters] = useState([]);
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [isAiSearch, setIsAiSearch] = useState(false);
+  const [freelancerBioShowModeList, setFreelancerBioShowModeList] = useState([]);
   const debouncedSearchText = useDebounce(searchText);
   const [page, setPage] = useState(1);
   const itemsPerPage = 2;
+  const descriptionTextMaxLength = 320;
   const { isSmallScreen } = useHandleResize();
-  const { data: freelancers } = useGetFreelancers(page, itemsPerPage, debouncedSearchText, filters);
+  const { data: freelancers } = useGetFreelancers(
+    auth?.user?._id,
+    page,
+    itemsPerPage,
+    debouncedSearchText,
+    filters
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -38,17 +47,7 @@ const Freelancers = () => {
   }, [debouncedSearchText]);
 
   useEffect(() => {
-    if (searchType == searchOptions[0]) {
-      const filtered = allFreelancers.filter(
-        (fl) =>
-          fl.email?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
-          fl.freelancerBio?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
-          fl.fullName?.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
-          fl.location?.toLowerCase().includes(debouncedSearchText.toLowerCase())
-      );
-
-      setFilteredFreelancers(filtered);
-    } else if (isAiSearch) {
+    if (isAiSearch) {
       setIsAiSearch(false);
       setLoading(true);
       api.get(`/api/v1/profile/ai-search-profile/${searchText}`).then((data) => {
@@ -60,7 +59,8 @@ const Freelancers = () => {
             return profile;
           });
           console.log('new', profiles);
-          setFilteredFreelancers(profiles);
+          setAllFreelancers(profiles);
+          setFreelancerBioShowModeList(new Array(profiles.length).fill(false));
           setLoading(false);
         }
       });
@@ -72,6 +72,7 @@ const Freelancers = () => {
       setCanLoadMore(true);
       if (page === 1) {
         setAllFreelancers(freelancers);
+        setFreelancerBioShowModeList(new Array(freelancers.length).fill(false));
       } else {
         setAllFreelancers((prev) => {
           let result = [...prev];
@@ -89,6 +90,7 @@ const Freelancers = () => {
     } else {
       if (page === 1) {
         setAllFreelancers([]);
+        setFreelancerBioShowModeList([]);
       }
       setCanLoadMore(false);
     }
@@ -111,33 +113,33 @@ const Freelancers = () => {
           setSearchType={setSearchType}
         />
         {loading && (
-          <div className='z-1 flex h-screen justify-center space-x-2 pt-6'>
+          <div className='flex justify-center h-screen pt-6 space-x-2 z-1'>
             <div className='mt-8 flex h-fit items-baseline text-[20px]'>
               <p className='mr-3'>The neural network is thinking</p>
               <div className='flex gap-1'>
                 <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.3s]'></div>
                 <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.15s]'></div>
-                <div className='h-2 w-2 animate-bounce rounded-full bg-white'></div>
+                <div className='w-2 h-2 bg-white rounded-full animate-bounce'></div>
               </div>
             </div>
           </div>
         )}
-        {!loading && filteredFreelancers && filteredFreelancers.length > 0
-          ? filteredFreelancers.map((freelancer, index) => {
+        {!loading && allFreelancers && allFreelancers.length > 0
+          ? allFreelancers.map((freelancer, index) => {
               return (
                 <div key={`freelancers_ext_${index}`}>
                   <div
                     className={`mt-4 ${freelancer?.reason ? 'rounded-t-xl' : 'rounded-xl'} bg-[#10191D] p-5 text-center`}
                     key={`freelancers_${index}`}
                   >
-                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
                       <Link href={`/dashboard/freelancer/profile/${freelancer._id}`}>
                         <div className='mt-3 flex-1 text-left text-[20px] hover:underline md:mt-0 md:text-2xl'>
                           {freelancer.freelancerTitle}
                         </div>
                       </Link>
                     </div>
-                    <div className='mt-3 flex flex-col items-start justify-between gap-6 md:flex-row md:justify-start'>
+                    <div className='flex flex-col items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -175,7 +177,52 @@ const Freelancers = () => {
                       </div>
                     </div>
                     <Separator className='my-4' />
-                    <div className='text-left text-[#96B0BD]'>{freelancer.freelancerBio}</div>
+                    <div className='text-left text-[#96B0BD]'>
+                        <pre className='whitespace-pre-wrap font-roboto'>
+                          {freelancer.freelancerBio.length < descriptionTextMaxLength
+                            ? freelancer.freelancerBio
+                            : freelancerBioShowModeList[index]
+                              ? freelancer.freelancerBio
+                              : freelancer.freelancerBio.slice(0, descriptionTextMaxLength) + '...'}
+                        </pre>
+                      </div>
+                      <div className='mt-3 text-left'>
+                        {freelancer.freelancerBio.length < descriptionTextMaxLength ? (
+                          <></>
+                        ) : !freelancerBioShowModeList[index] ? (
+                          <button
+                            onClick={() => {
+                              const tempShowModeList = freelancerBioShowModeList.map((item, i) => {
+                                if (i == index) {
+                                  return true;
+                                } else {
+                                  return item;
+                                }
+                              });
+
+                              setFreelancerBioShowModeList(tempShowModeList);
+                            }}
+                          >
+                            Show more
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              const tempShowModeList = freelancerBioShowModeList.map((item, i) => {
+                                if (i == index) {
+                                  return false;
+                                } else {
+                                  return item;
+                                }
+                              });
+
+                              setFreelancerBioShowModeList(tempShowModeList);
+                            }}
+                          >
+                            Show less
+                          </button>
+                        )}
+                      </div>
                     <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
                       {freelancer.skills &&
                         freelancer.skills.map((item, index) => {
@@ -190,12 +237,12 @@ const Freelancers = () => {
                           );
                         })}
                     </div>
-                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
-                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
+                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
+                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
                         <div>
                           <Image
                             alt='avatar'
-                            className='aspect-square rounded-full object-cover'
+                            className='object-cover rounded-full aspect-square'
                             height={40}
                             src={
                               freelancer.avatarURL
@@ -220,7 +267,7 @@ const Freelancers = () => {
                     </div>
                   </div>
                   {freelancer.reason && (
-                    <div className='text-md rounded-b-xl bg-orange p-4 text-white'>
+                    <div className='p-4 text-white text-md rounded-b-xl bg-orange'>
                       {freelancer.reason}
                     </div>
                   )}
@@ -229,14 +276,14 @@ const Freelancers = () => {
             })
           : !loading && (
               <div>
-                <div className='flex h-full flex-col items-center justify-center gap-3'>
+                <div className='flex flex-col items-center justify-center h-full gap-3'>
                   <h2 className='text-3xl font-bold'>Nothing Here</h2>
                 </div>
               </div>
             )}
         {canLoadMore && (
           <div
-            className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+            className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
             onClick={handleLoadMore}
           >
             Load More +
