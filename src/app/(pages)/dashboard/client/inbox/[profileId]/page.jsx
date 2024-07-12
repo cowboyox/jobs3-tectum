@@ -22,139 +22,6 @@ import { useCustomContext } from '@/context/use-custom';
 import { useGetOneToOneMessages } from '@/hooks/useGetOneToOneMessages';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
 
-/* For backend:
- * I used the same messages from the parent to simulate like a backend query
- * But this needs to be changed for sure
- */
-// const messages = [
-//   {
-//     id: 1,
-//     user: {
-//       name: "Emily Rose",
-//       username: 'emily_rose',
-//       avatar: "/assets/images/users/user-6.png",
-//       online: true,
-//       isVerified: true,
-//     },
-//     message: "Thank you for your help!",
-//     timestamp: "4 hours",
-//     unreadCount: 3,
-//     starred: true,
-//   },
-//   {
-//     id: 2,
-//     user: {
-//       name: "John Doe",
-//       username: 'john_doe',
-//       avatar: "/assets/images/users/user-7.png",
-//       online: false,
-//       isVerified: true,
-//     },
-//     message: "Can we reschedule our meeting?",
-//     timestamp: "2 hours",
-//     unreadCount: 1,
-//     starred: false,
-//   },
-//   {
-//     id: 3,
-//     user: {
-//       name: "Anna Smith",
-//       username: 'anna_smith',
-//       avatar: "/assets/images/users/user-8.png",
-//       online: true,
-//       isVerified: false,
-//     },
-//     message: "I'll send the report by tomorrow.",
-//     timestamp: "1 day",
-//     unreadCount: 0,
-//     starred: true,
-//   },
-//   {
-//     id: 4,
-//     user: {
-//       name: "Michael Brown",
-//       username: 'michael_brown',
-//       avatar: "/assets/images/users/user-9.png",
-//       online: false,
-//       isVerified: false,
-//     },
-//     message: "Looking forward to our meeting.",
-//     timestamp: "3 days",
-//     unreadCount: 5,
-//     starred: true,
-//   },
-//   {
-//     id: 5,
-//     user: {
-//       name: "Lisa Johnson",
-//       username: 'lisa_johnson',
-//       avatar: "/assets/images/users/user-10.png",
-//       online: true,
-//       isVerified: false,
-//     },
-//     message: "Please review the attached document.",
-//     timestamp: "6 hours",
-//     unreadCount: 2,
-//     starred: false,
-//   },
-//   {
-//     id: 6,
-//     user: {
-//       name: "David Wilson",
-//       username: 'david_wilson',
-//       avatar: "/assets/images/users/user-11.png",
-//       online: true,
-//       isVerified: true,
-//     },
-//     message: "Happy to assist with your inquiry.",
-//     timestamp: "1 hour",
-//     unreadCount: 0,
-//     starred: false,
-//   },
-//   {
-//     id: 7,
-//     user: {
-//       name: "Sophia Lee",
-//       username: 'sophia_lee',
-//       avatar: "/assets/images/users/user-12.png",
-//       online: false,
-//       isVerified: true,
-//     },
-//     message: "Can you provide more details?",
-//     timestamp: "2 days",
-//     unreadCount: 4,
-//     starred: true,
-//   },
-//   {
-//     id: 8,
-//     user: {
-//       name: "James Martinez",
-//       username: 'james_martinez',
-//       avatar: "/assets/images/users/user-13.png",
-//       online: true,
-//       isVerified: false,
-//     },
-//     message: "I've updated the project status.",
-//     timestamp: "5 hours",
-//     unreadCount: 0,
-//     starred: false,
-//   },
-//   {
-//     id: 9,
-//     user: {
-//       name: "Mia Clark",
-//       username: 'mida_clark',
-//       avatar: "/assets/images/users/user-14.png",
-//       online: true,
-//       isVerified: true,
-//     },
-//     message: "Thank you for the prompt response.",
-//     timestamp: "8 hours",
-//     unreadCount: 1,
-//     starred: true,
-//   },
-// ];
-
 const MessageDetails = (props) => {
   return (
     <div
@@ -231,7 +98,6 @@ const ChatPage = () => {
         _id: userInfo._id,
         avatar: userInfo.avatarURL,
         isVerified: userInfo.userId?.verified || false,
-        message: '',
         name: userInfo.fullName,
         online: userInfo.userId?.status === 'Online' ? true : false,
         starred: true,
@@ -247,7 +113,6 @@ const ChatPage = () => {
       socket?.on('history', (history) => {
         setConversation(history);
       });
-      // Handle incoming messages
       socket?.on('newMessage', (message) => {
         console.log({ message });
         setConversation((prevMessages) => [...prevMessages, message]);
@@ -272,13 +137,10 @@ const ChatPage = () => {
     setConversation((prevMessages) => [...prevMessages, message]);
   };
 
+  console.log({ receiver });
+
   return (
     <div className='flex h-full flex-col'>
-      {/*
-       * Selmani NOTE:
-       * I used this basic method to toggle chat on mobile which works just fine
-       * Any better method is welcome as well :)
-       */}
       <style>{`
         @media(max-width: 768px) { 
           .chats_col {
@@ -291,11 +153,8 @@ const ChatPage = () => {
           }
         }
       `}</style>
-      {/* {messages.map((chat)=> (
-        chat.user.username == parameters.params.contact_username && */}
       {receiver && (
         <>
-          {/* Chat header */}
           <div className='flex h-24 border-b border-[#28373E] px-8 mobile:px-5 mobile:py-3'>
             <div className='flex w-3/5 items-center gap-3'>
               <Link className='md:hidden' href='../inbox'>
@@ -356,64 +215,28 @@ const ChatPage = () => {
               </DropdownMenu>
             </div>
           </div>
-          {/* Chat Content */}
           <div className='relative flex flex-col items-center overflow-scroll'>
-            <div className='flex max-w-[464px] flex-col gap-9 pb-3 pt-8 mobile:px-5'>
-              {/* Chat */}
+            <div className='flex w-full flex-col gap-9 px-8 pb-3 pt-8 mobile:px-5'>
               {conversations.map((conv, id) => (
-                <div className='flex flex-col gap-3' key={id}>
+                <div className='flex w-full flex-col gap-3' key={id}>
                   <MessageDetails
-                    date='17 May 2024'
-                    sender={conv.senderId == auth.currentProfile._id ? 'me' : ''}
-                    time='17:37'
-                    user_image='/assets/images/users/user-6.png'
+                    date={new Date(conv.timeStamp).toLocaleDateString('en-US')}
+                    sender={conv.senderId === auth.currentProfile._id ? 'me' : ''}
+                    time={new Date(conv.timeStamp).toLocaleTimeString('en-US')}
+                    user_image={
+                      conv.senderId == auth.currentProfile._id
+                        ? auth.currentProfile.avatarURL
+                        : receiver.avatar
+                    }
                   />
-                  <MessageText text={conv.messageText} />
+                  <MessageText
+                    sender={conv.senderId === auth.currentProfile._id ? 'me' : ''}
+                    text={conv.messageText}
+                  />
                 </div>
               ))}
-              {/* <div className="flex flex-col gap-3"> 
-                  <MessageDetails 
-                    user_image='/assets/images/users/user-6.png'
-                    date='17 May 2024'
-                    time='17:37'
-                  />
-                  <MessageText text="Thank you for sharing. Based on the statistics from a total of 13 pages, the total word count to be translated is 5250, right?" />
-                </div> 
-                <div className="flex flex-col gap-3"> 
-                  <MessageDetails 
-                    user_image='/assets/images/users/user-5.png'
-                    date='17 May 2024'
-                    time='17:37'
-                    sender='me'
-                  />
-                  <Offer 
-                    offer_description='Translate english to simplified mandarian traditional chinese'
-                    is_accepted={true}
-                    duration="3 Days"
-                    price={448}
-                    price_currency="$"
-                  />
-                </div>
-                <div className="flex flex-col gap-3"> 
-                  <MessageDetails 
-                    user_image='/assets/images/users/user-6.png'
-                    date='17 May 2024'
-                    time='17:37' 
-                  />
-                  <MessageText text="Hi, Thanks again for your order! Your delivery is enclosed. If there are any problems, please let me know. I'll get back to you as soon as I can." />
-                </div> 
-                <div className="flex flex-col gap-3"> 
-                  <MessageDetails 
-                    user_image='/assets/images/users/user-5.png'
-                    date='17 May 2024'
-                    time='17:37' 
-                    sender="me"
-                  />
-                  <MessageText text="Thank you for your work, Emily!" sender="me" />
-                </div>  */}
             </div>
           </div>
-          {/* Message Input */}
           <div className='flex h-24 w-full items-center justify-center mobile:p-2'>
             <div className='mx-auto flex h-14 w-full max-w-[684px] items-center gap-4 overflow-hidden rounded-2xl border border-[#526872] py-2 pl-4 pr-2'>
               <IoMdAttach className='h-6 w-6 cursor-pointer transition hover:fill-[#dc4f14]' />
@@ -433,7 +256,6 @@ const ChatPage = () => {
           </div>
         </>
       )}
-      {/* ))} */}
     </div>
   );
 };
