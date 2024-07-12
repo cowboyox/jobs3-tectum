@@ -61,7 +61,7 @@ const Orders = () => {
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(2);
+  const itemsPerPage = 2;
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [canLoadMore, setCanLoadMore] = useState(true);
   const debouncedSearchText = useDebounce(searchKeywords);
@@ -92,8 +92,7 @@ const Orders = () => {
   }, [gigs, mode, page]);
 
   useEffect(() => {
-    // setPage(1);
-    setItemsPerPage(2);
+    setPage(1);
   }, [debouncedSearchText, mode]);
 
   useEffect(() => {
@@ -138,8 +137,7 @@ const Orders = () => {
   }, [wallet, connection]);
 
   const setKey = (e) => {
-    // setPage(1);
-    setItemsPerPage(2);
+    setPage(1);
     setSearchKeyWords(e.target.value);
   };
   
@@ -169,8 +167,7 @@ const Orders = () => {
   };
 
   const handleLoadMore = () => {
-    // setPage((prev) => prev + 1);
-    setItemsPerPage((prev) => prev + 2);
+    setPage((prev) => prev + 1);
   };
 
   const handleMessage = (order) => {
@@ -1379,12 +1376,12 @@ const Orders = () => {
                       </div>
                       <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
                         <button className='p-4 px-8 md:p-5'>Message</button>
-                        {/* <button
+                        <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
                           // onClick={() => onActivate(submission.gigId, submission.clientId, submission.contractId)}
                         >
                           Accept
-                        </button> */}
+                        </button>
                       </div>
                     </div>
                   </div>

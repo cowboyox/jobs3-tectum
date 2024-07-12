@@ -2,19 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetAllClientOrdersProposed = (
-  profileId,
-  pageNum,
-  itemsPerPage,
-  searchText = '',
-) => {
+export const useGetAllClientOrdersProposed = (profileId) => {
   return useQuery({
     cacheTime: Infinity,
     enabled: !!profileId,
     queryFn: async () => {
-      if (profileId && pageNum > 0 && itemsPerPage > 0) {
+      if (profileId) {
         try {
-          const result = await api.get(`/api/v1/freelancer_gig/find_all_orders_of_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}`);
+          const result = await api.get(`/api/v1/freelancer_gig/find_all_orders_of_client/${profileId}`);
           console.log("result in useGetAllClientOrdersProposed:", result);
           const proposals = [];
           const lives = [];
@@ -72,7 +67,7 @@ export const useGetAllClientOrdersProposed = (
             });
           }
 
-          return { lives, proposals, proposalsTotal: result.data.proposalsTotal, livesTotal: result.data.livesTotal };
+          return { lives, proposals };
         } catch (e) {
           console.error(e);
 
@@ -82,13 +77,7 @@ export const useGetAllClientOrdersProposed = (
         return null;
       }
     },
-    queryKey: [
-      'useGetAllClientOrdersProposed',
-      profileId,
-      pageNum,
-      itemsPerPage,
-      searchText,
-    ],
+    queryKey: ['useGetAllClientOrdersProposed', profileId],
     staleTime: Infinity,
   });
 };
