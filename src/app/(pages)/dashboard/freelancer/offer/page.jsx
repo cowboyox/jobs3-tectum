@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/select';
 import OfferItem from '@/components/dashboard/offerItem';
 import { useCustomContext } from '@/context/use-custom';
-import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllClientOrdersProposed } from '@/hooks/useGetAllClientOrdersProposed';
 
 import searchOptions from '../../client/freelancers/searchOptions';
@@ -28,41 +27,17 @@ const Offer = () => {
   const [searchType, setSearchType] = useState('normal');
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
-  const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(2);
-  const [searchKeywords, setSearchKeyWords] = useState('');
-  const [canLoadMore, setCanLoadMore] = useState(true);
-  const debouncedSearchText = useDebounce(searchKeywords);
   
   const { data: orders, refetch: refetchAllOrdersProposed } = useGetAllClientOrdersProposed(
-    auth?.currentProfile?._id,
-    page,
-    itemsPerPage,
-    debouncedSearchText,
+    auth?.currentProfile?._id
   );
 
   useEffect(() => {
-    if (mode == "live") {
-      if (orders?.livesTotal > page * itemsPerPage && orders?.lives?.length > 0) {
-        setCanLoadMore(true);
-      } else {
-        setCanLoadMore(false);
-      }
-    } else {
-      if (orders?.proposalsTotal > page * itemsPerPage && orders?.proposals?.length > 0) {
-        setCanLoadMore(true);
-      } else {
-        setCanLoadMore(false);
-      }
+    if (orders) {
+      setLives(orders?.lives);
+      setProposals(orders?.proposals);
     }
-    setLives(orders?.lives);
-    setProposals(orders?.proposals);
-  }, [orders, mode, page]);
-
-  useEffect(() => {
-    // setPage(1);
-    setItemsPerPage(2);
-  }, [debouncedSearchText, mode]);
+  }, [orders]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -84,17 +59,6 @@ const Offer = () => {
     };
   }, []);
 
-  const handleLoadMore = () => {
-    // setPage((prev) => prev + 1);
-    setItemsPerPage((prev) => prev + 2);
-  };
-  
-  const setKey = (e) => {
-    // setPage(1);
-    setItemsPerPage(2);
-    setSearchKeyWords(e.target.value);
-  };
-  
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && searchType === 'ai') {
     }
@@ -121,8 +85,8 @@ const Offer = () => {
           </Select>
           <input
             className='w-full bg-transparent outline-none'
-            onChange={(e) => setKey(e)}
-            // onKeyDown={handleKeyDown}
+            // onChange={(e) => setKey(e)}
+            onKeyDown={handleKeyDown}
             placeholder={isSmallScreen ? '' : 'Search by Order title...'}
           />
           {isSmallScreen && (
@@ -295,12 +259,12 @@ const Offer = () => {
       </div>
       {mode == 'live' ? (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{orders?.livesTotal}</span>{' '}
+          You have <span className='font-bold text-[#DC4F13]'>{lives.length}</span>{' '}
           Accepteds😊
         </div>
       ) : (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{orders?.proposalsTotal}</span>{' '}
+          You have <span className='font-bold text-[#DC4F13]'>{proposals.length}</span>{' '}
           Proposals😊
         </div>
       )}
@@ -326,7 +290,7 @@ const Offer = () => {
           {mode == 'live' ? (
             <h1>
               <span className='inline-block w-6 h-6 rounded-full bg-orange'>
-                {lives?.length}
+                {lives.length}
               </span>
               &nbsp; Live
             </h1>
@@ -341,7 +305,7 @@ const Offer = () => {
           {mode == 'proposal' ? (
             <h1>
               <span className='inline-block w-6 h-6 rounded-full bg-orange'>
-                {proposals?.length}
+                {proposals.length}
               </span>
               &nbsp; Proposals
             </h1>
@@ -353,7 +317,7 @@ const Offer = () => {
       {mode == 'live' ? (
         <>
           {
-            lives?.length > 0 ? 
+            lives.length > 0 ? 
             (
               <>
                 {lives.map((order, index) => (
@@ -378,14 +342,9 @@ const Offer = () => {
                     quantity={order.quantity}
                   />
                 ))}
-                {canLoadMore && (
-                  <div
-                    className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
-                    onClick={handleLoadMore}
-                  >
-                    Load More +
-                  </div>
-                )}
+                <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
+                  Load more +{' '}
+                </button>
               </>
             ) : (
               <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
@@ -398,7 +357,7 @@ const Offer = () => {
       ) : (
         <>
           {
-            proposals?.length > 0 ? 
+            proposals.length > 0 ? 
             (
               <>
                 {proposals.map((proposal, index) => (
@@ -423,14 +382,9 @@ const Offer = () => {
                     quantity={proposal.quantity}
                   />
                 ))}
-                {canLoadMore && (
-                  <div
-                    className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
-                    onClick={handleLoadMore}
-                  >
-                    Load More +
-                  </div>
-                )}
+                <button className='mt-6 w-full border border-[#28373E] p-3 text-center'>
+                  Load more +{' '}
+                </button>
               </>
             ) : (
               <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
