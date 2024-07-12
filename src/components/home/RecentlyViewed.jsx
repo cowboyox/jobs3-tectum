@@ -68,7 +68,7 @@ const RecentlyViewed = ({ search }) => {
                   <div className='flex h-10 w-[100%] items-center justify-center border-none outline-none'>
                     <Image
                       alt='pic'
-                      className='h-full w-full object-contain'
+                      className='h-full w-full rounded-full object-cover'
                       height={1000}
                       src={recent.creator.avatarURL || '/assets/dashboard-media/profilePic.png'}
                       width={1000}
