@@ -2,15 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetFreelancersBySkills = (pageNum, itemsPerPage, skills) => {
+export const useGetFreelancersBySkills = (userId, pageNum, itemsPerPage, skills) => {
   return useQuery({
     cacheTime: Infinity,
-    enabled: pageNum > 0 && itemsPerPage > 0,
+    enabled: !!userId && pageNum > 0 && itemsPerPage > 0,
     queryFn: async () => {
-      if (pageNum > 0 && itemsPerPage > 0) {
+      if (!!userId && pageNum > 0 && itemsPerPage > 0) {
         try {
           const { data } = await api.get(
-            `/api/v1/profile/get_all_freelancers_by_skills?page=${pageNum}&limit=${itemsPerPage}&skills=${skills}`
+            `/api/v1/profile/get_all_freelancers_by_skills/${userId}?page=${pageNum}&limit=${itemsPerPage}&skills=${skills}`
           );
 
           return data?.data;
@@ -23,7 +23,7 @@ export const useGetFreelancersBySkills = (pageNum, itemsPerPage, skills) => {
 
       return null;
     },
-    queryKey: ['useGetFreelancersBySkills', pageNum, itemsPerPage, skills.sort()],
+    queryKey: ['useGetFreelancersBySkills', userId, pageNum, itemsPerPage, skills.sort()],
     staleTime: Infinity,
   });
 };

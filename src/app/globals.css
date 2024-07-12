@@ -88,6 +88,7 @@ button {
   border-color: rgb(27 39 44);
   border-width: 1px;
   border-style: solid;
+  @apply text-base font-normal;
 }
 
 .wallet-adapter-dropdown-list {
@@ -96,8 +97,26 @@ button {
   border-color: rgb(40 55 62);
   border-width: 1px;
   border-style: solid;
+  width: 250px;
 }
 
-/* .wallet-adapter-dropdown-list > .wallet-adapter-dropdown-list-item {
-  @apply hover:bg-sky-700;
-} */
+.wallet-adapter-dropdown-list > .wallet-adapter-dropdown-list-item {
+  @apply text-[#96B0BD] hover:text-[#F5F5F5] hover:bg-[#1B272C] text-lg font-medium py-6 justify-start relative;
+}
+
+.wallet-adapter-dropdown-list > .wallet-adapter-dropdown-list-item:nth-child(2):after {
+  content: '';
+  background: #28373E;
+  position: absolute;
+  bottom: -5px;
+  left: 0px;
+  width: 100%;
+  height: 1px;
+} 
+/* 
+.wallet-adapter-dropdown-list > .wallet-adapter-dropdown-list-item:nth-child(2):before {
+  content: '';
+  width: 50px;
+  height: 50px;
+  background-image: url();
+}  */

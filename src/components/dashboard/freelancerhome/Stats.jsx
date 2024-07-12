@@ -501,7 +501,12 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
                             <Select
                               id={item.title}
                               onValueChange={(e) => onSelectChange(e)}
-                              // value={filters.find((f) => f.id === item.content[0].category_id)}
+                              value={
+                                (() => {
+                                  const returns_value = item.content.filter((_item) => filters.map((f) => f.name).includes(_item.category_name));
+                                  return returns_value[0];
+                                })()
+                              }
                             >
                               <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                                 <SelectValue placeholder={item.choose} />

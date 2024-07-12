@@ -1,4 +1,6 @@
 /*--------- Hooks ---------*/
+import { getAssociatedTokenAddressSync } from '@solana/spl-token';
+import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -24,7 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCustomContext } from '@/context/use-custom';
-import { USER_ROLE } from '@/utils/constants';
+import { PAYTOKEN_MINT, USER_ROLE } from '@/utils/constants';
 
 const menu_data = [
   {
@@ -115,6 +117,8 @@ const menu_data = [
 
 const DashboardHeader = () => {
   const { renderPopup } = usePopupFunctions();
+  const wallet = useAnchorWallet();
+  const { connection } = useConnection();
 
   function OpenSideBar() {
     document.querySelector('.main_sidebar').classList.toggle('-translate-x-full');
@@ -123,6 +127,7 @@ const DashboardHeader = () => {
 
   const [accType, setAccType] = useState([]);
   const [title, setTitle] = useState('');
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
@@ -183,7 +188,23 @@ const DashboardHeader = () => {
     );
   }, [pathname]);
 
-  console.log(auth);
+  useEffect(() => {
+    if (wallet && connection) {
+      (async function () {
+        try {
+          const walletAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, wallet?.publicKey);
+
+          // Get the token balance
+          const info = await connection.getTokenAccountBalance(walletAta);
+
+          setBalance(info.value.uiAmount);
+        } catch (error) {
+          console.log('Error while getting balance of the wallet:', error);
+          setBalance(0);
+        }
+      })();
+    }
+  }, [wallet, connection]);
 
   if (!auth?.currentProfile) {
     return (
@@ -240,15 +261,21 @@ const DashboardHeader = () => {
           </DropdownMenuContent>
         </DropdownMenu> */}
         <Select defaultValue={auth?.currentRole} onValueChange={handleChangeRole}>
-          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
+          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 text-base font-normal mobile:hidden mobile:p-2'>
             <SelectValue />
           </SelectTrigger>
           <SelectContent align='end' className='w-40 rounded-xl bg-[#10191D]'>
             <SelectGroup className='flex flex-col gap-2'>
-              <SelectItem className='cursor-pointer rounded-xl py-3' value={USER_ROLE.CLIENT}>
+              <SelectItem
+                className='cursor-pointer rounded-xl py-3 text-lg font-medium text-[#96B0BD]'
+                value={USER_ROLE.CLIENT}
+              >
                 Client
               </SelectItem>
-              <SelectItem className='cursor-pointer rounded-xl py-3' value={USER_ROLE.FREELANCER}>
+              <SelectItem
+                className='cursor-pointer rounded-xl py-3 text-lg font-medium text-[#96B0BD]'
+                value={USER_ROLE.FREELANCER}
+              >
                 Freelancer
               </SelectItem>
             </SelectGroup>
@@ -294,10 +321,10 @@ const DashboardHeader = () => {
             className='flex w-64 flex-col gap-0 rounded-xl border-2 border-[#28373e] bg-[#10191d]'
             sideOffset={10}
           >
-            <DropdownMenuItem className='cursor-pointer rounded p-3 text-base text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
+            <DropdownMenuItem className='cursor-pointer rounded p-3 text-lg font-medium text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
               <h1 onClick={() => router.push(`/help`)}>Help and support</h1>
             </DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer rounded p-3 text-base text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
+            <DropdownMenuItem className='cursor-pointer p-3 text-lg font-medium text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
               <h1>Community and Forums</h1>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -325,7 +352,7 @@ const DashboardHeader = () => {
             className='flex w-72 flex-col gap-0 rounded-xl border-2 border-[#28373e] bg-[#10191d]'
             sideOffset={10}
           >
-            <DropdownMenuItem className='rounded py-3 text-base hover:bg-[#1B272C]'>
+            <DropdownMenuItem className='rounded py-3 text-lg font-medium hover:bg-[#1B272C]'>
               <div className='flex w-full items-center justify-between text-[#96B0BD]'>
                 <div className='flex items-center gap-2'>
                   <svg
@@ -360,12 +387,16 @@ const DashboardHeader = () => {
                   <h1>Balance</h1>
                 </div>
                 <div>
-                  <h1 className='text-[#F5F5F5]'>$ 1200</h1>
+                  {wallet?.publicKey ? (
+                    <h1 className='text-[#F5F5F5]'>$ {balance.toFixed(2)}</h1>
+                  ) : (
+                    <h1 className='text-sm text-[#F5F5F5]'>No Wallet Connected</h1>
+                  )}
                 </div>
               </div>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='cursor-pointer rounded py-3 text-base hover:bg-[#1B272C]'>
+            <DropdownMenuItem className='cursor-pointer rounded py-3 text-lg font-medium hover:bg-[#1B272C]'>
               <div className='flex items-center gap-2'>
                 <svg
                   fill='none'
@@ -413,7 +444,7 @@ const DashboardHeader = () => {
                 <h1 className='text-[#96B0BD]'>$THREE Wallet</h1>
               </div>
             </DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer rounded py-3 text-base hover:bg-[#1B272C]'>
+            <DropdownMenuItem className='cursor-pointer rounded py-3 text-lg font-medium hover:bg-[#1B272C]'>
               <div className='flex items-center gap-2'>
                 <svg
                   fill='none'
@@ -455,7 +486,7 @@ const DashboardHeader = () => {
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem
-              className='cursor-pointer rounded py-3 text-base hover:bg-[#1B272C]'
+              className='cursor-pointer rounded py-3 text-lg font-medium hover:bg-[#1B272C]'
               onClick={() =>
                 router.push(
                   `/dashboard/${auth?.currentRole == 3 ? 'client' : 'freelancer'}/settings`
@@ -504,7 +535,7 @@ const DashboardHeader = () => {
               })} */}
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className='cursor-pointer rounded py-3 text-base hover:bg-[#1B272C]'
+              className='cursor-pointer rounded py-3 text-lg font-medium hover:bg-[#1B272C]'
               onClick={handleSignOut}
             >
               <div className='flex items-center gap-2'>
