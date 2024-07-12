@@ -55,7 +55,6 @@ const page = () => {
             profile.reason = reasons[index];
             return profile;
           });
-          console.log('new', profiles);
           setFilteredFreelancers(profiles);
           setLoading(false);
         }
