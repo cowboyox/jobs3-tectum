@@ -83,7 +83,7 @@ export const useGetAllClientGigsProposed = (
             });
           }
 
-          return { lives, proposals };
+          return { lives, proposals, proposalsTotal: result.data.proposalsTotal, livesTotal: result.data.contractsTotal };
         } catch (e) {
           console.error(e);
 
