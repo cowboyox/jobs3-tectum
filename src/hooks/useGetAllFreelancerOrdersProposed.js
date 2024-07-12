@@ -2,20 +2,43 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetAllClientOrdersProposed = (
+export const useGetAllFreelancerOrdersProposed = (
   profileId,
   pageNum,
   itemsPerPage,
   searchText = '',
+  filters = []
 ) => {
   return useQuery({
     cacheTime: Infinity,
-    enabled: !!profileId,
+    enabled: !!profileId && pageNum > 0 && itemsPerPage > 0,
     queryFn: async () => {
       if (profileId && pageNum > 0 && itemsPerPage > 0) {
         try {
-          const result = await api.get(`/api/v1/freelancer_gig/find_all_orders_of_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}`);
-          console.log("result in useGetAllClientOrdersProposed:", result);
+          let earned = 0;
+          let languages = ['any'];
+          let hourlyRate = ['any'];
+          let hoursBilled = 0;
+          let jobSuccess = 0;
+
+          filters.map((filter) => {
+            if (filter.id === 'earned' && filter.value > earned) {
+              earned = filter.value;
+            } else if (filter.id === 'hoursBilled' && filter.value > hoursBilled) {
+              hoursBilled = filter.value;
+            } else if (filter.id === 'jobSuccess' && filter.value > jobSuccess) {
+              jobSuccess = filter.value;
+            } else if (filter.id === 'languages' && filter.value !== 'any') {
+              languages = [...languages, filter.value].filter((lang) => lang !== 'any');
+            } else if (filter.id === 'hourlyRate' && filter.value !== 'any') {
+              hourlyRate = [...hourlyRate, filter.value].filter((lang) => lang !== 'any');
+            }
+          });
+
+          const result = await api.get(
+            `/api/v1/freelancer_gig/find_all_orders_on_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
+          );
+          console.log('result in useGetAllFreelancerOrdersProposed:', result);
           const proposals = [];
           const lives = [];
 
@@ -23,9 +46,10 @@ export const useGetAllClientOrdersProposed = (
             result.data.proposals.map((proposal) => {
               proposals.push({
                 creator: {
-                  fullName: proposal.proposer.fullName,
+                  fullName: proposal.gigOwner.fullName,
                 },
-                client: proposal.proposer,
+                deliveryTime: proposal.freelancerGig.deliveryTime,
+                freelancer: proposal.gigOwner,
                 gigDescription: proposal.freelancerGig.gigDescription,
                 gigId: proposal.freelancerGig._id,
                 gigPostDate: proposal.freelancerGig.gigPostDate,
@@ -33,12 +57,11 @@ export const useGetAllClientOrdersProposed = (
                 gigTitle: proposal.freelancerGig.gigTitle,
                 maxBudget: proposal.freelancerGig.maxBudget,
                 minBudget: proposal.freelancerGig.minBudget,
-                walletPublicKey: proposal.proposer.walletPublicKey,
-                deliveryTime: proposal.freelancerGig.deliveryTime,
                 proposal: proposal.proposal,
                 proposalId: proposal._id,
                 status: null,
                 contractId: null,
+                walletPublicKey: proposal.proposer?.walletPublicKey,
                 quantity: proposal.quantity,
               });
             });
@@ -47,11 +70,12 @@ export const useGetAllClientOrdersProposed = (
           if (result.data.lives.length > 0) {
             result.data.lives.map((live) => {
               lives.push({
-                id: live._id,
+                contractId: live.contractId,
                 creator: {
-                  fullName: live.proposer.fullName,
+                  fullName: live.gigOwner.fullName,
                 },
-                client: live.proposer,
+                deliveryTime: live.freelancerGig.deliveryTime,
+                freelancer: live.gigOwner,
                 gigDescription: live.freelancerGig.gigDescription,
                 gigId: live.freelancerGig._id,
                 gigPostDate: live.freelancerGig.gigPostDate,
@@ -59,13 +83,11 @@ export const useGetAllClientOrdersProposed = (
                   ? live.freelancerGig.gigPrice
                   : `$${live.freelancerGig.minBudget}/hr ~ $${live.freelancerGig.maxBudget}/hr`,
                 gigTitle: live.freelancerGig.gigTitle,
-                status: live.status,
-                contractId: live.contractId,
-                deliveryTime: live.freelancerGig.deliveryTime,
+                id: live._id,
                 proposal: live.proposal,
                 proposalId: live._id,
-                status: live.status,
                 contractId: live.contractId,
+                status: live.status,
                 walletPublicKey: live.proposer?.walletPublicKey,
                 quantity: live?.quantity,
               });
@@ -83,11 +105,12 @@ export const useGetAllClientOrdersProposed = (
       }
     },
     queryKey: [
-      'useGetAllClientOrdersProposed',
-      profileId,
-      pageNum,
-      itemsPerPage,
-      searchText,
+        'useGetAllFreelancerOrdersProposed', 
+        profileId,
+        pageNum,
+        itemsPerPage,
+        searchText,
+        filters,
     ],
     staleTime: Infinity,
   });
