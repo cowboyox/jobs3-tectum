@@ -85,7 +85,7 @@ const Orders = () => {
   const [searchType, setSearchType] = useState('normal');
   const [mode, setMode] = useState('live');
   const [page, setPage] = useState(1);
-  const itemsPerPage = 2;
+  const [itemsPerPage, setItemsPerPage] = useState(2);
   const [searchKeywords, setSearchKeyWords] = useState('');
   const debouncedSearchText = useDebounce(searchKeywords);
   const [canLoadMore, setCanLoadMore] = useState(true);
@@ -167,7 +167,8 @@ const Orders = () => {
   ];
 
   useEffect(() => {
-    setPage(1);
+    // setPage(1);
+    setItemsPerPage(2);
   }, [debouncedSearchText, mode]);
 
   useEffect(() => {
@@ -232,10 +233,11 @@ const Orders = () => {
         setCanLoadMore(false);
       }
     }
-  }, [gigs, page, mode]);
+  }, [gigs, page, mode, itemsPerPage]);
 
   const handleLoadMore = () => {
-    setPage((prev) => prev + 1);
+    // setPage((prev) => prev + 1);
+    setItemsPerPage((prev) => prev + 2);
   };
 
   useEffect(() => {
@@ -482,7 +484,8 @@ const Orders = () => {
   };
 
   const setKey = (e) => {
-    setPage(1);
+    // setPage(1);
+    setItemsPerPage(4);
     setSearchKeyWords(e.target.value);
     // if (searchType == 'normal') {
     //   if (mode === 'live') {
