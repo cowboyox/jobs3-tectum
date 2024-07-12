@@ -178,7 +178,7 @@ const MyGigs = () => {
               className='w-full bg-transparent text-white outline-none mobile:text-sm'
               onChange={(e) => setKey(e)}
               onKeyDown={handleKeyDown}
-              placeholder='Search by job title, company, keywords'
+              placeholder='Search by gig title, company, keywords'
             />
           </div>
           {(!isSmallScreen || searchType === 'normal') && (
