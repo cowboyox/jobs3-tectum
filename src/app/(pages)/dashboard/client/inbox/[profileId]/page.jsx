@@ -4,10 +4,10 @@ import React from 'react';
 
 import ChatPage from '@/components/dashboard/inbox/ChatPage';
 
-const ClientSelectChatMessage = ({ children }) => {
+const ClientChatPage = ({ children }) => {
   const { profileId } = useParams();
 
   return <ChatPage profileId={profileId}> {children} </ChatPage>;
 };
 
-export default ClientSelectChatMessage;
+export default ClientChatPage;
