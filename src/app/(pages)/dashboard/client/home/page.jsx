@@ -13,7 +13,8 @@ import searchOptions from '../freelancers/searchOptions';
 import { useHandleResize } from '@/hooks/useHandleResize';
 
 
-const page = () => {
+const Page = () => {
+  
   const [allFreelancers, setAllFreelancers] = useState([]);
   const [searchKeywords, setSearchText] = useState('');
   const [searchType, setSearchType] = useState(searchOptions[0]);
@@ -125,4 +126,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
