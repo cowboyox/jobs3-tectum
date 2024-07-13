@@ -146,7 +146,7 @@ const FindJob = () => {
   useEffect(() => {
     if (clientGigs) {
       setGigList(clientGigs);
-      // setFilteredGigList(clientGigs);
+      setFilteredGigList(clientGigs);
       // setFilteredGigShowModeList(new Array(clientGigs.length).fill(false));
     }
   }, [clientGigs]);
