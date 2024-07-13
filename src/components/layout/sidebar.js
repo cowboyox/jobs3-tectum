@@ -8,7 +8,7 @@ import { USER_ROLE } from '@/utils/constants';
 
 import { FaAngleLeft } from "react-icons/fa6";
 import { FaAngleRight } from "react-icons/fa6";
-
+import { IoMdClose } from "react-icons/io";
 
 const sideBarSettings = {
   x_spacing: 7, // should be a tailwind css number
@@ -858,16 +858,19 @@ const SideBar = () => {
       ref={sideBarRef}
     >
       <div 
-        className={`${desktopCollapsed  ? `px-0 w-[80px] max-w-full mr-auto flex justify-center` : `w-full px-${sideBarSettings.x_spacing}`}`} 
+        className={`${desktopCollapsed  ? `px-0 w-[80px] max-w-full mr-auto flex justify-center` : `w-full px-${sideBarSettings.x_spacing} mobile:flex justify-between`}`} 
         onClick={MobileToggleSidebar}
       >
         <img 
           className={desktopCollapsed ? `w-1/2 mx-auto` : 'w-1/2 mr-auto'} 
           src={desktopCollapsed ? '/favicon.ico' : '/assets/images/logo.svg'} 
         />
+        <div className='p-2 rounded-[10px] bg-[#1B272C] cursor-pointer md:hidden'>
+          <IoMdClose size={25} />
+        </div>
       </div>
       <div 
-        className={`${desktopCollapsed  ? `px-0 flex justify-center w-[80px] max-w-full mr-auto` : `px-${sideBarSettings.x_spacing}`} w-full`} 
+        className={`${desktopCollapsed  ? `px-0 flex justify-center w-[80px] max-w-full mr-auto` : `px-${sideBarSettings.x_spacing}`} w-full mobile:hidden`} 
       >
         {desktopCollapsed ? (
           <FaAngleRight size={20} className='cursor-pointer' onClick={()=> { setDesktopCollapsed(false) }} />
