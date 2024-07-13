@@ -4,6 +4,7 @@ import api from '@/utils/api';
 import { APIS } from '@/utils/constants';
 
 export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters = []) => {
+  console.log("useGetClientGigs");
   return useQuery({
     cacheTime: Infinity,
     enabled: pageNum > 0 && itemsPerPage > 0,
@@ -20,7 +21,8 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
           let location = 'any';
           let timezone = 'any';
           let info = 'any';
-          let amount = ['any'];
+          let fixed = ['any'];
+          let hourly = ['any'];
 
           filters.map((filter) => {
             if (filter.id === 'payment' && filter.value !== 'any') {
@@ -46,13 +48,16 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
             } else if (filter.id === 'info') {
               info = filter.value;
             } else if (filter.id === 'amount' && filter.value !== 'any') {
-              amount = [...amount, filter.value].filter((p) => p !== 'any');
+              fixed = [...fixed, filter.value].filter((p) => p !== 'any');
+            } else if (filter.id === 'hourly' && filter.value !== 'any') {
+              hourly = [...hourly, filter.value].filter((p) => p !== 'any');
             }
+
             
           });
 
           const { data } = await api.get(
-            `${APIS.CL_FIND_GIGS}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&applicants=${applicants}&experience=${experience}&hoursPerWeek=${hoursPerWeek}&location=${location}&timezone=${timezone}&info=${info}&amount=${amount}`
+            `${APIS.CL_FIND_GIGS}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&applicants=${applicants}&experience=${experience}&hoursPerWeek=${hoursPerWeek}&location=${location}&timezone=${timezone}&info=${info}&fixed=${fixed}&hourly=${hourly}`
           );
 
           console.log(data);
