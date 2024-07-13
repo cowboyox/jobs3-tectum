@@ -143,13 +143,13 @@ const FindJob = () => {
     },
   ];
 
-  // useEffect(() => {
-  //   if (clientGigs) {
-  //     setGigList(clientGigs);
-  //     setFilteredGigList(clientGigs);
-  //     setFilteredGigShowModeList(new Array(clientGigs.length).fill(false));
-  //   }
-  // }, [clientGigs]);
+  useEffect(() => {
+    if (clientGigs) {
+      setGigList(clientGigs);
+      setFilteredGigList(clientGigs);
+      // setFilteredGigShowModeList(new Array(clientGigs.length).fill(false));
+    }
+  }, [clientGigs]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -402,8 +402,8 @@ const FindJob = () => {
                 {filterItems.map((item, index) => {
                   if (
                     !(
-                      (item.title === 'Amount' && !isFixed) ||
-                      (item.title === 'Hourly Rate' && !isHourly)
+                      (item.title === 'Amount(Fixed)' && !isFixed) ||
+                      (item.title === 'Amount(Hourly)' && !isHourly)
                     )
                   )
                     return (
