@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
+import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
 
 const MessageDetails = (props) => {
@@ -88,6 +89,7 @@ const ChatPage = ({ profileId }) => {
   const [input, setInput] = useState('');
   const { data: userInfo } = useGetUserInfo(profileId);
   const messagesEndRef = useRef(null);
+  const { data: usersWithMessages } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   useEffect(() => {
     if (userInfo && auth?.currentProfile) {
@@ -218,7 +220,7 @@ const ChatPage = ({ profileId }) => {
               </DropdownMenu>
             </div>
           </div>
-          <div className='relative flex flex-col items-center overflow-scroll'>
+          <div className='relative flex flex-1 flex-col items-center overflow-scroll'>
             <div className='flex w-full flex-col gap-9 px-8 pb-3 pt-8 mobile:px-5'>
               {conversations.map((conv, id) => (
                 <div className='flex w-full flex-col gap-3' key={id}>
