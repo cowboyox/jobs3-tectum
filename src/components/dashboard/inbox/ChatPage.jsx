@@ -89,7 +89,7 @@ const ChatPage = ({ profileId }) => {
   const [input, setInput] = useState('');
   const { data: userInfo } = useGetUserInfo(profileId);
   const messagesEndRef = useRef(null);
-  const { data: usersWithMessages } = useGetMembersWithMessages(auth?.currentProfile?._id);
+  const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   useEffect(() => {
     if (userInfo && auth?.currentProfile) {
@@ -112,15 +112,34 @@ const ChatPage = ({ profileId }) => {
       socket?.on('history', (history) => {
         setConversation(history);
       });
+
       socket?.on('newMessage', (message) => {
         setConversation((prevMessages) => [...prevMessages, message]);
+        socket.emit('readMessage', { from: to, to: from });
       });
 
       return () => {
         socket?.off('newMessage');
       };
     }
-  }, [userInfo, auth?.currentProfile, socket]);
+  }, [userInfo, auth.currentProfile, socket, refetch, usersWithMessages]);
+
+  useEffect(() => {
+    if (usersWithMessages) {
+      let convs = [];
+
+      usersWithMessages.messages.map((message) => {
+        convs.push({
+          messageText: message.messageText,
+          receiverId: message.receiverId._id,
+          senderId: message.senderId._id,
+          timeStamp: message.timeStamp,
+        });
+      });
+
+      setConversation(convs);
+    }
+  }, [usersWithMessages]);
 
   // Function to scroll to the bottom
   const scrollToBottom = () => {

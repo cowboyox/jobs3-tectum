@@ -29,12 +29,46 @@ const truncateText = (text, maxLength) => {
   return text?.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 };
 const MessageItem = ({ user }) => {
+  const auth = useCustomContext();
   const pathname = usePathname();
+  const socket = useSocket();
+  const [isSelected, setIsSelected] = useState(false);
+  const [unReadCount, setUnReadCount] = useState(0);
+  const { data: usersWithMessages } = useGetMembersWithMessages(auth?.currentProfile?._id);
+
+  useEffect(() => {
+    if (pathname?.split('/').pop() === user._id) {
+      setIsSelected(true);
+    } else {
+      setIsSelected(false);
+    }
+  }, [pathname, user]);
+
+  useEffect(() => {
+    socket.on('messagesRead', (data) => {
+      if (data.from === user._id && data.to === auth.currentProfile._id) {
+        setUnReadCount(0);
+      }
+    });
+  }, [isSelected, socket, auth?.currentProfile?._id, user._id]);
+
+  useEffect(() => {
+    if (usersWithMessages && auth?.currentProfile?._id) {
+      const unReadCount = usersWithMessages.messages.filter(
+        (message) =>
+          message.senderId._id === user._id &&
+          message.receiverId._id === auth.currentProfile._id &&
+          !message.read
+      ).length;
+
+      setUnReadCount(unReadCount);
+    }
+  }, [usersWithMessages, auth.currentProfile._id, user._id]);
 
   return (
     <Link href={`/dashboard/freelancer/inbox/${user._id}`} socket='socket'>
       <div
-        className={`${pathname?.split('/').pop() === user._id ? 'bg-[#1a272c]' : ''} group flex cursor-pointer gap-4 rounded-xl p-4 transition hover:bg-[#1a272c]`}
+        className={`${isSelected ? 'bg-[#1a272c]' : ''} group flex cursor-pointer gap-4 rounded-xl p-4 transition hover:bg-[#1a272c]`}
       >
         <div className='flex w-3/5 gap-3'>
           <div className='relative h-10 min-w-10'>
@@ -63,10 +97,8 @@ const MessageItem = ({ user }) => {
         <div className='flex w-2/5 items-center justify-between'>
           <span className='text-xs text-[#96B0BD]'>{user.userId.timestamp}</span>
           <div className='flex items-center gap-3'>
-            {user.unreadCount > 0 && (
-              <span className='rounded-full bg-[#DC4F13] px-2 py-[1px] text-xs'>
-                {user.unreadCount}
-              </span>
+            {unReadCount > 0 && (
+              <span className='rounded-full bg-[#DC4F13] px-2 py-[1px] text-xs'>{unReadCount}</span>
             )}
             {user.starred ? (
               <FaStar className='w-4 cursor-copy fill-[#96B0BD]' />
@@ -105,10 +137,6 @@ const InboxPage = ({ children }) => {
         }
       }
     });
-
-    return () => {
-      socket?.off('newMessage');
-    };
   }, [auth, refetch, socket, usersWithMessages]);
 
   useEffect(() => {
