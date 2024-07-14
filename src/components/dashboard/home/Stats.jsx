@@ -43,16 +43,20 @@ const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   );
 };
 
-const Stats = () => {
+const Stats = ({
+  setSearchText,
+  searchType,
+  setIsAiSearch,
+  setSearchType,
+  filters,
+  setFilters,
+  searchKeywords,
+  isSmallScreen,
+}) => {
   const auth = useCustomContext();
   const { data: clientInfo } = useClientInfo(auth?.currentProfile?._id);
-  const [searchType, setSearchType] = useState(searchOptions[0]);
-  const [searchKeywords, setSearchKeyWords] = useState('');
   const [filteredHires, setFilteredHires] = useState([]);
   const [filteredApplications, setFilteredApplications] = useState([]);
-  const { isSmallScreen } = useHandleResize();
-  const [filters, setFilters] = useState([]);
-  const [searchText, setSearchText] = useState('');
 
 
   useEffect(() => {

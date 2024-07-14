@@ -125,17 +125,8 @@ const DashboardHeader = () => {
   }
   const auth = useCustomContext();
 
-  const [accType, setAccType] = useState([]);
   const [title, setTitle] = useState('');
   const [balance, setBalance] = useState(0);
-
-  useEffect(() => {
-    let tmp = localStorage.getItem('jobs_2024_token');
-    if (tmp === null) {
-    } else {
-      setAccType(JSON.parse(tmp).data.user.role);
-    }
-  }, []);
 
   const handleTap = (item) => {
     if (!item) {
@@ -159,18 +150,6 @@ const DashboardHeader = () => {
   const pathname = usePathname();
 
   const { disconnect } = useDisconnect();
-
-  const handleNavigation = (roleNumber) => {
-    let tmp = localStorage.getItem('jobs_2024_token');
-    if (tmp) {
-      let { data } = JSON.parse(tmp);
-      let obj = { ...data, currentRole: roleNumber };
-      auth.setCurrentRole(roleNumber);
-      localStorage.setItem('jobs_2024_token', JSON.stringify({ data: obj }));
-    }
-
-    return router.push(`/dashboard/${handleTap(roleNumber).toLowerCase()}/home`);
-  };
 
   const handleSignOut = () => {
     disconnect();
@@ -217,51 +196,25 @@ const DashboardHeader = () => {
 
   return (
     <header
-      className='flex h-28 flex-wrap items-center justify-between md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
+      className='flex h-28 flex-wrap items-center justify-between md:h-20 mobile:flex-nowrap mobile:justify-center mobile:gap-3'
       id='header_container'
     >
       {renderPopup()}
-      <div className='w-full md:hidden'>
-        <img className='h-6' src='/assets/images/logo.svg' />
-      </div>
-      <div>
+      <div className='mobile:hidden'>
         <h1 className='text-3xl font-bold text-[#F5F5F5]'>{title}</h1>
       </div>
-      <div className='flex w-full items-center gap-3 md:w-auto md:gap-4'>
-        <LuAlignLeft
-          className='mr-auto h-5 w-5 md:hidden'
+      <div className='flex w-full items-center gap-3 md:w-auto md:gap-4 mobile:justify-between'>
+        <div
+          className='order-1 cursor-pointer rounded-[10px] bg-[#10191D] p-3 md:hidden'
           onClick={() => {
             OpenSideBar();
           }}
-        />
-        <div className='flex items-center gap-2'>
-          {/* <span className='text-lg uppercase'>{handleTap(auth?.currentRole)}</span> */}
-          {renderWalletButton()}
+        >
+          <LuAlignLeft className='mr-auto h-7 w-7 fill-[#96B0BD] stroke-[#96B0BD]' />
         </div>
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger className='py-2 px-4 min-w-20 w-auto rounded-xl border border-[#1B272C] gap-3 flex items-center mobile:p-2'>
-            <img src="/assets/images/icons/metamask.png" className='bg-[#10191D] h-7 w-7 rounded-full object-contain p-1' />
-            <span className='text-sm'>0x907a...Ac62e2</span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className='flex flex-col gap-2 rounded-xl border-2 border-[#28373e] bg-[#10191d]' align='end'>
-            <DropdownMenuItem className='flex gap-2 rounded-xl cursor-pointer py-3 px-2 bg-[#1B272C]'>
-              <img src="/assets/images/icons/metamask.png" className='w-4' />
-              <span className='text-sm'>0x907a...Ac62e2</span>
-              <FaRegCopy className='ml-3 cursor-pointer' />
-            </DropdownMenuItem>
-            <DropdownMenuItem className='flex gap-2 py-3 cursor-pointer rounded-xl'>
-              <RxReload className='w-5 stroke-[#96b0be]' />
-              <span className='text-[15px]'>Change wallet</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className='flex gap-2 py-3 cursor-pointer rounded-xl'>
-              <IoIosLogOut className='w-5 stroke-[#96b0be]' />
-              <span className='text-[15px]'>Disconnect</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
+        <div className='flex items-center gap-2 mobile:hidden'>{renderWalletButton()}</div>
         <Select defaultValue={auth?.currentRole} onValueChange={handleChangeRole}>
-          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 text-base font-normal mobile:hidden mobile:p-2'>
+          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 text-base font-normal mobile:order-3 mobile:py-6'>
             <SelectValue />
           </SelectTrigger>
           <SelectContent align='end' className='w-40 rounded-xl bg-[#10191D]'>
@@ -330,13 +283,13 @@ const DashboardHeader = () => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Notifications />
+        <Notifications className='mobile:order-2' />
 
         <DropdownMenu>
-          <DropdownMenuTrigger className='mobile:hidden'>
-            <div className='relative w-20 md:h-12 md:w-12'>
+          <DropdownMenuTrigger className='mobile:order-4'>
+            <div className='relative h-12 w-12 mobile:h-10 mobile:w-10'>
               <img
-                className='aspect-square h-full w-full rounded-full'
+                className='aspect-square h-full w-full rounded-full object-cover'
                 src={
                   auth?.currentProfile?.avatarURL
                     ? auth?.currentProfile?.avatarURL
@@ -521,18 +474,6 @@ const DashboardHeader = () => {
                 <h1 className='text-[#96B0BD]'>Settings</h1>
               </div>
             </DropdownMenuItem>
-            {/* {Array.isArray(accType) &&
-              accType?.map((item, index) => {
-                if (auth?.currentRole !== item) {
-                  return (
-                    <DropdownMenuItem className='hover:bg-white' key={index}>
-                      <Button className='w-full rounded' onClick={() => handleNavigation(item)}>
-                        {handleTap(item)}
-                      </Button>
-                    </DropdownMenuItem>
-                  );
-                }
-              })} */}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className='cursor-pointer rounded py-3 text-lg font-medium hover:bg-[#1B272C]'

@@ -2,6 +2,7 @@
 import gsap from 'gsap';
 import React, { useEffect, useRef, useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
+import { IoMdClose } from 'react-icons/io';
 
 import MenuLink from '@/components/elements/menuLink';
 import { useCustomContext } from '@/context/use-custom';
@@ -854,16 +855,19 @@ const SideBar = () => {
       ref={sideBarRef}
     >
       <div
-        className={`${desktopCollapsed ? `mr-auto flex w-[80px] max-w-full justify-center px-0` : `w-full px-${sideBarSettings.x_spacing}`}`}
+        className={`${desktopCollapsed ? `mr-auto flex w-[80px] max-w-full justify-center px-0` : `w-full px-${sideBarSettings.x_spacing} justify-between mobile:flex`}`}
         onClick={MobileToggleSidebar}
       >
         <img
           className={desktopCollapsed ? `mx-auto w-1/2` : 'mr-auto w-1/2'}
           src={desktopCollapsed ? '/favicon.ico' : '/assets/images/logo.svg'}
         />
+        <div className='cursor-pointer rounded-[10px] bg-[#1B272C] p-2 md:hidden'>
+          <IoMdClose size={25} />
+        </div>
       </div>
       <div
-        className={`${desktopCollapsed ? `mr-auto flex w-[80px] max-w-full justify-center px-0` : `px-${sideBarSettings.x_spacing}`} w-full`}
+        className={`${desktopCollapsed ? `mr-auto flex w-[80px] max-w-full justify-center px-0` : `px-${sideBarSettings.x_spacing}`} w-full mobile:hidden`}
       >
         {desktopCollapsed ? (
           <FaAngleRight
