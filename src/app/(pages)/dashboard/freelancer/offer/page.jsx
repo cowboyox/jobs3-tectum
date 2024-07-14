@@ -3,6 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { FaX } from 'react-icons/fa6';
 
+import searchOptions from '../../client/freelancers/searchOptions';
+
+import OfferItem from '@/components/dashboard/offerItem';
 import {
   Select,
   SelectContent,
@@ -12,12 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import OfferItem from '@/components/dashboard/offerItem';
 import { useCustomContext } from '@/context/use-custom';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllClientOrdersProposed } from '@/hooks/useGetAllClientOrdersProposed';
-
-import searchOptions from '../../client/freelancers/searchOptions';
 
 const Offer = () => {
   const auth = useCustomContext();
@@ -33,16 +33,16 @@ const Offer = () => {
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [canLoadMore, setCanLoadMore] = useState(true);
   const debouncedSearchText = useDebounce(searchKeywords);
-  
+
   const { data: orders, refetch: refetchAllOrdersProposed } = useGetAllClientOrdersProposed(
     auth?.currentProfile?._id,
     page,
     itemsPerPage,
-    debouncedSearchText,
+    debouncedSearchText
   );
 
   useEffect(() => {
-    if (mode == "live") {
+    if (mode == 'live') {
       if (orders?.livesTotal > page * itemsPerPage && orders?.lives?.length > 0) {
         setCanLoadMore(true);
       } else {
@@ -88,13 +88,13 @@ const Offer = () => {
     // setPage((prev) => prev + 1);
     setItemsPerPage((prev) => prev + 2);
   };
-  
+
   const setKey = (e) => {
     // setPage(1);
     setItemsPerPage(2);
     setSearchKeyWords(e.target.value);
   };
-  
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && searchType === 'ai') {
     }
@@ -105,9 +105,9 @@ const Offer = () => {
   };
 
   return (
-    <div className='p-0 lg:mt-8 sm:p-0 xl:mt-8'>
+    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex flex-row items-center justify-between gap-5 rounded-xl bg-[#10191D] p-3'>
-        <div className='flex items-center flex-1 gap-3 ml-3'>
+        <div className='ml-3 flex flex-1 items-center gap-3'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -148,7 +148,7 @@ const Offer = () => {
             </button>
           )}
         </div>
-        <div className='flex flex-row items-center flex-none gap-2'>
+        <div className='flex flex-none flex-row items-center gap-2'>
           <button className='flex flex-row items-center justify-center gap-3'>
             {!isSmallScreen ? (
               <>
@@ -318,16 +318,14 @@ const Offer = () => {
         })}
         <span>Clear&nbsp;All</span>
       </div>
-      <div className='flex items-center justify-center w-full pt-10 pb-5'>
+      <div className='flex w-full items-center justify-center pb-5 pt-10'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
-                {lives?.length}
-              </span>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>{lives?.length}</span>
               &nbsp; Live
             </h1>
           ) : (
@@ -340,7 +338,7 @@ const Offer = () => {
         >
           {mode == 'proposal' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
                 {proposals?.length}
               </span>
               &nbsp; Proposals
@@ -352,97 +350,91 @@ const Offer = () => {
       </div>
       {mode == 'live' ? (
         <>
-          {
-            lives?.length > 0 ? 
-            (
-              <>
-                {lives.map((order, index) => (
-                  <OfferItem 
-                    key={index}
-                    gigId={order.gigId}
-                    freelancerId={auth?.currentProfile?._id}
-                    clientId={order.client._id}
-                    proposalId={order.proposalId} 
-                    gigTitle={order.gigTitle} 
-                    gigPrice={order.gigPrice} 
-                    deliveryTime={order.deliveryTime} 
-                    proposal={order.proposal} 
-                    avatarURL={order.client.avatarURL}
-                    fullName={order.client.fullName}
-                    refetchAllOrdersProposed={refetchAllOrdersProposed}
-                    accepted={true}
-                    status={order.status}
-                    clientSide={false}
-                    contractId={order.contractId}
-                    buyerPubkey={order.walletPublicKey}
-                    quantity={order.quantity}
-                  />
-                ))}
-                {canLoadMore && (
-                  <div
-                    className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
-                    onClick={handleLoadMore}
-                  >
-                    Load More +
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
-                <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
-                <p className='text-[18px] text-slate-600'>Accepted proposals will be here</p>
-              </div>
-            )
-          }
+          {lives?.length > 0 ? (
+            <>
+              {lives.map((order, index) => (
+                <OfferItem
+                  accepted={true}
+                  avatarURL={order.client.avatarURL}
+                  buyerPubkey={order.walletPublicKey}
+                  clientId={order.client._id}
+                  clientSide={false}
+                  contractId={order.contractId}
+                  deliveryTime={order.deliveryTime}
+                  freelancerId={auth?.currentProfile?._id}
+                  fullName={order.client.fullName}
+                  gigId={order.gigId}
+                  gigPrice={order.gigPrice}
+                  gigTitle={order.gigTitle}
+                  key={index}
+                  proposal={order.proposal}
+                  proposalId={order.proposalId}
+                  quantity={order.quantity}
+                  refetchAllOrdersProposed={refetchAllOrdersProposed}
+                  status={order.status}
+                />
+              ))}
+              {canLoadMore && (
+                <div
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  onClick={handleLoadMore}
+                >
+                  Load More +
+                </div>
+              )}
+            </>
+          ) : (
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+              <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
+              <p className='text-[18px] text-slate-600'>Accepted proposals will be here</p>
+            </div>
+          )}
         </>
       ) : (
         <>
-          {
-            proposals?.length > 0 ? 
-            (
-              <>
-                {proposals.map((proposal, index) => (
-                  <OfferItem 
-                    key={index}
-                    gigId={proposal.gigId}
-                    freelancerId={auth?.currentProfile?._id}
-                    clientId={proposal.client._id}
-                    proposalId={proposal.proposalId} 
-                    gigTitle={proposal.gigTitle} 
-                    gigPrice={proposal.gigPrice} 
-                    deliveryTime={proposal.deliveryTime} 
-                    proposal={proposal.proposal}
-                    avatarURL={proposal.client.avatarURL}
-                    fullName={proposal.client.fullName}
-                    refetchAllOrdersProposed={refetchAllOrdersProposed}
-                    accepted={false}
-                    status={proposal.status}
-                    clientSide={false}
-                    contractId={proposal.contractId}
-                    buyerPubkey={proposal.walletPublicKey}
-                    quantity={proposal.quantity}
-                  />
-                ))}
-                {canLoadMore && (
-                  <div
-                    className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
-                    onClick={handleLoadMore}
-                  >
-                    Load More +
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
-                <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
-                <p className='text-[18px] text-slate-600'>Proposals will be here</p>
-              </div>
-            )
-          }
+          {proposals?.length > 0 ? (
+            <>
+              {proposals.map((proposal, index) => (
+                <OfferItem
+                  accepted={false}
+                  avatarURL={proposal.client.avatarURL}
+                  buyerPubkey={proposal.walletPublicKey}
+                  clientId={proposal.client._id}
+                  clientSide={false}
+                  contractId={proposal.contractId}
+                  deliveryTime={proposal.deliveryTime}
+                  freelancerId={auth?.currentProfile?._id}
+                  fullName={proposal.client.fullName}
+                  gigId={proposal.gigId}
+                  gigPrice={proposal.gigPrice}
+                  gigTitle={proposal.gigTitle}
+                  key={index}
+                  proposal={proposal.proposal}
+                  proposalId={proposal.proposalId}
+                  quantity={proposal.quantity}
+                  refetchAllOrdersProposed={refetchAllOrdersProposed}
+                  status={proposal.status}
+                />
+              ))}
+              {canLoadMore && (
+                <div
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  onClick={handleLoadMore}
+                >
+                  Load More +
+                </div>
+              )}
+            </>
+          ) : (
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+              <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
+              <p className='text-[18px] text-slate-600'>Proposals will be here</p>
+            </div>
+          )}
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Offer
+export default Offer;

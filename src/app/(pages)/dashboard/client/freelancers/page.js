@@ -119,13 +119,13 @@ const Freelancers = () => {
           setSearchType={setSearchType}
         />
         {loading && (
-          <div className='flex justify-center h-screen pt-6 space-x-2 z-1'>
+          <div className='z-1 flex h-screen justify-center space-x-2 pt-6'>
             <div className='mt-8 flex h-fit items-baseline text-[20px]'>
               <p className='mr-3'>The neural network is thinking</p>
               <div className='flex gap-1'>
                 <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.3s]'></div>
                 <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.15s]'></div>
-                <div className='w-2 h-2 bg-white rounded-full animate-bounce'></div>
+                <div className='h-2 w-2 animate-bounce rounded-full bg-white'></div>
               </div>
             </div>
           </div>
@@ -138,14 +138,14 @@ const Freelancers = () => {
                     className={`mt-4 ${freelancer?.reason ? 'rounded-t-xl' : 'rounded-xl'} bg-[#10191D] p-5 text-center`}
                     key={`freelancers_${index}`}
                   >
-                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
+                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
                       <Link href={`/dashboard/freelancer/profile/${freelancer._id}`}>
                         <div className='mt-3 flex-1 text-left text-[20px] hover:underline md:mt-0 md:text-2xl'>
                           {freelancer.freelancerTitle}
                         </div>
                       </Link>
                     </div>
-                    <div className='flex flex-col items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
+                    <div className='mt-3 flex flex-col items-start justify-between gap-6 md:flex-row md:justify-start'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -184,51 +184,51 @@ const Freelancers = () => {
                     </div>
                     <Separator className='my-4' />
                     <div className='text-left text-[#96B0BD]'>
-                        <pre className='whitespace-pre-wrap font-roboto'>
-                          {freelancer.freelancerBio.length < descriptionTextMaxLength
+                      <pre className='whitespace-pre-wrap font-roboto'>
+                        {freelancer.freelancerBio.length < descriptionTextMaxLength
+                          ? freelancer.freelancerBio
+                          : freelancerBioShowModeList[index]
                             ? freelancer.freelancerBio
-                            : freelancerBioShowModeList[index]
-                              ? freelancer.freelancerBio
-                              : freelancer.freelancerBio.slice(0, descriptionTextMaxLength) + '...'}
-                        </pre>
-                      </div>
-                      <div className='mt-3 text-left'>
-                        {freelancer.freelancerBio.length < descriptionTextMaxLength ? (
-                          <></>
-                        ) : !freelancerBioShowModeList[index] ? (
-                          <button
-                            onClick={() => {
-                              const tempShowModeList = freelancerBioShowModeList.map((item, i) => {
-                                if (i == index) {
-                                  return true;
-                                } else {
-                                  return item;
-                                }
-                              });
+                            : freelancer.freelancerBio.slice(0, descriptionTextMaxLength) + '...'}
+                      </pre>
+                    </div>
+                    <div className='mt-3 text-left'>
+                      {freelancer.freelancerBio.length < descriptionTextMaxLength ? (
+                        <></>
+                      ) : !freelancerBioShowModeList[index] ? (
+                        <button
+                          onClick={() => {
+                            const tempShowModeList = freelancerBioShowModeList.map((item, i) => {
+                              if (i == index) {
+                                return true;
+                              } else {
+                                return item;
+                              }
+                            });
 
-                              setFreelancerBioShowModeList(tempShowModeList);
-                            }}
-                          >
-                            Show more
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => {
-                              const tempShowModeList = freelancerBioShowModeList.map((item, i) => {
-                                if (i == index) {
-                                  return false;
-                                } else {
-                                  return item;
-                                }
-                              });
+                            setFreelancerBioShowModeList(tempShowModeList);
+                          }}
+                        >
+                          Show more
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            const tempShowModeList = freelancerBioShowModeList.map((item, i) => {
+                              if (i == index) {
+                                return false;
+                              } else {
+                                return item;
+                              }
+                            });
 
-                              setFreelancerBioShowModeList(tempShowModeList);
-                            }}
-                          >
-                            Show less
-                          </button>
-                        )}
-                      </div>
+                            setFreelancerBioShowModeList(tempShowModeList);
+                          }}
+                        >
+                          Show less
+                        </button>
+                      )}
+                    </div>
                     <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
                       {freelancer.skills &&
                         freelancer.skills.map((item, index) => {
@@ -243,12 +243,12 @@ const Freelancers = () => {
                           );
                         })}
                     </div>
-                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
-                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
+                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
+                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                         <div>
                           <Image
                             alt='avatar'
-                            className='object-cover rounded-full aspect-square'
+                            className='aspect-square rounded-full object-cover'
                             height={40}
                             src={
                               freelancer.avatarURL
@@ -278,7 +278,7 @@ const Freelancers = () => {
                     </div>
                   </div>
                   {freelancer.reason && (
-                    <div className='p-4 text-white text-md rounded-b-xl bg-orange'>
+                    <div className='text-md rounded-b-xl bg-orange p-4 text-white'>
                       {freelancer.reason}
                     </div>
                   )}
@@ -287,14 +287,14 @@ const Freelancers = () => {
             })
           : !loading && (
               <div>
-                <div className='flex flex-col items-center justify-center h-full gap-3'>
+                <div className='flex h-full flex-col items-center justify-center gap-3'>
                   <h2 className='text-3xl font-bold'>Nothing Here</h2>
                 </div>
               </div>
             )}
         {canLoadMore && (
           <div
-            className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+            className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
             onClick={handleLoadMore}
           >
             Load More +

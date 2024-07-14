@@ -173,7 +173,7 @@ const Orders = () => {
   };
 
   const handleMessage = (order) => {
-    if (auth.user) window.location.href = `/dashboard/freelancer/inbox/${order.clientID}`;
+    if (auth.user) window.location.href = `/dashboard/freelancer/inbox/${order.clientId._id}`;
   };
 
   const getFormattedDate = (dateStr) => {
@@ -1346,7 +1346,12 @@ const Orders = () => {
                     <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
                       <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                         <div>
-                          <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
+                          <img
+                            className='rounded'
+                            height={40}
+                            src={submission.clientId.avatarURL}
+                            width={40}
+                          />
                         </div>
                         <div className='flex flex-col gap-1 text-left'>
                           <div className='flex flex-row items-center gap-1 font-bold'>
@@ -1368,7 +1373,12 @@ const Orders = () => {
                         </div>
                       </div>
                       <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-                        <button className='p-4 px-8 md:p-5'>Message</button>
+                        <button
+                          className='p-4 px-8 md:p-5'
+                          onClick={() => handleMessage(submission)}
+                        >
+                          Message
+                        </button>
                         {/* <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
                           // onClick={() => onActivate(submission.gigId, submission.clientId, submission.contractId)}

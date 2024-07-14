@@ -7,7 +7,7 @@ export const useGetAllFreelancerGigsProposed = (
   profileId,
   pageNum,
   itemsPerPage,
-  searchText = '',
+  searchText = ''
 ) => {
   return useQuery({
     cacheTime: Infinity,
@@ -15,7 +15,9 @@ export const useGetAllFreelancerGigsProposed = (
     queryFn: async () => {
       if (profileId && pageNum > 0 && itemsPerPage > 0) {
         try {
-          const result = await api.get(`${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}`);
+          const result = await api.get(
+            `${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}`
+          );
 
           const submissions = [];
           const lives = [];
@@ -41,6 +43,7 @@ export const useGetAllFreelancerGigsProposed = (
           if (result.data.lives.length > 0) {
             result.data.lives.map((contract) => {
               lives.push({
+                clientId: contract.gigOwner,
                 contractId: contract.contractId,
                 creator: {
                   fullName: contract.gigOwner?.fullName,
@@ -59,7 +62,12 @@ export const useGetAllFreelancerGigsProposed = (
             });
           }
 
-          return { lives, submissions, livesTotal: result.data.livesTotal, submissionsTotal: result.data.submissionsTotal };
+          return {
+            lives,
+            livesTotal: result.data.livesTotal,
+            submissions,
+            submissionsTotal: result.data.submissionsTotal,
+          };
         } catch (e) {
           console.error(e);
 
@@ -69,13 +77,7 @@ export const useGetAllFreelancerGigsProposed = (
         return null;
       }
     },
-    queryKey: [
-      'useGetAllFreelancerGigsProposed', 
-      profileId,
-      pageNum,
-      itemsPerPage,
-      searchText,
-    ],
+    queryKey: ['useGetAllFreelancerGigsProposed', profileId, pageNum, itemsPerPage, searchText],
     staleTime: Infinity,
   });
 };
