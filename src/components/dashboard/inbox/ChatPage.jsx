@@ -140,8 +140,8 @@ const ChatPage = ({ profileId }) => {
       timeStamp: new Date(),
     };
     socket.emit('sendMessage', message);
-    setInput('');
     setConversation((prevMessages) => [...prevMessages, message]);
+    setInput('');
   };
 
   return (
@@ -249,6 +249,11 @@ const ChatPage = ({ profileId }) => {
               <textarea
                 className='h-full w-full resize-none bg-transparent pt-2 outline-none placeholder:text-[#96B0BD]'
                 onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    sendMessage();
+                  }
+                }}
                 placeholder='Send message...'
                 value={input}
               />

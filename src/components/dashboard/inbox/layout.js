@@ -87,13 +87,29 @@ const InboxPage = ({ children }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState(users);
-  const { data: usersWithMessages } = useGetMembersWithMessages(auth?.currentProfile?._id);
+  const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   useEffect(() => {
     if (auth?.currentProfile) {
       socket.emit('add-user', auth.currentProfile._id);
     }
-  }, [auth, socket]);
+
+    socket?.on('newMessage', (data) => {
+      if (usersWithMessages) {
+        if (
+          usersWithMessages.users.filter(
+            (user) => user._id === data.senderId || user._id === data.receiverId
+          ).length === 0
+        ) {
+          refetch();
+        }
+      }
+    });
+
+    return () => {
+      socket?.off('newMessage');
+    };
+  }, [auth, refetch, socket, usersWithMessages]);
 
   useEffect(() => {
     if (usersWithMessages) {
