@@ -116,12 +116,11 @@ const ChatPage = ({ profileId }) => {
 
       socket?.on('newMessage', (message) => {
         setConversation((prevMessages) => [...prevMessages, message]);
-        socket.emit('readMessage', { from: to, to: from });
       });
 
-      return () => {
-        socket?.off('newMessage');
-      };
+      // return () => {
+      //   socket?.off('newMessage');
+      // };
     }
   }, [userInfo, auth.currentProfile, socket, refetch, usersWithMessages]);
 
@@ -153,6 +152,8 @@ const ChatPage = ({ profileId }) => {
   }, [conversations]);
 
   const sendMessage = () => {
+    socket.emit('readMessage', { from: receiver._id, to: auth.currentProfile._id });
+
     const message = {
       messageText: input,
       receiverId: receiver._id,
@@ -160,6 +161,7 @@ const ChatPage = ({ profileId }) => {
       timeStamp: new Date(),
     };
     socket.emit('sendMessage', message);
+
     setConversation((prevMessages) => [...prevMessages, message]);
     setInput('');
   };
