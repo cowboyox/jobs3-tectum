@@ -16,7 +16,8 @@ import {
 import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
 import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
-
+import { DEFAULT_AVATAR, USER_ROLE } from '@/utils/constants';
+import { minutesDifference } from '@/utils/Helpers';
 import './layout.css';
 
 const chats_filters = [
@@ -34,7 +35,8 @@ const MessageItem = ({ user }) => {
   const socket = useSocket();
   const [isSelected, setIsSelected] = useState(false);
   const [unReadCount, setUnReadCount] = useState(0);
-  const { data: usersWithMessages } = useGetMembersWithMessages(auth?.currentProfile?._id);
+  const [lastMessage, setLastMessage] = useState();
+  const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   useEffect(() => {
     if (pathname?.split('/').pop() === user._id) {
@@ -45,15 +47,22 @@ const MessageItem = ({ user }) => {
   }, [pathname, user]);
 
   useEffect(() => {
-    socket.on('messagesRead', (data) => {
-      if (data.from === user._id && data.to === auth.currentProfile._id) {
-        setUnReadCount(0);
-      }
-    });
-  }, [isSelected, socket, auth?.currentProfile?._id, user._id]);
+    if (isSelected) {
+      socket.emit('readMessage', { from: user._id, to: auth.currentProfile._id });
+      setUnReadCount(0);
+    }
+  }, [auth?.currentProfile?._id, isSelected, socket, user._id]);
 
   useEffect(() => {
-    if (usersWithMessages && auth?.currentProfile?._id) {
+    socket.on('messagesRead', (data) => {
+      if (data.senderId === user._id && data.receiverId === auth?.currentProfile?._id) {
+        refetch();
+      }
+    });
+  }, [socket, auth?.currentProfile?._id, user._id, refetch]);
+
+  useEffect(() => {
+    if (usersWithMessages?.messages && auth?.currentProfile?._id) {
       const unReadCount = usersWithMessages.messages.filter(
         (message) =>
           message.senderId._id === user._id &&
@@ -61,12 +70,19 @@ const MessageItem = ({ user }) => {
           !message.read
       ).length;
 
+      if (usersWithMessages.messages.length > 0) {
+        setLastMessage(usersWithMessages.messages[usersWithMessages.messages.length - 1]);
+      }
+
       setUnReadCount(unReadCount);
     }
-  }, [usersWithMessages, auth.currentProfile._id, user._id]);
+  }, [usersWithMessages?.messages, auth.currentProfile._id, user._id]);
 
   return (
-    <Link href={`/dashboard/freelancer/inbox/${user._id}`} socket='socket'>
+    <Link
+      href={`/dashboard/${auth?.currentRole === USER_ROLE.FREELANCER ? 'freelancer' : 'client'}/inbox/${user._id}`}
+      socket='socket'
+    >
       <div
         className={`${isSelected ? 'bg-[#1a272c]' : ''} group flex cursor-pointer gap-4 rounded-xl p-4 transition hover:bg-[#1a272c]`}
       >
@@ -75,7 +91,7 @@ const MessageItem = ({ user }) => {
             <img
               alt={user.fullName}
               className='aspect-square h-full w-full rounded-full object-cover'
-              src={user.avatarURL}
+              src={user.avatarURL || DEFAULT_AVATAR}
             />
             <div
               className={`absolute bottom-1 right-1 h-[10px] w-[10px] rounded-full ${
@@ -89,13 +105,15 @@ const MessageItem = ({ user }) => {
               {user.isVerified && <BsPatchCheckFill fill='#148fe8' />}
             </p>
             <p className='relative w-full text-nowrap text-xs font-light text-white'>
-              {user.userId.verified && truncateText(user.message, 17)}
+              {lastMessage ? truncateText(lastMessage.messageText, 10) : ''}
               <span className='absolute right-0 top-0 h-full w-1/2 bg-opacity-60 bg-gradient-to-r from-transparent to-black transition group-hover:to-[#1a272c]' />
             </p>
           </div>
         </div>
         <div className='flex w-2/5 items-center justify-between'>
-          <span className='text-xs text-[#96B0BD]'>{user.userId.timestamp}</span>
+          <span className='text-xs text-[#96B0BD]'>
+            {lastMessage ? minutesDifference(lastMessage.timeStamp) : ''}
+          </span>
           <div className='flex items-center gap-3'>
             {unReadCount > 0 && (
               <span className='rounded-full bg-[#DC4F13] px-2 py-[1px] text-xs'>{unReadCount}</span>
@@ -122,22 +140,13 @@ const InboxPage = ({ children }) => {
   const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   useEffect(() => {
-    if (auth?.currentProfile) {
-      socket.emit('add-user', auth.currentProfile._id);
-    }
-
     socket?.on('newMessage', (data) => {
-      if (usersWithMessages) {
-        if (
-          usersWithMessages.users.filter(
-            (user) => user._id === data.senderId || user._id === data.receiverId
-          ).length === 0
-        ) {
-          refetch();
-        }
+      socket.emit('readMessage', { from: data.receiverId, to: data.senderId });
+      if (data.receiverId === auth?.currentProfile?._id) {
+        refetch();
       }
     });
-  }, [auth, refetch, socket, usersWithMessages]);
+  }, [auth?.currentProfile?._id, refetch, socket]);
 
   useEffect(() => {
     if (usersWithMessages) {
