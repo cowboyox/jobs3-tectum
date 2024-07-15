@@ -286,7 +286,7 @@
         }
     }
 }
-::-webkit-scrollbar {
+*:not(.country-list)::-webkit-scrollbar {
     display: none;
 } 
 #root {
