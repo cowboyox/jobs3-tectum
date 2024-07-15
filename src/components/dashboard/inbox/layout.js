@@ -18,6 +18,7 @@ import { useCustomContext } from '@/context/use-custom';
 import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
 
 import './layout.css';
+import { DEFAULT_AVATAR } from '@/utils/constants';
 
 const chats_filters = [
   { label: 'Archived', value: 'archived' },
@@ -75,7 +76,7 @@ const MessageItem = ({ user }) => {
             <img
               alt={user.fullName}
               className='aspect-square h-full w-full rounded-full object-cover'
-              src={user.avatarURL || '/assets/images/users/user-5.png'}
+              src={user.avatarURL || DEFAULT_AVATAR}
             />
             <div
               className={`absolute bottom-1 right-1 h-[10px] w-[10px] rounded-full ${

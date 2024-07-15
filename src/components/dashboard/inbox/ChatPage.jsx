@@ -20,6 +20,7 @@ import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
 import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
+import { DEFAULT_AVATAR } from '@/utils/constants';
 
 const MessageDetails = (props) => {
   return (
@@ -29,7 +30,7 @@ const MessageDetails = (props) => {
       <div className='relative h-5 min-w-5 md:h-7 md:min-w-7'>
         <img
           className='aspect-square h-full w-full rounded-full object-cover'
-          src={props.user_image}
+          src={props.user_image || DEFAULT_AVATAR}
         />
       </div>
       <span className='text-sm text-[#526872]'>
@@ -188,7 +189,7 @@ const ChatPage = ({ profileId }) => {
                 <img
                   alt={receiver.name}
                   className='aspect-square h-full w-full rounded-full object-cover'
-                  src={receiver.avatar}
+                  src={receiver.avatar || DEFAULT_AVATAR}
                 />
                 <div
                   className={`absolute bottom-0 right-0 h-[10px] w-[10px] rounded-full ${
