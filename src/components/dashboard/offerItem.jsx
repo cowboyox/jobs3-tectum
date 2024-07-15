@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
 import { v4 as uuid } from 'uuid';
 import {
@@ -74,6 +75,7 @@ const OfferItem = ({
   buyerPubkey,
   quantity,
 }) => {
+  const router = useRouter();
   const { toast } = useToast();
 
   const wallet = useAnchorWallet();
@@ -128,14 +130,14 @@ const OfferItem = ({
 
       <div>
         <h2>{data.summary}</h2>
-        <a className='cursor-pointer text-white' onClick={() => setShowDetail(false)}>
+        <a className='text-white cursor-pointer' onClick={() => setShowDetail(false)}>
           View less
         </a>
       </div>
 
       <div className='border-b border-[#28373A] pb-5'>
         <h2 className='text-white'>Skills</h2>
-        <div className='mt-3 flex items-center gap-2 text-white'>
+        <div className='flex items-center gap-2 mt-3 text-white'>
           {data.skills.map((_text, key) => (
             <div
               className='w-full justify-center truncate rounded-full border border-[#32525B] bg-[#283732] px-3 py-1 xs:w-auto xs:justify-start'
@@ -148,7 +150,7 @@ const OfferItem = ({
       </div>
       <div className='border-b border-[#28373A] pb-5'>
         <h2 className='text-white'>Attachments</h2>
-        <div className='mt-3 flex flex-col items-start gap-2 text-white'>
+        <div className='flex flex-col items-start gap-2 mt-3 text-white'>
           {data.attachments.map((_item, key) => (
             <div
               className='flex items-center gap-2 rounded-xl border border-[#526872] p-2'
@@ -728,6 +730,14 @@ const OfferItem = ({
     }
   };
 
+  const handleClientMessage = () => {
+    router.push(`/dashboard/client/inbox/${freelancerId}`);
+  };
+
+  const handleFreelancerMessage = () => {
+    router.push(`/dashboard/freelancer/inbox/${clientId}`);
+  };
+
   return (
     <div className='mx-auto mb-5 flex w-full flex-col gap-2 rounded-xl bg-[#10191D] p-4 sm:p-8'>
       {status ? (
@@ -741,18 +751,18 @@ const OfferItem = ({
         <h1 className='text-xl'>{gigTitle}</h1>
       )}
       <div className='flex items-center gap-4 py-1'>
-        <div className='mobile:h-8 mobile:w-8 relative h-12 w-12'>
+        <div className='relative w-12 h-12 mobile:h-8 mobile:w-8'>
           <img
-            className='mobile:h-8 mobile:w-8 aspect-square h-12 w-12 rounded-full object-cover'
+            className='object-cover w-12 h-12 rounded-full mobile:h-8 mobile:w-8 aspect-square'
             src={avatarURL ? avatarURL : '/assets/images/users/user-3.png'}
           />
-          <div className='mobile:bottom-0 mobile:right-0 mobile:h-3 mobile:w-3 absolute bottom-1 right-1 h-3 w-3 rounded-full bg-green-500' />
+          <div className='absolute w-3 h-3 bg-green-500 rounded-full mobile:bottom-0 mobile:right-0 mobile:h-3 mobile:w-3 bottom-1 right-1' />
         </div>
         <div className='flex flex-col gap-4'>
           <div className='flex items-center gap-2'>
-            <h2 className='mobile:text-xs text-xl'>{fullName}</h2>
+            <h2 className='text-xl mobile:text-xs'>{fullName}</h2>
             <img
-              className='mobile:h-3 mobile:w-3 h-4 w-4'
+              className='w-4 h-4 mobile:h-3 mobile:w-3'
               src='/assets/images/icons/checkmark.svg'
             />
           </div>
@@ -803,7 +813,7 @@ const OfferItem = ({
               <></>
             ) : !showDetail ? (
               <button
-                className='cursor-pointer text-white'
+                className='text-white cursor-pointer'
                 onClick={() => {
                   setShowDetail(true);
                 }}
@@ -812,7 +822,7 @@ const OfferItem = ({
               </button>
             ) : (
               <button
-                className='cursor-pointer text-white'
+                className='text-white cursor-pointer'
                 onClick={() => {
                   setShowDetail(false);
                 }}
@@ -825,7 +835,7 @@ const OfferItem = ({
 
         <div className='border-b border-[#28373A] pb-3'>
           <h2 className='text-white'>Skills</h2>
-          <div className='mt-3 flex items-center gap-2 text-white'>
+          <div className='flex items-center gap-2 mt-3 text-white'>
             {data.skills.map((_text, key) => (
               <div
                 className='truncate rounded-full border border-[#32525B] bg-[#283732] px-3 py-1'
@@ -844,7 +854,7 @@ const OfferItem = ({
             <div className='float-right grid w-[50%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
                 onClick={onReject}
-                className='flex cursor-pointer items-center justify-center p-3 hover:opacity-60'
+                className='flex items-center justify-center p-3 cursor-pointer hover:opacity-60'
               >
                 Reject
               </div>
@@ -857,7 +867,13 @@ const OfferItem = ({
             </div>
           )}
           {status == ContractStatus.CONFIRMED && (
-            <div className='float-right grid w-[25%] grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white'>
+            <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
+              <div
+                onClick={handleFreelancerMessage}
+                className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+              >
+                Message
+              </div>
               <div
                 onClick={onActivate}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'
@@ -867,7 +883,13 @@ const OfferItem = ({
             </div>
           )}
           {status == ContractStatus.ACTIVE && (
-            <div className='float-right grid w-[25%] grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white'>
+            <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
+              <div
+                onClick={handleFreelancerMessage}
+                className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+              >
+                Message
+              </div>
               <div
                 onClick={onDeliver}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'
@@ -877,14 +899,26 @@ const OfferItem = ({
             </div>
           )}
           {status == ContractStatus.DELIVERED && (
-            <div className='float-right grid w-[25%] grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white'>
+            <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
+              <div
+                onClick={handleFreelancerMessage}
+                className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+              >
+                Message
+              </div>
               <div className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'>
                 Request Payment
               </div>
             </div>
           )}
           {status == ContractStatus.RELEASED && (
-            <div className='float-right grid w-[25%] grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white'>
+            <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
+              <div
+                onClick={handleFreelancerMessage}
+                className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+              >
+                Message
+              </div>
               <div
                 onClick={onComplete}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'
@@ -893,12 +927,28 @@ const OfferItem = ({
               </div>
             </div>
           )}
+          {(status == ContractStatus.COMPLETED || status == ContractStatus.STARTED) && (
+            <div className='float-right grid w-[25%] grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white'>
+              <div
+                onClick={handleFreelancerMessage}
+                className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+              >
+                Message
+              </div>
+            </div>
+          )}
         </div>
       )}
       {clientSide && (
         <div>
           {status == ContractStatus.STARTED && (
-            <div className='float-right grid w-[25%] grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white'>
+            <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
+              <div
+                onClick={handleClientMessage}
+                className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+              >
+                Message
+              </div>
               <div
                 onClick={onConfirm}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'
@@ -907,8 +957,24 @@ const OfferItem = ({
               </div>
             </div>
           )}
-          {status == ContractStatus.DELIVERED && (
+          {(status == ContractStatus.ACTIVE || status == ContractStatus.RELEASED || status == ContractStatus.CONFIRMED || status == ContractStatus.COMPLETED) && (
             <div className='float-right grid w-[25%] grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white'>
+              <div
+                onClick={handleClientMessage}
+                className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+              >
+                Message
+              </div>
+            </div>
+          )}
+          {status == ContractStatus.DELIVERED && (
+            <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
+              <div
+                onClick={handleClientMessage}
+                className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+              >
+                Message
+              </div>
               <div
                 onClick={onRelease}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'
