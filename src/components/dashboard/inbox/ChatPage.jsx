@@ -116,7 +116,6 @@ const ChatPage = ({ profileId }) => {
 
       socket?.on('newMessage', (message) => {
         setConversation((prevMessages) => [...prevMessages, message]);
-        socket.emit('readMessage', { from: to, to: from });
       });
 
       return () => {
@@ -160,6 +159,7 @@ const ChatPage = ({ profileId }) => {
       timeStamp: new Date(),
     };
     socket.emit('sendMessage', message);
+
     setConversation((prevMessages) => [...prevMessages, message]);
     setInput('');
   };
