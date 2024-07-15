@@ -141,6 +141,7 @@ const InboxPage = ({ children }) => {
 
   useEffect(() => {
     socket?.on('newMessage', (data) => {
+      socket.emit('readMessage', { from: data.receiverId, to: data.senderId });
       if (data.receiverId === auth?.currentProfile?._id) {
         refetch();
       }

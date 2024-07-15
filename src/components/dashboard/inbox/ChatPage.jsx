@@ -118,9 +118,9 @@ const ChatPage = ({ profileId }) => {
         setConversation((prevMessages) => [...prevMessages, message]);
       });
 
-      // return () => {
-      //   socket?.off('newMessage');
-      // };
+      return () => {
+        socket?.off('newMessage');
+      };
     }
   }, [userInfo, auth.currentProfile, socket, refetch, usersWithMessages]);
 
@@ -152,8 +152,6 @@ const ChatPage = ({ profileId }) => {
   }, [conversations]);
 
   const sendMessage = () => {
-    socket.emit('readMessage', { from: receiver._id, to: auth.currentProfile._id });
-
     const message = {
       messageText: input,
       receiverId: receiver._id,
