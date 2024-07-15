@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 
+import { useSocket } from '@/context/socket';
 import api from '@/utils/api';
 import { USER_ROLE } from '@/utils/constants';
 import { backend_url } from '@/utils/variables';
@@ -91,6 +92,7 @@ const ContextProvider = ({ children }) => {
   const [currentProfile, setCurrentProfile] = useState(null);
   // Context API States
   const [loading, setLoading] = useState(true);
+  const socket = useSocket();
   const [loadCompleted, setLoadCompleted] = useState(true);
   const [load3D, setLoad3D] = useState(0);
   const [scrollPause, setScrollPause] = useState(false);
@@ -385,6 +387,12 @@ const ContextProvider = ({ children }) => {
       console.error('Error getting data!');
     }
   }, []);
+
+  useEffect(() => {
+    if (currentProfile && socket) {
+      socket.emit('add-user', currentProfile._id);
+    }
+  }, [currentProfile, socket]);
 
   useEffect(() => {
     const fetchData = async () => {

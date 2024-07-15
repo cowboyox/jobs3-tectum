@@ -126,10 +126,6 @@ const InboxPage = ({ children }) => {
   const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   useEffect(() => {
-    if (auth?.currentProfile) {
-      socket.emit('add-user', auth.currentProfile._id);
-    }
-
     socket?.on('newMessage', (data) => {
       if (usersWithMessages) {
         if (
