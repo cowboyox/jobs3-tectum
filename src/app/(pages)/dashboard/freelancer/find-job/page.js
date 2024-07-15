@@ -189,7 +189,7 @@ const FindJob = () => {
   }, [locationText]);
   
   useEffect(() => {
-    if (clientGigs?.length > 0) {
+    if (gigList?.length > 0) {
       setCanLoadMore(true);
       if (page === 1) {
         setFilteredGigList(gigList);
