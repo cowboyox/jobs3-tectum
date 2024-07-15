@@ -25,7 +25,7 @@ import { useHandleResize } from '@/hooks/useHandleResize';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
-    <div className='flex items-center gap-4 p-0 cursor-pointer'>
+    <div className='flex cursor-pointer items-center gap-4 p-0'>
       <Checkbox
         checked={props.checked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
@@ -128,7 +128,7 @@ const Offer = () => {
   }, [debouncedSearchText, mode]);
 
   useEffect(() => {
-    if (mode == "live") {
+    if (mode == 'live') {
       if (orders?.livesTotal > page * itemsPerPage && orders?.lives?.length > 0) {
         setCanLoadMore(true);
       } else {
@@ -204,9 +204,9 @@ const Offer = () => {
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d] pr-4'>
-        <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
+        <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
-            <SelectTrigger className='mobile:w-14 mobile:p-2 w-20 rounded-xl bg-[#1B272C]'>
+            <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className='rounded-xl bg-[#1B272C]'>
@@ -217,13 +217,13 @@ const Offer = () => {
             </SelectContent>
           </Select>
           <input
-            className='w-full text-white bg-transparent outline-none mobile:text-sm'
+            className='w-full bg-transparent text-white outline-none mobile:text-sm'
             onChange={(e) => setSearchKeyWords(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
           />
         </div>
-        <div className='mobile:hidden m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C]'>
+        <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
           <IoLocationOutline size={20} stroke='#96B0BD' />
           <span className='hidden text-[#96B0BD] md:block'>Anywhere</span>
         </div>
@@ -288,7 +288,7 @@ const Offer = () => {
         {searchType === 'ai' && (
           <div className='flex'>
             <button
-              class='mobile:flex hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white'
+              class='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
               onClick={aiSearch}
             >
               <FaArrowRight />
@@ -296,13 +296,16 @@ const Offer = () => {
           </div>
         )}
       </div>
-      {mode == 'live' ? (
+      {mode == 'live' && orders?.livesTotal > 0 && (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{orders?.livesTotal}</span> Accepteds😊
+          You have <span className='font-bold text-[#DC4F13]'>{orders?.livesTotal}</span>{' '}
+          Accepteds😊
         </div>
-      ) : (
+      )}
+      {mode == 'proposal' && orders?.proposalsTotal > 0 && (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{orders?.proposalsTotal}</span> Proposals😊
+          You have <span className='font-bold text-[#DC4F13]'>{orders?.proposalsTotal}</span>{' '}
+          Proposals😊
         </div>
       )}
       {filters.length > 0 && (
@@ -327,18 +330,19 @@ const Offer = () => {
           </span>
         </div>
       )}
-      <div className='flex items-center justify-center w-full pt-10 pb-5'>
+      <div className='flex w-full items-center justify-center pb-5 pt-10'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
-            <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>{lives?.length}</span>
-              &nbsp; Live
-            </h1>
+            <div className='flex items-center justify-center gap-2'>
+              <span className='inline-block h-3 w-3 rounded-full bg-orange text-xs text-[#333]'></span>
+              Live
+              {lives?.length > 0 && <span className='text-xs'>( {lives?.length} )</span>}
+            </div>
           ) : (
-            <h1>Live</h1>
+            <div>Live</div>
           )}
         </div>
         <div
@@ -346,14 +350,13 @@ const Offer = () => {
           onClick={() => setMode('proposal')}
         >
           {mode == 'proposal' ? (
-            <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
-                {proposals?.length}
-              </span>
-              &nbsp; Proposals
-            </h1>
+            <div className='flex items-center justify-center gap-2'>
+              <span className='inline-block h-3 w-3 rounded-full bg-orange'></span>
+              Proposals
+              {proposals?.length > 0 && <span className='text-xs'>( {proposals?.length} )</span>}
+            </div>
           ) : (
-            <h1>Proposals</h1>
+            <div>Proposals</div>
           )}
         </div>
       </div>
@@ -385,7 +388,7 @@ const Offer = () => {
               ))}
               {canLoadMore && (
                 <div
-                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -393,7 +396,7 @@ const Offer = () => {
               )}
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Accepted proposals will be here</p>
             </div>
@@ -427,7 +430,7 @@ const Offer = () => {
               ))}
               {canLoadMore && (
                 <div
-                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -435,7 +438,7 @@ const Offer = () => {
               )}
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Proposals will be here</p>
             </div>

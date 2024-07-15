@@ -1,29 +1,26 @@
 'use client';
-import React, { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
-import MenuLink from '@/components/elements/menuLink';
+import React, { useEffect, useRef, useState } from 'react';
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
+import { IoMdClose } from 'react-icons/io';
 
+import MenuLink from '@/components/elements/menuLink';
 import { useCustomContext } from '@/context/use-custom';
 import { USER_ROLE } from '@/utils/constants';
 
-import { FaAngleLeft } from "react-icons/fa6";
-import { FaAngleRight } from "react-icons/fa6";
-import { IoMdClose } from "react-icons/io";
-
 const sideBarSettings = {
-  x_spacing: 7, // should be a tailwind css number
+  active_link_classes: 'border-l-4 border-[#DC4F13] py-3',
   x_collapsed_width: 80, // in PX
-  active_link_classes: 'border-l-4 border-[#DC4F13] py-3'
-}
-
+  x_spacing: 7, // should be a tailwind css number
+};
 
 const SideBar = () => {
-  const auth = useCustomContext(); 
+  const auth = useCustomContext();
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
-  useEffect(() => { 
-    gsap.to('.main_sidebar', { 
+  useEffect(() => {
+    gsap.to('.main_sidebar', {
       duration: 1,
-      width: desktopCollapsed ? sideBarSettings.x_collapsed_width : 300
+      width: desktopCollapsed ? sideBarSettings.x_collapsed_width : 300,
     });
   }, [desktopCollapsed]);
   const freelancer_menu_data = [
@@ -295,53 +292,53 @@ const SideBar = () => {
       id: 4,
       name: 'Client Orders',
     },
-    {
-      href: `/dashboard/freelancer/disputes`,
-      icon: (
-        <svg
-          fill='none'
-          height='25'
-          viewBox='0 0 24 25'
-          width='24'
-          xmlns='http://www.w3.org/2000/svg'
-        >
-          <path
-            d='M21 7.5V17.5C21 20.5 19.5 22.5 16 22.5H8C4.5 22.5 3 20.5 3 17.5V7.5C3 4.5 4.5 2.5 8 2.5H16C19.5 2.5 21 4.5 21 7.5Z'
-            stroke='#96B0BD'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeMiterlimit='10'
-            strokeWidth='1.5'
-          />
-          <path
-            d='M14.5 5V7C14.5 8.1 15.4 9 16.5 9H18.5'
-            stroke='#96B0BD'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeMiterlimit='10'
-            strokeWidth='1.5'
-          />
-          <path
-            d='M8 13.5H12'
-            stroke='#96B0BD'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeMiterlimit='10'
-            strokeWidth='1.5'
-          />
-          <path
-            d='M8 17.5H16'
-            stroke='#96B0BD'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeMiterlimit='10'
-            strokeWidth='1.5'
-          />
-        </svg>
-      ),
-      id: 5,
-      name: 'Disputes',
-    },
+    // {
+    //   href: `/dashboard/freelancer/disputes`,
+    //   icon: (
+    //     <svg
+    //       fill='none'
+    //       height='25'
+    //       viewBox='0 0 24 25'
+    //       width='24'
+    //       xmlns='http://www.w3.org/2000/svg'
+    //     >
+    //       <path
+    //         d='M21 7.5V17.5C21 20.5 19.5 22.5 16 22.5H8C4.5 22.5 3 20.5 3 17.5V7.5C3 4.5 4.5 2.5 8 2.5H16C19.5 2.5 21 4.5 21 7.5Z'
+    //         stroke='#96B0BD'
+    //         strokeLinecap='round'
+    //         strokeLinejoin='round'
+    //         strokeMiterlimit='10'
+    //         strokeWidth='1.5'
+    //       />
+    //       <path
+    //         d='M14.5 5V7C14.5 8.1 15.4 9 16.5 9H18.5'
+    //         stroke='#96B0BD'
+    //         strokeLinecap='round'
+    //         strokeLinejoin='round'
+    //         strokeMiterlimit='10'
+    //         strokeWidth='1.5'
+    //       />
+    //       <path
+    //         d='M8 13.5H12'
+    //         stroke='#96B0BD'
+    //         strokeLinecap='round'
+    //         strokeLinejoin='round'
+    //         strokeMiterlimit='10'
+    //         strokeWidth='1.5'
+    //       />
+    //       <path
+    //         d='M8 17.5H16'
+    //         stroke='#96B0BD'
+    //         strokeLinecap='round'
+    //         strokeLinejoin='round'
+    //         strokeMiterlimit='10'
+    //         strokeWidth='1.5'
+    //       />
+    //     </svg>
+    //   ),
+    //   id: 5,
+    //   name: 'Disputes',
+    // },
     {
       href: `/dashboard/freelancer/inbox`,
       icon: (
@@ -854,48 +851,66 @@ const SideBar = () => {
   }
   return (
     <div
-      className={`main_sidebar min-h-screen fixed md:sticky top-0 left-0 z-50 py-10 transition -translate-x-full md:translate-x-0 bg-[#10191D] flex flex-col gap-8 `}
+      className={`main_sidebar fixed left-0 top-0 z-50 flex min-h-screen -translate-x-full flex-col gap-8 bg-[#10191D] py-10 transition md:sticky md:translate-x-0`}
       ref={sideBarRef}
     >
-      <div 
-        className={`${desktopCollapsed  ? `px-0 w-[80px] max-w-full mr-auto flex justify-center` : `w-full px-${sideBarSettings.x_spacing} mobile:flex justify-between`}`} 
+      <div
+        className={`${desktopCollapsed ? `mr-auto flex w-[80px] max-w-full justify-center px-0` : `w-full px-${sideBarSettings.x_spacing} justify-between mobile:flex`}`}
         onClick={MobileToggleSidebar}
       >
-        <img 
-          className={desktopCollapsed ? `w-1/2 mx-auto` : 'w-1/2 mr-auto'} 
-          src={desktopCollapsed ? '/favicon.ico' : '/assets/images/logo.svg'} 
+        <img
+          className={desktopCollapsed ? `mx-auto w-1/2` : 'mr-auto w-1/2'}
+          src={desktopCollapsed ? '/assets/images/J3.png' : '/assets/images/logo.svg'}
         />
-        <div className='p-2 rounded-[10px] bg-[#1B272C] cursor-pointer md:hidden'>
+        <div className='cursor-pointer rounded-[10px] bg-[#1B272C] p-2 md:hidden'>
           <IoMdClose size={25} />
         </div>
       </div>
-      <div 
-        className={`${desktopCollapsed  ? `px-0 flex justify-center w-[80px] max-w-full mr-auto` : `px-${sideBarSettings.x_spacing}`} w-full mobile:hidden`} 
+      <div
+        className={`${desktopCollapsed ? `mr-auto flex w-[80px] max-w-full justify-center px-0` : `px-${sideBarSettings.x_spacing}`} w-full mobile:hidden`}
       >
         {desktopCollapsed ? (
-          <FaAngleRight size={20} className='cursor-pointer' onClick={()=> { setDesktopCollapsed(false) }} />
-        ) : ( 
-          <FaAngleLeft size={20} className='cursor-pointer' onClick={()=> { setDesktopCollapsed(true) }} />
+          <FaAngleRight
+            className='cursor-pointer'
+            onClick={() => {
+              setDesktopCollapsed(false);
+            }}
+            size={20}
+          />
+        ) : (
+          <FaAngleLeft
+            className='cursor-pointer'
+            onClick={() => {
+              setDesktopCollapsed(true);
+            }}
+            size={20}
+          />
         )}
       </div>
       <div onClick={MobileToggleSidebar}>
         <div className='flex flex-col gap-4'>
           {auth?.currentRole === USER_ROLE.FREELANCER &&
             freelancer_menu_data.map((item, index) => (
-              <MenuLink 
-                item={item} key={index} desktopCollapsed={desktopCollapsed} sideBarSettings={sideBarSettings}
+              <MenuLink
+                desktopCollapsed={desktopCollapsed}
                 href={item.href}
                 icon={item.icon}
-                name={item.name}  
+                item={item}
+                key={index}
+                name={item.name}
+                sideBarSettings={sideBarSettings}
               />
             ))}
           {auth?.currentRole === USER_ROLE.CLIENT &&
             client_menu_data.map((item, index) => (
-              <MenuLink 
-                item={item} key={index} desktopCollapsed={desktopCollapsed} sideBarSettings={sideBarSettings}
+              <MenuLink
+                desktopCollapsed={desktopCollapsed}
                 href={item.href}
                 icon={item.icon}
-                name={item.name} 
+                item={item}
+                key={index}
+                name={item.name}
+                sideBarSettings={sideBarSettings}
               />
             ))}
         </div>

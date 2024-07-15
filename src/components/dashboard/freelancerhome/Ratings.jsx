@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import EmptyCard from '@/components/elements/EmptyCard';
 import React from 'react';
 
 const ratings = [
@@ -34,9 +35,7 @@ const Ratings = () => {
         <h1 className='text-2xl font-semibold'>Ratings</h1>
         {/* <p className='cursor-pointer'>Show more</p> */}
       </div>
-      <div className='flex justify-center items-center mt-50px text-2xl font-semibold'>
-        Not yet
-      </div>
+      <EmptyCard text="Ratings coming soon" />
       {/* <div className='mt-2 grid gap-4 lg:grid-cols-3'>
         {ratings.length ? (
           ratings.map((rating, index) => (
