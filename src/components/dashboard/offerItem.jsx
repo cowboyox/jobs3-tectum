@@ -20,6 +20,7 @@ import React, { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { useToast } from '@/components/ui/use-toast';
+import { useSocket } from '@/context/socket';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
 import {
@@ -77,6 +78,7 @@ const OfferItem = ({
 }) => {
   const router = useRouter();
   const { toast } = useToast();
+  const socket = useSocket();
 
   const wallet = useAnchorWallet();
   const { sendTransaction } = useWallet();
@@ -130,14 +132,14 @@ const OfferItem = ({
 
       <div>
         <h2>{data.summary}</h2>
-        <a className='cursor-pointer text-white' onClick={() => setShowDetail(false)}>
+        <a className='text-white cursor-pointer' onClick={() => setShowDetail(false)}>
           View less
         </a>
       </div>
 
       <div className='border-b border-[#28373A] pb-5'>
         <h2 className='text-white'>Skills</h2>
-        <div className='mt-3 flex items-center gap-2 text-white'>
+        <div className='flex items-center gap-2 mt-3 text-white'>
           {data.skills.map((_text, key) => (
             <div
               className='w-full justify-center truncate rounded-full border border-[#32525B] bg-[#283732] px-3 py-1 xs:w-auto xs:justify-start'
@@ -150,7 +152,7 @@ const OfferItem = ({
       </div>
       <div className='border-b border-[#28373A] pb-5'>
         <h2 className='text-white'>Attachments</h2>
-        <div className='mt-3 flex flex-col items-start gap-2 text-white'>
+        <div className='flex flex-col items-start gap-2 mt-3 text-white'>
           {data.attachments.map((_item, key) => (
             <div
               className='flex items-center gap-2 rounded-xl border border-[#526872] p-2'
@@ -267,7 +269,7 @@ const OfferItem = ({
       const message = {
         messageText: "I'd like to accept your order.",
         receiverId: clientId,
-        senderId: auth?.currentProfile?._id,
+        senderId: freelancerId,
         timeStamp: new Date(),
       };
 
@@ -760,18 +762,18 @@ const OfferItem = ({
         <h1 className='text-xl'>{gigTitle}</h1>
       )}
       <div className='flex items-center gap-4 py-1'>
-        <div className='relative h-12 w-12 mobile:h-8 mobile:w-8'>
+        <div className='relative w-12 h-12 mobile:h-8 mobile:w-8'>
           <img
-            className='aspect-square h-12 w-12 rounded-full object-cover mobile:h-8 mobile:w-8'
+            className='object-cover w-12 h-12 rounded-full aspect-square mobile:h-8 mobile:w-8'
             src={avatarURL ? avatarURL : '/assets/images/users/user-3.png'}
           />
-          <div className='absolute bottom-1 right-1 h-3 w-3 rounded-full bg-green-500 mobile:bottom-0 mobile:right-0 mobile:h-3 mobile:w-3' />
+          <div className='absolute w-3 h-3 bg-green-500 rounded-full bottom-1 right-1 mobile:bottom-0 mobile:right-0 mobile:h-3 mobile:w-3' />
         </div>
         <div className='flex flex-col gap-4'>
           <div className='flex items-center gap-2'>
             <h2 className='text-xl mobile:text-xs'>{fullName}</h2>
             <img
-              className='h-4 w-4 mobile:h-3 mobile:w-3'
+              className='w-4 h-4 mobile:h-3 mobile:w-3'
               src='/assets/images/icons/checkmark.svg'
             />
           </div>
@@ -822,7 +824,7 @@ const OfferItem = ({
               <></>
             ) : !showDetail ? (
               <button
-                className='cursor-pointer text-white'
+                className='text-white cursor-pointer'
                 onClick={() => {
                   setShowDetail(true);
                 }}
@@ -831,7 +833,7 @@ const OfferItem = ({
               </button>
             ) : (
               <button
-                className='cursor-pointer text-white'
+                className='text-white cursor-pointer'
                 onClick={() => {
                   setShowDetail(false);
                 }}
@@ -844,7 +846,7 @@ const OfferItem = ({
 
         <div className='border-b border-[#28373A] pb-3'>
           <h2 className='text-white'>Skills</h2>
-          <div className='mt-3 flex items-center gap-2 text-white'>
+          <div className='flex items-center gap-2 mt-3 text-white'>
             {data.skills.map((_text, key) => (
               <div
                 className='truncate rounded-full border border-[#32525B] bg-[#283732] px-3 py-1'
@@ -862,7 +864,7 @@ const OfferItem = ({
           {!accepted && (
             <div className='float-right grid w-[50%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
-                className='flex cursor-pointer items-center justify-center p-3 hover:opacity-60'
+                className='flex items-center justify-center p-3 cursor-pointer hover:opacity-60'
                 onClick={onReject}
               >
                 Reject
