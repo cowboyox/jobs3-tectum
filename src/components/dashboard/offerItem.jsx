@@ -1,8 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
-import { v4 as uuid } from 'uuid';
 import {
   AnchorProvider,
   BN,
@@ -18,10 +15,13 @@ import {
 } from '@solana/spl-token';
 import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 
 import { useToast } from '@/components/ui/use-toast';
-import api from '@/utils/api';
 import IDL from '@/idl/gig_basic_contract.json';
+import api from '@/utils/api';
 import {
   ADMIN_ADDRESS,
   CONTRACT_SEED,
@@ -31,8 +31,18 @@ import {
 } from '@/utils/constants';
 
 const data = {
+  attachments: [
+    { name: 'Document _1.doc', size: '1.5 MB' },
+    { name: 'Imagefilename.jpg', size: '1.5 MB' },
+  ],
   description:
     'We are looking for an expert UI/UX designer to take our online travel website to the next level. As our website is the primary platform for users to plan and book their travel experiences, we need someone who can create a visually stunning and user-friendly interface. The ideal candidate should have a strong portfolio showcasing their expertise in UI/UX design for travel or e-commerce websites.',
+  required: [
+    'Proficiency in UI design tools like Sketch, Adobe XD, or Figma',
+    'Strong understanding of user-centered design principles',
+    'Experience in creating responsive web designs',
+    'Knowledge of HTML, CSS, and JavaScript is a plus',
+  ],
   responsibilities: [
     'Collaborate with the development team to understand project requirements',
     'Conduct user research and create user personas',
@@ -40,19 +50,9 @@ const data = {
     'Implement design best practices and ensure a seamless user experience',
     'Stay updated with the latest UI/UX trends and technologies',
   ],
-  required: [
-    'Proficiency in UI design tools like Sketch, Adobe XD, or Figma',
-    'Strong understanding of user-centered design principles',
-    'Experience in creating responsive web designs',
-    'Knowledge of HTML, CSS, and JavaScript is a plus',
-  ],
+  skills: ['UI/UX', 'Design', 'Webdesign', 'Mobile UI Design', 'Wireframing'],
   summary:
     'This is a medium-sized project that will require a commitment of 1 to 3 months. We are looking for an expert designer who can deliver exceptional results and elevate our online travel website to new heights.',
-  skills: ['UI/UX', 'Design', 'Webdesign', 'Mobile UI Design', 'Wireframing'],
-  attachments: [
-    { name: 'Document _1.doc', size: '1.5 MB' },
-    { name: 'Imagefilename.jpg', size: '1.5 MB' },
-  ],
 };
 const descriptionTextMaxLength = 320;
 
@@ -130,14 +130,14 @@ const OfferItem = ({
 
       <div>
         <h2>{data.summary}</h2>
-        <a className='text-white cursor-pointer' onClick={() => setShowDetail(false)}>
+        <a className='cursor-pointer text-white' onClick={() => setShowDetail(false)}>
           View less
         </a>
       </div>
 
       <div className='border-b border-[#28373A] pb-5'>
         <h2 className='text-white'>Skills</h2>
-        <div className='flex items-center gap-2 mt-3 text-white'>
+        <div className='mt-3 flex items-center gap-2 text-white'>
           {data.skills.map((_text, key) => (
             <div
               className='w-full justify-center truncate rounded-full border border-[#32525B] bg-[#283732] px-3 py-1 xs:w-auto xs:justify-start'
@@ -150,7 +150,7 @@ const OfferItem = ({
       </div>
       <div className='border-b border-[#28373A] pb-5'>
         <h2 className='text-white'>Attachments</h2>
-        <div className='flex flex-col items-start gap-2 mt-3 text-white'>
+        <div className='mt-3 flex flex-col items-start gap-2 text-white'>
           {data.attachments.map((_item, key) => (
             <div
               className='flex items-center gap-2 rounded-xl border border-[#526872] p-2'
@@ -227,13 +227,13 @@ const OfferItem = ({
         .startContractOnSeller(newContractId, amount, dispute, deadline)
         .accounts({
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-          seller: wallet.publicKey,
-          sellerAta,
+          buyer,
           contract,
           contractAta,
           payTokenMint: PAYTOKEN_MINT,
           rent: SYSVAR_RENT_PUBKEY,
-          buyer,
+          seller: wallet.publicKey,
+          sellerAta,
           systemProgram: SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         })
@@ -251,7 +251,7 @@ const OfferItem = ({
 
       await api.put(
         `/api/v1/freelancer_gig/accept-order/${proposalId}`,
-        JSON.stringify({ gigId, contractId: newContractId, freelancerId, clientId, quantity })
+        JSON.stringify({ clientId, contractId: newContractId, freelancerId, gigId, quantity })
       );
 
       await refetchAllOrdersProposed();
@@ -263,6 +263,15 @@ const OfferItem = ({
         title: <h1 className='text-center'>Success</h1>,
         variant: 'default',
       });
+
+      const message = {
+        messageText: "I'd like to accept your order.",
+        receiverId: clientId,
+        senderId: auth?.currentProfile?._id,
+        timeStamp: new Date(),
+      };
+
+      socket.emit('sendMessage', message);
     } catch (err) {
       console.error('Error corrupted during accepting proposal:', err);
 
@@ -355,15 +364,15 @@ const OfferItem = ({
       const transaction = await program.methods
         .sellerApprove(contractId, false)
         .accounts({
-          seller: wallet.publicKey,
-          contract,
-          sellerAta,
-          buyerAta,
           adminAta,
-          contractAta,
-          tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          buyerAta,
+          contract,
+          contractAta,
+          seller: wallet.publicKey,
+          sellerAta,
           systemProgram: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
         })
         .transaction();
 
@@ -743,7 +752,7 @@ const OfferItem = ({
       {status ? (
         <div className='flex items-center justify-between'>
           <h1 className='text-xl'>{gigTitle}</h1>
-          <div className='mobile:text-xs ml-auto rounded-xl border border-[#1BBF36] px-2 py-1 text-sm text-[#1BBF36]'>
+          <div className='ml-auto rounded-xl border border-[#1BBF36] px-2 py-1 text-sm text-[#1BBF36] mobile:text-xs'>
             {status}
           </div>
         </div>
@@ -751,28 +760,28 @@ const OfferItem = ({
         <h1 className='text-xl'>{gigTitle}</h1>
       )}
       <div className='flex items-center gap-4 py-1'>
-        <div className='relative w-12 h-12 mobile:h-8 mobile:w-8'>
+        <div className='relative h-12 w-12 mobile:h-8 mobile:w-8'>
           <img
-            className='object-cover w-12 h-12 rounded-full mobile:h-8 mobile:w-8 aspect-square'
+            className='aspect-square h-12 w-12 rounded-full object-cover mobile:h-8 mobile:w-8'
             src={avatarURL ? avatarURL : '/assets/images/users/user-3.png'}
           />
-          <div className='absolute w-3 h-3 bg-green-500 rounded-full mobile:bottom-0 mobile:right-0 mobile:h-3 mobile:w-3 bottom-1 right-1' />
+          <div className='absolute bottom-1 right-1 h-3 w-3 rounded-full bg-green-500 mobile:bottom-0 mobile:right-0 mobile:h-3 mobile:w-3' />
         </div>
         <div className='flex flex-col gap-4'>
           <div className='flex items-center gap-2'>
             <h2 className='text-xl mobile:text-xs'>{fullName}</h2>
             <img
-              className='w-4 h-4 mobile:h-3 mobile:w-3'
+              className='h-4 w-4 mobile:h-3 mobile:w-3'
               src='/assets/images/icons/checkmark.svg'
             />
           </div>
         </div>
         <div className='flex items-center gap-2'>
-          <Icon icon='mdi:address-marker-outline' className='text-2xl' />
+          <Icon className='text-2xl' icon='mdi:address-marker-outline' />
           London, United Kingdom
         </div>
         <div className='flex items-center gap-2'>
-          <Icon icon='fa6-regular:clock' className='text-2xl' />
+          <Icon className='text-2xl' icon='fa6-regular:clock' />
           May 15 / 04:35 PM
         </div>
       </div>
@@ -813,7 +822,7 @@ const OfferItem = ({
               <></>
             ) : !showDetail ? (
               <button
-                className='text-white cursor-pointer'
+                className='cursor-pointer text-white'
                 onClick={() => {
                   setShowDetail(true);
                 }}
@@ -822,7 +831,7 @@ const OfferItem = ({
               </button>
             ) : (
               <button
-                className='text-white cursor-pointer'
+                className='cursor-pointer text-white'
                 onClick={() => {
                   setShowDetail(false);
                 }}
@@ -835,7 +844,7 @@ const OfferItem = ({
 
         <div className='border-b border-[#28373A] pb-3'>
           <h2 className='text-white'>Skills</h2>
-          <div className='flex items-center gap-2 mt-3 text-white'>
+          <div className='mt-3 flex items-center gap-2 text-white'>
             {data.skills.map((_text, key) => (
               <div
                 className='truncate rounded-full border border-[#32525B] bg-[#283732] px-3 py-1'
@@ -853,14 +862,14 @@ const OfferItem = ({
           {!accepted && (
             <div className='float-right grid w-[50%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
+                className='flex cursor-pointer items-center justify-center p-3 hover:opacity-60'
                 onClick={onReject}
-                className='flex items-center justify-center p-3 cursor-pointer hover:opacity-60'
               >
                 Reject
               </div>
               <div
-                onClick={onAccept}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'
+                onClick={onAccept}
               >
                 Accept
               </div>
@@ -869,14 +878,14 @@ const OfferItem = ({
           {status == ContractStatus.CONFIRMED && (
             <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
-                onClick={handleFreelancerMessage}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+                onClick={handleFreelancerMessage}
               >
                 Message
               </div>
               <div
-                onClick={onActivate}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'
+                onClick={onActivate}
               >
                 Activate
               </div>
@@ -885,14 +894,14 @@ const OfferItem = ({
           {status == ContractStatus.ACTIVE && (
             <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
-                onClick={handleFreelancerMessage}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+                onClick={handleFreelancerMessage}
               >
                 Message
               </div>
               <div
-                onClick={onDeliver}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'
+                onClick={onDeliver}
               >
                 Deliver
               </div>
@@ -901,8 +910,8 @@ const OfferItem = ({
           {status == ContractStatus.DELIVERED && (
             <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
-                onClick={handleFreelancerMessage}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+                onClick={handleFreelancerMessage}
               >
                 Message
               </div>
@@ -914,14 +923,14 @@ const OfferItem = ({
           {status == ContractStatus.RELEASED && (
             <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
-                onClick={handleFreelancerMessage}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+                onClick={handleFreelancerMessage}
               >
                 Message
               </div>
               <div
-                onClick={onComplete}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'
+                onClick={onComplete}
               >
                 Complete
               </div>
@@ -930,8 +939,8 @@ const OfferItem = ({
           {(status == ContractStatus.COMPLETED || status == ContractStatus.STARTED) && (
             <div className='float-right grid w-[25%] grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
-                onClick={handleFreelancerMessage}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+                onClick={handleFreelancerMessage}
               >
                 Message
               </div>
@@ -944,24 +953,27 @@ const OfferItem = ({
           {status == ContractStatus.STARTED && (
             <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
-                onClick={handleClientMessage}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+                onClick={handleClientMessage}
               >
                 Message
               </div>
               <div
-                onClick={onConfirm}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'
+                onClick={onConfirm}
               >
                 Confirm
               </div>
             </div>
           )}
-          {(status == ContractStatus.ACTIVE || status == ContractStatus.RELEASED || status == ContractStatus.CONFIRMED || status == ContractStatus.COMPLETED) && (
+          {(status == ContractStatus.ACTIVE ||
+            status == ContractStatus.RELEASED ||
+            status == ContractStatus.CONFIRMED ||
+            status == ContractStatus.COMPLETED) && (
             <div className='float-right grid w-[25%] grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
-                onClick={handleClientMessage}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+                onClick={handleClientMessage}
               >
                 Message
               </div>
@@ -970,14 +982,14 @@ const OfferItem = ({
           {status == ContractStatus.DELIVERED && (
             <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
-                onClick={handleClientMessage}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+                onClick={handleClientMessage}
               >
                 Message
               </div>
               <div
-                onClick={onRelease}
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#DC4F13] p-3 hover:opacity-60'
+                onClick={onRelease}
               >
                 Release
               </div>
