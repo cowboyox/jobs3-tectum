@@ -310,6 +310,7 @@ const FreelancerProfile = () => {
   useEffect(() => {
     if (viewMode === 'preview') {
       setEditPrice(false);
+      setEditProfileInfo(false);
     }
   }, [viewMode]);
 
