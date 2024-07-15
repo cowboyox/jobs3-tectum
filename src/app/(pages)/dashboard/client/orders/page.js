@@ -59,7 +59,7 @@ import {
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
-    <div className='flex items-center gap-4 p-0 cursor-pointer'>
+    <div className='flex cursor-pointer items-center gap-4 p-0'>
       <Checkbox
         checked={props.checked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
@@ -179,9 +179,9 @@ const Orders = () => {
         } else {
           setCanLoadMore(false);
         }
-        
+
         // if (page === 1) {
-          setFilteredLiveList(gigs.lives);
+        setFilteredLiveList(gigs.lives);
         // } else {
         //   setFilteredLiveList((prev) => {
         //     let result = [...prev];
@@ -198,7 +198,7 @@ const Orders = () => {
         // }
       } else {
         // if (page === 1) {
-          setFilteredLiveList([]);
+        setFilteredLiveList([]);
         // }
         setCanLoadMore(false);
       }
@@ -211,7 +211,7 @@ const Orders = () => {
         }
 
         // if (page === 1) {
-          setFilteredProposalsList(gigs.proposals);
+        setFilteredProposalsList(gigs.proposals);
         // } else {
         //   setFilteredProposalsList((prev) => {
         //     let result = [...prev];
@@ -228,7 +228,7 @@ const Orders = () => {
         // }
       } else {
         // if (page === 1) {
-          setFilteredProposalsList([]);
+        setFilteredProposalsList([]);
         // }
         setCanLoadMore(false);
       }
@@ -564,10 +564,14 @@ const Orders = () => {
     );
   };
 
+  const handleMessage = (freelancerId) => {
+    router.push(`/dashboard/client/inbox/${freelancerId}`);
+  };
+
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d] pr-4'>
-        <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
+        <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -580,7 +584,7 @@ const Orders = () => {
             </SelectContent>
           </Select>
           <input
-            className='w-full text-white bg-transparent outline-none mobile:text-sm'
+            className='w-full bg-transparent text-white outline-none mobile:text-sm'
             onChange={(e) => setKey(e)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
@@ -661,8 +665,7 @@ const Orders = () => {
       </div>
       {mode == 'live' ? (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{gigs?.livesTotal}</span>{' '}
-          Orders😊
+          You have <span className='font-bold text-[#DC4F13]'>{gigs?.livesTotal}</span> Orders😊
         </div>
       ) : (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
@@ -692,14 +695,14 @@ const Orders = () => {
           </span>
         </div>
       )}
-      <div className='flex items-center justify-center w-full pt-10 pb-5'>
+      <div className='flex w-full items-center justify-center pb-5 pt-10'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
                 {gigs ? gigs.lives.length : ''}
               </span>
               &nbsp; Live
@@ -714,7 +717,7 @@ const Orders = () => {
         >
           {mode == 'proposal' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
                 {gigs ? gigs.proposals.length : ''}
               </span>
               &nbsp; Proposals
@@ -731,11 +734,11 @@ const Orders = () => {
               {filteredLiveList.map((order, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
+                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {order.gigTitle}
                       </div>
-                      <div className='flex flex-row items-center justify-between flex-none gap-2 mobile:w-full'>
+                      <div className='flex flex-none flex-row items-center justify-between gap-2 mobile:w-full'>
                         <div className='flex gap-2'>
                           <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                             15 H: 30 S
@@ -747,7 +750,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='bg-transparent border-none hover:bg-transparent'
+                              className='border-none bg-transparent hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -793,7 +796,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -852,7 +855,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -888,7 +891,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -920,7 +923,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -1029,8 +1032,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{order.gigDescription}</div>
                     {/* )} */}
-                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
-                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
+                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
+                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -1054,7 +1057,12 @@ const Orders = () => {
                         </div>
                       </div>
                       <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-                        <button className='p-4 px-8 md:p-5'>Message</button>
+                        <button
+                          className='p-4 px-8 md:p-5'
+                          onClick={() => handleMessage(order.freelancerId._id)}
+                        >
+                          Message
+                        </button>
                         <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
                           onClick={() => router.push(`/dashboard/client/orders/${order?.id}`)}
@@ -1063,7 +1071,7 @@ const Orders = () => {
                         </button>
                         {order?.status == ContractStatus.DELIVERED && (
                           <button
-                            className='p-4 px-8 bg-green-500 md:p-5'
+                            className='bg-green-500 p-4 px-8 md:p-5'
                             onClick={() => onRelease(order.id, order.contractId)}
                           >
                             Release
@@ -1076,7 +1084,7 @@ const Orders = () => {
               })}
               {canLoadMore && (
                 <div
-                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -1084,7 +1092,7 @@ const Orders = () => {
               )}
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Live proposals will be here</p>
             </div>
@@ -1097,11 +1105,11 @@ const Orders = () => {
               {filteredProposalsList.map((proposal, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='flex items-start justify-between mt-1 md:flex-row md:items-center'>
+                    <div className='mt-1 flex items-start justify-between md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {proposal.gigTitle}
                       </div>
-                      <div className='flex flex-row items-center flex-none gap-2'>
+                      <div className='flex flex-none flex-row items-center gap-2'>
                         {/* <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                         15 H: 30 S
                       </div>
@@ -1111,7 +1119,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='bg-transparent border-none hover:bg-transparent'
+                              className='border-none bg-transparent hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -1157,7 +1165,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1216,7 +1224,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1252,7 +1260,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1284,7 +1292,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -1393,8 +1401,8 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{proposal.gigDescription}</div>
                     {/* )} */}
-                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
-                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
+                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
+                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                         <div>
                           <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
                         </div>
@@ -1418,7 +1426,12 @@ const Orders = () => {
                         </div>
                       </div>
                       <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-                        <button className='p-4 px-8 md:p-5'>Message</button>
+                        <button
+                          className='p-4 px-8 md:p-5'
+                          onClick={() => handleMessage(proposal.freelancerId._id)}
+                        >
+                          Message
+                        </button>
                         <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
                           onClick={() =>
@@ -1439,7 +1452,7 @@ const Orders = () => {
               })}
               {canLoadMore && (
                 <div
-                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -1447,7 +1460,7 @@ const Orders = () => {
               )}
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Freelancer proposals will be here</p>
             </div>
