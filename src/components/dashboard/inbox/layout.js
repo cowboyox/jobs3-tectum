@@ -18,7 +18,7 @@ import { useCustomContext } from '@/context/use-custom';
 import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
 
 import './layout.css';
-import { DEFAULT_AVATAR } from '@/utils/constants';
+import { DEFAULT_AVATAR, USER_ROLE } from '@/utils/constants';
 
 const chats_filters = [
   { label: 'Archived', value: 'archived' },
@@ -67,7 +67,10 @@ const MessageItem = ({ user }) => {
   }, [usersWithMessages, auth.currentProfile._id, user._id]);
 
   return (
-    <Link href={`/dashboard/freelancer/inbox/${user._id}`} socket='socket'>
+    <Link
+      href={`/dashboard/${auth?.currentRole === USER_ROLE.FREELANCER ? 'freelancer' : 'client'}/inbox/${user._id}`}
+      socket='socket'
+    >
       <div
         className={`${isSelected ? 'bg-[#1a272c]' : ''} group flex cursor-pointer gap-4 rounded-xl p-4 transition hover:bg-[#1a272c]`}
       >
