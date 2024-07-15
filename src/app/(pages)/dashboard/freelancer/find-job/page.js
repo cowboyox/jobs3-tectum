@@ -142,12 +142,13 @@ const FindJob = () => {
       title: 'Skills',
     },
   ];
-
+  useEffect(() => {
+    setPage(1);
+    setCanLoadMore(true);
+  }, [filters]);
   useEffect(() => {
     if (clientGigs) {
       setGigList(clientGigs);
-      setFilteredGigList(clientGigs);
-      // setFilteredGigShowModeList(new Array(clientGigs.length).fill(false));
     }
   }, [clientGigs]);
 
@@ -180,30 +181,16 @@ const FindJob = () => {
   }, [searchKeyWords]);
 
   useEffect(() => {
-    if (clientGigs?.length > 0) {
+    if (gigList?.length > 0) {
       setCanLoadMore(true);
       if (page === 1) {
-        setGigList(clientGigs);
-        setFilteredGigList(clientGigs);
-        setFilteredGigShowModeList(new Array(clientGigs.length).fill(false));
+        setFilteredGigList(gigList);
       } else {
-        setGigList((prev) => {
-          let result = [...prev];
-          const ids = prev.map((item) => item._id);
-
-          clientGigs.map((cg) => {
-            if (!ids.includes(cg._id)) {
-              result = [...result, cg];
-            }
-          });
-
-          return result;
-        });
         setFilteredGigList((prev) => {
           let result = [...prev];
           const ids = prev.map((item) => item._id);
 
-          clientGigs.map((cg) => {
+          gigList.map((cg) => {
             if (!ids.includes(cg._id)) {
               result = [...result, cg];
             }
@@ -214,11 +201,13 @@ const FindJob = () => {
       }
     } else {
       if (page === 1) {
-        setGigList([]);
+        setFilteredGigList([]);
       }
       setCanLoadMore(false);
     }
-  }, [clientGigs, page]);
+  }, [gigList, page]);
+
+  
 
   const onChangeType = (e) => {
     setSearchType(e);
