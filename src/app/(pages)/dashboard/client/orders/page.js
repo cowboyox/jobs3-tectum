@@ -43,6 +43,7 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
 import { useToast } from '@/components/ui/use-toast';
+import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllClientGigsProposed } from '@/hooks/useGetAllClientGigsProposed';
@@ -102,7 +103,7 @@ const Orders = () => {
 
   const [filteredLiveList, setFilteredLiveList] = useState([]);
   const [filteredProposalsList, setFilteredProposalsList] = useState([]);
-
+  const socket = useSocket();
   const { isSmallScreen } = useHandleResize();
   const filterCategories = [
     {
@@ -370,6 +371,15 @@ const Orders = () => {
       });
 
       await refetchAllGigsProposed();
+
+      const message = {
+        messageText: "I'd like to accept your order.",
+        receiverId: freelancerId,
+        senderId: auth?.currentProfile?._id,
+        timeStamp: new Date(),
+      };
+
+      socket.emit('sendMessage', message);
     } catch (err) {
       console.error('Error corrupted during applying gig', err);
 
