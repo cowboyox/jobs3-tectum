@@ -75,7 +75,7 @@ const MessageItem = ({ user }) => {
             <img
               alt={user.fullName}
               className='aspect-square h-full w-full rounded-full object-cover'
-              src={user.avatarURL}
+              src={user.avatarURL || '/assets/images/users/user-5.png'}
             />
             <div
               className={`absolute bottom-1 right-1 h-[10px] w-[10px] rounded-full ${
