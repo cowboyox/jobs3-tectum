@@ -31,7 +31,7 @@ const Freelancers = () => {
   const debouncedSearchText = useDebounce(searchText);
   const [page, setPage] = useState(1);
   const router = useRouter();
-  const itemsPerPage = 2;
+  const itemsPerPage = 5;
   const descriptionTextMaxLength = 320;
   const { isSmallScreen } = useHandleResize();
   const { data: freelancers } = useGetFreelancers(
@@ -41,12 +41,14 @@ const Freelancers = () => {
     debouncedSearchText,
     filters
   );
+  console.log("page > filters > ",filters);
+  console.log("page > data > ",freelancers);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setPage(1);
     setCanLoadMore(true);
-  }, [debouncedSearchText]);
+  }, [debouncedSearchText, filters]);
 
   useEffect(() => {
     if (isAiSearch) {
