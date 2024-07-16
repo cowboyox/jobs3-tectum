@@ -17,7 +17,7 @@ export const useGetClientGigsPostedByProfileId = (profileId, pageNum, itemsPerPa
           let skills = ['any'];
           let sort = 0;
           let category = ['any'];
-          let applicants = [];
+          let applicants = 0;
           let experience = 'any';
           let hoursPerWeek = 'any';
           let location = 'any';
@@ -30,7 +30,7 @@ export const useGetClientGigsPostedByProfileId = (profileId, pageNum, itemsPerPa
             if (filter.id === 'payment' && filter.value !== 'any') {
               payment = [...payment, filter.value].filter((p) => p !== 'any');
             } else if (filter.id === 'applicants') {
-              applicants = [...applicants, filter.value];
+              applicants = filter.value;
             } else if (filter.id === 'skills' && filter.value !== 'any') {
               skills = [...skills, filter.value].filter((s) => s !== 'any');
             } else if (filter.id === 'sort') {
