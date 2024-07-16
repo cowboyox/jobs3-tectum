@@ -21,7 +21,7 @@ const Page = () => {
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
     if (!tmp) {
-      router.push(`/?redirect=${pathname}`);
+      router.push(`/signin?redirect=${pathname}`);
     }
   }, [router, pathname]);
 
