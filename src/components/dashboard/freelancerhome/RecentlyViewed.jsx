@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import React from 'react';
-import EmptyCard from '@/components/elements/EmptyCard';
+import EmptyCard from '@/components/elements/emptyCard';
 
 import { useCustomContext } from '@/context/use-custom';
 import { useGetAllFLRecentViews } from '@/hooks/useGetAllFLRecentViews';

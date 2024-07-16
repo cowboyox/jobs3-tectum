@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import EmptyCard from '@/components/elements/EmptyCard';
+import EmptyCard from '@/components/elements/emptyCard';
 import React from 'react';
 
 const ratings = [
