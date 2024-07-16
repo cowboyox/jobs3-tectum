@@ -24,10 +24,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
 import { IoLocationOutline } from 'react-icons/io5';
 import { useGetClientGigsPostedByProfileId } from '@/hooks/useGetClientGigsPostedByProfileId';
+import { COUNTRIES } from '@/utils/constants';
+
 
 const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
-    <div className='flex cursor-pointer items-center gap-4 p-0'>
+    <div className='flex items-center gap-4 p-0 cursor-pointer'>
       <Checkbox
         checked={isChecked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
@@ -78,12 +80,12 @@ const GigCard = ({ gig }) => {
     <div className='mb-4 flex justify-between rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-3'>
       <div className='flex flex-col gap-1'>
         <h2
-          className='cursor-pointer text-xl text-white'
+          className='text-xl text-white cursor-pointer'
           onClick={() => router.push(`./edit-gig/${gig._id}`)}
         >
           {gig.gigTitle}
         </h2>
-        <div className='mt-2 flex items-center gap-5 text-gray-400'>
+        <div className='flex items-center gap-5 mt-2 text-gray-400'>
           <div className='flex items-center gap-2'>
             <CiClock2 size={24} />
             <span className='text-base'>{minutesDifference(gig.gigPostDate)}</span>
@@ -98,7 +100,7 @@ const GigCard = ({ gig }) => {
       </div>
       <div className='flex items-start gap-3 mobile:justify-between'>
         <Status status={gig.gigStatus} />
-        <BsThreeDots className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-full p-2 transition hover:bg-slate-700' />
+        <BsThreeDots className='flex items-center justify-center w-8 h-8 p-2 transition rounded-full cursor-pointer hover:bg-slate-700' />
       </div>
     </div>
   );
@@ -119,6 +121,9 @@ const MyGigs = () => {
   const [isFixed, setIsFixed] = useState(false);
   const [isHourly, setIsHourly] = useState(false);
   const [isBoth, setIsBoth] = useState(false);
+  const [locationFilters, setLocationFilters] = useState([]);
+  const [countries, setCountries] = useState(COUNTRIES);
+  const [locationText, setLocationText] = useState("");
   const itemsPerPage = 5;
   const auth = useCustomContext();
   const filterItems = [
@@ -232,6 +237,11 @@ const MyGigs = () => {
       setCanLoadMore(false);
     }
   }, [gigList, page]);
+
+  useEffect(() => {
+    setCountries(COUNTRIES.filter((item) => item.toLocaleLowerCase().includes(locationText.toLocaleLowerCase())));
+  }, [locationText]);
+  
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
   };
@@ -351,13 +361,19 @@ const MyGigs = () => {
     }
   };
 
-  console.log('filters > ', filters);
-
+  const onCheckedLocationChange = (value, id, name) => {
+    if (value) {
+      setLocationFilters((prev) => [...prev, name]);
+    } else {
+      setLocationFilters((prev) => prev.filter((item) => item !== name));
+    }
+  };
+  
   return (
     <div className='flex flex-col gap-8'>
-      <div className='flex w-full items-stretch gap-5 mobile:flex-col'>
+      <div className='flex items-stretch w-full gap-5 mobile:flex-col'>
         <div className='flex flex-grow gap-2 rounded-xl bg-[#10191d] p-1 mobile:p-1'>
-          <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
+          <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
             <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
               <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
                 <SelectValue />
@@ -370,20 +386,86 @@ const MyGigs = () => {
               </SelectContent>
             </Select>
             <input
-              className='w-full bg-transparent text-white outline-none mobile:text-sm'
+              className='w-full text-white bg-transparent outline-none mobile:text-sm'
               onChange={(e) => setKey(e)}
               onKeyDown={handleKeyDown}
               placeholder='Search by gig title, company, keywords'
             />
           </div>
-          <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
+          {/* <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
             <IoLocationOutline size={20} stroke='#96B0BD' />
             <span className='text-[#96B0BD]'>Anywhere</span>
-          </div>
+          </div> */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
+                <IoLocationOutline size={20} stroke='#96B0BD' />
+                {
+                  locationFilters.length == 0 ?
+                  <span className='text-[#96B0BD]'>Anywhere</span> :
+                  <span className='text-[#96B0BD]'>{ locationFilters.join(", ").length > 11 ? locationFilters.join(", ").slice(0,10) + "..." : locationFilters.join(", ") }</span>
+                }
+                <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
+                  {locationFilters.length}
+                </span>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent
+              align='end'
+              className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] pl-4 pr-1 py-4'
+            >
+              <div className='max-h-[300px] overflow-y-auto country-list'>
+                <div className='sticky top-0 flex bg-[#1B272C] p-1 mb-1'>
+                  <input 
+                    className='w-full px-7 relative text-[#96B0BD] border-[#96B0BD] border-2 bg-transparent rounded-full outline-none mobile:text-sm' 
+                    onChange={(e) => {
+                      setLocationText(e.target.value);
+                    }}
+                    value={locationText}
+                  />
+                  <svg
+                    className='absolute w-5 h-5 top-2 left-3'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth={1.5}
+                    viewBox='0 0 24 24'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                  </svg>
+                </div>
+                {
+                  countries.length > 0 ?
+                  <div className='flex flex-col gap-2'>
+                    {countries.map((con, i) => {
+                      return (
+                        <DropdownItem
+                          category_id={con}
+                          category_name={con}
+                          isChecked={locationFilters.includes(con)}
+                          key={i}
+                          onCheckedChange={(value) =>
+                            onCheckedLocationChange(value, con, con)
+                          }
+                        />
+                      );
+                    })}
+                  </div> :
+                  <div className='flex flex-col gap-2'>
+                    <span className='text-[#96B0BD]'>No results found</span>
+                  </div>
+                }
+              </div>
+            </PopoverContent>
+          </Popover>
           {(!isSmallScreen || searchType === 'normal') && (
             <Popover>
               <PopoverTrigger asChild>
-                <button className='m-3 flex flex-row items-center justify-center gap-3'>
+                <button className='flex flex-row items-center justify-center gap-3 m-3'>
                   <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
                   {!isSmallScreen && (
                     <div className='flex flex-row gap-2'>
