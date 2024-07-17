@@ -87,10 +87,35 @@ const ChatPage = ({ profileId }) => {
   const auth = useCustomContext();
   const [receiver, setRceiver] = useState(null);
   const [conversations, setConversation] = useState([]);
+  const [userStatusColor, setUserStatusColor] = useState('bg-gray-500');
   const [input, setInput] = useState('');
   const { data: userInfo } = useGetUserInfo(profileId);
   const messagesEndRef = useRef(null);
   const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
+
+  useEffect(() => {
+    setUserStatusColor(
+      receiver?.status === 'online'
+        ? 'bg-green-500'
+        : receiver?.status === 'idle'
+          ? 'bg-yellow-500'
+          : 'bg-gray-500'
+    );
+  }, [receiver?.status]);
+
+  useEffect(() => {
+    socket?.on('statusChanged', ({ userId, status }) => {
+      if (userId === profileId) {
+        setUserStatusColor(
+          status === 'online' ? 'bg-green-500' : status === 'idle' ? 'bg-yellow-500' : 'bg-gray-500'
+        );
+      }
+    });
+
+    return () => {
+      socket?.off('statusChanged');
+    };
+  }, [socket, profileId]);
 
   useEffect(() => {
     if (userInfo && auth?.currentProfile) {
@@ -99,8 +124,8 @@ const ChatPage = ({ profileId }) => {
         avatar: userInfo.avatarURL,
         isVerified: userInfo.userId?.verified || false,
         name: userInfo.fullName,
-        online: userInfo.status === 'online' ? true : false,
         starred: true,
+        status: userInfo.status,
         timestamp: userInfo.userId?.timestamp,
         unreadCount: 0,
       });
@@ -108,7 +133,7 @@ const ChatPage = ({ profileId }) => {
       let from = auth.currentProfile._id;
       let to = userInfo._id;
 
-      socket.emit('getHistory', { from, to });
+      socket?.emit('getHistory', { from, to });
 
       socket?.on('history', (history) => {
         setConversation(history);
@@ -205,7 +230,7 @@ const ChatPage = ({ profileId }) => {
                 />
                 <div
                   className={`absolute bottom-0 right-0 h-[10px] w-[10px] rounded-full ${
-                    receiver.online ? 'bg-green-500' : 'bg-gray-500'
+                    userStatusColor
                   }`}
                 />
               </div>

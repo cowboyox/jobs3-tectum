@@ -90,7 +90,7 @@ export const CustomContext = createContext({ undefined });
 const ContextProvider = ({ children }) => {
   const [currentRole, setCurrentRole] = useState(USER_ROLE.FREELANCER);
   const [currentProfile, setCurrentProfile] = useState(null);
-  const [isIdle, setIsIdle] = useState(false);
+  const [isIdle, setIsIdle] = useState(true);
   // Context API States
   const [loading, setLoading] = useState(true);
   const socket = useSocket();
