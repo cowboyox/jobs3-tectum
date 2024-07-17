@@ -329,17 +329,75 @@ const FindJob = () => {
 
   const onCheckedChange = (isChecked, id, name, value) => {
     if (isChecked) {
-      if (id === 'payment') {
-        if (name === 'Hourly') setIsHourly(true);
-        if (name === 'Fixed') setIsFixed(true);
-        if (name === 'Any Type') setIsBoth(true);
+      if (id === 'applicants' || id === 'payment') {
+        if (id === 'payment') {
+          if (name === 'Hourly') {
+            setIsHourly(true);
+            setIsFixed(false);
+            setFilters((prev) => [...prev.filter((f) => f.id !== 'amount')])
+          }
+          if (name === 'Fixed') {
+            setIsFixed(true);
+            setIsHourly(false);
+            setFilters((prev) => [...prev.filter((f) => f.id !== 'hourly')])
+          }
+          if (name === 'Any Type') {
+            setIsFixed(true);
+            setIsHourly(true);
+          }
+        }
+        setFilters((prev) => [...prev.filter((f) => f.id !== id), { id, name, value }]);
       }
-      setFilters((prev) => [...prev, { id, name, value }]);
+      if (id === 'skills' || id === 'hourly' || id === 'amount') {
+        let filterItemsId = 0,
+          filterItemsName = '';
+        if (id === 'amount') {
+          filterItemsId = 1;
+          filterItemsName = 'Any Rate';
+        }
+        if (id === 'hourly') {
+          filterItemsId = 2;
+          filterItemsName = 'Any Rate';
+        }
+        if (id === 'skills') {
+          filterItemsId = 4;
+          filterItemsName = 'Any Skills';
+        }
+        if (name !== filterItemsName) {
+          filters.filter((f) => f.id === id && f.name !== filterItemsName).length ===
+          filterItems[filterItemsId].content.length - 2
+            ? setFilters((prev) => [
+                ...prev.filter((f) => f.id !== id),
+                {
+                  id: filterItems[filterItemsId].content[0].category_id,
+                  name: filterItems[filterItemsId].content[0].category_name,
+                  value: filterItems[filterItemsId].content[0].category_value,
+                },
+              ])
+            : setFilters((prev) => [
+                ...prev.filter((f) => !(f.name === filterItemsName && f.id === id)),
+                { id, name, value },
+              ]);
+        } else {
+          setFilters((prev) => [
+            ...prev.filter((f) => f.id !== id),
+            {
+              id: filterItems[filterItemsId].content[0].category_id,
+              name: filterItems[filterItemsId].content[0].category_name,
+              value: filterItems[filterItemsId].content[0].category_value,
+            },
+          ]);
+        }
+        // setFilters((prev) => [...prev.filter((f) => f.id !== id), { id, name, value }]);
+      }
     } else {
       if (id === 'payment') {
         if (name === 'Hourly') setIsHourly(false);
         if (name === 'Fixed') setIsFixed(false);
-        if (name === 'Any Type') setIsBoth(false);
+        if (name === 'Any Type') {
+          setIsFixed(false);
+          setIsHourly(false);
+        }
       }
       setFilters((prev) =>
         prev.filter(
