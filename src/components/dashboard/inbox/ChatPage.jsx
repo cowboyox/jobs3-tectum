@@ -99,7 +99,7 @@ const ChatPage = ({ profileId }) => {
         avatar: userInfo.avatarURL,
         isVerified: userInfo.userId?.verified || false,
         name: userInfo.fullName,
-        online: userInfo.userId?.status === 'Online' ? true : false,
+        online: userInfo.status === 'online' ? true : false,
         starred: true,
         timestamp: userInfo.userId?.timestamp,
         unreadCount: 0,
