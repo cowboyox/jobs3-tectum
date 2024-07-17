@@ -13,10 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useToast } from '@/components/ui/use-toast';
 import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
 import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
-import { DEFAULT_AVATAR, USER_ROLE } from '@/utils/constants';
+import { useGetUserInfo } from '@/hooks/useGetUserInfo';
+import api from '@/utils/api';
+import { APIS, DEFAULT_AVATAR, USER_ROLE } from '@/utils/constants';
 import { timeDifference } from '@/utils/Helpers';
 import './layout.css';
 
@@ -33,11 +36,15 @@ const MessageItem = ({ user }) => {
   const auth = useCustomContext();
   const pathname = usePathname();
   const socket = useSocket();
+  const { toast } = useToast();
   const [isSelected, setIsSelected] = useState(false);
   const [unReadCount, setUnReadCount] = useState(0);
   const [lastMessage, setLastMessage] = useState();
   const [userStatusColor, setUserStatusColor] = useState('bg-gray-500');
   const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
+  const { data: currentProfile, refetch: refetchUserInfo } = useGetUserInfo(
+    auth?.currentProfile?._id
+  );
 
   useEffect(() => {
     if (pathname?.split('/').pop() === user._id) {
@@ -56,6 +63,8 @@ const MessageItem = ({ user }) => {
           : 'bg-gray-500'
     );
   }, [user.status]);
+
+  console.log(user.status);
 
   useEffect(() => {
     if (isSelected) {
@@ -87,6 +96,12 @@ const MessageItem = ({ user }) => {
   }, [socket, user._id]);
 
   useEffect(() => {
+    if (currentProfile && auth) {
+      auth.setCurrentProfile(currentProfile);
+    }
+  }, [currentProfile, auth]);
+
+  useEffect(() => {
     if (usersWithMessages?.messages && auth?.currentProfile?._id) {
       const unReadCount = usersWithMessages.messages.filter(
         (message) =>
@@ -102,6 +117,61 @@ const MessageItem = ({ user }) => {
       setUnReadCount(unReadCount);
     }
   }, [usersWithMessages?.messages, auth.currentProfile._id, user._id]);
+
+  const handleAddFavorite = async () => {
+    if (auth?.currentProfile?._id) {
+      api
+        .put(`${APIS.ADD_FAVORITES}/${auth.currentProfile._id}/${user._id}`)
+        .then(async () => {
+          await refetchUserInfo();
+
+          return toast({
+            className:
+              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Successfully added to favorites</h3>,
+            title: <h1 className='text-center'>Success</h1>,
+            variant: 'default',
+          });
+        })
+        .catch(() => {
+          toast({
+            className:
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
+          });
+        });
+    }
+  };
+
+  const handleRemoveFavorite = async () => {
+    if (auth?.currentProfile?._id) {
+      api
+        .put(`${APIS.REMOVE_FAVORITES}/${auth.currentProfile._id}/${user._id}`)
+        .then(async () => {
+          await refetchUserInfo();
+
+          return toast({
+            className:
+              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Successfully removed from favorites</h3>,
+            title: <h1 className='text-center'>Success</h1>,
+            variant: 'default',
+          });
+        })
+        .catch(() => {
+          toast({
+            className:
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
+          });
+        });
+    }
+  };
+
   return (
     <Link
       href={`/dashboard/${auth?.currentRole === USER_ROLE.FREELANCER ? 'freelancer' : 'client'}/inbox/${user._id}`}
@@ -141,10 +211,16 @@ const MessageItem = ({ user }) => {
             {unReadCount > 0 && (
               <span className='rounded-full bg-[#DC4F13] px-2 py-[1px] text-xs'>{unReadCount}</span>
             )}
-            {user.starred ? (
-              <FaStar className='w-4 cursor-pointer fill-[#96B0BD]' />
+            {auth?.currentProfile?.favorites.includes(user._id) ? (
+              <FaStar
+                className='w-4 cursor-pointer fill-[#96B0BD]'
+                onClick={handleRemoveFavorite}
+              />
             ) : (
-              <FaRegStar className='w-4 cursor-pointer fill-[#96B0BD]' />
+              <FaRegStar
+                className='w-4 cursor-pointer fill-[#96B0BD]'
+                onClick={handleAddFavorite}
+              />
             )}
           </div>
         </div>
@@ -187,6 +263,8 @@ const InboxPage = ({ children }) => {
     );
     setFilteredUsers(filtered);
   };
+
+  console.log(filteredUsers);
 
   return (
     <div className='inbox-page border-t border-[#28373E]'>
