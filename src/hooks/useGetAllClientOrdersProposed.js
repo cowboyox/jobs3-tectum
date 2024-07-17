@@ -7,6 +7,7 @@ export const useGetAllClientOrdersProposed = (
   pageNum,
   itemsPerPage,
   searchText = '',
+  locations = ''
 ) => {
   return useQuery({
     cacheTime: Infinity,
@@ -14,7 +15,7 @@ export const useGetAllClientOrdersProposed = (
     queryFn: async () => {
       if (profileId && pageNum > 0 && itemsPerPage > 0) {
         try {
-          const result = await api.get(`/api/v1/freelancer_gig/find_all_orders_of_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}`);
+          const result = await api.get(`/api/v1/freelancer_gig/find_all_orders_of_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&locations=${locations}`);
           console.log("result in useGetAllClientOrdersProposed:", result);
           const proposals = [];
           const lives = [];
@@ -88,6 +89,7 @@ export const useGetAllClientOrdersProposed = (
       pageNum,
       itemsPerPage,
       searchText,
+      locations
     ],
     staleTime: Infinity,
   });

@@ -123,7 +123,8 @@ const Offer = () => {
     page,
     itemsPerPage,
     debouncedSearchText,
-    filters
+    filters,
+    locationFilters
   );
 
   useEffect(() => {
@@ -465,6 +466,7 @@ const Offer = () => {
                   quantity={order.quantity}
                   refetchAllOrdersProposed={refetchAllOrdersProposed}
                   status={order.status}
+                  location={order.freelancer.location}
                 />
               ))}
               {canLoadMore && (
@@ -507,6 +509,7 @@ const Offer = () => {
                   quantity={proposal.quantity}
                   refetchAllOrdersProposed={refetchAllOrdersProposed}
                   status={proposal.status}
+                  location={proposal.freelancer.location}
                 />
               ))}
               {canLoadMore && (

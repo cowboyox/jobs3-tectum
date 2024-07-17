@@ -100,7 +100,8 @@ const Orders = () => {
     page,
     itemsPerPage,
     debouncedSearchText,
-    filters
+    filters,
+    locationFilters
   );
 
   const { toast } = useToast();
@@ -1485,7 +1486,7 @@ const Orders = () => {
                               strokeWidth='1.5'
                             />
                           </svg>
-                          {formattedDate(proposal.gigPostDate)} - Present
+                          {proposal?.gigPostDate ? `${formattedDate(proposal?.gigPostDate)} - Present` : "Present"} 
                         </div>
                       </div>
                     </div>
