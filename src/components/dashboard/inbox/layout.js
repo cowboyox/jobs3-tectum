@@ -17,7 +17,7 @@ import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
 import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
 import { DEFAULT_AVATAR, USER_ROLE } from '@/utils/constants';
-import { minutesDifference } from '@/utils/Helpers';
+import { timeDifference } from '@/utils/Helpers';
 import './layout.css';
 
 const chats_filters = [
@@ -135,7 +135,7 @@ const MessageItem = ({ user }) => {
         </div>
         <div className='flex w-2/5 items-center justify-between'>
           <span className='text-xs text-[#96B0BD]'>
-            {lastMessage ? minutesDifference(lastMessage.timeStamp) : ''}
+            {lastMessage ? timeDifference(lastMessage.timeStamp) : ''}
           </span>
           <div className='flex items-center gap-3'>
             {unReadCount > 0 && (
