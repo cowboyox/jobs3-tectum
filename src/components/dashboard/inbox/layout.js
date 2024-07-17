@@ -17,7 +17,7 @@ import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
 import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
 import { DEFAULT_AVATAR, USER_ROLE } from '@/utils/constants';
-import { minutesDifference } from '@/utils/Helpers';
+import { timeDifference } from '@/utils/Helpers';
 import './layout.css';
 
 const chats_filters = [
@@ -36,6 +36,7 @@ const MessageItem = ({ user }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [unReadCount, setUnReadCount] = useState(0);
   const [lastMessage, setLastMessage] = useState();
+  const [userStatusColor, setUserStatusColor] = useState('bg-gray-500');
   const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   useEffect(() => {
@@ -44,7 +45,17 @@ const MessageItem = ({ user }) => {
     } else {
       setIsSelected(false);
     }
-  }, [pathname, user]);
+  }, [pathname, user._id]);
+
+  useEffect(() => {
+    setUserStatusColor(
+      user.status === 'online'
+        ? 'bg-green-500'
+        : user.status === 'idle'
+          ? 'bg-yellow-500'
+          : 'bg-gray-500'
+    );
+  }, [user.status]);
 
   useEffect(() => {
     if (isSelected) {
@@ -62,6 +73,20 @@ const MessageItem = ({ user }) => {
   }, [socket, auth?.currentProfile?._id, user._id, refetch]);
 
   useEffect(() => {
+    socket.on('statusChanged', ({ userId, status }) => {
+      if (userId === user._id) {
+        setUserStatusColor(
+          status === 'online' ? 'bg-green-500' : status === 'idle' ? 'bg-yellow-500' : 'bg-gray-500'
+        );
+      }
+    });
+
+    return () => {
+      socket.off('statusChanged');
+    };
+  }, [socket, user._id]);
+
+  useEffect(() => {
     if (usersWithMessages?.messages && auth?.currentProfile?._id) {
       const unReadCount = usersWithMessages.messages.filter(
         (message) =>
@@ -77,7 +102,6 @@ const MessageItem = ({ user }) => {
       setUnReadCount(unReadCount);
     }
   }, [usersWithMessages?.messages, auth.currentProfile._id, user._id]);
-
   return (
     <Link
       href={`/dashboard/${auth?.currentRole === USER_ROLE.FREELANCER ? 'freelancer' : 'client'}/inbox/${user._id}`}
@@ -94,8 +118,8 @@ const MessageItem = ({ user }) => {
               src={user.avatarURL || DEFAULT_AVATAR}
             />
             <div
-              className={`absolute bottom-1 right-1 h-[10px] w-[10px] rounded-full ${
-                user.userId.status === 'online' ? 'bg-green-500' : 'bg-gray-500'
+              className={`absolute bottom-0.5 right-0.5 h-[10px] w-[10px] rounded-full ${
+                userStatusColor
               }`}
             />
           </div>
@@ -104,24 +128,23 @@ const MessageItem = ({ user }) => {
               {truncateText(user.fullName, 9)}
               {user.isVerified && <BsPatchCheckFill fill='#148fe8' />}
             </p>
-            <p className='relative w-full text-nowrap text-xs font-light text-white'>
-              {lastMessage ? truncateText(lastMessage.messageText, 10) : ''}
-              <span className='absolute right-0 top-0 h-full w-1/2 bg-opacity-60 bg-gradient-to-r from-transparent to-black transition group-hover:to-[#1a272c]' />
+            <p className='relative w-full text-nowrap text-xs font-light text-medGray'>
+              {lastMessage ? truncateText(lastMessage.messageText, 20) : ''}
             </p>
           </div>
         </div>
         <div className='flex w-2/5 items-center justify-between'>
           <span className='text-xs text-[#96B0BD]'>
-            {lastMessage ? minutesDifference(lastMessage.timeStamp) : ''}
+            {lastMessage ? timeDifference(lastMessage.timeStamp) : ''}
           </span>
           <div className='flex items-center gap-3'>
             {unReadCount > 0 && (
               <span className='rounded-full bg-[#DC4F13] px-2 py-[1px] text-xs'>{unReadCount}</span>
             )}
             {user.starred ? (
-              <FaStar className='w-4 cursor-copy fill-[#96B0BD]' />
+              <FaStar className='w-4 cursor-pointer fill-[#96B0BD]' />
             ) : (
-              <FaRegStar className='w-4 cursor-copy fill-[#96B0BD]' />
+              <FaRegStar className='w-4 cursor-pointer fill-[#96B0BD]' />
             )}
           </div>
         </div>

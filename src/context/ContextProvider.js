@@ -90,6 +90,7 @@ export const CustomContext = createContext({ undefined });
 const ContextProvider = ({ children }) => {
   const [currentRole, setCurrentRole] = useState(USER_ROLE.FREELANCER);
   const [currentProfile, setCurrentProfile] = useState(null);
+  const [isIdle, setIsIdle] = useState(true);
   // Context API States
   const [loading, setLoading] = useState(true);
   const socket = useSocket();
@@ -105,6 +106,40 @@ const ContextProvider = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    if (currentProfile?._id) {
+      let idleTimer;
+      const idleTime = 30000;
+
+      const resetIdleTimer = () => {
+        clearTimeout(idleTimer);
+
+        if (isIdle) {
+          setIsIdle(false);
+          socket.emit('user-active', currentProfile?._id);
+        }
+
+        idleTimer = setTimeout(() => {
+          setIsIdle(true);
+          socket.emit('user-idle', currentProfile?._id);
+        }, idleTime);
+      };
+
+      const events = ['mousemove', 'keydown', 'click'];
+
+      events.forEach((event) => {
+        window.addEventListener(event, resetIdleTimer);
+      });
+
+      return () => {
+        clearTimeout(idleTimer);
+        events.forEach((event) => {
+          window.removeEventListener(event, resetIdleTimer);
+        });
+      };
+    }
+  }, [isIdle, socket, currentProfile]);
 
   const login = async (credentials) => {
     // if (state.acc_type === null) {

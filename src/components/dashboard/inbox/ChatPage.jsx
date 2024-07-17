@@ -87,10 +87,35 @@ const ChatPage = ({ profileId }) => {
   const auth = useCustomContext();
   const [receiver, setRceiver] = useState(null);
   const [conversations, setConversation] = useState([]);
+  const [userStatusColor, setUserStatusColor] = useState('bg-gray-500');
   const [input, setInput] = useState('');
   const { data: userInfo } = useGetUserInfo(profileId);
   const messagesEndRef = useRef(null);
   const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
+
+  useEffect(() => {
+    setUserStatusColor(
+      receiver?.status === 'online'
+        ? 'bg-green-500'
+        : receiver?.status === 'idle'
+          ? 'bg-yellow-500'
+          : 'bg-gray-500'
+    );
+  }, [receiver?.status]);
+
+  useEffect(() => {
+    socket?.on('statusChanged', ({ userId, status }) => {
+      if (userId === profileId) {
+        setUserStatusColor(
+          status === 'online' ? 'bg-green-500' : status === 'idle' ? 'bg-yellow-500' : 'bg-gray-500'
+        );
+      }
+    });
+
+    return () => {
+      socket?.off('statusChanged');
+    };
+  }, [socket, profileId]);
 
   useEffect(() => {
     if (userInfo && auth?.currentProfile) {
@@ -99,8 +124,8 @@ const ChatPage = ({ profileId }) => {
         avatar: userInfo.avatarURL,
         isVerified: userInfo.userId?.verified || false,
         name: userInfo.fullName,
-        online: userInfo.userId?.status === 'Online' ? true : false,
         starred: true,
+        status: userInfo.status,
         timestamp: userInfo.userId?.timestamp,
         unreadCount: 0,
       });
@@ -108,7 +133,7 @@ const ChatPage = ({ profileId }) => {
       let from = auth.currentProfile._id;
       let to = userInfo._id;
 
-      socket.emit('getHistory', { from, to });
+      socket?.emit('getHistory', { from, to });
 
       socket?.on('history', (history) => {
         setConversation(history);
@@ -164,6 +189,18 @@ const ChatPage = ({ profileId }) => {
     setInput('');
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      sendMessage();
+    }
+  };
+
+  const handleChange = (e) => {
+    if (e.target.value !== '\n') {
+      setInput(e.target.value);
+    }
+  };
+
   return (
     <div className='flex h-full flex-col'>
       <style>{`
@@ -193,7 +230,7 @@ const ChatPage = ({ profileId }) => {
                 />
                 <div
                   className={`absolute bottom-0 right-0 h-[10px] w-[10px] rounded-full ${
-                    receiver.online ? 'bg-green-500' : 'bg-gray-500'
+                    userStatusColor
                   }`}
                 />
               </div>
@@ -268,7 +305,8 @@ const ChatPage = ({ profileId }) => {
               <IoMdAttach className='h-6 w-6 cursor-pointer transition hover:fill-[#dc4f14]' />
               <textarea
                 className='h-full w-full resize-none bg-transparent pt-2 outline-none placeholder:text-[#96B0BD]'
-                onChange={(e) => setInput(e.target.value)}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
                 placeholder='Send message...'
                 value={input}
               />
