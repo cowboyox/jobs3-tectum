@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@/utils/api';
 import { APIS } from '@/utils/constants';
 
-export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters = []) => {
+export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters = [], locations = '') => {
   console.log("useGetClientGigs");
   return useQuery({
     cacheTime: Infinity,
@@ -57,7 +57,7 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
           });
 
           const { data } = await api.get(
-            `${APIS.CL_FIND_GIGS}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&applicants=${applicants}&experience=${experience}&hoursPerWeek=${hoursPerWeek}&location=${location}&timezone=${timezone}&info=${info}&fixed=${fixed}&hourly=${hourly}`
+            `${APIS.CL_FIND_GIGS}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&applicants=${applicants}&experience=${experience}&hoursPerWeek=${hoursPerWeek}&location=${location}&timezone=${timezone}&info=${info}&fixed=${fixed}&hourly=${hourly}&locations=${locations}`
           );
 
           console.log(data);
@@ -72,7 +72,7 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
 
       return null;
     },
-    queryKey: ['useGetClientGigs', pageNum, itemsPerPage, searchText, filters],
+    queryKey: ['useGetClientGigs', pageNum, itemsPerPage, searchText, filters, locations],
     staleTime: Infinity,
   });
 };
