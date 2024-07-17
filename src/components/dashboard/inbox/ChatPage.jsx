@@ -16,11 +16,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useToast } from '@/components/ui/use-toast';
 import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
 import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
-import { DEFAULT_AVATAR } from '@/utils/constants';
+import api from '@/utils/api';
+import { APIS, DEFAULT_AVATAR } from '@/utils/constants';
 
 const MessageDetails = (props) => {
   return (
@@ -33,9 +35,7 @@ const MessageDetails = (props) => {
           src={props.user_image || DEFAULT_AVATAR}
         />
       </div>
-      <span className='text-sm text-[#526872]'>
-        {props.date} at {props.time}
-      </span>
+      <span className='text-sm text-[#526872]'>{props.time}</span>
     </div>
   );
 };
@@ -90,7 +90,11 @@ const ChatPage = ({ profileId }) => {
   const [userStatusColor, setUserStatusColor] = useState('bg-gray-500');
   const [input, setInput] = useState('');
   const { data: userInfo } = useGetUserInfo(profileId);
+  const { data: currentProfile, refetch: refetchUserInfo } = useGetUserInfo(
+    auth?.currentProfile?._id
+  );
   const messagesEndRef = useRef(null);
+  const { toast } = useToast();
   const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   useEffect(() => {
@@ -124,10 +128,8 @@ const ChatPage = ({ profileId }) => {
         avatar: userInfo.avatarURL,
         isVerified: userInfo.userId?.verified || false,
         name: userInfo.fullName,
-        starred: true,
         status: userInfo.status,
         timestamp: userInfo.userId?.timestamp,
-        unreadCount: 0,
       });
 
       let from = auth.currentProfile._id;
@@ -176,6 +178,12 @@ const ChatPage = ({ profileId }) => {
     scrollToBottom();
   }, [conversations]);
 
+  useEffect(() => {
+    if (currentProfile && auth) {
+      auth.setCurrentProfile(currentProfile);
+    }
+  }, [currentProfile, auth]);
+
   const sendMessage = () => {
     const message = {
       messageText: input,
@@ -201,6 +209,60 @@ const ChatPage = ({ profileId }) => {
     }
   };
 
+  const handleAddFavorite = async () => {
+    if (auth?.currentProfile?._id) {
+      api
+        .put(`${APIS.ADD_FAVORITES}/${auth.currentProfile._id}/${profileId}`)
+        .then(async () => {
+          await refetchUserInfo();
+
+          return toast({
+            className:
+              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Successfully added to favorites</h3>,
+            title: <h1 className='text-center'>Success</h1>,
+            variant: 'default',
+          });
+        })
+        .catch(() => {
+          toast({
+            className:
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
+          });
+        });
+    }
+  };
+
+  const handleRemoveFavorite = async () => {
+    if (auth?.currentProfile?._id) {
+      api
+        .put(`${APIS.REMOVE_FAVORITES}/${auth.currentProfile._id}/${profileId}`)
+        .then(async () => {
+          await refetchUserInfo();
+
+          return toast({
+            className:
+              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Successfully removed from favorites</h3>,
+            title: <h1 className='text-center'>Success</h1>,
+            variant: 'default',
+          });
+        })
+        .catch(() => {
+          toast({
+            className:
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Internal Server Error</h3>,
+            title: <h1 className='text-center'>Error</h1>,
+            variant: 'destructive',
+          });
+        });
+    }
+  };
+
   return (
     <div className='flex h-full flex-col'>
       <style>{`
@@ -217,8 +279,8 @@ const ChatPage = ({ profileId }) => {
       `}</style>
       {receiver && (
         <>
-          <div className='flex h-24 border-b border-[#28373E] px-8 mobile:px-5 mobile:py-3'>
-            <div className='flex w-3/5 items-center gap-3'>
+          <div className='flex flex-col justify-between gap-4 border-b border-[#28373E] px-8 sm:flex-row mobile:px-5 mobile:py-3'>
+            <div className='flex items-center gap-3 py-4'>
               <Link className='md:hidden' href='../inbox'>
                 <FaAngleLeft />
               </Link>
@@ -244,14 +306,21 @@ const ChatPage = ({ profileId }) => {
                 </p>
               </div>
             </div>
-            <div className='flex w-2/5 items-center justify-end gap-4'>
+            <div className='flex items-center justify-end gap-4'>
               <HiOutlineExclamationTriangle className='h-6 w-6 cursor-pointer stroke-[#96B0BD]' />
 
-              {receiver.starred ? (
-                <FaStar className='h-5 w-5 cursor-pointer fill-[#96B0BD]' />
+              {auth?.currentProfile?.favorites.includes(profileId) ? (
+                <FaStar
+                  className='w-5 cursor-pointer fill-[#96B0BD]'
+                  onClick={handleRemoveFavorite}
+                />
               ) : (
-                <FaRegStar className='h-5 w-5 cursor-pointer fill-[#96B0BD]' />
+                <FaRegStar
+                  className='w-5 cursor-pointer fill-[#96B0BD]'
+                  onClick={handleAddFavorite}
+                />
               )}
+
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <TbDotsCircleHorizontal className='h-6 w-6 cursor-pointer stroke-[#96B0BD]' />
@@ -284,7 +353,10 @@ const ChatPage = ({ profileId }) => {
                   <MessageDetails
                     date={new Date(conv.timeStamp).toLocaleDateString('en-US')}
                     sender={conv.senderId === auth.currentProfile._id ? 'me' : ''}
-                    time={new Date(conv.timeStamp).toLocaleTimeString('en-US')}
+                    time={new Date(conv.timeStamp).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
                     user_image={
                       conv.senderId == auth.currentProfile._id
                         ? auth.currentProfile.avatarURL
