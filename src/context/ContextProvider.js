@@ -426,6 +426,24 @@ const ContextProvider = ({ children }) => {
   useEffect(() => {
     if (currentProfile && socket) {
       socket.emit('add-user', currentProfile._id);
+
+      const storedData = localStorage.getItem('jobs_2024_token');
+      try {
+        const data = JSON.parse(storedData);
+        if (data && typeof data === 'object') {
+          localStorage.setItem(
+            'jobs_2024_token',
+            JSON.stringify({
+              data: {
+                ...data.data,
+                currentProfile,
+              },
+            })
+          );
+        }
+      } catch (err) {
+        console.error('Error getting data!');
+      }
     }
   }, [currentProfile, socket]);
 
