@@ -253,7 +253,7 @@ const GigSearch = () => {
     },
   ];
 
-  const { data: flGigs } = useGetFreelancerGigs(page, itemsPerPage, searchKeywords);
+  const { data: flGigs } = useGetFreelancerGigs(page, itemsPerPage, searchKeywords, locationFilters);
 
   useEffect(() => {
     if (flGigs?.length > 0) {
