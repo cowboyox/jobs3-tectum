@@ -416,13 +416,9 @@ const JobsList = () => {
                   pageStart={0}
                   threshold={200}
                 >
-                  {dataJobs
-                    .filter((job) =>
-                      job.title.rendered.toLowerCase().includes(keywords?.toLowerCase())
-                    )
-                    .map((job, index) => {
-                      return <JobCard job={job} key={index} />;
-                    })}
+                  {dataJobs.map((job, index) => {
+                    return <JobCard job={job} key={index} />;
+                  })}
                 </InfiniteScroll>
               </div>
             </div>

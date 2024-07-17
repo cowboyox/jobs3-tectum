@@ -33,10 +33,11 @@ import { useCustomContext } from '@/context/use-custom';
 import { useGetClientGigs } from '@/hooks/useGetClientGigs';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
+import { COUNTRIES } from '@/utils/constants';
 
 const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
-    <div className='flex cursor-pointer items-center gap-4 p-0'>
+    <div className='flex items-center gap-4 p-0 cursor-pointer'>
       <Checkbox
         checked={isChecked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
@@ -63,6 +64,9 @@ const FindJob = () => {
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [filteredGigList, setFilteredGigList] = useState([]);
   const [filteredGigShowModeList, setFilteredGigShowModeList] = useState([]);
+  const [locationFilters, setLocationFilters] = useState([]);
+  const [countries, setCountries] = useState(COUNTRIES);
+  const [locationText, setLocationText] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState([]);
@@ -72,9 +76,12 @@ const FindJob = () => {
   const [isBoth, setIsBoth] = useState(false);
 
   const itemsPerPage = 5;
-  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, searchKeyWords, filters);
+  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, searchKeyWords, filters, locationFilters);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
+
+  console.log("filteredGigList", filteredGigList);
+
   const filterItems = [
     {
       content: [
@@ -142,12 +149,13 @@ const FindJob = () => {
       title: 'Skills',
     },
   ];
-
+  useEffect(() => {
+    setPage(1);
+    setCanLoadMore(true);
+  }, [filters]);
   useEffect(() => {
     if (clientGigs) {
       setGigList(clientGigs);
-      setFilteredGigList(clientGigs);
-      // setFilteredGigShowModeList(new Array(clientGigs.length).fill(false));
     }
   }, [clientGigs]);
 
@@ -180,30 +188,24 @@ const FindJob = () => {
   }, [searchKeyWords]);
 
   useEffect(() => {
-    if (clientGigs?.length > 0) {
+    setCountries(
+      COUNTRIES.filter((item) =>
+        item.toLocaleLowerCase().includes(locationText.toLocaleLowerCase())
+      )
+    );
+  }, [locationText]);
+
+  useEffect(() => {
+    if (gigList?.length > 0) {
       setCanLoadMore(true);
       if (page === 1) {
-        setGigList(clientGigs);
-        setFilteredGigList(clientGigs);
-        setFilteredGigShowModeList(new Array(clientGigs.length).fill(false));
+        setFilteredGigList(gigList);
       } else {
-        setGigList((prev) => {
-          let result = [...prev];
-          const ids = prev.map((item) => item._id);
-
-          clientGigs.map((cg) => {
-            if (!ids.includes(cg._id)) {
-              result = [...result, cg];
-            }
-          });
-
-          return result;
-        });
         setFilteredGigList((prev) => {
           let result = [...prev];
           const ids = prev.map((item) => item._id);
 
-          clientGigs.map((cg) => {
+          gigList.map((cg) => {
             if (!ids.includes(cg._id)) {
               result = [...result, cg];
             }
@@ -214,11 +216,11 @@ const FindJob = () => {
       }
     } else {
       if (page === 1) {
-        setGigList([]);
+        setFilteredGigList([]);
       }
       setCanLoadMore(false);
     }
-  }, [clientGigs, page]);
+  }, [gigList, page]);
 
   const onChangeType = (e) => {
     setSearchType(e);
@@ -327,23 +329,89 @@ const FindJob = () => {
 
   const onCheckedChange = (isChecked, id, name, value) => {
     if (isChecked) {
-      if(id === "payment"){
-        if(name === "Hourly") setIsHourly(true);
-        if(name === "Fixed") setIsFixed(true);
-        if(name === "Any Type") setIsBoth(true);
+      if (id === 'applicants' || id === 'payment') {
+        if (id === 'payment') {
+          if (name === 'Hourly') {
+            setIsHourly(true);
+            setIsFixed(false);
+            setFilters((prev) => [...prev.filter((f) => f.id !== 'amount')])
+          }
+          if (name === 'Fixed') {
+            setIsFixed(true);
+            setIsHourly(false);
+            setFilters((prev) => [...prev.filter((f) => f.id !== 'hourly')])
+          }
+          if (name === 'Any Type') {
+            setIsFixed(true);
+            setIsHourly(true);
+          }
+        }
+        setFilters((prev) => [...prev.filter((f) => f.id !== id), { id, name, value }]);
       }
-      setFilters((prev) => [...prev, { id, name, value }]);
+      if (id === 'skills' || id === 'hourly' || id === 'amount') {
+        let filterItemsId = 0,
+          filterItemsName = '';
+        if (id === 'amount') {
+          filterItemsId = 1;
+          filterItemsName = 'Any Rate';
+        }
+        if (id === 'hourly') {
+          filterItemsId = 2;
+          filterItemsName = 'Any Rate';
+        }
+        if (id === 'skills') {
+          filterItemsId = 4;
+          filterItemsName = 'Any Skills';
+        }
+        if (name !== filterItemsName) {
+          filters.filter((f) => f.id === id && f.name !== filterItemsName).length ===
+          filterItems[filterItemsId].content.length - 2
+            ? setFilters((prev) => [
+                ...prev.filter((f) => f.id !== id),
+                {
+                  id: filterItems[filterItemsId].content[0].category_id,
+                  name: filterItems[filterItemsId].content[0].category_name,
+                  value: filterItems[filterItemsId].content[0].category_value,
+                },
+              ])
+            : setFilters((prev) => [
+                ...prev.filter((f) => !(f.name === filterItemsName && f.id === id)),
+                { id, name, value },
+              ]);
+        } else {
+          setFilters((prev) => [
+            ...prev.filter((f) => f.id !== id),
+            {
+              id: filterItems[filterItemsId].content[0].category_id,
+              name: filterItems[filterItemsId].content[0].category_name,
+              value: filterItems[filterItemsId].content[0].category_value,
+            },
+          ]);
+        }
+        // setFilters((prev) => [...prev.filter((f) => f.id !== id), { id, name, value }]);
+      }
     } else {
-      if(id === "payment"){
-        if(name === "Hourly") setIsHourly(false);
-        if(name === "Fixed") setIsFixed(false);
-        if(name === "Any Type") setIsBoth(false);
+      if (id === 'payment') {
+        if (name === 'Hourly') setIsHourly(false);
+        if (name === 'Fixed') setIsFixed(false);
+        if (name === 'Any Type') {
+          setIsFixed(false);
+          setIsHourly(false);
+        }
       }
       setFilters((prev) =>
         prev.filter(
           (f) => f.id !== id || f.name !== name || JSON.stringify(f.value) !== JSON.stringify(value)
         )
       );
+    }
+  };
+
+  const onCheckedLocationChange = (value, id, name) => {
+    if (value) {
+      setLocationFilters((prev) => [...prev, name]);
+    } else {
+      setLocationFilters((prev) => prev.filter((item) => item !== name));
     }
   };
 
@@ -354,7 +422,7 @@ const FindJob = () => {
   return loaded ? (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d]'>
-        <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
+        <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -367,20 +435,88 @@ const FindJob = () => {
             </SelectContent>
           </Select>
           <input
-            className='w-full bg-transparent text-white outline-none mobile:text-sm'
+            className='w-full text-white bg-transparent outline-none mobile:text-sm'
             onChange={(e) => setKey(e)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
           />
         </div>
-        <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
+        {/* <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
           <IoLocationOutline size={20} stroke='#96B0BD' />
           <span className='text-[#96B0BD]'>Anywhere</span>
-        </div>
+        </div> */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
+              <IoLocationOutline size={20} stroke='#96B0BD' />
+              {locationFilters.length == 0 ? (
+                <span className='text-[#96B0BD]'>Anywhere</span>
+              ) : (
+                <span className='text-[#96B0BD]'>
+                  {locationFilters.join(', ').length > 11
+                    ? locationFilters.join(', ').slice(0, 10) + '...'
+                    : locationFilters.join(', ')}
+                </span>
+              )}
+              <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
+                {locationFilters.length}
+              </span>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent
+            align='end'
+            className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] py-4 pl-4 pr-1'
+          >
+            <div className='country-list max-h-[300px] overflow-y-auto'>
+              <div className='sticky top-0 mb-1 flex bg-[#1B272C] p-1'>
+                <input
+                  className='relative w-full rounded-full border-2 border-[#96B0BD] bg-transparent px-7 text-[#96B0BD] outline-none mobile:text-sm'
+                  onChange={(e) => {
+                    setLocationText(e.target.value);
+                  }}
+                  value={locationText}
+                />
+                <svg
+                  className='absolute w-5 h-5 left-3 top-2'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth={1.5}
+                  viewBox='0 0 24 24'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                </svg>
+              </div>
+              {countries.length > 0 ? (
+                <div className='flex flex-col gap-2'>
+                  {countries.map((con, i) => {
+                    return (
+                      <DropdownItem
+                        category_id={con}
+                        category_name={con}
+                        isChecked={locationFilters.includes(con)}
+                        key={i}
+                        onCheckedChange={(value) => onCheckedLocationChange(value, con, con)}
+                      />
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className='flex flex-col gap-2'>
+                  <span className='text-[#96B0BD]'>No results found</span>
+                </div>
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
-              <button className='m-3 flex flex-row items-center justify-center gap-3'>
+              <button className='flex flex-row items-center justify-center gap-3 m-3'>
                 <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
                 {!isSmallScreen && (
                   <div className='flex flex-row gap-2'>
@@ -475,13 +611,13 @@ const FindJob = () => {
         </div>
       )}
       {loading && (
-        <div className='z-1 flex h-screen justify-center space-x-2 pt-6'>
+        <div className='flex justify-center h-screen pt-6 space-x-2 z-1'>
           <div className='mt-8 flex h-fit items-baseline text-[20px]'>
             <p className='mr-3'>The neural network is thinking</p>
             <div className='flex gap-1'>
               <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.3s]'></div>
               <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.15s]'></div>
-              <div className='h-2 w-2 animate-bounce rounded-full bg-white'></div>
+              <div className='w-2 h-2 bg-white rounded-full animate-bounce'></div>
             </div>
           </div>
         </div>
@@ -560,18 +696,14 @@ const FindJob = () => {
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button
-                                  className='border-none bg-transparent hover:bg-transparent'
+                                  className='bg-transparent border-none hover:bg-transparent'
                                   variant='outline'
                                 >
                                   <FaEllipsis />
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent className='rounded-xl border-[#3E525B] bg-[#28373E]'>
-                                <DropdownMenuCheckboxItem
-                                  // checked={showStatusBar}
-                                  // onCheckedChange={setShowStatusBar}
-                                  className='gap-2 rounded-xl hover:bg-white'
-                                >
+                                <DropdownMenuCheckboxItem className='gap-2 rounded-xl hover:bg-white'>
                                   <svg
                                     fill='none'
                                     height='24'
@@ -603,139 +735,13 @@ const FindJob = () => {
                                   </svg>
                                   Report
                                 </DropdownMenuCheckboxItem>
-                                {/* <DropdownMenuCheckboxItem
-                                  // checked={showActivityBar}
-                                  // onCheckedChange={setShowActivityBar}
-                                  className='gap-2 mt-1 rounded-xl hover:bg-white'
-                                >
-                                  <svg
-                                    fill='none'
-                                    height='24'
-                                    viewBox='0 0 24 24'
-                                    width='24'
-                                    xmlns='http://www.w3.org/2000/svg'
-                                  >
-                                    <path
-                                      d='M22 9V15C22 15.22 22 15.44 21.98 15.65C21.16 14.64 19.91 14 18.5 14C17.44 14 16.46 14.37 15.69 14.99C14.65 15.81 14 17.08 14 18.5C14 19.91 14.64 21.16 15.65 21.98C15.44 22 15.22 22 15 22H9C4 22 2 20 2 15V9C2 4 4 2 9 2H15C20 2 22 4 22 9Z'
-                                      stroke='#96B0BD'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                      strokeWidth='1.5'
-                                    />
-                                    <path
-                                      d='M2.51953 7.10986H21.4796'
-                                      stroke='#96B0BD'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                      strokeWidth='1.5'
-                                    />
-                                    <path
-                                      d='M8.51953 2.10986V6.96985'
-                                      stroke='#96B0BD'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                      strokeWidth='1.5'
-                                    />
-                                    <path
-                                      d='M15.4795 2.10986V6.5199'
-                                      stroke='#96B0BD'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                      strokeWidth='1.5'
-                                    />
-                                    <path
-                                      d='M23 18.5C23 19.85 22.4 21.05 21.47 21.88C20.67 22.57 19.64 23 18.5 23C17.42 23 16.42 22.62 15.65 21.98C14.64 21.16 14 19.91 14 18.5C14 17.08 14.65 15.81 15.69 14.99C16.46 14.37 17.44 14 18.5 14C19.91 14 21.16 14.64 21.98 15.65C22.62 16.42 23 17.42 23 18.5Z'
-                                      stroke='#96B0BD'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                      strokeMiterlimit='10'
-                                      strokeWidth='1.5'
-                                    />
-                                    <path
-                                      d='M18.7799 17.0898V18.7798L17.3799 19.6198'
-                                      stroke='#96B0BD'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                      strokeMiterlimit='10'
-                                      strokeWidth='1.5'
-                                    />
-                                  </svg>
-                                  Extend The Delivery Date
-                                </DropdownMenuCheckboxItem>
-                                <DropdownMenuCheckboxItem
-                                  // checked={showPanel}
-                                  // onCheckedChange={setShowPanel}
-                                  className='gap-2 mt-1 rounded-xl hover:bg-white'
-                                >
-                                  <svg
-                                    fill='none'
-                                    height='24'
-                                    viewBox='0 0 24 24'
-                                    width='24'
-                                    xmlns='http://www.w3.org/2000/svg'
-                                  >
-                                    <path
-                                      d='M4 6C2.75 7.67 2 9.75 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C10.57 2 9.2 2.3 7.97 2.85'
-                                      stroke='#96B0BD'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                      strokeWidth='1.5'
-                                    />
-                                    <path
-                                      d='M10.75 14.4302V9.3702C10.75 8.8902 10.55 8.7002 10.04 8.7002H8.75004C8.24004 8.7002 8.04004 8.8902 8.04004 9.3702V14.4302C8.04004 14.9102 8.24004 15.1002 8.75004 15.1002H10.04C10.55 15.1002 10.75 14.9102 10.75 14.4302Z'
-                                      stroke='#96B0BD'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                      strokeWidth='1.5'
-                                    />
-                                    <path
-                                      d='M16.0303 14.4302V9.3702C16.0303 8.8902 15.8303 8.7002 15.3203 8.7002H14.0303C13.5203 8.7002 13.3203 8.8902 13.3203 9.3702V14.4302C13.3203 14.9102 13.5203 15.1002 14.0303 15.1002'
-                                      stroke='#96B0BD'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                      strokeWidth='1.5'
-                                    />
-                                  </svg>
-                                  Pause The Order
-                                </DropdownMenuCheckboxItem>
-                                <DropdownMenuCheckboxItem
-                                  // checked={showPanel}
-                                  // onCheckedChange={setShowPanel}
-                                  className='gap-2 mt-1 rounded-xl hover:bg-white'
-                                >
-                                  <svg
-                                    fill='none'
-                                    height='24'
-                                    viewBox='0 0 24 24'
-                                    width='24'
-                                    xmlns='http://www.w3.org/2000/svg'
-                                  >
-                                    <path
-                                      d='M12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22Z'
-                                      stroke='#96B0BD'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                      strokeMiterlimit='10'
-                                      strokeWidth='1.5'
-                                    />
-                                    <path
-                                      d='M18.9004 5L4.90039 19'
-                                      stroke='#96B0BD'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                      strokeMiterlimit='10'
-                                      strokeWidth='1.5'
-                                    />
-                                  </svg>
-                                  Cancel Order
-                                </DropdownMenuCheckboxItem> */}
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </div>
                         )}
                         {!isSmallScreen && (
-                          <div className='flex w-full flex-col justify-between'>
-                            <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                          <div className='flex flex-col justify-between w-full'>
+                            <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
                               <div
                                 className='mt-3 flex-1 cursor-pointer text-left text-[20px] md:mt-0 md:text-2xl'
                                 onClick={() =>
@@ -744,7 +750,7 @@ const FindJob = () => {
                               >
                                 {gig.gigTitle}
                               </div>
-                              <div className='flex flex-none flex-row items-center gap-2'>
+                              <div className='flex flex-row items-center flex-none gap-2'>
                                 {!gig?.likeUsers?.includes(
                                   auth?.currentProfile?.userId?.toString()
                                 ) ? (
@@ -800,7 +806,7 @@ const FindJob = () => {
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
                                     <Button
-                                      className='border-none bg-transparent hover:bg-transparent'
+                                      className='bg-transparent border-none hover:bg-transparent'
                                       variant='outline'
                                     >
                                       <FaEllipsis />
@@ -973,7 +979,7 @@ const FindJob = () => {
                                 </DropdownMenu>
                               </div>
                             </div>
-                            <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
+                            <div className='flex flex-row-reverse items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
                               <div className='flex flex-row items-center gap-2'>
                                 <svg
                                   fill='none'
@@ -1076,22 +1082,24 @@ const FindJob = () => {
                                   />
                                 </svg>
                                 {gig.gigPaymentType ? 'Hourly' : 'Fixed'}:{' '}
-                                {gig.gigPaymentType
-                                  ? `$${gig.minBudget} ~ $${gig.maxBudget}`
-                                  : `${gig.gigPrice}`}
+                              {(gig.gigPaymentType && gig.maxBudget > 0)
+                                ? `$${gig.minBudget} ~ $${gig.maxBudget}`
+                                : (gig.gigPaymentType && gig.maxBudget === 0)
+                                  ? `$${gig.minBudget} ~` 
+                                  :`$${gig.gigPrice}`}
                               </div>
                             </div>
                           </div>
                         )}
                       </div>
                       {isSmallScreen && (
-                        <div className='flex w-full flex-col justify-between'>
-                          <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                        <div className='flex flex-col justify-between w-full'>
+                          <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
                             <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                               {gig.gigTitle}
                             </div>
                           </div>
-                          <div className='mt-3 flex flex-row-reverse items-start justify-between gap-6 md:flex-row md:justify-start'>
+                          <div className='flex flex-row-reverse items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
                             <div className='flex flex-row items-center gap-2'>
                               <svg
                                 fill='none'
@@ -1139,7 +1147,7 @@ const FindJob = () => {
                               {gig.location}
                             </div>
                           </div>
-                          <div className='mt-3 flex items-start justify-between gap-6 md:flex-row md:justify-start'>
+                          <div className='flex items-start justify-between gap-6 mt-3 md:flex-row md:justify-start'>
                             <div className='flex flex-row items-center gap-2'>
                               <svg
                                 fill='none'
@@ -1196,9 +1204,11 @@ const FindJob = () => {
                                 />
                               </svg>
                               {gig.gigPaymentType ? 'Hourly' : 'Fixed'}:{' '}
-                              {gig.gigPaymentType
+                              {(gig.gigPaymentType && gig.maxBudget > 0)
                                 ? `$${gig.minBudget} ~ $${gig.maxBudget}`
-                                : `${gig.gigPrice}`}
+                                : (gig.gigPaymentType && gig.maxBudget === 0)
+                                  ? `$${gig.minBudget} ~` 
+                                  :`$${gig.gigPrice}`}
                             </div>
                           </div>
                         </div>
@@ -1279,7 +1289,7 @@ const FindJob = () => {
                       </div>
                     </div>
                     {gig.reason && (
-                      <div className='text-md rounded-b-xl bg-orange p-4 text-white'>
+                      <div className='p-4 text-white text-md rounded-b-xl bg-orange'>
                         {gig.reason}
                       </div>
                     )}

@@ -1,31 +1,27 @@
 'use client';
 
-import {
-  AnchorProvider,
-  BN,
-  getProvider,
-  Program,
-  setProvider,
-  utils,
-} from '@project-serum/anchor';
+import { AnchorProvider, getProvider, Program, setProvider, utils } from '@project-serum/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
+import { PublicKey, SystemProgram } from '@solana/web3.js';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaEllipsis, FaX } from 'react-icons/fa6';
+import { IoLocationOutline } from 'react-icons/io5';
 
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -42,7 +38,30 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllFreelancerGigsProposed } from '@/hooks/useGetAllFreelancerGigsProposed';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
-import { ADMIN_ADDRESS, CONTRACT_SEED, ContractStatus, PAYTOKEN_MINT, PROGRAM_ID } from '@/utils/constants';
+import {
+  ADMIN_ADDRESS,
+  CONTRACT_SEED,
+  ContractStatus,
+  COUNTRIES,
+  PAYTOKEN_MINT,
+  PROGRAM_ID,
+} from '@/utils/constants';
+
+const DropdownItem = ({ onCheckedChange, ...props }) => {
+  return (
+    <div className='flex items-center gap-4 p-0 cursor-pointer'>
+      <Checkbox
+        checked={props.checked}
+        className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
+        id={props.category_id}
+        onCheckedChange={onCheckedChange}
+      />
+      <label className='cursor-pointer text-sm text-[#96B0BD]' htmlFor={props.category_id}>
+        {props.category_name}
+      </label>
+    </div>
+  );
+};
 
 const Orders = () => {
   const router = useRouter();
@@ -64,17 +83,20 @@ const Orders = () => {
   const [itemsPerPage, setItemsPerPage] = useState(2);
   const [searchKeywords, setSearchKeyWords] = useState('');
   const [canLoadMore, setCanLoadMore] = useState(true);
+  const [locationFilters, setLocationFilters] = useState([]);
+  const [countries, setCountries] = useState(COUNTRIES);
+  const [locationText, setLocationText] = useState("");
   const debouncedSearchText = useDebounce(searchKeywords);
-  
+
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllFreelancerGigsProposed(
     auth?.currentProfile?._id,
     page,
     itemsPerPage,
-    debouncedSearchText,
+    debouncedSearchText
   );
 
   useEffect(() => {
-    if (mode == "live") {
+    if (mode == 'live') {
       if (gigs?.livesTotal > page * itemsPerPage && gigs?.lives?.length > 0) {
         setCanLoadMore(true);
       } else {
@@ -137,12 +159,16 @@ const Orders = () => {
     }
   }, [wallet, connection]);
 
+  useEffect(() => {
+    setCountries(COUNTRIES.filter((item) => item.toLocaleLowerCase().includes(locationText.toLocaleLowerCase())));
+  }, [locationText]);
+  
   const setKey = (e) => {
     // setPage(1);
     setItemsPerPage(2);
     setSearchKeyWords(e.target.value);
   };
-  
+
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
@@ -174,7 +200,7 @@ const Orders = () => {
   };
 
   const handleMessage = (order) => {
-    if (auth.user) window.location.href = `/dashboard/freelancer/inbox/${order.clientID}`;
+    if (auth.user) window.location.href = `/dashboard/freelancer/inbox/${order.clientId._id}`;
   };
 
   const getFormattedDate = (dateStr) => {
@@ -328,52 +354,43 @@ const Orders = () => {
 
     try {
       const [contract, bump] = await PublicKey.findProgramAddressSync(
-          [
-              Buffer.from(utils.bytes.utf8.encode(CONTRACT_SEED)),
-              Buffer.from(utils.bytes.utf8.encode(contractId)),
-          ],
-          program.programId
+        [
+          Buffer.from(utils.bytes.utf8.encode(CONTRACT_SEED)),
+          Buffer.from(utils.bytes.utf8.encode(contractId)),
+        ],
+        program.programId
       );
 
-      const sellerAta = getAssociatedTokenAddressSync(
-          PAYTOKEN_MINT,
-          wallet?.publicKey,
-      );
+      const sellerAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, wallet?.publicKey);
 
       const contractAccount = await program.account.contract.fetch(contract);
 
-      const buyerAta = getAssociatedTokenAddressSync(
-          PAYTOKEN_MINT,
-          contractAccount.buyer
-      );
+      const buyerAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, contractAccount.buyer);
 
-      const adminAta = getAssociatedTokenAddressSync(
-          PAYTOKEN_MINT,
-          ADMIN_ADDRESS,
-      );
-      
+      const adminAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, ADMIN_ADDRESS);
+
       const contractAta = getAssociatedTokenAddressSync(PAYTOKEN_MINT, contract, true);
 
       const transaction = await program.methods
-          .sellerApprove(contractId, false)
-          .accounts({
-              seller: wallet.publicKey,
-              contract,
-              sellerAta,
-              buyerAta,
-              adminAta,
-              contractAta,
-              tokenProgram: TOKEN_PROGRAM_ID,
-              associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-              systemProgram: SystemProgram.programId,
-          })
-          .transaction();
+        .sellerApprove(contractId, false)
+        .accounts({
+          adminAta,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          buyerAta,
+          contract,
+          contractAta,
+          seller: wallet.publicKey,
+          sellerAta,
+          systemProgram: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .transaction();
 
       const signature = await sendTransaction(transaction, connection, { skipPreflight: true });
 
-      console.log("Your transaction signature for approving the contract", signature);
+      console.log('Your transaction signature for approving the contract', signature);
 
-      await connection.confirmTransaction(signature, "confirmed");
+      await connection.confirmTransaction(signature, 'confirmed');
 
       await api.put(`/api/v1/client_gig/complete-contract/${id}`);
 
@@ -404,8 +421,16 @@ const Orders = () => {
     }
   };
 
+  const onCheckedLocationChange = (value, id, name) => {
+    if (value) {
+      setLocationFilters((prev) => [...prev, name]);
+    } else {
+      setLocationFilters((prev) => prev.filter((item) => item !== name));
+    }
+  };
+
   return (
-    <div className='p-0 lg:mt-8 sm:p-0 xl:mt-8'>
+    <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex flex-row items-center justify-between gap-5 rounded-xl bg-[#10191D] p-3'>
         <div className='flex items-center flex-1 gap-3 ml-3'>
           <button>
@@ -455,6 +480,72 @@ const Orders = () => {
             </button>
           )}
         </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
+              <IoLocationOutline size={20} stroke='#96B0BD' />
+              {
+                locationFilters.length == 0 ?
+                <span className='text-[#96B0BD]'>Anywhere</span> :
+                <span className='text-[#96B0BD]'>{ locationFilters.join(", ").length > 11 ? locationFilters.join(", ").slice(0,10) + "..." : locationFilters.join(", ") }</span>
+              }
+              <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
+                {locationFilters.length}
+              </span>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent
+            align='end'
+            className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] pl-4 pr-1 py-4'
+          >
+            <div className='max-h-[300px] overflow-y-auto country-list'>
+              <div className='sticky top-0 flex bg-[#1B272C] p-1 mb-1'>
+                <input 
+                  className='w-full px-7 relative text-[#96B0BD] border-[#96B0BD] border-2 bg-transparent rounded-full outline-none mobile:text-sm' 
+                  onChange={(e) => {
+                    setLocationText(e.target.value);
+                  }}
+                  value={locationText}
+                />
+                <svg
+                  className='absolute w-5 h-5 top-2 left-3'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth={1.5}
+                  viewBox='0 0 24 24'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                </svg>
+              </div>
+              {
+                countries.length > 0 ?
+                <div className='flex flex-col gap-2'>
+                  {countries.map((con, i) => {
+                    return (
+                      <DropdownItem
+                        category_id={con}
+                        category_name={con}
+                        checked={locationFilters.includes(con)}
+                        key={i}
+                        onCheckedChange={(value) =>
+                          onCheckedLocationChange(value, con, con)
+                        }
+                      />
+                    );
+                  })}
+                </div> :
+                <div className='flex flex-col gap-2'>
+                  <span className='text-[#96B0BD]'>No results found</span>
+                </div>
+              }
+            </div>
+          </PopoverContent>
+        </Popover>
         <div className='flex flex-row items-center flex-none gap-2'>
           <button className='flex flex-row items-center justify-center gap-3'>
             {!isSmallScreen ? (
@@ -1356,7 +1447,12 @@ const Orders = () => {
                     <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
                       <div className='flex flex-row items-center flex-1 gap-3 text-left'>
                         <div>
-                          <img height={40} src='/assets/images/Rectangle 273.png' width={40} />
+                          <img
+                            className='rounded'
+                            height={40}
+                            src={submission.clientId.avatarURL}
+                            width={40}
+                          />
                         </div>
                         <div className='flex flex-col gap-1 text-left'>
                           <div className='flex flex-row items-center gap-1 font-bold'>
@@ -1378,7 +1474,12 @@ const Orders = () => {
                         </div>
                       </div>
                       <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-                        <button className='p-4 px-8 md:p-5'>Message</button>
+                        <button
+                          className='p-4 px-8 md:p-5'
+                          onClick={() => handleMessage(submission)}
+                        >
+                          Message
+                        </button>
                         {/* <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
                           // onClick={() => onActivate(submission.gigId, submission.clientId, submission.contractId)}
@@ -1390,7 +1491,7 @@ const Orders = () => {
                   </div>
                 );
               })}
-             {canLoadMore && (
+              {canLoadMore && (
                 <div
                   className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
                   onClick={handleLoadMore}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaArrowRight, FaX } from 'react-icons/fa6';
+import { IoLocationOutline } from 'react-icons/io5';
 
 import searchOptions from './searchOptions';
 
@@ -10,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
-    <div className='flex cursor-pointer items-center gap-4 p-0'>
+    <div className='flex items-center gap-4 p-0 cursor-pointer'>
       <Checkbox
         checked={isChecked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
@@ -32,7 +33,24 @@ export const SearchBar = ({
   setSearchType,
   filters,
   setFilters,
+  locationFilters,
+  setLocationFilters,
+  countries,
+  locationText,
+  setLocationText,
 }) => {
+  console.log({ isSmallScreen,
+    setSearchText,
+    searchType,
+    setIsAiSearch,
+    setSearchType,
+    filters,
+    setFilters,
+    locationFilters,
+    setLocationFilters,
+    countries,
+    locationText,
+    setLocationText})
   const filterCategories = [
     {
       content: [
@@ -107,9 +125,37 @@ export const SearchBar = ({
     }
   };
 
-  const onCheckedChange = (isChecked, id, name, value) => {
+  const onCheckedChange = (isChecked, id, name, value, title) => {
     if (isChecked) {
-      setFilters((prev) => [...prev, { id, name, value }]);
+      filterCategories.map((item, index) => {
+        if (title === item.title && (title === 'Languages' || title === 'Hourly rate')) {
+          if (name === item.content[0].category_name) {
+            setFilters((prev) => [
+              ...prev.filter((f) => f.id !== id && f.name !== name),
+              { id, name, value },
+            ]);
+          } else {
+            filters.filter((f) => f.id === id && f.name !== item.content[0].category_name).length === item.content.length - 2
+              ? setFilters((prev) => [
+                  ...prev.filter((f) => f.id !== id),
+                  {
+                    id: item.content[0].category_id,
+                    name: item.content[0].category_name,
+                    value: item.content[0].category_value,
+                  },
+                ])
+              : setFilters((prev) => [
+                  ...prev.filter((f) => f.name !== item.content[0].category_name),
+                  { id, name, value },
+                ]);
+          }
+        } else if (title === item.title && (title === 'Hours billed' || title === 'Earned Amount' || title === 'Job Success')) {
+          setFilters((prev) => [
+            ...prev.filter((f) => f.id !== id),
+            { id, name, value },
+          ]);
+        }
+      });
     } else {
       setFilters((prev) =>
         prev.filter(
@@ -131,10 +177,18 @@ export const SearchBar = ({
     );
   };
 
+  const onCheckedLocationChange = (value, id, name) => {
+    if (value) {
+      setLocationFilters((prev) => [...prev, name]);
+    } else {
+      setLocationFilters((prev) => prev.filter((item) => item !== name));
+    }
+  };
+
   return (
     <div>
       <div className='flex gap-5 rounded-xl bg-[#10191D]'>
-        <div className='m-3 flex flex-1 items-center gap-3'>
+        <div className='flex items-center flex-1 gap-3 m-3'>
           <CustomIconDropdown
             onChange={(v) => setSearchType(v)}
             optionLabel={'icon'}
@@ -171,8 +225,74 @@ export const SearchBar = ({
             </button>
           )}
         </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
+              <IoLocationOutline size={20} stroke='#96B0BD' />
+              {
+                locationFilters.length == 0 ?
+                <span className='text-[#96B0BD]'>Anywhere</span> :
+                <span className='text-[#96B0BD]'>{ locationFilters.join(", ").length > 11 ? locationFilters.join(", ").slice(0,10) + "..." : locationFilters.join(", ") }</span>
+              }
+              <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
+                {locationFilters.length}
+              </span>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent
+            align='end'
+            className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] pl-4 pr-1 py-4'
+          >
+            <div className='max-h-[300px] overflow-y-auto country-list'>
+              <div className='sticky top-0 flex bg-[#1B272C] p-1 mb-1'>
+                <input 
+                  className='w-full px-7 relative text-[#96B0BD] border-[#96B0BD] border-2 bg-transparent rounded-full outline-none mobile:text-sm' 
+                  onChange={(e) => {
+                    setLocationText(e.target.value);
+                  }}
+                  value={locationText}
+                />
+                <svg
+                  className='absolute w-5 h-5 top-2 left-3'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth={1.5}
+                  viewBox='0 0 24 24'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                </svg>
+              </div>
+              {
+                countries.length > 0 ?
+                <div className='flex flex-col gap-2'>
+                  {countries.map((con, i) => {
+                    return (
+                      <DropdownItem
+                        category_id={con}
+                        category_name={con}
+                        isChecked={locationFilters.includes(con)}
+                        key={i}
+                        onCheckedChange={(value) =>
+                          onCheckedLocationChange(value, con, con)
+                        }
+                      />
+                    );
+                  })}
+                </div> :
+                <div className='flex flex-col gap-2'>
+                  <span className='text-[#96B0BD]'>No results found</span>
+                </div>
+              }
+            </div>
+          </PopoverContent>
+        </Popover>
         {(!isSmallScreen || (isSmallScreen && searchType === searchOptions[0])) && (
-          <div className='flex flex-none flex-row items-center gap-2 px-4'>
+          <div className='flex flex-row items-center flex-none gap-2 px-4'>
             <Popover>
               <PopoverTrigger asChild>
                 <button className='flex flex-row items-center justify-center gap-3'>
@@ -217,7 +337,8 @@ export const SearchBar = ({
                                   value,
                                   con.category_id,
                                   con.category_name,
-                                  con.category_value
+                                  con.category_value,
+                                  item.title
                                 )
                               }
                             />

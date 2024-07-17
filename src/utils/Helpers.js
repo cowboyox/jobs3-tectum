@@ -171,3 +171,38 @@ export const minutesDifference = (timeString) => {
   if (mins == 0) result += 'Just now';
   return result.trim();
 };
+
+export const timeDifference = (timeString) => {
+  const now = new Date();
+  const diffInMs = now - new Date(timeString);
+  let diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  let years = 0,
+    months = 0,
+    days = 0,
+    hours = 0,
+    mins = 0;
+
+  if (diffInDays >= 365) {
+    years = Math.floor(diffInDays / 365);
+    diffInDays -= years * 365;
+  }
+  if (diffInDays >= 30) {
+    // Approximation for months
+    months = Math.floor(diffInDays / 30);
+    diffInDays -= months * 30;
+  }
+  days = diffInDays;
+  hours = Math.floor((diffInMs / (1000 * 60 * 60)) % 24);
+  mins = Math.floor((diffInMs / (1000 * 60)) % 60);
+
+  let result = '';
+
+  if (years > 0) result = `${years} Year${years > 1 ? 's' : ''} ago`;
+  else if (months > 0) result = `${months} Month${months > 1 ? 's' : ''} ago`;
+  else if (days > 0) result = `${days} Day${days > 1 ? 's' : ''} ago`;
+  else if (hours > 0) result += `${hours} Hour${hours > 1 ? 's' : ''} ago`;
+  else if (mins > 0) result += `${mins} Min${mins > 1 ? 's' : ''} ago`;
+  else if (mins == 0) result += 'Just now';
+
+  return result.trim();
+};

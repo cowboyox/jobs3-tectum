@@ -160,9 +160,37 @@ const Stats = ({
     setSearchText(e.target.value);
   };
 
-  const onCheckedChange = (isChecked, id, name, value) => {
+  const onCheckedChange = (isChecked, id, name, value, title) => {
     if (isChecked) {
-      setFilters((prev) => [...prev, { id, name, value }]);
+      filterCategories.map((item, index) => {
+        if (title === item.title && (title === 'Languages' || title === 'Hourly rate')) {
+          if (name === item.content[0].category_name) {
+            setFilters((prev) => [
+              ...prev.filter((f) => f.id !== id && f.name !== name),
+              { id, name, value },
+            ]);
+          } else {
+            filters.filter((f) => f.id === id && f.name !== item.content[0].category_name).length === item.content.length - 2
+              ? setFilters((prev) => [
+                  ...prev.filter((f) => f.id !== id),
+                  {
+                    id: item.content[0].category_id,
+                    name: item.content[0].category_name,
+                    value: item.content[0].category_value,
+                  },
+                ])
+              : setFilters((prev) => [
+                  ...prev.filter((f) => f.name !== item.content[0].category_name),
+                  { id, name, value },
+                ]);
+          }
+        } else if (title === item.title && (title === 'Hours billed' || title === 'Earned Amount' || title === 'Job Success')) {
+          setFilters((prev) => [
+            ...prev.filter((f) => f.id !== id),
+            { id, name, value },
+          ]);
+        }
+      });
     } else {
       setFilters((prev) =>
         prev.filter(
@@ -279,7 +307,8 @@ const Stats = ({
                                     value,
                                     con.category_id,
                                     con.category_name,
-                                    con.category_value
+                                    con.category_value,
+                                    item.title
                                   )
                                 }
                               />

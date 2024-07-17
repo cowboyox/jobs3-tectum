@@ -7,7 +7,7 @@ import ContextProvider from '@/context/ContextProvider';
 import { SocketProvider } from '@/context/socket';
 import { ParentWalletContextProvider } from '@/context/WalletContextProvider';
 
-require("@solana/wallet-adapter-react-ui/styles.css");
+require('@solana/wallet-adapter-react-ui/styles.css');
 
 export const metadata = {
   description: '',
@@ -20,9 +20,9 @@ export default function RootLayout({ children }) {
       <body>
         <Web3Modal>
           <ParentWalletContextProvider>
-            <ContextProvider>
-              <SocketProvider>{children}</SocketProvider>
-            </ContextProvider>
+            <SocketProvider>
+              <ContextProvider>{children}</ContextProvider>
+            </SocketProvider>
           </ParentWalletContextProvider>
         </Web3Modal>
         <Toaster />

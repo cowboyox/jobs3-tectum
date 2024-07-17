@@ -50,7 +50,7 @@ const ProfileTimeZone = ({ value, setProfileData, editable }) => {
       </div>
       {editable ? (
         <Select defaultValue={value} onValueChange={handleChange}>
-          <SelectTrigger className='mobile:hidden mobile:p-2 flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5'>
+          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
             <SelectValue />
           </SelectTrigger>
           <SelectContent align='end' className='rounded-xl bg-[#10191D] p-1'>
@@ -107,13 +107,15 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
     }
   };
 
+  console.log('label', label, ' editable ', editable);
+
   return (
     <div className='flex w-full justify-between'>
       <div className='flex w-1/2 items-center gap-2'>
         <img className='h-5 w-5 object-contain object-center' src={iconSrc} />
         <span className='text-sm'>{handleLabel()}</span>
       </div>
-      {editable && label !== 'created' ? (
+      {editable && label !== 'created' && label !== 'avgResponseTime' ? (
         <span className='flex gap-0'>
           <input
             className={`border-b bg-transparent text-right text-sm text-[#96B0BD] outline-none ${(label === 'hourlyRate' || label === 'monthlyRate') && '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'} `}
@@ -147,7 +149,7 @@ const FreelancerProfile = () => {
   const [uploadedImagePath, setUploadedImagePath] = useState([]);
   const [uploadedGigPath, setUploadedGigPath] = useState([]);
   const [viewMode, setViewMode] = useState('preview');
-
+  const maxFreelancerTitle = 50;
   const { toast } = useToast();
   const [isEditBio, setStatusBio] = useState(true);
   const [isEditTitle, setIsEditTitle] = useState(true);
@@ -187,7 +189,6 @@ const FreelancerProfile = () => {
   });
   const [portfolioShowNumber, setPortfolioShowNumber] = useState(3);
   const [gigShowNumber, setGigShowNumber] = useState(3);
-
 
   const router = useRouter();
   const min = (a, b) => {
@@ -305,6 +306,15 @@ const FreelancerProfile = () => {
       setPreviewBio(bio); // If the text is less than or equal to 4 lines, set previewBio to the original text
     }
   }, [bio]);
+
+  useEffect(() => {
+    if (viewMode === 'preview') {
+      setEditPrice(false);
+      setEditProfileInfo(false);
+    }
+  }, [viewMode]);
+
+  console.log('isEditPrice', isEditPrice);
 
   const handleEditBio = () => {
     if (isEditBio) {
@@ -548,6 +558,21 @@ const FreelancerProfile = () => {
   });
   console.log('profileData', profileData);
 
+  const handleChangeFreelancerTitle = (value) => {
+    console.log('value ', value, ' value.length', value.length);
+    if (value.length <= maxFreelancerTitle) {
+      setProfileData({ ...profileData, freelancerTitle: value });
+    } else {
+      return toast({
+        className:
+          'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3 className='text-center'>Title can not exceeds 50 characters.</h3>,
+        title: <h1 className='text-center'>Warning</h1>,
+        variant: 'default',
+      });
+    }
+  };
+
   return !isLoading ? (
     <div className='p-0'>
       <div className={`group relative ${isAuth && 'cursor-pointer'}`} {...getBannerRootProps()}>
@@ -643,7 +668,7 @@ const FreelancerProfile = () => {
                       className='h-6 w-6 object-contain object-center'
                       src='/assets/images/icons/green-job-success.svg'
                     />
-                    <p className='text-lg text-white'>96% Job Success</p>
+                    <p className='text-lg text-white'>{profileData.jobSuccessScore}% Job Success</p>
                   </div>
                 </div>
               </div>
@@ -1218,17 +1243,14 @@ const FreelancerProfile = () => {
                     </div>
                     <div className='w-full'>
                       {isEditTitle ? (
-                          <input
-                          className={`border-b bg-transparent  text-sm text-white outline-none w-full`}
-                          onChange={(e) => setProfileData({...profileData, freelancerTitle: e.target.value})}
+                        <input
+                          className={`w-full border-b bg-transparent text-sm text-white outline-none`}
+                          onChange={(e) => handleChangeFreelancerTitle(e.target.value)}
                           value={profileData.freelancerTitle}
                         />
-                      ):(
-                        <div>
-                          {profileData.freelancerTitle}
-                        </div>
+                      ) : (
+                        <div>{profileData.freelancerTitle}</div>
                       )}
-                      
                     </div>
                   </div>
                   <div className='flex w-full flex-col gap-2 rounded-xl bg-[#10191d] p-5 pb-12'>

@@ -1,29 +1,26 @@
 'use client';
-import React, { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
-import MenuLink from '@/components/elements/menuLink';
+import React, { useEffect, useRef, useState } from 'react';
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
+import { IoMdClose } from 'react-icons/io';
 
+import MenuLink from '@/components/elements/menuLink';
 import { useCustomContext } from '@/context/use-custom';
 import { USER_ROLE } from '@/utils/constants';
 
-import { FaAngleLeft } from "react-icons/fa6";
-import { FaAngleRight } from "react-icons/fa6";
-import { IoMdClose } from "react-icons/io";
-
 const sideBarSettings = {
-  x_spacing: 7, // should be a tailwind css number
+  active_link_classes: 'border-l-4 border-[#DC4F13] py-3',
   x_collapsed_width: 80, // in PX
-  active_link_classes: 'border-l-4 border-[#DC4F13] py-3'
-}
-
+  x_spacing: 7, // should be a tailwind css number
+};
 
 const SideBar = () => {
-  const auth = useCustomContext(); 
+  const auth = useCustomContext();
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
-  useEffect(() => { 
-    gsap.to('.main_sidebar', { 
+  useEffect(() => {
+    gsap.to('.main_sidebar', {
       duration: 1,
-      width: desktopCollapsed ? sideBarSettings.x_collapsed_width : 300
+      width: desktopCollapsed ? sideBarSettings.x_collapsed_width : 300,
     });
   }, [desktopCollapsed]);
   const freelancer_menu_data = [
@@ -854,48 +851,66 @@ const SideBar = () => {
   }
   return (
     <div
-      className={`main_sidebar min-h-screen fixed md:sticky top-0 left-0 z-50 py-10 transition -translate-x-full md:translate-x-0 bg-[#10191D] flex flex-col gap-8 `}
+      className={`main_sidebar fixed left-0 top-0 z-50 flex min-h-screen -translate-x-full flex-col gap-8 bg-[#10191D] py-10 transition md:sticky md:translate-x-0`}
       ref={sideBarRef}
     >
-      <div 
-        className={`${desktopCollapsed  ? `px-0 w-[80px] max-w-full mr-auto flex justify-center` : `w-full px-${sideBarSettings.x_spacing} mobile:flex justify-between`}`} 
+      <div
+        className={`${desktopCollapsed ? `mr-auto flex w-[80px] max-w-full justify-center px-0` : `w-full px-${sideBarSettings.x_spacing} justify-between mobile:flex`}`}
         onClick={MobileToggleSidebar}
       >
-        <img 
-          className={desktopCollapsed ? `w-1/2 mx-auto` : 'w-1/2 mr-auto'} 
-          src={desktopCollapsed ? '/favicon.ico' : '/assets/images/logo.svg'} 
+        <img
+          className={desktopCollapsed ? `mx-auto w-1/2` : 'mr-auto w-1/2'}
+          src={desktopCollapsed ? '/favicon.ico' : '/assets/images/logo.svg'}
         />
-        <div className='p-2 rounded-[10px] bg-[#1B272C] cursor-pointer md:hidden'>
+        <div className='cursor-pointer rounded-[10px] bg-[#1B272C] p-2 md:hidden'>
           <IoMdClose size={25} />
         </div>
       </div>
-      <div 
-        className={`${desktopCollapsed  ? `px-0 flex justify-center w-[80px] max-w-full mr-auto` : `px-${sideBarSettings.x_spacing}`} w-full mobile:hidden`} 
+      <div
+        className={`${desktopCollapsed ? `mr-auto flex w-[80px] max-w-full justify-center px-0` : `px-${sideBarSettings.x_spacing}`} w-full mobile:hidden`}
       >
         {desktopCollapsed ? (
-          <FaAngleRight size={20} className='cursor-pointer' onClick={()=> { setDesktopCollapsed(false) }} />
-        ) : ( 
-          <FaAngleLeft size={20} className='cursor-pointer' onClick={()=> { setDesktopCollapsed(true) }} />
+          <FaAngleRight
+            className='cursor-pointer'
+            onClick={() => {
+              setDesktopCollapsed(false);
+            }}
+            size={20}
+          />
+        ) : (
+          <FaAngleLeft
+            className='cursor-pointer'
+            onClick={() => {
+              setDesktopCollapsed(true);
+            }}
+            size={20}
+          />
         )}
       </div>
       <div onClick={MobileToggleSidebar}>
         <div className='flex flex-col gap-4'>
           {auth?.currentRole === USER_ROLE.FREELANCER &&
             freelancer_menu_data.map((item, index) => (
-              <MenuLink 
-                item={item} key={index} desktopCollapsed={desktopCollapsed} sideBarSettings={sideBarSettings}
+              <MenuLink
+                desktopCollapsed={desktopCollapsed}
                 href={item.href}
                 icon={item.icon}
-                name={item.name}  
+                item={item}
+                key={index}
+                name={item.name}
+                sideBarSettings={sideBarSettings}
               />
             ))}
           {auth?.currentRole === USER_ROLE.CLIENT &&
             client_menu_data.map((item, index) => (
-              <MenuLink 
-                item={item} key={index} desktopCollapsed={desktopCollapsed} sideBarSettings={sideBarSettings}
+              <MenuLink
+                desktopCollapsed={desktopCollapsed}
                 href={item.href}
                 icon={item.icon}
-                name={item.name} 
+                item={item}
+                key={index}
+                name={item.name}
+                sideBarSettings={sideBarSettings}
               />
             ))}
         </div>

@@ -33,7 +33,7 @@ const Page = () => {
   useEffect(() => {
     setPage(1);
     setCanLoadMore(true);
-  }, [debouncedSearchText]);
+  }, [debouncedSearchText, filters]);
 
   useEffect(() => {
     if (searchType == searchOptions[0]) {

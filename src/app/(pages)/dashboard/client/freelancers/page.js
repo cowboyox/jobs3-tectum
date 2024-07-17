@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaX } from 'react-icons/fa6';
 
@@ -17,6 +18,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { useGetFreelancers } from '@/hooks/useGetFreelancers';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
+import { COUNTRIES } from '@/utils/constants';
 
 const Freelancers = () => {
   const auth = useCustomContext();
@@ -26,10 +28,14 @@ const Freelancers = () => {
   const [filters, setFilters] = useState([]);
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [isAiSearch, setIsAiSearch] = useState(false);
+  const [locationFilters, setLocationFilters] = useState([]);
+  const [countries, setCountries] = useState(COUNTRIES);
+  const [locationText, setLocationText] = useState("");
   const [freelancerBioShowModeList, setFreelancerBioShowModeList] = useState([]);
   const debouncedSearchText = useDebounce(searchText);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 2;
+  const router = useRouter();
+  const itemsPerPage = 5;
   const descriptionTextMaxLength = 320;
   const { isSmallScreen } = useHandleResize();
   const { data: freelancers } = useGetFreelancers(
@@ -37,14 +43,17 @@ const Freelancers = () => {
     page,
     itemsPerPage,
     debouncedSearchText,
-    filters
+    filters,
+    locationFilters
   );
+  console.log("page > filters > ",filters);
+  console.log("page > data > ",freelancers);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setPage(1);
     setCanLoadMore(true);
-  }, [debouncedSearchText]);
+  }, [debouncedSearchText, filters]);
 
   useEffect(() => {
     if (isAiSearch) {
@@ -96,8 +105,16 @@ const Freelancers = () => {
     }
   }, [freelancers, page]);
 
+  useEffect(() => {
+    setCountries(COUNTRIES.filter((item) => item.toLocaleLowerCase().includes(locationText.toLocaleLowerCase())));
+  }, [locationText]);
+  
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
+  };
+
+  const handleMessage = (freelancerId) => {
+    router.push(`/dashboard/client/inbox/${freelancerId}`);
   };
 
   return (
@@ -111,6 +128,11 @@ const Freelancers = () => {
           setIsAiSearch={setIsAiSearch}
           setSearchText={setSearchText}
           setSearchType={setSearchType}
+          locationFilters={locationFilters}
+          setLocationFilters={setLocationFilters}
+          countries={countries}
+          locationText={locationText}
+          setLocationText={setLocationText}
         />
         {loading && (
           <div className='flex justify-center h-screen pt-6 space-x-2 z-1'>
@@ -168,61 +190,61 @@ const Freelancers = () => {
                             {freelancer.badge}
                           </div>
                         )}
-                        {freelancer.jobSuccessScore && (
-                          <div className='flex flex-row gap-2'>
+                        {freelancer.jobSuccessScore !== undefined && (
+                          <div className='flex flex-row gap-2 '>
                             <JobSuccessIcon />
-                            {freelancer.jobSuccessScore}% Job Success
+                            <span className='text-white'>{freelancer.jobSuccessScore}% Job Success</span>
                           </div>
                         )}
                       </div>
                     </div>
                     <Separator className='my-4' />
                     <div className='text-left text-[#96B0BD]'>
-                        <pre className='whitespace-pre-wrap font-roboto'>
-                          {freelancer.freelancerBio.length < descriptionTextMaxLength
+                      <pre className='whitespace-pre-wrap font-roboto'>
+                        {freelancer.freelancerBio.length < descriptionTextMaxLength
+                          ? freelancer.freelancerBio
+                          : freelancerBioShowModeList[index]
                             ? freelancer.freelancerBio
-                            : freelancerBioShowModeList[index]
-                              ? freelancer.freelancerBio
-                              : freelancer.freelancerBio.slice(0, descriptionTextMaxLength) + '...'}
-                        </pre>
-                      </div>
-                      <div className='mt-3 text-left'>
-                        {freelancer.freelancerBio.length < descriptionTextMaxLength ? (
-                          <></>
-                        ) : !freelancerBioShowModeList[index] ? (
-                          <button
-                            onClick={() => {
-                              const tempShowModeList = freelancerBioShowModeList.map((item, i) => {
-                                if (i == index) {
-                                  return true;
-                                } else {
-                                  return item;
-                                }
-                              });
+                            : freelancer.freelancerBio.slice(0, descriptionTextMaxLength) + '...'}
+                      </pre>
+                    </div>
+                    <div className='mt-3 text-left'>
+                      {freelancer.freelancerBio.length < descriptionTextMaxLength ? (
+                        <></>
+                      ) : !freelancerBioShowModeList[index] ? (
+                        <button
+                          onClick={() => {
+                            const tempShowModeList = freelancerBioShowModeList.map((item, i) => {
+                              if (i == index) {
+                                return true;
+                              } else {
+                                return item;
+                              }
+                            });
 
-                              setFreelancerBioShowModeList(tempShowModeList);
-                            }}
-                          >
-                            Show more
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => {
-                              const tempShowModeList = freelancerBioShowModeList.map((item, i) => {
-                                if (i == index) {
-                                  return false;
-                                } else {
-                                  return item;
-                                }
-                              });
+                            setFreelancerBioShowModeList(tempShowModeList);
+                          }}
+                        >
+                          Show more
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            const tempShowModeList = freelancerBioShowModeList.map((item, i) => {
+                              if (i == index) {
+                                return false;
+                              } else {
+                                return item;
+                              }
+                            });
 
-                              setFreelancerBioShowModeList(tempShowModeList);
-                            }}
-                          >
-                            Show less
-                          </button>
-                        )}
-                      </div>
+                            setFreelancerBioShowModeList(tempShowModeList);
+                          }}
+                        >
+                          Show less
+                        </button>
+                      )}
+                    </div>
                     <div className='mt-4 flex touch-pan-x flex-row items-center gap-3 overflow-x-auto overscroll-x-contain text-[#F5F5F5]'>
                       {freelancer.skills &&
                         freelancer.skills.map((item, index) => {
@@ -261,7 +283,12 @@ const Freelancers = () => {
                         </div>
                       </div>
                       <div className='mt-2 flex-1 rounded-xl bg-[#1B272C] p-1 md:mt-0 md:flex-none'>
-                        <button className='p-4 px-8 md:p-5'>Message</button>
+                        <button
+                          className='p-4 px-8 md:p-5'
+                          onClick={() => handleMessage(freelancer._id)}
+                        >
+                          Message
+                        </button>
                         <button className='bg-[#DC4F13] p-4 px-8 md:p-5'>Invite to Gig</button>
                       </div>
                     </div>

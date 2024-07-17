@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 
+import { useSocket } from '@/context/socket';
 import api from '@/utils/api';
 import { USER_ROLE } from '@/utils/constants';
 import { backend_url } from '@/utils/variables';
@@ -89,8 +90,10 @@ export const CustomContext = createContext({ undefined });
 const ContextProvider = ({ children }) => {
   const [currentRole, setCurrentRole] = useState(USER_ROLE.FREELANCER);
   const [currentProfile, setCurrentProfile] = useState(null);
+  const [isIdle, setIsIdle] = useState(true);
   // Context API States
   const [loading, setLoading] = useState(true);
+  const socket = useSocket();
   const [loadCompleted, setLoadCompleted] = useState(true);
   const [load3D, setLoad3D] = useState(0);
   const [scrollPause, setScrollPause] = useState(false);
@@ -103,6 +106,40 @@ const ContextProvider = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    if (currentProfile?._id) {
+      let idleTimer;
+      const idleTime = 30000;
+
+      const resetIdleTimer = () => {
+        clearTimeout(idleTimer);
+
+        if (isIdle) {
+          setIsIdle(false);
+          socket.emit('user-active', currentProfile?._id);
+        }
+
+        idleTimer = setTimeout(() => {
+          setIsIdle(true);
+          socket.emit('user-idle', currentProfile?._id);
+        }, idleTime);
+      };
+
+      const events = ['mousemove', 'keydown', 'click'];
+
+      events.forEach((event) => {
+        window.addEventListener(event, resetIdleTimer);
+      });
+
+      return () => {
+        clearTimeout(idleTimer);
+        events.forEach((event) => {
+          window.removeEventListener(event, resetIdleTimer);
+        });
+      };
+    }
+  }, [isIdle, socket, currentProfile]);
 
   const login = async (credentials) => {
     // if (state.acc_type === null) {
@@ -173,10 +210,10 @@ const ContextProvider = ({ children }) => {
       otp: credential,
       user_id: verify_id,
     });
-    console.log("data ", data);
-    if(data === "success") return true;
+    console.log('data ', data);
+    if (data === 'success') return true;
     else return false;
-  }
+  };
 
   const signUpwithWallet = async (wallet) => {
     if (state.acc_type === null) {
@@ -227,7 +264,7 @@ const ContextProvider = ({ children }) => {
           accountTypeName = 'client';
           break;
       }
-      const url = window.location.href
+      const url = window.location.href;
       // Create an anchor element to parse the URL
       const parser = document.createElement('a');
       parser.href = url;
@@ -239,10 +276,8 @@ const ContextProvider = ({ children }) => {
       const params = new URLSearchParams(search);
       const redirectPath = params.get('redirect');
       // Get the value of the 'redirect' parameter
-      if(redirectPath)
-        router.push(redirectPath)
-      else
-        router.push(`/dashboard/${accountTypeName}/home`);
+      if (redirectPath) router.push(redirectPath);
+      else router.push(`/dashboard/${accountTypeName}/home`);
     } catch (err) {
       console.error(err);
     }
@@ -250,13 +285,13 @@ const ContextProvider = ({ children }) => {
 
   const sendOTP = async (email) => {
     const { data } = await api.post('api/v1/user/send-opcode-forgot-password', {
-      email: email
+      email: email,
     });
-    const {user_id, role} = data;
+    const { user_id, role } = data;
     localStorage.setItem('jobs_2024_token', JSON.stringify({ data }));
     setVerify(user_id);
     setRole(role);
-  }
+  };
 
   const signInwithWallet = async (wallet) => {
     // if (state.acc_type === null) {
@@ -264,8 +299,10 @@ const ContextProvider = ({ children }) => {
     //   return;
     // }
     try {
-      const { data } = await api.post('/api/v1/user/wallet/login', { wallet: wallet.toLowerCase() });
-      console.log({data})
+      const { data } = await api.post('/api/v1/user/wallet/login', {
+        wallet: wallet.toLowerCase(),
+      });
+      console.log({ data });
       localStorage.setItem(
         'jobs_2024_token',
         JSON.stringify({
@@ -305,8 +342,8 @@ const ContextProvider = ({ children }) => {
           accountTypeName = 'client';
           break;
       }
-    
-      const url = window.location.href
+
+      const url = window.location.href;
       // Create an anchor element to parse the URL
       const parser = document.createElement('a');
       parser.href = url;
@@ -318,10 +355,8 @@ const ContextProvider = ({ children }) => {
       const params = new URLSearchParams(search);
       const redirectPath = params.get('redirect');
       // Get the value of the 'redirect' parameter
-      if(redirectPath)
-        router.push(redirectPath)
-      else
-        router.push(`/dashboard/${accountTypeName}/home`);
+      if (redirectPath) router.push(redirectPath);
+      else router.push(`/dashboard/${accountTypeName}/home`);
     } catch (err) {
       console.error(err);
     }
@@ -346,11 +381,11 @@ const ContextProvider = ({ children }) => {
       alert('Please select account type');
       return;
     }
-    const {data} = await api.post('/api/v1/user/change-password', {
+    const { data } = await api.post('/api/v1/user/change-password', {
       ...credentials,
+      acc_type: state.acc_type,
       user_id: verify_id,
-      acc_type: state.acc_type
-    });    
+    });
     const { user, token } = data;
     api.defaults.headers.common.Authorization = token;
     setCurrentRole(user.role[0]);
@@ -387,6 +422,30 @@ const ContextProvider = ({ children }) => {
       console.error('Error getting data!');
     }
   }, []);
+
+  useEffect(() => {
+    if (currentProfile && socket) {
+      socket.emit('add-user', currentProfile._id);
+
+      const storedData = localStorage.getItem('jobs_2024_token');
+      try {
+        const data = JSON.parse(storedData);
+        if (data && typeof data === 'object') {
+          localStorage.setItem(
+            'jobs_2024_token',
+            JSON.stringify({
+              data: {
+                ...data.data,
+                currentProfile,
+              },
+            })
+          );
+        }
+      } catch (err) {
+        console.error('Error getting data!');
+      }
+    }
+  }, [currentProfile, socket]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -448,6 +507,7 @@ const ContextProvider = ({ children }) => {
     <CustomContext.Provider
       value={{
         ...state,
+        changePassword,
         contextValue,
         currentProfile,
         currentRole,
@@ -458,6 +518,7 @@ const ContextProvider = ({ children }) => {
         preloader: [loading, setLoading],
         register,
         scroll: [scrollPause, setScrollPause],
+        sendOTP,
         setCurrentProfile,
         setCurrentRole,
         setRole,
@@ -465,9 +526,7 @@ const ContextProvider = ({ children }) => {
         signOut,
         signUpwithWallet,
         verifyOTP,
-        sendOTP,
         verifyOTPPassword,
-        changePassword
       }}
     >
       {children}

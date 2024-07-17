@@ -22,6 +22,7 @@ import { useCustomContext } from '@/context/use-custom';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllFreelancerOrdersProposed } from '@/hooks/useGetAllFreelancerOrdersProposed';
 import { useHandleResize } from '@/hooks/useHandleResize';
+import { COUNTRIES } from '@/utils/constants';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
@@ -52,6 +53,9 @@ const Offer = () => {
   const [itemsPerPage, setItemsPerPage] = useState(2);
   const debouncedSearchText = useDebounce(searchKeywords);
   const [canLoadMore, setCanLoadMore] = useState(true);
+  const [locationFilters, setLocationFilters] = useState([]);
+  const [countries, setCountries] = useState(COUNTRIES);
+  const [locationText, setLocationText] = useState("");
   const filterCategories = [
     {
       content: [
@@ -128,7 +132,7 @@ const Offer = () => {
   }, [debouncedSearchText, mode]);
 
   useEffect(() => {
-    if (mode == "live") {
+    if (mode == 'live') {
       if (orders?.livesTotal > page * itemsPerPage && orders?.lives?.length > 0) {
         setCanLoadMore(true);
       } else {
@@ -145,6 +149,10 @@ const Offer = () => {
     setProposals(orders?.proposals);
   }, [orders, mode, page, itemsPerPage]);
 
+  useEffect(() => {
+    setCountries(COUNTRIES.filter((item) => item.toLocaleLowerCase().includes(locationText.toLocaleLowerCase())));
+  }, [locationText]);
+  
   const onCheckedChange = (isChecked, id, name, value) => {
     if (isChecked) {
       setFilters((prev) => [...prev, { id, name, value }]);
@@ -201,12 +209,20 @@ const Offer = () => {
     setSearchType(e);
   };
 
+  const onCheckedLocationChange = (value, id, name) => {
+    if (value) {
+      setLocationFilters((prev) => [...prev, name]);
+    } else {
+      setLocationFilters((prev) => prev.filter((item) => item !== name));
+    }
+  };
+  
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d] pr-4'>
         <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
-            <SelectTrigger className='mobile:w-14 mobile:p-2 w-20 rounded-xl bg-[#1B272C]'>
+            <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className='rounded-xl bg-[#1B272C]'>
@@ -223,10 +239,76 @@ const Offer = () => {
             placeholder='Search by job title, company, keywords'
           />
         </div>
-        <div className='mobile:hidden m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C]'>
+        {/* <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
           <IoLocationOutline size={20} stroke='#96B0BD' />
           <span className='hidden text-[#96B0BD] md:block'>Anywhere</span>
-        </div>
+        </div> */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
+              <IoLocationOutline size={20} stroke='#96B0BD' />
+              {
+                locationFilters.length == 0 ?
+                <span className='text-[#96B0BD]'>Anywhere</span> :
+                <span className='text-[#96B0BD]'>{ locationFilters.join(", ").length > 11 ? locationFilters.join(", ").slice(0,10) + "..." : locationFilters.join(", ") }</span>
+              }
+              <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
+                {locationFilters.length}
+              </span>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent
+            align='end'
+            className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] pl-4 pr-1 py-4'
+          >
+            <div className='max-h-[300px] overflow-y-auto country-list'>
+              <div className='sticky top-0 flex bg-[#1B272C] p-1 mb-1'>
+                <input 
+                  className='w-full px-7 relative text-[#96B0BD] border-[#96B0BD] border-2 bg-transparent rounded-full outline-none mobile:text-sm' 
+                  onChange={(e) => {
+                    setLocationText(e.target.value);
+                  }}
+                  value={locationText}
+                />
+                <svg
+                  className='absolute w-5 h-5 top-2 left-3'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth={1.5}
+                  viewBox='0 0 24 24'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                </svg>
+              </div>
+              {
+                countries.length > 0 ?
+                <div className='flex flex-col gap-2'>
+                  {countries.map((con, i) => {
+                    return (
+                      <DropdownItem
+                        category_id={con}
+                        category_name={con}
+                        checked={locationFilters.includes(con)}
+                        key={i}
+                        onCheckedChange={(value) =>
+                          onCheckedLocationChange(value, con, con)
+                        }
+                      />
+                    );
+                  })}
+                </div> :
+                <div className='flex flex-col gap-2'>
+                  <span className='text-[#96B0BD]'>No results found</span>
+                </div>
+              }
+            </div>
+          </PopoverContent>
+        </Popover>
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
@@ -288,7 +370,7 @@ const Offer = () => {
         {searchType === 'ai' && (
           <div className='flex'>
             <button
-              class='mobile:flex hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white'
+              class='hidden w-12 items-center justify-center self-stretch rounded-e-[15px] rounded-s-[0px] bg-orange text-lg text-white mobile:flex'
               onClick={aiSearch}
             >
               <FaArrowRight />
@@ -298,11 +380,13 @@ const Offer = () => {
       </div>
       {mode == 'live' ? (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{orders?.livesTotal}</span> Accepteds😊
+          You have <span className='font-bold text-[#DC4F13]'>{orders?.livesTotal}</span>{' '}
+          Accepteds😊
         </div>
       ) : (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{orders?.proposalsTotal}</span> Proposals😊
+          You have <span className='font-bold text-[#DC4F13]'>{orders?.proposalsTotal}</span>{' '}
+          Proposals😊
         </div>
       )}
       {filters.length > 0 && (

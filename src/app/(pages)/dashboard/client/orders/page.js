@@ -43,6 +43,7 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
 import { useToast } from '@/components/ui/use-toast';
+import { useSocket } from '@/context/socket';
 import { useCustomContext } from '@/context/use-custom';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllClientGigsProposed } from '@/hooks/useGetAllClientGigsProposed';
@@ -53,6 +54,7 @@ import {
   ADMIN_ADDRESS,
   CONTRACT_SEED,
   ContractStatus,
+  COUNTRIES,
   PAYTOKEN_MINT,
   PROGRAM_ID,
 } from '@/utils/constants';
@@ -90,6 +92,9 @@ const Orders = () => {
   const debouncedSearchText = useDebounce(searchKeywords);
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [filters, setFilters] = useState([]);
+  const [locationFilters, setLocationFilters] = useState([]);
+  const [countries, setCountries] = useState(COUNTRIES);
+  const [locationText, setLocationText] = useState("");
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllClientGigsProposed(
     auth?.currentProfile?._id,
     page,
@@ -102,7 +107,7 @@ const Orders = () => {
 
   const [filteredLiveList, setFilteredLiveList] = useState([]);
   const [filteredProposalsList, setFilteredProposalsList] = useState([]);
-
+  const socket = useSocket();
   const { isSmallScreen } = useHandleResize();
   const filterCategories = [
     {
@@ -179,9 +184,9 @@ const Orders = () => {
         } else {
           setCanLoadMore(false);
         }
-        
+
         // if (page === 1) {
-          setFilteredLiveList(gigs.lives);
+        setFilteredLiveList(gigs.lives);
         // } else {
         //   setFilteredLiveList((prev) => {
         //     let result = [...prev];
@@ -198,7 +203,7 @@ const Orders = () => {
         // }
       } else {
         // if (page === 1) {
-          setFilteredLiveList([]);
+        setFilteredLiveList([]);
         // }
         setCanLoadMore(false);
       }
@@ -211,7 +216,7 @@ const Orders = () => {
         }
 
         // if (page === 1) {
-          setFilteredProposalsList(gigs.proposals);
+        setFilteredProposalsList(gigs.proposals);
         // } else {
         //   setFilteredProposalsList((prev) => {
         //     let result = [...prev];
@@ -228,13 +233,17 @@ const Orders = () => {
         // }
       } else {
         // if (page === 1) {
-          setFilteredProposalsList([]);
+        setFilteredProposalsList([]);
         // }
         setCanLoadMore(false);
       }
     }
   }, [gigs, page, mode, itemsPerPage]);
 
+  useEffect(() => {
+    setCountries(COUNTRIES.filter((item) => item.toLocaleLowerCase().includes(locationText.toLocaleLowerCase())));
+  }, [locationText]);
+  
   const handleLoadMore = () => {
     // setPage((prev) => prev + 1);
     setItemsPerPage((prev) => prev + 2);
@@ -370,6 +379,15 @@ const Orders = () => {
       });
 
       await refetchAllGigsProposed();
+
+      const message = {
+        messageText: "I'd like to accept your order.",
+        receiverId: freelancerId,
+        senderId: auth?.currentProfile?._id,
+        timeStamp: new Date(),
+      };
+
+      socket.emit('sendMessage', message);
     } catch (err) {
       console.error('Error corrupted during applying gig', err);
 
@@ -564,6 +582,18 @@ const Orders = () => {
     );
   };
 
+  const handleMessage = (freelancerId) => {
+    router.push(`/dashboard/client/inbox/${freelancerId}`);
+  };
+
+  const onCheckedLocationChange = (value, id, name) => {
+    if (value) {
+      setLocationFilters((prev) => [...prev, name]);
+    } else {
+      setLocationFilters((prev) => prev.filter((item) => item !== name));
+    }
+  };
+  
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d] pr-4'>
@@ -586,10 +616,76 @@ const Orders = () => {
             placeholder='Search by job title, company, keywords'
           />
         </div>
-        <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
+        {/* <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl transition hover:bg-[#1B272C] mobile:hidden'>
           <IoLocationOutline size={20} stroke='#96B0BD' />
           <span className='text-[#96B0BD]'>Anywhere</span>
-        </div>
+        </div> */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
+              <IoLocationOutline size={20} stroke='#96B0BD' />
+              {
+                locationFilters.length == 0 ?
+                <span className='text-[#96B0BD]'>Anywhere</span> :
+                <span className='text-[#96B0BD]'>{ locationFilters.join(", ").length > 11 ? locationFilters.join(", ").slice(0,10) + "..." : locationFilters.join(", ") }</span>
+              }
+              <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
+                {locationFilters.length}
+              </span>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent
+            align='end'
+            className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] pl-4 pr-1 py-4'
+          >
+            <div className='max-h-[300px] overflow-y-auto country-list'>
+              <div className='sticky top-0 flex bg-[#1B272C] p-1 mb-1'>
+                <input 
+                  className='w-full px-7 relative text-[#96B0BD] border-[#96B0BD] border-2 bg-transparent rounded-full outline-none mobile:text-sm' 
+                  onChange={(e) => {
+                    setLocationText(e.target.value);
+                  }}
+                  value={locationText}
+                />
+                <svg
+                  className='absolute w-5 h-5 top-2 left-3'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth={1.5}
+                  viewBox='0 0 24 24'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                </svg>
+              </div>
+              {
+                countries.length > 0 ?
+                <div className='flex flex-col gap-2'>
+                  {countries.map((con, i) => {
+                    return (
+                      <DropdownItem
+                        category_id={con}
+                        category_name={con}
+                        checked={locationFilters.includes(con)}
+                        key={i}
+                        onCheckedChange={(value) =>
+                          onCheckedLocationChange(value, con, con)
+                        }
+                      />
+                    );
+                  })}
+                </div> :
+                <div className='flex flex-col gap-2'>
+                  <span className='text-[#96B0BD]'>No results found</span>
+                </div>
+              }
+            </div>
+          </PopoverContent>
+        </Popover>
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
@@ -661,8 +757,7 @@ const Orders = () => {
       </div>
       {mode == 'live' ? (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{gigs?.livesTotal}</span>{' '}
-          Orders😊
+          You have <span className='font-bold text-[#DC4F13]'>{gigs?.livesTotal}</span> Orders😊
         </div>
       ) : (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
@@ -1054,7 +1149,12 @@ const Orders = () => {
                         </div>
                       </div>
                       <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-                        <button className='p-4 px-8 md:p-5'>Message</button>
+                        <button
+                          className='p-4 px-8 md:p-5'
+                          onClick={() => handleMessage(order.freelancerId._id)}
+                        >
+                          Message
+                        </button>
                         <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
                           onClick={() => router.push(`/dashboard/client/orders/${order?.id}`)}
@@ -1418,7 +1518,12 @@ const Orders = () => {
                         </div>
                       </div>
                       <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-                        <button className='p-4 px-8 md:p-5'>Message</button>
+                        <button
+                          className='p-4 px-8 md:p-5'
+                          onClick={() => handleMessage(proposal.freelancerId._id)}
+                        >
+                          Message
+                        </button>
                         <button
                           className='bg-[#DC4F13] p-4 px-8 md:p-5'
                           onClick={() =>

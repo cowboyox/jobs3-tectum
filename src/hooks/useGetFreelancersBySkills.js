@@ -9,18 +9,18 @@ export const useGetFreelancers = (pageNum, itemsPerPage, searchText = '', filter
     queryFn: async () => {
       if (pageNum > 0 && itemsPerPage > 0) {
         try {
-          let earned = 0;
+          let earned = 100000;
           let languages = ['any'];
           let hourlyRate = ['any'];
-          let hoursBilled = 0;
-          let jobSuccess = 0;
+          let hoursBilled = 100000;
+          let jobSuccess = 100;
 
           filters.map((filter) => {
-            if (filter.id === 'earned' && filter.value > earned) {
+            if (filter.id === 'earned' && filter.value < earned) {
               earned = filter.value;
-            } else if (filter.id === 'hoursBilled' && filter.value > hoursBilled) {
+            } else if (filter.id === 'hoursBilled' && filter.value < hoursBilled) {
               hoursBilled = filter.value;
-            } else if (filter.id === 'jobSuccess' && filter.value > jobSuccess) {
+            } else if (filter.id === 'jobSuccess' && filter.value < jobSuccess) {
               jobSuccess = filter.value;
             } else if (filter.id === 'languages' && filter.value !== 'any') {
               languages = [...languages, filter.value].filter((lang) => lang !== 'any');
@@ -28,6 +28,9 @@ export const useGetFreelancers = (pageNum, itemsPerPage, searchText = '', filter
               hourlyRate = [...hourlyRate, filter.value].filter((lang) => lang !== 'any');
             }
           });
+          earned = earned === 100000 ? 0 : earned;
+          hoursBilled = hoursBilled === 100000 ? 0 : hoursBilled;
+          jobSuccess = jobSuccess === 100 ? 0 : jobSuccess;
           const { data } = await api.get(
             `/api/v1/profile/get_all_freelancers_by_skills?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}&skills=${skills}`
           );
