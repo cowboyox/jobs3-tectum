@@ -164,6 +164,18 @@ const ChatPage = ({ profileId }) => {
     setInput('');
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      sendMessage();
+    }
+  };
+
+  const handleChange = (e) => {
+    if (e.target.value !== '\n') {
+      setInput(e.target.value);
+    }
+  };
+
   return (
     <div className='flex h-full flex-col'>
       <style>{`
@@ -268,7 +280,8 @@ const ChatPage = ({ profileId }) => {
               <IoMdAttach className='h-6 w-6 cursor-pointer transition hover:fill-[#dc4f14]' />
               <textarea
                 className='h-full w-full resize-none bg-transparent pt-2 outline-none placeholder:text-[#96B0BD]'
-                onChange={(e) => setInput(e.target.value)}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
                 placeholder='Send message...'
                 value={input}
               />
