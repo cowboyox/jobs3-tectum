@@ -115,7 +115,7 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
         <img className='h-5 w-5 object-contain object-center' src={iconSrc} />
         <span className='text-sm'>{handleLabel()}</span>
       </div>
-      {editable && label !== 'created' ? (
+      {editable && label !== 'created' && label !== 'avgResponseTime' ? (
         <span className='flex gap-0'>
           <input
             className={`border-b bg-transparent text-right text-sm text-[#96B0BD] outline-none ${(label === 'hourlyRate' || label === 'monthlyRate') && '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'} `}
@@ -562,8 +562,7 @@ const FreelancerProfile = () => {
     console.log('value ', value, ' value.length', value.length);
     if (value.length <= maxFreelancerTitle) {
       setProfileData({ ...profileData, freelancerTitle: value });
-    }
-    else{
+    } else {
       return toast({
         className:
           'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -669,7 +668,7 @@ const FreelancerProfile = () => {
                       className='h-6 w-6 object-contain object-center'
                       src='/assets/images/icons/green-job-success.svg'
                     />
-                    <p className='text-lg text-white'>96% Job Success</p>
+                    <p className='text-lg text-white'>{profileData.jobSuccessScore}% Job Success</p>
                   </div>
                 </div>
               </div>
