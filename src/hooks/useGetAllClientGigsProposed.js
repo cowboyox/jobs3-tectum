@@ -7,7 +7,8 @@ export const useGetAllClientGigsProposed = (
   pageNum,
   itemsPerPage,
   searchText = '',
-  filters = []
+  filters = [],
+  locations = ''
 ) => {
   return useQuery({
     cacheTime: Infinity,
@@ -36,7 +37,7 @@ export const useGetAllClientGigsProposed = (
           });
 
           const result = await api.get(
-            `/api/v1/client_gig/find_all_gigs_by_profile_id/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
+            `/api/v1/client_gig/find_all_gigs_by_profile_id/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}&locations=${locations}`
           );
 
           console.log('result in useGetAllClientGigsProposed:', result);
@@ -50,13 +51,13 @@ export const useGetAllClientGigsProposed = (
                   fullName: proposal.proposer.fullName,
                 },
                 freelancerId: proposal.proposer,
-                gigDescription: proposal.clientGig.gigDescription,
-                gigId: proposal.clientGig._id,
-                gigPostDate: proposal.clientGig.gigPostDate,
-                gigPrice: proposal.clientGig.gigPrice,
-                gigTitle: proposal.clientGig.gigTitle,
-                maxBudget: proposal.clientGig.maxBudget,
-                minBudget: proposal.clientGig.minBudget,
+                gigDescription: proposal?.clientGig?.gigDescription,
+                gigId: proposal.clientGig?._id,
+                gigPostDate: proposal.clientGig?.gigPostDate,
+                gigPrice: proposal.clientGig?.gigPrice,
+                gigTitle: proposal.clientGig?.gigTitle,
+                maxBudget: proposal.clientGig?.maxBudget,
+                minBudget: proposal.clientGig?.minBudget,
                 walletPubkey: proposal.proposer?.walletPubkey,
               });
             });
@@ -70,13 +71,13 @@ export const useGetAllClientGigsProposed = (
                   fullName: contract.proposer.fullName,
                 },
                 freelancerId: contract.proposer,
-                gigDescription: contract.clientGig.gigDescription,
-                gigId: contract.clientGig._id,
-                gigPostDate: contract.clientGig.gigPostDate,
-                gigPrice: contract.clientGig.gigPrice
-                  ? `$${contract.clientGig.gigPrice}`
-                  : `$${contract.clientGig.minBudget}/hr ~ $${contract.clientGig.maxBudget}/hr`,
-                gigTitle: contract.clientGig.gigTitle,
+                gigDescription: contract?.clientGig?.gigDescription,
+                gigId: contract.clientGig?._id,
+                gigPostDate: contract.clientGig?.gigPostDate,
+                gigPrice: contract.clientGig?.gigPrice
+                  ? `$${contract.clientGig?.gigPrice}`
+                  : `$${contract.clientGig?.minBudget}/hr ~ $${contract.clientGig?.maxBudget}/hr`,
+                gigTitle: contract.clientGig?.gigTitle,
                 id: contract._id,
                 status: contract.status,
               });
@@ -85,7 +86,7 @@ export const useGetAllClientGigsProposed = (
 
           return { lives, proposals, proposalsTotal: result.data.proposalsTotal, livesTotal: result.data.contractsTotal };
         } catch (e) {
-          console.error(e);
+          console.error("Error in useGetAllClientGigsProposed:", e);
 
           return null;
         }
@@ -100,6 +101,7 @@ export const useGetAllClientGigsProposed = (
       itemsPerPage,
       searchText,
       filters,
+      locations,
     ],
     staleTime: Infinity,
   });

@@ -7,7 +7,8 @@ export const useGetAllFreelancerOrdersProposed = (
   pageNum,
   itemsPerPage,
   searchText = '',
-  filters = []
+  filters = [],
+  locations = ''
 ) => {
   return useQuery({
     cacheTime: Infinity,
@@ -36,7 +37,7 @@ export const useGetAllFreelancerOrdersProposed = (
           });
 
           const result = await api.get(
-            `/api/v1/freelancer_gig/find_all_orders_on_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
+            `/api/v1/freelancer_gig/find_all_orders_on_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}&locations=${locations}`
           );
           console.log('result in useGetAllFreelancerOrdersProposed:', result);
           const proposals = [];
@@ -111,6 +112,7 @@ export const useGetAllFreelancerOrdersProposed = (
         itemsPerPage,
         searchText,
         filters,
+        locations
     ],
     staleTime: Infinity,
   });

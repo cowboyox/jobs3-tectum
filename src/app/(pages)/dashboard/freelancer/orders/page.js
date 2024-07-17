@@ -92,7 +92,8 @@ const Orders = () => {
     auth?.currentProfile?._id,
     page,
     itemsPerPage,
-    debouncedSearchText
+    debouncedSearchText,
+    locationFilters
   );
 
   useEffect(() => {

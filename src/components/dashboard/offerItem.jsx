@@ -75,6 +75,7 @@ const OfferItem = ({
   contractId,
   buyerPubkey,
   quantity,
+  location
 }) => {
   const router = useRouter();
   const { toast } = useToast();
@@ -780,7 +781,7 @@ const OfferItem = ({
         </div>
         <div className='flex items-center gap-2'>
           <Icon className='text-2xl' icon='mdi:address-marker-outline' />
-          London, United Kingdom
+          {location}
         </div>
         <div className='flex items-center gap-2'>
           <Icon className='text-2xl' icon='fa6-regular:clock' />

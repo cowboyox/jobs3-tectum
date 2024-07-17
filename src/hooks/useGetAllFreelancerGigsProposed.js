@@ -7,7 +7,8 @@ export const useGetAllFreelancerGigsProposed = (
   profileId,
   pageNum,
   itemsPerPage,
-  searchText = ''
+  searchText = '',
+  locations = ''
 ) => {
   return useQuery({
     cacheTime: Infinity,
@@ -16,7 +17,7 @@ export const useGetAllFreelancerGigsProposed = (
       if (profileId && pageNum > 0 && itemsPerPage > 0) {
         try {
           const result = await api.get(
-            `${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}`
+            `${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&locations=${locations}`
           );
 
           const submissions = [];
@@ -77,7 +78,7 @@ export const useGetAllFreelancerGigsProposed = (
         return null;
       }
     },
-    queryKey: ['useGetAllFreelancerGigsProposed', profileId, pageNum, itemsPerPage, searchText],
+    queryKey: ['useGetAllFreelancerGigsProposed', profileId, pageNum, itemsPerPage, searchText, locations],
     staleTime: Infinity,
   });
 };
