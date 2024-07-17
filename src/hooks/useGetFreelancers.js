@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetFreelancers = (userId, pageNum, itemsPerPage, searchText = '', filters = []) => {
+export const useGetFreelancers = (userId, pageNum, itemsPerPage, searchText = '', filters = [], locations='') => {
   return useQuery({
     cacheTime: Infinity,
     enabled: !!userId && pageNum > 0 && itemsPerPage > 0,
@@ -32,7 +32,7 @@ export const useGetFreelancers = (userId, pageNum, itemsPerPage, searchText = ''
           hoursBilled = hoursBilled === 100000 ? 0 : hoursBilled;
           jobSuccess = jobSuccess === 100 ? 0 : jobSuccess;
           const { data } = await api.get(
-            `/api/v1/profile/get-all-freelancers/${userId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}`
+            `/api/v1/profile/get-all-freelancers/${userId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}&locations=${locations}`
           );
 
           return data?.data;
@@ -45,7 +45,7 @@ export const useGetFreelancers = (userId, pageNum, itemsPerPage, searchText = ''
 
       return null;
     },
-    queryKey: ['useGetFreelancers', userId, pageNum, itemsPerPage, searchText, filters],
+    queryKey: ['useGetFreelancers', userId, pageNum, itemsPerPage, searchText, filters, locations],
     staleTime: Infinity,
   });
 };
