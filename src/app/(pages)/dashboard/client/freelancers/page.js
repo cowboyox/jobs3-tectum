@@ -176,10 +176,10 @@ const Freelancers = () => {
                             {freelancer.badge}
                           </div>
                         )}
-                        {freelancer.jobSuccessScore && (
-                          <div className='flex flex-row gap-2'>
+                        {freelancer.jobSuccessScore !== undefined && (
+                          <div className='flex flex-row gap-2 '>
                             <JobSuccessIcon />
-                            {freelancer.jobSuccessScore}% Job Success
+                            <span className='text-white'>{freelancer.jobSuccessScore}% Job Success</span>
                           </div>
                         )}
                       </div>

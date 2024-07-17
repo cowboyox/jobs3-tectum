@@ -102,7 +102,7 @@ const Gigs = ({freelancers, selectedGigs, setSelectedGigs, page, setPage, handle
                         {freelancer.badge}
                       </div>
                     )}
-                    {freelancer.jobSuccessScore && (
+                    {freelancer.jobSuccessScore !== undefined && (
                       <div className='flex flex-row gap-2'>
                         <svg
                           fill='none'
