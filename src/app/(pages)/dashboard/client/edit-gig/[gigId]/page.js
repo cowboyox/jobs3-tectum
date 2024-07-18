@@ -32,6 +32,9 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
+import { COUNTRIES_OPTIONS } from '@/utils/constants';
+import MultipleSelector, { Option } from '@/components/ui/multiple-selector';
+
 
 // Icons
 
@@ -230,6 +233,8 @@ const GigPosting = ({ params }) => {
   const [files, setFiles] = useState([]);
   const [files2, setFiles2] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(0);
+  const [options, setOptions] = useState(COUNTRIES_OPTIONS);
+  const [placeholder, setPlaceholder] = useState('Add location');
   const [postData, setPostData] = useState({
     attachment: [],
     experienceLevel: 0,
@@ -239,7 +244,7 @@ const GigPosting = ({ params }) => {
     gigPaymentType: true, // hourly budget gig first
     gigPrice: 0,
     gigTitle: '',
-    location: '',
+    location: [],
     maxBudget: 0,
     minBudget: 0,
     profileId: null,
@@ -1043,42 +1048,73 @@ const GigPosting = ({ params }) => {
               </FormItem>
             )}
           />
-          <FormField
-            name='location'
-            render={() => (
-              <FormItem className='mt-8'>
-                <FormLabel className='mb-4 text-2xl font-semibold'>
-                  {all_form_structure.location_label}
-                </FormLabel>
-                <FormControl>
-                  <div className='mt-4 flex rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
-                    <input
-                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
-                      onChange={(e) => {
-                        setPostData((prev) => ({
-                          ...prev,
-                          location: e.target.value,
-                        }));
-                      }}
-                      placeholder={all_form_structure.location_placeholder}
-                      value={postData.location}
-                    />
-                    <div
-                      className='cursor-pointer justify-end'
-                      onClick={() =>
-                        setPostData((prev) => ({
-                          ...prev,
-                          location: '',
-                        }))
-                      }
-                    >
-                      <IoIosClose className='h-[30px] w-[30px]' />
-                    </div>
-                  </div>
-                </FormControl>
-              </FormItem>
-            )}
-          />
+
+          <div className='mt-14 flex flex-col gap-2'>
+            <p className='mb-4 text-2xl font-semibold text-[#F5F5F5]'>Location</p>
+            <div className='flex gap-3'>
+              {/* <FormField
+                name='gigCategory'
+                render={() => (
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <Select
+                        value='Austria'
+                        onValueChange={(e) => {
+                          setPostData((prev) => ({
+                            ...prev,
+                            location: e,
+                          }));
+                        }}
+                      >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Choose' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {COUNTRIES.map((country, index) => (
+                              <SelectItem key={index} value={country}>
+                                {country}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              /> */}
+              <FormField
+                name='location'
+                render={() => (
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <MultipleSelector
+                        options={options}
+                        placeholder={placeholder}
+                        emptyIndicator={
+                          <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>
+                            No results found.
+                          </p>
+                        }
+                        onChange={(e) => {
+                          setPostData((prev) => ({
+                            ...prev,
+                            location: e.map((item) => item.value),
+                          }));
+                        }}
+                        value={postData.location.map((item) => ({
+                          label: item,
+                          value: item
+                        }))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
 
           {/* Budget */}
           <FormField
