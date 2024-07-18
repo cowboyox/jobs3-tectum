@@ -235,6 +235,7 @@ const GigPosting = () => {
   const [selectedLevel, setSelectedLevel] = useState(0);
   const [options, setOptions] = useState(COUNTRIES_OPTIONS);
   const [placeholder, setPlaceholder] = useState('Add location');
+
   const [postData, setPostData] = useState({
     attachment: [],
     experienceLevel: 0,
@@ -244,7 +245,7 @@ const GigPosting = () => {
     gigPaymentType: 1, // hourly budget gig first
     gigPrice: 0,
     gigTitle: '',
-    location: [],
+    location: '',
     maxBudget: 0,
     minBudget: 0,
     profileId: null,
@@ -1023,7 +1024,7 @@ console.log("postData", postData);
                         onChange={(e) => {
                           setPostData((prev) => ({
                             ...prev,
-                            location: e.map((item) => item.value),
+                            location: e.map((item) => item.value).join(','),
                           }));
                         }}
                       />

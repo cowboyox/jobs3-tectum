@@ -244,7 +244,7 @@ const GigPosting = ({ params }) => {
     gigPaymentType: true, // hourly budget gig first
     gigPrice: 0,
     gigTitle: '',
-    location: [],
+    location: '',
     maxBudget: 0,
     minBudget: 0,
     profileId: null,
@@ -1100,12 +1100,12 @@ const GigPosting = ({ params }) => {
                         onChange={(e) => {
                           setPostData((prev) => ({
                             ...prev,
-                            location: e.map((item) => item.value),
+                            location: e.map((item) => item.value).join(','),
                           }));
                         }}
-                        value={postData.location.map((item) => ({
-                          label: item,
-                          value: item
+                        value={postData.location.split(',').map((item) => ({
+                          label: item.trim(), // Trim whitespace for better display
+                          value: item.trim()
                         }))}
                       />
                     </FormControl>
