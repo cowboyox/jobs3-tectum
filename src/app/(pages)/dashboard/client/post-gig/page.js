@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
+import { COUNTRIES } from '@/utils/constants';
 import api from '@/utils/api';
 
 // Icons
@@ -644,6 +645,7 @@ const GigPosting = () => {
   };
   const form = useForm();
   console.log('files is here', files);
+  console.log('postData', postData);
   const handleSetGigTitle = (e) => {
     setPostData((prev) => ({
       ...prev,
@@ -999,43 +1001,42 @@ const GigPosting = () => {
               </FormItem>
             )}
           />
-          <FormField
-            name='location'
-            render={() => (
-              <FormItem className='mt-8'>
-                <FormLabel className='mb-4 text-2xl font-semibold'>
-                  {all_form_structure.location_label}
-                </FormLabel>
-                <FormControl>
-                  <div className='mt-4 flex rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
-                    <input
-                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
-                      onChange={(e) => {
-                        setPostData((prev) => ({
-                          ...prev,
-                          location: e.target.value,
-                        }));
-                      }}
-                      placeholder={all_form_structure.location_placeholder}
-                      value={postData.location}
-                    />
-                    <div
-                      className='cursor-pointer justify-end'
-                      onClick={() =>
-                        setPostData((prev) => ({
-                          ...prev,
-                          location: '',
-                        }))
-                      }
-                    >
-                      <IoIosClose className='h-[30px] w-[30px]' />
-                    </div>
-                  </div>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
+          <div className='mt-14 flex flex-col gap-2'>
+            <p className='mb-4 text-2xl font-semibold text-[#F5F5F5]'>Location</p>
+            <div className='flex gap-3'>
+              <FormField
+                name='gigCategory'
+                render={() => (
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <Select
+                        onValueChange={(e) => {
+                          setPostData((prev) => ({
+                            ...prev,
+                            location: e,
+                          }));
+                        }}
+                      >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Choose' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {COUNTRIES.map((country, index) => (
+                              <SelectItem key={index} value={country}>
+                                {country}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
           {/* Budget */}
           <FormField
             name='budget'
