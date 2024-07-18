@@ -34,6 +34,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import { COUNTRIES } from '@/utils/constants';
 import api from '@/utils/api';
+import MultipleSelector, { Option } from '@/components/ui/multiple-selector';
 
 // Icons
 
@@ -232,6 +233,8 @@ const GigPosting = () => {
   const [files, setFiles] = useState([]);
   const [files2, setFiles2] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(0);
+  const [options, setOptions] = useState(COUNTRIES);
+  const [placeholder, setPlaceholder] = useState('Add location');
   const [postData, setPostData] = useState({
     attachment: [],
     experienceLevel: 0,
@@ -241,7 +244,7 @@ const GigPosting = () => {
     gigPaymentType: 1, // hourly budget gig first
     gigPrice: 0,
     gigTitle: '',
-    location: '',
+    location: [],
     maxBudget: 0,
     minBudget: 0,
     profileId: null,
@@ -724,7 +727,7 @@ const GigPosting = () => {
       requiredSkills: skillSet,
     }));
   }, [skillSet]);
-
+console.log("postData", postData);
   return (
     <div className='gig_posting mb-4 flex justify-center rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>
       <Form {...form}>
@@ -1005,31 +1008,25 @@ const GigPosting = () => {
             <p className='mb-4 text-2xl font-semibold text-[#F5F5F5]'>Location</p>
             <div className='flex gap-3'>
               <FormField
-                name='gigCategory'
+                name='location'
                 render={() => (
                   <FormItem className='flex w-full flex-col gap-2'>
                     <FormControl>
-                      <Select
-                        onValueChange={(e) => {
+                      <MultipleSelector
+                        options={options}
+                        placeholder={placeholder}
+                        emptyIndicator={
+                          <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>
+                            No results found.
+                          </p>
+                        }
+                        onChange={(e) => {
                           setPostData((prev) => ({
                             ...prev,
-                            location: e,
+                            location: e.map((item) => item.value),
                           }));
                         }}
-                      >
-                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                          <SelectValue placeholder='Choose' />
-                        </SelectTrigger>
-                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                          <SelectGroup>
-                            {COUNTRIES.map((country, index) => (
-                              <SelectItem key={index} value={country}>
-                                {country}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
