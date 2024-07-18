@@ -32,7 +32,7 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
-import { COUNTRIES } from '@/utils/constants';
+import { COUNTRIES_OPTIONS } from '@/utils/constants';
 import api from '@/utils/api';
 import MultipleSelector, { Option } from '@/components/ui/multiple-selector';
 
@@ -233,7 +233,7 @@ const GigPosting = () => {
   const [files, setFiles] = useState([]);
   const [files2, setFiles2] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(0);
-  const [options, setOptions] = useState(COUNTRIES);
+  const [options, setOptions] = useState(COUNTRIES_OPTIONS);
   const [placeholder, setPlaceholder] = useState('Add location');
   const [postData, setPostData] = useState({
     attachment: [],
