@@ -279,7 +279,7 @@ const ChatPage = ({ profileId }) => {
       `}</style>
       {receiver && (
         <>
-          <div className='flex flex-col justify-between gap-4 border-b border-[#28373E] px-8 sm:flex-row mobile:px-5 mobile:py-3'>
+          <div className='flex flex-row justify-between gap-4 border-b border-[#28373E] px-8 mobile:px-5 mobile:py-3'>
             <div className='flex items-center gap-3 py-4'>
               <Link className='md:hidden' href='../inbox'>
                 <FaAngleLeft />
