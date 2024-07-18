@@ -382,7 +382,7 @@ const Offer = () => {
       {mode == 'live' ? (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
           You have <span className='font-bold text-[#DC4F13]'>{orders?.livesTotal}</span>{' '}
-          Accepteds😊
+          Accepts😊
         </div>
       ) : (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
