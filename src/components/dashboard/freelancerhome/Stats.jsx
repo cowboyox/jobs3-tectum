@@ -136,7 +136,7 @@ const ActiveOrders = ({ searchText, filters }) => {
           </div>
         )}
       </div>
-      {canLoadMore && gigsActive.length > 0 && (
+      {canLoadMore && gigsActive.length > itemsPerPage && (
         <div
           className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
           onClick={handleLoadMore}
