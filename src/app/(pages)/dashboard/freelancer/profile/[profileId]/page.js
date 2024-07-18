@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -25,7 +26,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
 import { languages, skillSets, TimeZone, USER_ROLE } from '@/utils/constants';
-import Image from 'next/image';
 
 import 'swiper/css';
 // import './remove_horizontal_padding.css';
@@ -87,6 +87,17 @@ const ProfileInfoItem = ({ iconSrc, label, value, setProfileData, editable }) =>
       if (Number(value) < 0) return '0';
       else return value;
     }
+
+    if (label === 'avgResponseTime') {
+      const millisInHour = 1000 * 60 * 60;
+      const millisInMinute = 1000 * 60;
+
+      const hours = Math.floor(parseInt(value) / millisInHour);
+      const minutes = Math.floor((parseInt(value) % millisInHour) / millisInMinute);
+
+      return hours ? `${hours}hr ${minutes}min` : `${minutes}min`;
+    }
+
     return value;
   };
   const handleLabel = () => {
@@ -173,6 +184,7 @@ const FreelancerProfile = () => {
     created: '',
     email: '',
     freelancerBio: '',
+    freelancerTitle: '',
     fullName: '',
     hourlyRate: '',
     languages: [],
@@ -185,7 +197,6 @@ const FreelancerProfile = () => {
     timeZone: '',
     userId: '',
     zkpId: '',
-    freelancerTitle: '',
   });
   const [portfolioShowNumber, setPortfolioShowNumber] = useState(3);
   const [gigShowNumber, setGigShowNumber] = useState(3);
@@ -209,8 +220,6 @@ const FreelancerProfile = () => {
       // setViewMode('preview');
     }
   }, [auth, profileId]);
-  console.log('isAuth', isAuth);
-  console.log('viewMode', viewMode);
 
   useEffect(() => {
     (async () => {
@@ -1019,12 +1028,12 @@ const FreelancerProfile = () => {
                                   : '/assets/images/portfolio_works/portfolio.jpeg'
                               }
                               key={key}
+                              portfolioId={index._id}
+                              profileId={profileData._id}
                               setProfileData={setProfileData}
                               setUploadedImagePath={setUploadedImagePath}
-                              viewMode={viewMode}
                               title={index.portfolioTitle}
-                              profileId={profileData._id}
-                              portfolioId={index._id}
+                              viewMode={viewMode}
                             />
                           ))}
                     </div>
@@ -1048,12 +1057,12 @@ const FreelancerProfile = () => {
                                       ? index.gallery?.images[0]
                                       : '/assets/images/portfolio_works/portfolio.jpeg'
                                   }
+                                  portfolioId={index._id}
+                                  profileId={profileData._id}
                                   setProfileData={setProfileData}
                                   setUploadedImagePath={setUploadedImagePath}
-                                  viewMode={viewMode}
                                   title={index.portfolioTitle}
-                                  profileId={profileData._id}
-                                  portfolioId={index._id}
+                                  viewMode={viewMode}
                                 />{' '}
                               </SwiperSlide>
                             ))}
@@ -1320,12 +1329,12 @@ const FreelancerProfile = () => {
                                   : '/assets/images/portfolio_works/portfolio.jpeg'
                               }
                               key={key}
+                              portfolioId={index._id}
+                              profileId={profileData._id}
                               setProfileData={setProfileData}
                               setUploadedImagePath={setUploadedImagePath}
-                              viewMode={viewMode}
                               title={index.portfolioTitle}
-                              profileId={profileData._id}
-                              portfolioId={index._id}
+                              viewMode={viewMode}
                             />
                           ))}
                       <Portfolio
@@ -1353,12 +1362,12 @@ const FreelancerProfile = () => {
                                         ? index.gallery?.images[0]
                                         : '/assets/images/portfolio_works/portfolio.jpeg'
                                     }
+                                    portfolioId={index._id}
+                                    profileId={profileData._id}
                                     setProfileData={setProfileData}
                                     setUploadedImagePath={setUploadedImagePath}
-                                    viewMode={viewMode}
                                     title={index.portfolioTitle}
-                                    profileId={profileData._id}
-                                    portfolioId={index._id}
+                                    viewMode={viewMode}
                                   />{' '}
                                 </SwiperSlide>
                               ))}

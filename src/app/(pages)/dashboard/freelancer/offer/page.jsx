@@ -61,7 +61,8 @@ const Offer = () => {
     auth?.currentProfile?._id,
     page,
     itemsPerPage,
-    debouncedSearchText
+    debouncedSearchText,
+    locationFilters
   );
 
   useEffect(() => {
@@ -473,6 +474,7 @@ const Offer = () => {
                   quantity={order.quantity}
                   refetchAllOrdersProposed={refetchAllOrdersProposed}
                   status={order.status}
+                  location={order.client.location}
                 />
               ))}
               {canLoadMore && (
@@ -515,6 +517,7 @@ const Offer = () => {
                   quantity={proposal.quantity}
                   refetchAllOrdersProposed={refetchAllOrdersProposed}
                   status={proposal.status}
+                  location={proposal.client.location}
                 />
               ))}
               {canLoadMore && (
