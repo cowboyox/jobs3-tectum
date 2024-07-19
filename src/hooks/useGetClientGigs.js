@@ -23,8 +23,6 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
           let info = 'any';
           let fixed = ['any'];
           let hourly = ['any'];
-          let fixed = ['any'];
-          let hourly = ['any'];
 
           filters.map((filter) => {
             if (filter.id === 'payment' && filter.value !== 'any') {

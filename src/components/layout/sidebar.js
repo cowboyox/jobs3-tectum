@@ -3,9 +3,6 @@ import gsap from 'gsap';
 import React, { useEffect, useRef, useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
 import { IoMdClose } from 'react-icons/io';
-import React, { useEffect, useRef, useState } from 'react';
-import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
-import { IoMdClose } from 'react-icons/io';
 
 import MenuLink from '@/components/elements/menuLink';
 import { useCustomContext } from '@/context/use-custom';
