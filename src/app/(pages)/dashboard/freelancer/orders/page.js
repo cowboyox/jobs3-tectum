@@ -1455,12 +1455,6 @@ const Orders = () => {
                             src={submission.clientId.avatarURL}
                             width={40}
                           />
-                          <img
-                            className='rounded'
-                            height={40}
-                            src={submission.clientId.avatarURL}
-                            width={40}
-                          />
                         </div>
                         <div className='flex flex-col gap-1 text-left'>
                           <div className='flex flex-row items-center gap-1 font-bold'>
@@ -1482,12 +1476,6 @@ const Orders = () => {
                         </div>
                       </div>
                       <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-                        <button
-                          className='p-4 px-8 md:p-5'
-                          onClick={() => handleMessage(submission)}
-                        >
-                          Message
-                        </button>
                         <button
                           className='p-4 px-8 md:p-5'
                           onClick={() => handleMessage(submission)}
