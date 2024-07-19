@@ -33,16 +33,6 @@ const Page = () => {
   };
 
   const onApply = async () => {
-    if (!wallet) {
-      toast({
-        className:
-          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Please connect your wallet on the setting page!</h3>,
-        title: <h1 className='text-center'>Error</h1>,
-        variant: 'destructive',
-      });
-      return;
-    }
     if (auth?.currentProfile?.profileType !== 0) {
       toast({
         className:
@@ -53,7 +43,16 @@ const Page = () => {
       });
       return;
     }
-
+    if (!wallet) {
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Please connect your wallet on the setting page!</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+      return;
+    }
     let values = {};
 
     values.freelancerId = auth.currentProfile._id;
