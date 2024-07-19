@@ -315,6 +315,7 @@ const NewHeader = () => {
                   />
                   {/* Change background color depending on user online status */}
                   <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
+                </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align='end'
