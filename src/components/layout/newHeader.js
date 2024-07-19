@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import React, { useEffect, useRef, useState } from 'react';
-
 import Link from 'next/link';
 import MobileNav from '@/components/elements/mobileNav';
 import { useCustomContext } from '@/context/use-custom';
