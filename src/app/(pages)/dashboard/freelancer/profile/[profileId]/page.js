@@ -51,7 +51,6 @@ const ProfileTimeZone = ({ value, setProfileData, editable }) => {
       {editable ? (
         <Select defaultValue={value} onValueChange={handleChange}>
           <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
-          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
             <SelectValue />
           </SelectTrigger>
           <SelectContent align='end' className='rounded-xl bg-[#10191D] p-1'>
