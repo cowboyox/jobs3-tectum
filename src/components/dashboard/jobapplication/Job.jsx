@@ -11,11 +11,15 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 const Job = ({ gigData }) => {
   const auth = useCustomContext();
   function truncateString(str) {
-    if (str.length > 15) {
-      return str.substring(0, 15) + '...';
-    }
+    // Find the first comma's index
+    const commaIndex = str.indexOf(',');
+
+    // If a comma is found before 15 characters
+    if (commaIndex > 0 && commaIndex < 15) {
+      return str.substring(0, commaIndex) + '...';
+    } 
     return str;
-  }
+}
 
   return (
     <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>

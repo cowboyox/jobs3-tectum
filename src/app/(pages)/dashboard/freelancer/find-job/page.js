@@ -276,6 +276,17 @@ const FindJob = () => {
 
   const handleLikeUnlikeGig = async (gigId, index, like) => {
     try {
+
+      if (auth?.currentProfile?.profileType !== 0) {
+        toast({
+          className:
+            'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>Please login as a freelancer!</h3>,
+          title: <h1 className='text-center'>Error</h1>,
+          variant: 'destructive',
+        });
+        return;
+      }
       const updatedGig = await api.put(`/api/v1/client_gig/like-unlike-gig/${gigId}`, { like });
 
       const tempFilteredGigList = filteredGigList.map((gig, i) => {
@@ -428,10 +439,14 @@ const FindJob = () => {
 
   console.log('auth.currentProfile', auth?.currentProfile);
   function truncateString(str) {
-    if (str.length > 15) {
-      return str.substring(0, 15) + '...';
-    }
-    return str;
+      // Find the first comma's index
+      const commaIndex = str.indexOf(',');
+  
+      // If a comma is found before 15 characters
+      if (commaIndex > 0 && commaIndex < 15) {
+        return str.substring(0, commaIndex) + '...';
+      } 
+      return str;
   }
   return loaded ? (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
@@ -1301,7 +1316,7 @@ const FindJob = () => {
                           onClick={() => handleRecentView(gig._id)}
                         >
                           <button
-                            className={`mt-2 rounded-xl bg-[#DC4F13] p-4 px-[5vw] pl-[5vw] md:mt-0 md:flex-none ${isSmallScreen ? 'w-full' : ''} ${auth && auth?.currentProfile?.profileType === 0 ? '' : 'bg-gray-400'} `}
+                            className={`mt-2 rounded-xl bg-[#DC4F13] p-4 px-[5vw] pl-[5vw] md:mt-0 md:flex-none ${isSmallScreen ? 'w-full' : ''}  `}
                           >
                             Apply
                           </button>
