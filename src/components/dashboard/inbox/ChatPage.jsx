@@ -181,8 +181,9 @@ const ChatPage = ({ profileId }) => {
   useEffect(() => {
     if (currentProfile && auth) {
       auth.setCurrentProfile(currentProfile);
+      auth.setNewMessages((prev) => prev.filter((p) => p.senderId !== profileId));
     }
-  }, [currentProfile, auth]);
+  }, [currentProfile, auth, profileId]);
 
   const sendMessage = () => {
     const message = {

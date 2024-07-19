@@ -540,6 +540,7 @@ const ContextProvider = ({ children }) => {
         setCurrentProfile,
         setCurrentRole,
         setLastMessage,
+        setNewMessages,
         setRole,
         signInwithWallet,
         signOut,
