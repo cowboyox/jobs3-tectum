@@ -57,6 +57,7 @@ const Offer = () => {
   const [locationText, setLocationText] = useState("");
   const debouncedSearchText = useDebounce(searchKeywords);
 
+
   const { data: orders, refetch: refetchAllOrdersProposed } = useGetAllClientOrdersProposed(
     auth?.currentProfile?._id,
     page,
@@ -117,11 +118,13 @@ const Offer = () => {
     setItemsPerPage((prev) => prev + 2);
   };
 
+
   const setKey = (e) => {
     // setPage(1);
     setItemsPerPage(2);
     setSearchKeyWords(e.target.value);
   };
+
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && searchType === 'ai') {
@@ -143,7 +146,7 @@ const Offer = () => {
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex flex-row items-center justify-between gap-5 rounded-xl bg-[#10191D] p-3'>
-        <div className='flex items-center flex-1 gap-3 ml-3'>
+        <div className='ml-3 flex flex-1 items-center gap-3'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -420,7 +423,7 @@ const Offer = () => {
         })}
         <span>Clear&nbsp;All</span>
       </div>
-      <div className='flex items-center justify-center w-full pt-10 pb-5'>
+      <div className='flex w-full items-center justify-center pb-5 pt-10'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
@@ -440,7 +443,7 @@ const Offer = () => {
         >
           {mode == 'proposal' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
                 {proposals?.length}
               </span>
               &nbsp; Proposals

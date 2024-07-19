@@ -23,6 +23,8 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
           let info = 'any';
           let fixed = ['any'];
           let hourly = ['any'];
+          let fixed = ['any'];
+          let hourly = ['any'];
 
           filters.map((filter) => {
             if (filter.id === 'payment' && filter.value !== 'any') {
@@ -51,7 +53,11 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
               fixed = [...fixed, filter.value].filter((p) => p !== 'any');
             } else if (filter.id === 'hourly' && filter.value !== 'any') {
               hourly = [...hourly, filter.value].filter((p) => p !== 'any');
+              fixed = [...fixed, filter.value].filter((p) => p !== 'any');
+            } else if (filter.id === 'hourly' && filter.value !== 'any') {
+              hourly = [...hourly, filter.value].filter((p) => p !== 'any');
             }
+
 
             
           });

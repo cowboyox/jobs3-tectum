@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import React, { useEffect, useRef, useState } from 'react';
+
 import Link from 'next/link';
 import MobileNav from '@/components/elements/mobileNav';
 import { useCustomContext } from '@/context/use-custom';
@@ -283,6 +285,36 @@ const NewHeader = () => {
                     />
                   </svg>
                 </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align='end'
+                className='flex w-64 flex-col gap-0 rounded-xl border-2 border-[#28373e] bg-[#10191d]'
+                sideOffset={10}
+              >
+                <DropdownMenuItem className='cursor-pointer rounded p-3 text-lg font-medium text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
+                  <h1 onClick={() => router.push(`/help`)}>Help and support</h1>
+                </DropdownMenuItem>
+                <DropdownMenuItem className='cursor-pointer p-3 text-lg font-medium text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
+                  <h1>Community and Forums</h1>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Notifications className='mobile:order-2' />
+
+            <DropdownMenu>
+              <DropdownMenuTrigger className='mobile:order-4'>
+                <div className='relative h-12 w-12 mobile:h-10 mobile:w-10'>
+                  <img
+                    className='aspect-square h-full w-full rounded-full object-cover'
+                    src={
+                      auth?.currentProfile?.avatarURL
+                        ? auth?.currentProfile?.avatarURL
+                        : '/assets/images/users/user-5.png'
+                    }
+                  />
+                  {/* Change background color depending on user online status */}
+                  <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align='end'

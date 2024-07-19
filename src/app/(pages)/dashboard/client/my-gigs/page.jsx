@@ -4,6 +4,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { CiClock2, CiFilter, CiReceipt } from 'react-icons/ci';
+import { FaArrowRight } from 'react-icons/fa6';
+import EmptyCard from '@/components/elements/emptyCard';
 
 import searchOptions from '../freelancers/searchOptions';
 
@@ -481,19 +483,21 @@ const MyGigs = () => {
       )}
       <div className='flex flex-col'>
         {filteredGigList.length ? (
-          filteredGigList.map((gig, index) => <GigCard gig={gig} key={index} />)
-        ) : (
-          <div className='mt-[10vh] text-center'>Not yet</div>
+          <> 
+            {filteredGigList.map((gig, index) => <GigCard gig={gig} key={index} />)} 
+            {canLoadMore && (
+              <div
+                className='mx-auto w-full max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'
+                onClick={handleLoadMore}
+              >
+                Load More +
+              </div>
+            )}
+          </>
+        ) : ( 
+          <EmptyCard text='No Gigs to show yet!' />
         )}
       </div>
-      {canLoadMore && (
-        <div
-          className='mx-auto w-full max-w-full cursor-pointer rounded-xl border border-[#aaaaaaaa] px-10 py-5 text-center transition hover:bg-white hover:text-black md:text-xl mobile:px-5'
-          onClick={handleLoadMore}
-        >
-          Load More +
-        </div>
-      )}
     </div>
   );
 };
