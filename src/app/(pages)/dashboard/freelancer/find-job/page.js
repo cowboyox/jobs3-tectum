@@ -419,6 +419,8 @@ const FindJob = () => {
     setFilters([]);
   };
 
+  console.log("auth.currentProfile", auth?.currentProfile);
+
   return loaded ? (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d]'>
@@ -1276,12 +1278,12 @@ const FindJob = () => {
                         <Link
                           href={`/dashboard/freelancer/job-application/${gig._id}`}
                           onClick={() => handleRecentView(gig._id)}
-                          target='_blank'
                         >
                           <button
-                            className={`mt-2 rounded-xl bg-[#DC4F13] p-4 px-[5vw] pl-[5vw] md:mt-0 md:flex-none ${
-                              isSmallScreen ? 'w-full' : ''
-                            }`}
+                            className={`mt-2 rounded-xl bg-[#DC4F13] p-4 px-[5vw] pl-[5vw] md:mt-0 md:flex-none 
+                              ${isSmallScreen ? 'w-full' : ''} 
+                              ${auth && auth?.currentProfile?.profileType === 0 ? '' : 'bg-gray-400'} 
+                            `} 
                           >
                             Apply
                           </button>
