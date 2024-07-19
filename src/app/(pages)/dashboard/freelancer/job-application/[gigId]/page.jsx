@@ -2,6 +2,7 @@
 
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { useAnchorWallet } from '@solana/wallet-adapter-react';
 
 import Job from '@/components/dashboard/jobapplication/Job';
 import { useToast } from '@/components/ui/use-toast';
@@ -11,7 +12,7 @@ import api from '@/utils/api';
 
 const Page = () => {
   const { gigId } = useParams();
-  // const wallet = useAnchorWallet();
+  const wallet = useAnchorWallet();
   const router = useRouter();
   const { toast } = useToast();
   const [coverLetter, setCoverLetter] = useState();
@@ -32,7 +33,7 @@ const Page = () => {
   };
 
   const onApply = async () => {
-    if (!auth?.currentProfile?.walletPublicKey) {
+    if (!wallet) {
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
