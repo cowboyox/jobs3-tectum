@@ -191,6 +191,13 @@ const ChatPage = ({ profileId }) => {
       senderId: auth.currentProfile._id,
       timeStamp: new Date(),
     };
+    auth?.setLastMessage((prev) => {
+      const res = new Map(prev);
+      res.set(receiver._id, message);
+
+      return res;
+    });
+
     socket.emit('sendMessage', message);
 
     setConversation((prevMessages) => [...prevMessages, message]);

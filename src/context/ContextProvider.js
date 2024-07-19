@@ -107,6 +107,7 @@ const ContextProvider = ({ children }) => {
   const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [newMessages, setNewMessages] = useState([]);
+  const [lastMessage, setLastMessage] = useState(new Map());
 
   useEffect(() => {
     if (currentProfile?._id) {
@@ -527,6 +528,7 @@ const ContextProvider = ({ children }) => {
         currentProfile,
         currentRole,
         dispatch,
+        lastMessage,
         loader: [loadCompleted, setLoadCompleted],
         loading3D: [load3D, setLoad3D],
         login,
@@ -537,6 +539,7 @@ const ContextProvider = ({ children }) => {
         sendOTP,
         setCurrentProfile,
         setCurrentRole,
+        setLastMessage,
         setRole,
         signInwithWallet,
         signOut,
