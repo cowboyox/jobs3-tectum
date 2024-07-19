@@ -25,12 +25,12 @@ import { useCustomContext } from '@/context/use-custom';
 import { useGetFreelancerGigs } from '@/hooks/useGetFreelancerGigs';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import api from '@/utils/api';
-import { minutesDifference } from '@/utils/Helpers';
 import { COUNTRIES } from '@/utils/constants';
+import { minutesDifference } from '@/utils/Helpers';
 
 const DropdownItem = ({ onCheckedChange, ...props }) => {
   return (
-    <div className='flex items-center gap-4 p-0 cursor-pointer'>
+    <div className='flex cursor-pointer items-center gap-4 p-0'>
       <Checkbox
         checked={props.checked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
@@ -83,11 +83,11 @@ const GigCard = (props) => {
         <div className='relative w-[400px] max-w-full'>
           <img
             alt='Gig Image'
-            className='object-cover w-full aspect-video rounded-xl'
+            className='aspect-video w-full rounded-xl object-cover'
             src={`${props.info.gallery?.images[0] ? props.info.gallery?.images[0] : '/assets/images/portfolio_works/portfolio.jpeg'}`}
           />
         </div>
-        <div className='flex flex-col flex-grow gap-2'>
+        <div className='flex flex-grow flex-col gap-2'>
           <Link href={`/dashboard/client/job-application/${props.info._id}`} target='_blank'>
             <h3 className='cursor-pointer text-2xl font-semibold text-[#F5F5F5]'>
               {props.info.gigTitle}
@@ -120,7 +120,7 @@ const GigCard = (props) => {
             <div className='flex items-center'>
               <Image
                 alt='Devon Miles'
-                className='object-cover rounded-full aspect-square'
+                className='aspect-square rounded-full object-cover'
                 height={50}
                 src={`${props.info.creator?.avatarURL ? props.info.creator?.avatarURL : '/assets/images/users/user-6.png'}`}
                 width={50}
@@ -138,10 +138,7 @@ const GigCard = (props) => {
               </div>
             </div>
             <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-              <button
-                className='p-4 px-10 md:p-5'
-                onClick={() => handleMessage(props.info.creator?._id)}
-              >
+              <button className='p-4 px-10 md:p-5' onClick={() => handleMessage(props.info._id)}>
                 Message
               </button>
               <Link
@@ -156,7 +153,7 @@ const GigCard = (props) => {
         </div>
       </div>
       {props.info.reason && (
-        <div className='p-4 text-white text-md rounded-b-xl bg-orange'>{props.info.reason}</div>
+        <div className='text-md rounded-b-xl bg-orange p-4 text-white'>{props.info.reason}</div>
       )}
     </div>
   );
@@ -169,7 +166,7 @@ const GigSearch = () => {
   const [filters, setFilters] = useState([]);
   const [locationFilters, setLocationFilters] = useState([]);
   const [countries, setCountries] = useState(COUNTRIES);
-  const [locationText, setLocationText] = useState("");
+  const [locationText, setLocationText] = useState('');
   const { isSmallScreen } = useHandleResize();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -253,7 +250,12 @@ const GigSearch = () => {
     },
   ];
 
-  const { data: flGigs } = useGetFreelancerGigs(page, itemsPerPage, searchKeywords, locationFilters);
+  const { data: flGigs } = useGetFreelancerGigs(
+    page,
+    itemsPerPage,
+    searchKeywords,
+    locationFilters
+  );
 
   useEffect(() => {
     if (flGigs?.length > 0) {
@@ -283,9 +285,13 @@ const GigSearch = () => {
   }, [flGigs, page]);
 
   useEffect(() => {
-    setCountries(COUNTRIES.filter((item) => item.toLocaleLowerCase().includes(locationText.toLocaleLowerCase())));
+    setCountries(
+      COUNTRIES.filter((item) =>
+        item.toLocaleLowerCase().includes(locationText.toLocaleLowerCase())
+      )
+    );
   }, [locationText]);
-  
+
   const onChangeType = (e) => {
     setSearchType(e);
   };
@@ -341,7 +347,7 @@ const GigSearch = () => {
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex gap-2 rounded-xl bg-[#10191d]'>
-        <div className='flex flex-1 gap-2 m-3 mobile:m-1'>
+        <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className='w-20 rounded-xl bg-[#1B272C] mobile:w-14 mobile:p-2'>
               <SelectValue />
@@ -354,7 +360,7 @@ const GigSearch = () => {
             </SelectContent>
           </Select>
           <input
-            className='w-full text-white bg-transparent outline-none mobile:text-sm'
+            className='w-full bg-transparent text-white outline-none mobile:text-sm'
             onChange={(e) => setKey(e)}
             onKeyDown={handleKeyDown}
             placeholder='Search by job title, company, keywords'
@@ -368,11 +374,15 @@ const GigSearch = () => {
           <PopoverTrigger asChild>
             <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
               <IoLocationOutline size={20} stroke='#96B0BD' />
-              {
-                locationFilters.length == 0 ?
-                <span className='text-[#96B0BD]'>Anywhere</span> :
-                <span className='text-[#96B0BD]'>{ locationFilters.join(", ").length > 11 ? locationFilters.join(", ").slice(0,10) + "..." : locationFilters.join(", ") }</span>
-              }
+              {locationFilters.length == 0 ? (
+                <span className='text-[#96B0BD]'>Anywhere</span>
+              ) : (
+                <span className='text-[#96B0BD]'>
+                  {locationFilters.join(', ').length > 11
+                    ? locationFilters.join(', ').slice(0, 10) + '...'
+                    : locationFilters.join(', ')}
+                </span>
+              )}
               <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
                 {locationFilters.length}
               </span>
@@ -380,19 +390,19 @@ const GigSearch = () => {
           </PopoverTrigger>
           <PopoverContent
             align='end'
-            className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] pl-4 pr-1 py-4'
+            className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] py-4 pl-4 pr-1'
           >
-            <div className='max-h-[300px] overflow-y-auto country-list'>
-              <div className='sticky top-0 flex bg-[#1B272C] p-1 mb-1'>
-                <input 
-                  className='w-full px-7 relative text-[#96B0BD] border-[#96B0BD] border-2 bg-transparent rounded-full outline-none mobile:text-sm' 
+            <div className='country-list max-h-[300px] overflow-y-auto'>
+              <div className='sticky top-0 mb-1 flex bg-[#1B272C] p-1'>
+                <input
+                  className='relative w-full rounded-full border-2 border-[#96B0BD] bg-transparent px-7 text-[#96B0BD] outline-none mobile:text-sm'
                   onChange={(e) => {
                     setLocationText(e.target.value);
                   }}
                   value={locationText}
                 />
                 <svg
-                  className='absolute w-5 h-5 top-2 left-3'
+                  className='absolute left-3 top-2 h-5 w-5'
                   fill='none'
                   stroke='currentColor'
                   strokeWidth={1.5}
@@ -406,8 +416,7 @@ const GigSearch = () => {
                   />
                 </svg>
               </div>
-              {
-                countries.length > 0 ?
+              {countries.length > 0 ? (
                 <div className='flex flex-col gap-2'>
                   {countries.map((con, i) => {
                     return (
@@ -416,17 +425,16 @@ const GigSearch = () => {
                         category_name={con}
                         checked={locationFilters.includes(con)}
                         key={i}
-                        onCheckedChange={(value) =>
-                          onCheckedLocationChange(value, con, con)
-                        }
+                        onCheckedChange={(value) => onCheckedLocationChange(value, con, con)}
                       />
                     );
                   })}
-                </div> :
+                </div>
+              ) : (
                 <div className='flex flex-col gap-2'>
                   <span className='text-[#96B0BD]'>No results found</span>
                 </div>
-              }
+              )}
             </div>
           </PopoverContent>
         </Popover>
@@ -504,13 +512,13 @@ const GigSearch = () => {
         </div>
       )}
       {loading && (
-        <div className='flex justify-center h-screen pt-6 space-x-2 z-1'>
+        <div className='z-1 flex h-screen justify-center space-x-2 pt-6'>
           <div className='mt-8 flex h-fit items-baseline text-[20px]'>
             <p className='mr-3'>The neural network is thinking</p>
             <div className='flex gap-1'>
               <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.3s]'></div>
               <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.15s]'></div>
-              <div className='w-2 h-2 bg-white rounded-full animate-bounce'></div>
+              <div className='h-2 w-2 animate-bounce rounded-full bg-white'></div>
             </div>
           </div>
         </div>
@@ -518,7 +526,7 @@ const GigSearch = () => {
       {!loading && (
         <div className='mt-[30px]'>
           <div className='mb-[18px] flex items-center justify-center rounded-xl bg-[#10191d] px-3 py-6 text-lg'>
-            Wow! <span className='px-2 main_color'>{filteredGigList.length}</span> projects
+            Wow! <span className='main_color px-2'>{filteredGigList.length}</span> projects
             available 😀
           </div>
           {/*
@@ -529,7 +537,7 @@ const GigSearch = () => {
           })}
           {canLoadMore && (
             <div
-              className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+              className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
               onClick={handleLoadMore}
             >
               Load More +
