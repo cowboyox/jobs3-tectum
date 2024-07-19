@@ -11,7 +11,7 @@ export default function DashboardApp({ children }) {
     <div className='jobs3_dashboard_app'>
       <SideBar />
       <div className='site_container w-full p-4 pt-0'>
-        <div className='mx-auto max-w-7xl' id='page_content_layout'>
+        <div className='mx-auto max-w-7xl'>
           <DashboardHeader />
           {children}
         </div>

@@ -51,6 +51,7 @@ const ProfileTimeZone = ({ value, setProfileData, editable }) => {
       {editable ? (
         <Select defaultValue={value} onValueChange={handleChange}>
           <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
+          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 mobile:hidden mobile:p-2'>
             <SelectValue />
           </SelectTrigger>
           <SelectContent align='end' className='rounded-xl bg-[#10191D] p-1'>
@@ -583,8 +584,8 @@ const FreelancerProfile = () => {
   };
 
   return !isLoading ? (
-    <div className='p-0'>
-      <div className={`group relative ${isAuth && 'cursor-pointer'}`} {...getBannerRootProps()}>
+    <div className='p-0 w-full'>
+      <div className={`group relative w-full ${isAuth && 'cursor-pointer'}`} {...getBannerRootProps()}>
         <label
           className={`w-full ${isAuth && 'hover:cursor-pointer'}`}
           htmlFor='dropzone-banner'
@@ -616,7 +617,7 @@ const FreelancerProfile = () => {
           />
         )}
       </div>
-      <div className='mx-auto flex max-w-7xl -translate-y-8 flex-col gap-3 px-0 md:px-8'>
+      <div className='mx-auto flex max-w-7xl -translate-y-8 flex-col gap-3 px-0 md:px-8 w-full'>
         <Tabs defaultValue='preview'>
           <div className='flex flex-col gap-4 rounded-xl bg-[#10191D] px-3 py-4 md:flex-row md:gap-0 md:p-8'>
             <div className='flex w-full items-center gap-4 md:w-3/4 md:gap-7'>
@@ -721,7 +722,7 @@ const FreelancerProfile = () => {
             </div>
             )} */}
           </div>
-          <div className='mt-5 flex flex-col md:flex-row'>
+          <div className='mt-5 w-full flex flex-col md:flex-row'>
             {/* Sidebar */}
             <div className='w-full md:w-1/4'>
               <div className='flex w-full flex-col overflow-hidden rounded-xl'>

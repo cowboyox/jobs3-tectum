@@ -45,6 +45,7 @@ export const useGetAllFreelancerGigsProposed = (
             result.data.lives.map((contract) => {
               lives.push({
                 clientId: contract.gigOwner,
+                clientId: contract.gigOwner,
                 contractId: contract.contractId,
                 creator: {
                   fullName: contract.gigOwner?.fullName,
@@ -63,6 +64,12 @@ export const useGetAllFreelancerGigsProposed = (
             });
           }
 
+          return {
+            lives,
+            livesTotal: result.data.livesTotal,
+            submissions,
+            submissionsTotal: result.data.submissionsTotal,
+          };
           return {
             lives,
             livesTotal: result.data.livesTotal,
