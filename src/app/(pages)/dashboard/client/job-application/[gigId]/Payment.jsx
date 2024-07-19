@@ -57,7 +57,7 @@ const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity 
     //   return;
     // }
 
-    if (!auth.currentProfile.walletPublicKey) {
+    if (!wallet) {
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
