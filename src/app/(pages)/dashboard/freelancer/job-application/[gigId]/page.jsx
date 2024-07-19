@@ -20,9 +20,9 @@ const Page = () => {
 
   useEffect(() => {
     let tmp = localStorage.getItem('jobs_2024_token');
-    if (!tmp) {
-      router.push(`/signin?redirect=${pathname}`);
-    }
+    // if (!tmp) {
+    //   router.push(`/signin?redirect=${pathname}`);
+    // }
   }, [router, pathname]);
 
   const { data: gigInfo } = useGetClientGigById(gigId);
@@ -32,11 +32,21 @@ const Page = () => {
   };
 
   const onApply = async () => {
-    if (!auth.currentProfile.walletPublicKey) {
+    if (!auth?.currentProfile?.walletPublicKey) {
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
         description: <h3>Please connect your wallet on the setting page!</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+      return;
+    }
+    if (auth?.currentProfile?.profileType !== 0) {
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Please login as a freelancer!</h3>,
         title: <h1 className='text-center'>Error</h1>,
         variant: 'destructive',
       });
