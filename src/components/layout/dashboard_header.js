@@ -1,10 +1,7 @@
 /*--------- Hooks ---------*/
-import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import { getAssociatedTokenAddressSync } from '@solana/spl-token';
-import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { usePathname, useRouter } from 'next/navigation';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { LuAlignLeft } from 'react-icons/lu';
@@ -29,7 +26,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCustomContext } from '@/context/use-custom';
-import { PAYTOKEN_MINT, USER_ROLE } from '@/utils/constants';
 import { PAYTOKEN_MINT, USER_ROLE } from '@/utils/constants';
 
 const menu_data = [
