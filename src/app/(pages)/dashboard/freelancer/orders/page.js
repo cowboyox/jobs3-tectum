@@ -1455,12 +1455,6 @@ const Orders = () => {
                             src={submission.clientId.avatarURL}
                             width={40}
                           />
-                          <img
-                            className='rounded'
-                            height={40}
-                            src={submission.clientId.avatarURL}
-                            width={40}
-                          />
                         </div>
                         <div className='flex flex-col gap-1 text-left'>
                           <div className='flex flex-row items-center gap-1 font-bold'>
