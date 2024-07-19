@@ -6,9 +6,16 @@ import { MdAccessTime } from 'react-icons/md';
 
 import { useCustomContext } from '@/context/use-custom';
 import { minutesDifference } from '@/utils/Helpers';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const Job = ({ gigData }) => {
   const auth = useCustomContext();
+  function truncateString(str) {
+    if (str.length > 15) {
+      return str.substring(0, 15) + '...';
+    }
+    return str;
+  }
 
   return (
     <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
@@ -98,7 +105,15 @@ const Job = ({ gigData }) => {
                 strokeWidth='1.5'
               />
             </svg>
-            <span>{gigData.data.data.location}</span>
+            {/* <span>{truncateString(gigData.data.data.location)}</span> */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>{truncateString(gigData.data.data.location !== ''? gigData.data.data.location: 'Anywhere')}</TooltipTrigger>
+                <TooltipContent>
+                  <p>{gigData.data.data.location !== ''? gigData.data.data.location: 'Anywhere'}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <div className='flex items-center gap-2'>
             <FaRegUser className='text-xl text-medGray' />
