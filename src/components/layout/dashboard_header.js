@@ -169,9 +169,6 @@ const DashboardHeader = () => {
     setTitle(
       menu_data.find((item) => item.href == pathname.split('/').slice(0, 4).join('/'))?.name || ''
     );
-    setTitle(
-      menu_data.find((item) => item.href == pathname.split('/').slice(0, 4).join('/'))?.name || ''
-    );
   }, [pathname]);
 
   useEffect(() => {
@@ -235,7 +232,6 @@ const DashboardHeader = () => {
                 Client
               </SelectItem>
               <SelectItem
-                className='cursor-pointer rounded-xl py-3 text-lg font-medium text-[#96B0BD]'
                 className='cursor-pointer rounded-xl py-3 text-lg font-medium text-[#96B0BD]'
                 value={USER_ROLE.FREELANCER}
               >
