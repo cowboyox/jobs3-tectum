@@ -135,14 +135,14 @@ const Header = () => {
         <Link href={'/'}>HOME</Link>
         <Link
           href={`${
-            auth.isAuthenticated && userRole?.includes(3) ? `/dashboard/client/home` : '/'
+            auth.isAuthenticated && user.role?.includes(3) ? `/dashboard/client/home` : '/'
           }`}
         >
           Client
         </Link>
         <Link
           href={`${
-            auth.isAuthenticated && userRole?.includes(0) ? `/dashboard/freelancer/home` : '/'
+            auth.isAuthenticated && user.role?.includes(0) ? `/dashboard/freelancer/home` : '/'
           }`}
         >
           Freelancer
