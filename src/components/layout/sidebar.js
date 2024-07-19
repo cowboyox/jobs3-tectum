@@ -292,53 +292,53 @@ const SideBar = () => {
       id: 4,
       name: 'Client Orders',
     },
-    {
-      href: `/dashboard/freelancer/disputes`,
-      icon: (
-        <svg
-          fill='none'
-          height='25'
-          viewBox='0 0 24 25'
-          width='24'
-          xmlns='http://www.w3.org/2000/svg'
-        >
-          <path
-            d='M21 7.5V17.5C21 20.5 19.5 22.5 16 22.5H8C4.5 22.5 3 20.5 3 17.5V7.5C3 4.5 4.5 2.5 8 2.5H16C19.5 2.5 21 4.5 21 7.5Z'
-            stroke='#96B0BD'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeMiterlimit='10'
-            strokeWidth='1.5'
-          />
-          <path
-            d='M14.5 5V7C14.5 8.1 15.4 9 16.5 9H18.5'
-            stroke='#96B0BD'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeMiterlimit='10'
-            strokeWidth='1.5'
-          />
-          <path
-            d='M8 13.5H12'
-            stroke='#96B0BD'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeMiterlimit='10'
-            strokeWidth='1.5'
-          />
-          <path
-            d='M8 17.5H16'
-            stroke='#96B0BD'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeMiterlimit='10'
-            strokeWidth='1.5'
-          />
-        </svg>
-      ),
-      id: 5,
-      name: 'Disputes',
-    },
+    // {
+    //   href: `/dashboard/freelancer/disputes`,
+    //   icon: (
+    //     <svg
+    //       fill='none'
+    //       height='25'
+    //       viewBox='0 0 24 25'
+    //       width='24'
+    //       xmlns='http://www.w3.org/2000/svg'
+    //     >
+    //       <path
+    //         d='M21 7.5V17.5C21 20.5 19.5 22.5 16 22.5H8C4.5 22.5 3 20.5 3 17.5V7.5C3 4.5 4.5 2.5 8 2.5H16C19.5 2.5 21 4.5 21 7.5Z'
+    //         stroke='#96B0BD'
+    //         strokeLinecap='round'
+    //         strokeLinejoin='round'
+    //         strokeMiterlimit='10'
+    //         strokeWidth='1.5'
+    //       />
+    //       <path
+    //         d='M14.5 5V7C14.5 8.1 15.4 9 16.5 9H18.5'
+    //         stroke='#96B0BD'
+    //         strokeLinecap='round'
+    //         strokeLinejoin='round'
+    //         strokeMiterlimit='10'
+    //         strokeWidth='1.5'
+    //       />
+    //       <path
+    //         d='M8 13.5H12'
+    //         stroke='#96B0BD'
+    //         strokeLinecap='round'
+    //         strokeLinejoin='round'
+    //         strokeMiterlimit='10'
+    //         strokeWidth='1.5'
+    //       />
+    //       <path
+    //         d='M8 17.5H16'
+    //         stroke='#96B0BD'
+    //         strokeLinecap='round'
+    //         strokeLinejoin='round'
+    //         strokeMiterlimit='10'
+    //         strokeWidth='1.5'
+    //       />
+    //     </svg>
+    //   ),
+    //   id: 5,
+    //   name: 'Disputes',
+    // },
     {
       href: `/dashboard/freelancer/inbox`,
       icon: (

@@ -1,6 +1,6 @@
 /*--------- Hooks ---------*/
-import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
+import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -179,11 +179,13 @@ const DashboardHeader = () => {
           setBalance(info.value.uiAmount);
         } catch (error) {
           console.log('Error while getting balance of the wallet:', error);
+          console.log('Error while getting balance of the wallet:', error);
           setBalance(0);
         }
       })();
     }
   }, [wallet, connection]);
+
 
   if (!auth?.currentProfile) {
     return (
@@ -285,6 +287,7 @@ const DashboardHeader = () => {
 
         <Notifications className='mobile:order-2' />
 
+
         <DropdownMenu>
           <DropdownMenuTrigger className='mobile:order-4'>
             <div className='relative h-12 w-12 mobile:h-10 mobile:w-10'>
@@ -340,6 +343,11 @@ const DashboardHeader = () => {
                   <h1>Balance</h1>
                 </div>
                 <div>
+                  {wallet?.publicKey ? (
+                    <h1 className='text-[#F5F5F5]'>$ {balance.toFixed(2)}</h1>
+                  ) : (
+                    <h1 className='text-sm text-[#F5F5F5]'>No Wallet Connected</h1>
+                  )}
                   {wallet?.publicKey ? (
                     <h1 className='text-[#F5F5F5]'>$ {balance.toFixed(2)}</h1>
                   ) : (

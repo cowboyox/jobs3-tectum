@@ -51,7 +51,11 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
               fixed = [...fixed, filter.value].filter((p) => p !== 'any');
             } else if (filter.id === 'hourly' && filter.value !== 'any') {
               hourly = [...hourly, filter.value].filter((p) => p !== 'any');
+              fixed = [...fixed, filter.value].filter((p) => p !== 'any');
+            } else if (filter.id === 'hourly' && filter.value !== 'any') {
+              hourly = [...hourly, filter.value].filter((p) => p !== 'any');
             }
+
 
             
           });

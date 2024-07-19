@@ -435,4 +435,5 @@ const Recent = ({ searchText, filtersToQuery }) => {
   );
 };
 
+
 export default Recent;
