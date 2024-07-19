@@ -106,6 +106,21 @@ const ContextProvider = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [newMessages, setNewMessages] = useState([]);
+
+  useEffect(() => {
+    if (currentProfile?._id) {
+      socket?.on('newMessage', (message) => {
+        if (message.receiverId === currentProfile._id && !pathname.includes('inbox')) {
+          setNewMessages((prev) => {
+            const filtered = prev.filter((p) => p.timeStamp !== message.timeStamp);
+
+            return [...filtered, message];
+          });
+        }
+      });
+    }
+  }, [socket, currentProfile?._id, pathname]);
 
   useEffect(() => {
     if (currentProfile?._id) {
@@ -515,6 +530,7 @@ const ContextProvider = ({ children }) => {
         loader: [loadCompleted, setLoadCompleted],
         loading3D: [load3D, setLoad3D],
         login,
+        newMessages,
         preloader: [loading, setLoading],
         register,
         scroll: [scrollPause, setScrollPause],
