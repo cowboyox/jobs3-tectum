@@ -130,7 +130,6 @@ const DashboardHeader = () => {
   const auth = useCustomContext();
 
   const [title, setTitle] = useState('');
-  const [title, setTitle] = useState('');
   const [balance, setBalance] = useState(0);
 
   const handleTap = (item) => {
@@ -199,7 +198,6 @@ const DashboardHeader = () => {
     return (
       <header
         className='flex h-28 flex-wrap items-center justify-end md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
-        className='flex h-28 flex-wrap items-center justify-end md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
         id='header_container'
       />
     );
@@ -222,27 +220,14 @@ const DashboardHeader = () => {
           }}
         >
           <LuAlignLeft className='mr-auto h-7 w-7 fill-[#96B0BD] stroke-[#96B0BD]' />
-      <div className='flex w-full items-center gap-3 md:w-auto md:gap-4 mobile:justify-between'>
-        <div
-          className='order-1 cursor-pointer rounded-[10px] bg-[#10191D] p-3 md:hidden'
-          onClick={() => {
-            OpenSideBar();
-          }}
-        >
-          <LuAlignLeft className='mr-auto h-7 w-7 fill-[#96B0BD] stroke-[#96B0BD]' />
         </div>
         <div className='flex items-center gap-2 mobile:hidden'>{renderWalletButton()}</div>
-        <div className='flex items-center gap-2 mobile:hidden'>{renderWalletButton()}</div>
         <Select defaultValue={auth?.currentRole} onValueChange={handleChangeRole}>
-          <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 text-base font-normal mobile:order-3 mobile:py-6'>
           <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 text-base font-normal mobile:order-3 mobile:py-6'>
             <SelectValue />
           </SelectTrigger>
           <SelectContent align='end' className='w-40 rounded-xl bg-[#10191D]'>
-          <SelectContent align='end' className='w-40 rounded-xl bg-[#10191D]'>
             <SelectGroup className='flex flex-col gap-2'>
-              <SelectItem
-                className='cursor-pointer rounded-xl py-3 text-lg font-medium text-[#96B0BD]'
               <SelectItem
                 className='cursor-pointer rounded-xl py-3 text-lg font-medium text-[#96B0BD]'
                 value={USER_ROLE.CLIENT}
@@ -300,10 +285,8 @@ const DashboardHeader = () => {
             sideOffset={10}
           >
             <DropdownMenuItem className='cursor-pointer rounded p-3 text-lg font-medium text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
-            <DropdownMenuItem className='cursor-pointer rounded p-3 text-lg font-medium text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
               <h1 onClick={() => router.push(`/help`)}>Help and support</h1>
             </DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer p-3 text-lg font-medium text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
             <DropdownMenuItem className='cursor-pointer p-3 text-lg font-medium text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
               <h1>Community and Forums</h1>
             </DropdownMenuItem>
@@ -318,7 +301,6 @@ const DashboardHeader = () => {
             <div className='relative h-12 w-12 mobile:h-10 mobile:w-10'>
               <img
                 className='aspect-square h-full w-full rounded-full object-cover'
-                className='aspect-square h-full w-full rounded-full object-cover'
                 src={
                   auth?.currentProfile?.avatarURL
                     ? auth?.currentProfile?.avatarURL
@@ -327,7 +309,6 @@ const DashboardHeader = () => {
               />
               {/* Change background color depending on user online status */}
               <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
-              <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -335,8 +316,6 @@ const DashboardHeader = () => {
             className='flex w-72 flex-col gap-0 rounded-xl border-2 border-[#28373e] bg-[#10191d]'
             sideOffset={10}
           >
-            <DropdownMenuItem className='rounded py-3 text-lg font-medium hover:bg-[#1B272C]'>
-              <div className='flex w-full items-center justify-between text-[#96B0BD]'>
             <DropdownMenuItem className='rounded py-3 text-lg font-medium hover:bg-[#1B272C]'>
               <div className='flex w-full items-center justify-between text-[#96B0BD]'>
                 <div className='flex items-center gap-2'>
