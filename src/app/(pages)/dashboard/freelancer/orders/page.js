@@ -1,14 +1,12 @@
 'use client';
 
 import { AnchorProvider, getProvider, Program, setProvider, utils } from '@project-serum/anchor';
-import { AnchorProvider, getProvider, Program, setProvider, utils } from '@project-serum/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, SystemProgram } from '@solana/web3.js';
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';

@@ -4,7 +4,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { CiClock2, CiFilter, CiReceipt } from 'react-icons/ci';
-import { FaArrowRight } from 'react-icons/fa6';
 import EmptyCard from '@/components/elements/emptyCard';
 
 import searchOptions from '../freelancers/searchOptions';
