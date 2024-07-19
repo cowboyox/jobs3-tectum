@@ -41,6 +41,7 @@ const Page = () => {
         title: <h1 className='text-center'>Error</h1>,
         variant: 'destructive',
       });
+      router.push(`/signin`)
       return;
     }
     if (!wallet) {
