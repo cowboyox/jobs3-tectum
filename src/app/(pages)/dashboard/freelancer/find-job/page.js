@@ -160,6 +160,7 @@ const FindJob = () => {
     setPage(1);
     setCanLoadMore(true);
   }, [filters]);
+  
   useEffect(() => {
     if (clientGigs) {
       setGigList(clientGigs);
