@@ -64,8 +64,6 @@ const MessageItem = ({ user }) => {
     );
   }, [user.status]);
 
-  console.log(user.status);
-
   useEffect(() => {
     if (isSelected) {
       socket.emit('readMessage', { from: user._id, to: auth.currentProfile._id });
@@ -80,6 +78,12 @@ const MessageItem = ({ user }) => {
       }
     });
   }, [socket, auth?.currentProfile?._id, user._id, refetch]);
+
+  useEffect(() => {
+    if (auth?.lastMessage?.get(user._id)) {
+      setLastMessage(auth.lastMessage.get(user._id));
+    }
+  }, [auth?.lastMessage, user._id]);
 
   useEffect(() => {
     socket.on('statusChanged', ({ userId, status }) => {
@@ -240,12 +244,16 @@ const InboxPage = ({ children }) => {
 
   useEffect(() => {
     socket?.on('newMessage', (data) => {
+      auth?.setLastMessage((prev) => {
+        const res = new Map(prev);
+        res.set(data.senderId, data);
+
+        return res;
+      });
+
       socket.emit('readMessage', { from: data.receiverId, to: data.senderId });
-      if (data.receiverId === auth?.currentProfile?._id) {
-        refetch();
-      }
     });
-  }, [auth?.currentProfile?._id, refetch, socket]);
+  }, [auth, auth?.currentProfile?._id, refetch, socket]);
 
   useEffect(() => {
     if (usersWithMessages) {

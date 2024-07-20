@@ -94,11 +94,6 @@ const ActiveOrders = ({ searchText, filters }) => {
     setPage((prev) => prev + 1);
   };
 
-  useEffect(() => {
-    setPage(1);
-    setCanLoadMore(true);
-  }, [searchText]);
-
   return (
     <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[70%]'>
       <div className='flex h-1/6 items-center justify-between'>
@@ -198,11 +193,6 @@ const Earnings = ({ searchText, filters }) => {
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
   };
-
-  useEffect(() => {
-    setPage(1);
-    setCanLoadMore(true);
-  }, [searchText]);
 
   return (
     <div className='flex h-full max-h-[45vh] min-h-96 w-full flex-col rounded-2xl bg-deepGreen p-5 md:w-[30%]'>

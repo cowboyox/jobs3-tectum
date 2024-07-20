@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import api from '@/utils/api';
 import { USER_ROLE, PAYTOKEN_MINT } from '@/utils/constants';
 
 const menu_data = [
@@ -200,9 +201,22 @@ const NewHeader = () => {
       })();
     }
   }, [wallet, connection]);
+
+  useEffect(() => {
+    (async () => {
+      if (wallet) {
+        try {
+          await api.put(`/api/v1/profile/update-walletPublickey`, JSON.stringify({ walletPublicKey: wallet.publicKey }));
+        } catch (error) {
+          console.log("Error while updating wallet publicKey:", error);
+        }
+      }
+    })();
+  }, [wallet]);
+  
   return (
     <div className='flex px-5 py-8'>
-      <div className='mx-auto flex w-full max-w-7xl justify-between gap-10 mobile:gap-1'>
+      <div className='flex justify-between w-full gap-10 mx-auto max-w-7xl mobile:gap-1'>
         <img src='/assets/images/logo.svg' className='w-44 mobile:w-24' />
         <div className='flex items-center gap-5 mobile:hidden'>
           {menuLinks.map((item, index) => (
@@ -216,8 +230,8 @@ const NewHeader = () => {
           ))}
         </div>
         {!auth && (
-          <div className='ml-auto flex w-auto gap-4'>
-            <div className='w-full cursor-pointer whitespace-nowrap rounded-2xl border border-white px-7 py-4 text-center text-white transition hover:bg-white hover:text-black mobile:hidden mobile:py-3'>
+          <div className='flex w-auto gap-4 ml-auto'>
+            <div className='w-full py-4 text-center text-white transition border border-white cursor-pointer whitespace-nowrap rounded-2xl px-7 hover:bg-white hover:text-black mobile:hidden mobile:py-3'>
               Sign In
             </div>
             <div className='w-full cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'>
@@ -226,7 +240,7 @@ const NewHeader = () => {
           </div>
         )}
         {auth && (
-          <div className='flex w-full items-center gap-3 md:w-auto md:gap-4 mobile:justify-between'>
+          <div className='flex items-center w-full gap-3 md:w-auto md:gap-4 mobile:justify-between'>
             <div className='flex items-center gap-2 mobile:hidden'>{renderWalletButton()}</div>
             <Select defaultValue={auth?.currentRole} onValueChange={handleChangeRole}>
               <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 text-base font-normal mobile:order-3 mobile:py-6'>
@@ -282,6 +296,37 @@ const NewHeader = () => {
                       strokeLinejoin='round'
                     />
                   </svg>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align='end'
+                className='flex w-64 flex-col gap-0 rounded-xl border-2 border-[#28373e] bg-[#10191d]'
+                sideOffset={10}
+              >
+                <DropdownMenuItem className='cursor-pointer rounded p-3 text-lg font-medium text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
+                  <h1 onClick={() => router.push(`/help`)}>Help and support</h1>
+                </DropdownMenuItem>
+                <DropdownMenuItem className='cursor-pointer p-3 text-lg font-medium text-[#96B0BD] hover:bg-[#1B272C] hover:text-[#F5F5F5]'>
+                  <h1>Community and Forums</h1>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Notifications className='mobile:order-2' />
+
+            <DropdownMenu>
+              <DropdownMenuTrigger className='mobile:order-4'>
+                <div className='relative w-12 h-12 mobile:h-10 mobile:w-10'>
+                  <img
+                    className='object-cover w-full h-full rounded-full aspect-square'
+                    src={
+                      auth?.currentProfile?.avatarURL
+                        ? auth?.currentProfile?.avatarURL
+                        : '/assets/images/users/user-5.png'
+                    }
+                  />
+                  {/* Change background color depending on user online status */}
+                  <div className='absolute w-2 h-2 bg-green-500 rounded-full bottom-1 right-1' />
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent

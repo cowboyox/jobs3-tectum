@@ -1,6 +1,6 @@
 /*--------- Hooks ---------*/
-import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
+import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCustomContext } from '@/context/use-custom';
+import api from '@/utils/api';
 import { PAYTOKEN_MINT, USER_ROLE } from '@/utils/constants';
 
 const menu_data = [
@@ -179,16 +180,29 @@ const DashboardHeader = () => {
           setBalance(info.value.uiAmount);
         } catch (error) {
           console.log('Error while getting balance of the wallet:', error);
+          console.log('Error while getting balance of the wallet:', error);
           setBalance(0);
         }
       })();
     }
   }, [wallet, connection]);
 
+  useEffect(() => {
+    (async () => {
+      if (wallet) {
+        try {
+          await api.put(`/api/v1/profile/update-walletPublickey`, JSON.stringify({ walletPublicKey: wallet.publicKey }));
+        } catch (error) {
+          console.log("Error while updating wallet publicKey:", error);
+        }
+      }
+    })();
+  }, [wallet]);
+
   if (!auth?.currentProfile) {
     return (
       <header
-        className='flex h-28 flex-wrap items-center justify-end md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
+        className='flex flex-wrap items-center justify-end h-28 md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
         id='header_container'
       />
     );
@@ -196,14 +210,14 @@ const DashboardHeader = () => {
 
   return (
     <header
-      className='flex h-28 flex-wrap items-center justify-between md:h-20 mobile:flex-nowrap mobile:justify-center mobile:gap-3'
+      className='flex flex-wrap items-center justify-between h-28 md:h-20 mobile:flex-nowrap mobile:justify-center mobile:gap-3'
       id='header_container'
     >
       {renderPopup()}
       <div className='mobile:hidden'>
         <h1 className='text-3xl font-bold text-[#F5F5F5]'>{title}</h1>
       </div>
-      <div className='flex w-full items-center gap-3 md:w-auto md:gap-4 mobile:justify-between'>
+      <div className='flex items-center w-full gap-3 md:w-auto md:gap-4 mobile:justify-between'>
         <div
           className='order-1 cursor-pointer rounded-[10px] bg-[#10191D] p-3 md:hidden'
           onClick={() => {
@@ -285,11 +299,12 @@ const DashboardHeader = () => {
 
         <Notifications className='mobile:order-2' />
 
+
         <DropdownMenu>
           <DropdownMenuTrigger className='mobile:order-4'>
-            <div className='relative h-12 w-12 mobile:h-10 mobile:w-10'>
+            <div className='relative w-12 h-12 mobile:h-10 mobile:w-10'>
               <img
-                className='aspect-square h-full w-full rounded-full object-cover'
+                className='object-cover w-full h-full rounded-full aspect-square'
                 src={
                   auth?.currentProfile?.avatarURL
                     ? auth?.currentProfile?.avatarURL
@@ -297,7 +312,7 @@ const DashboardHeader = () => {
                 }
               />
               {/* Change background color depending on user online status */}
-              <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
+              <div className='absolute w-2 h-2 bg-green-500 rounded-full bottom-1 right-1' />
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -340,6 +355,11 @@ const DashboardHeader = () => {
                   <h1>Balance</h1>
                 </div>
                 <div>
+                  {wallet?.publicKey ? (
+                    <h1 className='text-[#F5F5F5]'>$ {balance.toFixed(2)}</h1>
+                  ) : (
+                    <h1 className='text-sm text-[#F5F5F5]'>No Wallet Connected</h1>
+                  )}
                   {wallet?.publicKey ? (
                     <h1 className='text-[#F5F5F5]'>$ {balance.toFixed(2)}</h1>
                   ) : (

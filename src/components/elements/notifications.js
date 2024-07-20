@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import React from 'react';
 import { AiOutlineSound } from 'react-icons/ai';
@@ -11,6 +13,74 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useCustomContext } from '@/context/use-custom';
+import { useGetUserInfo } from '@/hooks/useGetUserInfo';
+
+const NotificationMessageItem = ({ msg }) => {
+  console.log(msg);
+  const { data: userInfo } = useGetUserInfo(msg.senderId);
+
+  console.log(userInfo);
+  return (
+    <div
+      className={`'flex-row' hover:bg-[#162126]'} flex gap-4 rounded-xl bg-[#C440081F] p-4 transition`}
+    >
+      <div className='flex w-full items-start gap-4'>
+        <div className='relative w-20 md:h-12 md:w-12'>
+          {userInfo?.avatarURL ? (
+            <img className='aspect-square h-full w-full rounded-full' src={userInfo?.avatarURL} />
+          ) : (
+            <div className='relative flex aspect-square h-full w-full items-center justify-center rounded-full bg-[#28373E]'>
+              <CiBellOn className='h-6 w-6 fill-[#96B0BD]' />
+            </div>
+          )}
+          {userInfo?.status === 'online' ? (
+            <div className='absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500' />
+          ) : userInfo?.status === 'idle' ? (
+            <div className='absolute bottom-0 right-0 h-3 w-3 rounded-full bg-yellow-500' />
+          ) : (
+            <div className='absolute bottom-0 right-0 h-3 w-3 rounded-full bg-gray-500' />
+          )}
+        </div>
+        <div className='flex w-full flex-col gap-2'>
+          <p className={`text-sm text-[#96B0BD]`}>
+            <strong className='text-white'>{userInfo?.fullName}</strong> {msg.messageText}
+          </p>
+          <p className='text-xs text-[#96B0BD]'>
+            {new Date(msg.timeStamp).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </p>
+        </div>
+        <GoInbox className='my-auto ml-auto h-5 w-5 cursor-pointer fill-[#96B0BD]' />
+      </div>
+      {/* <div className='flex flex-col gap-2'>
+        <p className={`text-sm text-[#96B0BD]`}>
+          <strong className='text-white'>{userName}</strong> {message}
+        </p>
+        <p className='text-xs text-[#96B0BD]'>{time}</p>
+      </div>
+      {icon && !highlighted && (
+        <GoInbox className='my-auto ml-auto h-5 w-5 cursor-pointer fill-[#96B0BD]' />
+      )}
+      {highlighted && <div className='my-auto ml-auto h-3 w-3 rounded-full bg-[#DC4F13]' />}
+      {actions && (
+        <>
+          <div className='border-t border-[#28373E]' />
+          <div className='ml-auto flex w-auto gap-3 rounded-2xl bg-[#10191D] p-2'>
+            <div className='w-auto cursor-pointer rounded-2xl px-8 py-3 text-center text-white transition hover:bg-white hover:text-black mobile:py-3'>
+              Reject
+            </div>
+            <div className='w-auto cursor-pointer rounded-xl bg-[#DC4F13] px-8 py-3 text-center text-white mobile:py-3'>
+              Accept
+            </div>
+          </div>
+        </>
+      )} */}
+    </div>
+  );
+};
 
 const NotificationItem = ({
   type,
@@ -81,11 +151,16 @@ const NotificationItem = ({
 };
 
 const Notifications = ({ className }) => {
+  const auth = useCustomContext();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className={className}>
-        <div className='cursor-pointer rounded-xl bg-[#10191D] p-3'>
+        <div className='relative cursor-pointer rounded-xl bg-[#10191D] p-3'>
           <CiBellOn className='h-7 w-7 fill-[#96B0BD]' />
+          {auth?.newMessages?.length > 0 && (
+            <div className='absolute right-0 top-0 h-3 w-3 rounded-full bg-[#dc4f14]' />
+          )}
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -121,7 +196,11 @@ const Notifications = ({ className }) => {
           </TabsList>
           <TabsContent className='flex flex-col gap-5' value='Inbox'>
             <div className='mt-6 flex flex-col gap-5'>
-              <NotificationItem
+              {auth?.newMessages.length > 0 &&
+                auth.newMessages.map((msg, index) => {
+                  return <NotificationMessageItem key={index} msg={msg} />;
+                })}
+              {/* <NotificationItem
                 highlighted
                 icon
                 isOnline
@@ -156,7 +235,7 @@ const Notifications = ({ className }) => {
                 type='message'
                 userImage='/assets/images/users/user-5.png'
                 userName='Emily Rose'
-              />
+              /> */}
               <div className='border-t border-[#28373E]' />
               <div className='flex justify-between'>
                 <Link className='text-lg text-[#96B0BD]' href='/dashboard/client/inbox'>
