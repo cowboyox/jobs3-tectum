@@ -40,7 +40,30 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/use-custom';
 import api from '@/utils/api';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
+const all_form_structure = {
+  budget_mode: [
+    {
+      label: 'Hourly Rate',
+      value: 'hourly',
+    },
+    {
+      label: 'Fixed Price',
+      value: 'fixed',
+    },
+  ],
+  gig_from_to: {
+    // From
+    from_label: 'From',
+    from_placeholder: '36.00',
+    // To
+    to_label: 'To',
+    to_placeholder: '60.00',
+  },
+  gig_fixed_price: '36.00',
+};
 const Question = (props) => {
   return (
     <div className='flex gap-2 rounded-xl border border-[#526872] p-4'>
@@ -436,6 +459,10 @@ const CreateGig = () => {
   //     });
   //   }
   // }, [auth]);
+  const [budgetMode, setBudgetMode] = useState('hourly');
+  const [postData, setPostData] = useState({
+    instantBuy: false,
+  });
 
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
@@ -521,14 +548,16 @@ const CreateGig = () => {
      * https://ui.shadcn.com/docs/components
      * I know you know but just wanted to mention :D
      */
-    let postData = values;
-    postData.gigCategory = currentCategory;
-    postData.subCategory = currentSub;
     values.question = requirementQuestions;
     values.searchKeywords = tags;
     values.email = auth.user.email;
     values.creator = auth.currentProfile._id;
     values.walletPubkey = wallet.publicKey;
+    values.instantBuy = postData.instantBuy;
+    values.paymentType = postData.paymentType;
+    values.gigPrice = postData.gigPrice;
+    values.minBudget = postData.minBudget;
+    values.maxBudget = postData.maxBudget;
     // if (profile) {
     //   values.creator = profile._id;
     // }
@@ -544,7 +573,6 @@ const CreateGig = () => {
     }
     setIsWaiting(true);
 
-
     const formData = new FormData();
     if (videoFile) {
       formData.append('files', videoFile);
@@ -556,7 +584,7 @@ const CreateGig = () => {
     documentFiles.forEach((file) => {
       if (file) formData.append('files', file);
     });
-    console.log("documentFiles.length", documentFiles.length);
+    console.log('documentFiles.length', documentFiles.length);
     formData.append(
       'metadata',
       JSON.stringify({
@@ -573,7 +601,7 @@ const CreateGig = () => {
       },
     };
 
-    console.log("values", values);
+    console.log('values', values);
 
     await api
       .post('/api/v1/freelancer_gig/post_gig', values)
@@ -769,19 +797,154 @@ const CreateGig = () => {
             </FormStep>
             <FormStep stepOrder={2}>
               <FormField
-                name='gigPrice'
+                name='budget'
                 render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Setup price</FormLabel>
-                    <FormControl>
-                      <Input
-                        className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
-                        placeholder='Price'
-                        type='number'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
+                  <FormItem className='mt-8'>
+                    <FormLabel className='mb-4 text-2xl font-semibold'>Setup Price</FormLabel>
+                    <RadioGroup
+                      className='flex flex-col gap-3 pt-3'
+                      defaultValue={all_form_structure.budget_mode[0].value}
+                      onValueChange={(val) => {
+                        field.onChange();
+                        setBudgetMode(val);
+                        setPostData((prev) => ({
+                          ...prev,
+                          gigPaymentType: val === 'hourly' ? 1 : 0,
+                          gigPrice: val === 'hourly' ? 0 : prev.gigPrice,
+                          maxBudget: val === 'hourly' ? prev.maxBudget : 0,
+                          minBudget: val === 'hourly' ? prev.minBudget : 0,
+                        }));
+                      }}
+                    >
+                      {all_form_structure.budget_mode.map((budget_option, key) => (
+                        <div
+                          className='items-centerspace-x-2 flex w-full flex-col px-0 py-0'
+                          key={key}
+                        >
+                          <div
+                            className={`flex w-full items-center gap-2 space-x-2 rounded-t-xl border border-slate-500 px-3 py-0 ${budgetMode !== budget_option.value ? 'rounded-xl' : 'bg-[#28373E]'}`}
+                          >
+                            <RadioGroupItem
+                              className='h-4 w-4'
+                              id={budget_option.value}
+                              value={budget_option.value}
+                            />
+                            <Label
+                              className='w-full cursor-pointer py-7 text-xl text-slate-300'
+                              htmlFor={budget_option.value}
+                            >
+                              {budget_option.label}
+                            </Label>
+                          </div>
+                          {budgetMode == 'hourly' && budget_option.value == 'hourly' && (
+                            <div
+                              className='flex w-full flex-col items-center justify-center gap-5 rounded-b-xl border border-[#526872] bg-[#1B272C] px-3 xl:flex-row'
+                              key={key}
+                            >
+                              <FormField
+                                name='hourly_rate_from'
+                                render={() => (
+                                  <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                                    <FormLabel className='text-base font-normal text-[#96B0BD]'>
+                                      {all_form_structure.gig_from_to.from_label}
+                                    </FormLabel>
+                                    <FormControl>
+                                      <div className='relative w-full pr-7'>
+                                        <Input
+                                          className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                          min={0}
+                                          onChange={(e) =>
+                                            setPostData((prev) => ({
+                                              ...prev,
+                                              minBudget: parseInt(e.target.value),
+                                            }))
+                                          }
+                                          placeholder={
+                                            all_form_structure.gig_from_to.from_placeholder
+                                          }
+                                          type='number'
+                                          value={postData.minBudget}
+                                        />
+                                        <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                          $
+                                        </span>
+                                        <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
+                                          /hr
+                                        </span>
+                                      </div>
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                name='hourly_rate_to'
+                                render={() => (
+                                  <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                                    <FormLabel className='text-base font-normal text-[#96B0BD]'>
+                                      {all_form_structure.gig_from_to.to_label}
+                                    </FormLabel>
+                                    <FormControl>
+                                      <div className='relative w-full pr-7'>
+                                        <Input
+                                          className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                          min={0}
+                                          onChange={(e) => {
+                                            setPostData((prev) => ({
+                                              ...prev,
+                                              maxBudget: parseInt(e.target.value),
+                                            }));
+                                          }}
+                                          placeholder={
+                                            all_form_structure.gig_from_to.to_placeholder
+                                          }
+                                          type='number'
+                                          value={postData.maxBudget}
+                                        />
+                                        <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                          $
+                                        </span>
+                                        <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
+                                          /hr
+                                        </span>
+                                      </div>
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          )}
+                          {budgetMode == 'fixed' && budget_option.value == 'fixed' && (
+                            <FormField
+                              name='fixed_price'
+                              render={() => (
+                                <FormItem className='flex w-full rounded-b-xl border border-[#526872] bg-[#1B272C] pl-3 pr-5'>
+                                  <FormControl>
+                                    <div className='relative my-4 w-full'>
+                                      <Input
+                                        className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                        min={0}
+                                        onChange={(e) => {
+                                          setPostData((prev) => ({
+                                            ...prev,
+                                            gigPrice: parseInt(e.target.value),
+                                          }));
+                                        }}
+                                        placeholder={all_form_structure.gig_fixed_price}
+                                        type='number'
+                                        value={postData.gigPrice}
+                                      />
+                                      <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                        $
+                                      </span>
+                                    </div>
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </RadioGroup>
                   </FormItem>
                 )}
               />
@@ -818,7 +981,7 @@ const CreateGig = () => {
                     <FormControl>
                       <Select defaultValue={field.value} onValueChange={field.onChange}>
                         <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                          <SelectValue placeholder='Delivery time' />
+                          <SelectValue placeholder='Select' />
                         </SelectTrigger>
                         <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
                           <SelectGroup>
@@ -836,6 +999,54 @@ const CreateGig = () => {
                   </FormItem>
                 )}
               />
+              <FormField
+                name='initialConcept'
+                render={({ field }) => (
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormLabel className='text-2xl text-[#F5F5F5]'>
+                      Number Of Initial Concepts
+                    </FormLabel>
+                    <FormControl>
+                      <Select defaultValue={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Select' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {Array.from({ length: 60 }, (_, i) => (
+                              <SelectItem key={i + 1} value={`${i + 1} days`}>
+                                {i + 1} day{i + 1 > 1 ? 's' : ''}
+                              </SelectItem>
+                            ))}
+                            <SelectItem value='+ 2 months'>+ 2 Months</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name='instantBuy'
+                render={({ field }) => (
+                  <FormItem className=''>
+                    <FormLabel className='mb-4 text-2xl font-semibold'>Setup Price</FormLabel>
+                    <div
+                      className={`flex w-full cursor-pointer gap-6 rounded-[15px] border border-[#3E525B] py-[25px] pl-[24px] pr-[16px] ${postData.instantBuy && 'bg-[#28373E]'}`}
+                      onClick={() =>
+                        setPostData((prev) => ({ ...prev, instantBuy: !prev.instantBuy }))
+                      }
+                    >
+                      <div
+                        className={`h-6 w-6 rounded-full border border-[#A0B4C0] ${postData.instantBuy && 'border-8 border-[#E0F0F9]'}`}
+                      ></div>
+                      <div className='text-[18px]'>Instant Buy</div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <div className='text-[#96B0BD]'>Allow buyers to purchase your gig instantly without needing to apply</div>
             </FormStep>
             <FormStep stepOrder={3}>
               <FormField
