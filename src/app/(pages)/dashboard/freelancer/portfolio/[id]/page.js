@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import api from '@/utils/api';
 import { useRouter } from 'next/navigation';
 

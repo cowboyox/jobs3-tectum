@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
 import { useToast } from '@/components/ui/use-toast';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useGetClientGigs } from '@/hooks/useGetClientGigs';
 import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';

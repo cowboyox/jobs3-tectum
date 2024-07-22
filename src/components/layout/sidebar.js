@@ -5,7 +5,7 @@ import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
 import { IoMdClose } from 'react-icons/io';
 
 import MenuLink from '@/components/elements/menuLink';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { USER_ROLE } from '@/utils/constants';
 
 const sideBarSettings = {

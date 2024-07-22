@@ -27,7 +27,7 @@ import DropFile from '@/components/elements/dropFile';
 import PanelContainer from '@/components/elements/panel';
 import { Form } from '@/components/ui/form';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useGetClientGigContractById } from '@/hooks/useGetClientGigContractById';
 import { useToast } from '@/components/ui/use-toast';
 import IDL from '@/idl/gig_basic_contract.json';

@@ -6,7 +6,7 @@ import { useDisconnect } from 'wagmi';
 
 import { usePopupFunctions } from '../popups/popups';
 
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 // Dependencies
 
 // Components

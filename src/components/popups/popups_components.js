@@ -6,7 +6,7 @@ import { FaCheck } from 'react-icons/fa';
 import { useAccount } from 'wagmi';
 
 import { useToast } from '@/components/ui/use-toast';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useVerifyUsername } from '@/hooks/useVerifyUsername';
 import { USER_ROLE } from '@/utils/constants';
