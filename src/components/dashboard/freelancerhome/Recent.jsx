@@ -64,7 +64,7 @@ const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setA
         setCanLoadMore(false);
       }
     }
-  }, [clientGigs, page, searchType]);
+  }, [clientGigs, page, searchType, setAllGigs]);
 
   useEffect(() => {
     setPage(1);
