@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { AiOutlineSound } from 'react-icons/ai';
 import { CiBellOn } from 'react-icons/ci';
@@ -15,15 +16,21 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCustomContext } from '@/context/ContextProvider';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
+import { USER_ROLE } from '@/utils/constants';
 
 const NotificationMessageItem = ({ msg }) => {
-  console.log(msg);
   const { data: userInfo } = useGetUserInfo(msg.senderId);
+  const router = useRouter();
+  const auth = useCustomContext();
 
-  console.log(userInfo);
   return (
     <div
       className={`'flex-row' hover:bg-[#162126]'} flex gap-4 rounded-xl bg-[#C440081F] p-4 transition`}
+      onClick={() =>
+        router.push(
+          `/dashboard/${auth?.currentRole === USER_ROLE.FREELANCER ? 'freelancer' : 'client'}/inbox/${msg.senderId}`
+        )
+      }
     >
       <div className='flex w-full items-start gap-4'>
         <div className='relative w-20 md:h-12 md:w-12'>
