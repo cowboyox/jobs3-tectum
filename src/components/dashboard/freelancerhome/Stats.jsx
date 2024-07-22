@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useGetClientGigsContractedWithFreelancer } from '@/hooks/useGetClientGigsContractedWithFreelancer';
 import { useGetClientGigsProposedByFreelancer } from '@/hooks/useGetClientGigsProposedByFreelancer';
 import { useHandleResize } from '@/hooks/useHandleResize';

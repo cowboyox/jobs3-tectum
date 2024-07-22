@@ -2,7 +2,6 @@
 
 import axios from 'axios';
 import { usePathname, useRouter } from 'next/navigation';
-import PropTypes from 'prop-types';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 
 import { useSocket } from '@/context/socket';
@@ -85,9 +84,9 @@ const handlers = {
 const reducer = (state, action) =>
   handlers[action.type] ? handlers[action.type](state, action) : state;
 
-export const CustomContext = createContext({ undefined });
+export const CustomContext = createContext();
 
-const ContextProvider = ({ children }) => {
+export const ContextProvider = ({ children }) => {
   const [currentRole, setCurrentRole] = useState(USER_ROLE.FREELANCER);
   const [currentProfile, setCurrentProfile] = useState(null);
   const [isIdle, setIsIdle] = useState(true);
@@ -106,21 +105,58 @@ const ContextProvider = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [newMessages, setNewMessages] = useState([]);
+  const [unreadMessages, setUnreadMessages] = useState([]);
+  const [unreadClientOrders, setUnreadClientOrders] = useState([]);
+  const [unreadFreelancerOrders, setUnreadFreelancerOrders] = useState([]);
   const [lastMessage, setLastMessage] = useState(new Map());
 
   useEffect(() => {
     if (currentProfile?._id) {
       socket?.on('newMessage', (message) => {
-        if (message.receiverId === currentProfile._id && !pathname.includes('inbox')) {
-          setNewMessages((prev) => {
-            const filtered = prev.filter((p) => p.timeStamp !== message.timeStamp);
+        if (message.receiverId === currentProfile._id) {
+          if (!pathname.includes(`inbox/${message.senderId}`)) {
+            setUnreadMessages((prev) => {
+              const filtered = prev.filter((p) => p.timeStamp !== message.timeStamp);
 
-            return [...filtered, message];
+              return [...filtered, message];
+            });
+          }
+
+          setLastMessage((prev) => {
+            const res = new Map(prev);
+            res.set(message.senderId, message);
+
+            return res;
           });
         }
       });
     }
+
+    socket?.on('client_applied', (data) => {
+      if (data.freelancerId === currentProfile._id) {
+        setUnreadClientOrders((prev) => {
+          const filtered = prev.filter((p) => p.gigId !== data.gigId);
+
+          return [...filtered, data];
+        });
+      }
+    });
+
+    socket?.on('freelancer_applied', (data) => {
+      if (data.clientId === currentProfile._id) {
+        setUnreadFreelancerOrders((prev) => {
+          const filtered = prev.filter((p) => p.gigId !== data.gigId);
+
+          return [...filtered, data];
+        });
+      }
+    });
+
+    return () => {
+      socket?.off('newMessage');
+      socket?.off('client_applied');
+      socket?.off('freelancer_applied');
+    };
   }, [socket, currentProfile?._id, pathname]);
 
   useEffect(() => {
@@ -155,7 +191,7 @@ const ContextProvider = ({ children }) => {
         });
       };
     }
-  }, [isIdle, socket, currentProfile]);
+  }, [isIdle, socket, currentProfile?._id]);
 
   const login = async (credentials) => {
     // if (state.acc_type === null) {
@@ -423,9 +459,9 @@ const ContextProvider = ({ children }) => {
     try {
       const data = JSON.parse(storedData);
       if (data && typeof data === 'object') {
-        const { user, token, currentRole, profileData } = data.data;
+        const { user, token, currentRole, currentProfile } = data.data;
         setCurrentRole(currentRole);
-        setCurrentProfile(profileData);
+        setCurrentProfile(currentProfile);
         api.defaults.headers.common.Authorization = token;
         dispatch({
           payload: user,
@@ -532,7 +568,6 @@ const ContextProvider = ({ children }) => {
         loader: [loadCompleted, setLoadCompleted],
         loading3D: [load3D, setLoad3D],
         login,
-        newMessages,
         preloader: [loading, setLoading],
         register,
         scroll: [scrollPause, setScrollPause],
@@ -540,11 +575,14 @@ const ContextProvider = ({ children }) => {
         setCurrentProfile,
         setCurrentRole,
         setLastMessage,
-        setNewMessages,
         setRole,
+        setUnreadMessages,
         signInwithWallet,
         signOut,
         signUpwithWallet,
+        unreadClientOrders,
+        unreadFreelancerOrders,
+        unreadMessages,
         verifyOTP,
         verifyOTPPassword,
       }}
@@ -554,12 +592,13 @@ const ContextProvider = ({ children }) => {
   );
 };
 
-ContextProvider.propTypes = {
-  children: PropTypes.node,
-};
+// Hook
+export function useCustomContext() {
+  const context = useContext(CustomContext);
 
-export const CustomConsumer = CustomContext.Consumer;
+  if (context === undefined) {
+    throw new Error(`useCustomContext must be used within a CustomContextprovider`);
+  }
 
-export const useCustomContext = () => useContext(CustomContext);
-
-export default ContextProvider;
+  return context;
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import Link from 'next/link';
 import MobileNav from '@/components/elements/mobileNav';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useRouter, usePathname } from 'next/navigation';
 import { LuAlignLeft } from 'react-icons/lu';

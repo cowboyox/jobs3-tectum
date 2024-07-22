@@ -10,7 +10,7 @@ import InfoPanel from './infoPanel';
 
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import api from '@/utils/api';
 import { USER_ROLE } from '@/utils/constants';
 

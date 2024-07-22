@@ -14,10 +14,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useSocket } from '@/context/socket';
-import { useCustomContext } from '@/context/use-custom';
+import { useGetLastMessage } from '@/hooks/useGetLastMessage';
 import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
-import { useGetUserInfo } from '@/hooks/useGetUserInfo';
 import api from '@/utils/api';
 import { APIS, DEFAULT_AVATAR, USER_ROLE } from '@/utils/constants';
 import { timeDifference } from '@/utils/Helpers';
@@ -41,10 +41,22 @@ const MessageItem = ({ user }) => {
   const [unReadCount, setUnReadCount] = useState(0);
   const [lastMessage, setLastMessage] = useState();
   const [userStatusColor, setUserStatusColor] = useState('bg-gray-500');
-  const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
-  const { data: currentProfile, refetch: refetchUserInfo } = useGetUserInfo(
-    auth?.currentProfile?._id
-  );
+  const { data: lastMsg } = useGetLastMessage(auth?.currentProfile?._id, user._id);
+
+  useEffect(() => {
+    if (lastMsg) {
+      auth?.setLastMessage((prev) => {
+        const res = new Map(prev);
+        res.set(
+          lastMsg.senderId === auth.currentProfile?._id ? lastMsg.receiverId : lastMsg.senderId,
+          lastMsg
+        );
+
+        return res;
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastMsg, auth?.setLastMessage]);
 
   useEffect(() => {
     if (pathname?.split('/').pop() === user._id) {
@@ -65,19 +77,10 @@ const MessageItem = ({ user }) => {
   }, [user.status]);
 
   useEffect(() => {
-    if (isSelected) {
-      socket.emit('readMessage', { from: user._id, to: auth.currentProfile._id });
-      setUnReadCount(0);
+    if (auth?.unreadMessages) {
+      setUnReadCount(auth?.unreadMessages.filter((u) => u.senderId === user._id).length);
     }
-  }, [auth?.currentProfile?._id, isSelected, socket, user._id]);
-
-  useEffect(() => {
-    socket.on('messagesRead', (data) => {
-      if (data.senderId === user._id && data.receiverId === auth?.currentProfile?._id) {
-        refetch();
-      }
-    });
-  }, [socket, auth?.currentProfile?._id, user._id, refetch]);
+  }, [auth?.unreadMessages, user._id]);
 
   useEffect(() => {
     if (auth?.lastMessage?.get(user._id)) {
@@ -99,35 +102,15 @@ const MessageItem = ({ user }) => {
     };
   }, [socket, user._id]);
 
-  useEffect(() => {
-    if (currentProfile && auth) {
-      auth.setCurrentProfile(currentProfile);
-    }
-  }, [currentProfile, auth]);
-
-  useEffect(() => {
-    if (usersWithMessages?.messages && auth?.currentProfile?._id) {
-      const unReadCount = usersWithMessages.messages.filter(
-        (message) =>
-          message.senderId._id === user._id &&
-          message.receiverId._id === auth.currentProfile._id &&
-          !message.read
-      ).length;
-
-      if (usersWithMessages.messages.length > 0) {
-        setLastMessage(usersWithMessages.messages[usersWithMessages.messages.length - 1]);
-      }
-
-      setUnReadCount(unReadCount);
-    }
-  }, [usersWithMessages?.messages, auth.currentProfile._id, user._id]);
-
   const handleAddFavorite = async () => {
     if (auth?.currentProfile?._id) {
       api
         .put(`${APIS.ADD_FAVORITES}/${auth.currentProfile._id}/${user._id}`)
-        .then(async () => {
-          await refetchUserInfo();
+        .then(() => {
+          auth.setCurrentProfile({
+            ...auth.currentProfile,
+            favorites: [...auth.currentProfile.favorites, user._id],
+          });
 
           return toast({
             className:
@@ -153,8 +136,11 @@ const MessageItem = ({ user }) => {
     if (auth?.currentProfile?._id) {
       api
         .put(`${APIS.REMOVE_FAVORITES}/${auth.currentProfile._id}/${user._id}`)
-        .then(async () => {
-          await refetchUserInfo();
+        .then(() => {
+          auth.setCurrentProfile({
+            ...auth.currentProfile,
+            favorites: auth.currentProfile.favorites.filter((prev) => prev !== user._id),
+          });
 
           return toast({
             className:
@@ -236,24 +222,10 @@ const MessageItem = ({ user }) => {
 const InboxPage = ({ children }) => {
   const auth = useCustomContext();
   const [users, setUsers] = useState([]);
-  const socket = useSocket();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState(users);
-  const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
-
-  useEffect(() => {
-    socket?.on('newMessage', (data) => {
-      auth?.setLastMessage((prev) => {
-        const res = new Map(prev);
-        res.set(data.senderId, data);
-
-        return res;
-      });
-
-      socket.emit('readMessage', { from: data.receiverId, to: data.senderId });
-    });
-  }, [auth, auth?.currentProfile?._id, refetch, socket]);
+  const { data: usersWithMessages } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   useEffect(() => {
     if (usersWithMessages) {
@@ -271,8 +243,6 @@ const InboxPage = ({ children }) => {
     );
     setFilteredUsers(filtered);
   };
-
-  console.log(filteredUsers);
 
   return (
     <div className='inbox-page border-t border-[#28373E]'>

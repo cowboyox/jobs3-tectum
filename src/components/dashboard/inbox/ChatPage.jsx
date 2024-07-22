@@ -9,6 +9,8 @@ import { HiOutlineExclamationTriangle } from 'react-icons/hi2';
 import { IoMdAttach } from 'react-icons/io';
 import { TbDotsCircleHorizontal } from 'react-icons/tb';
 
+import { useGetMessages } from '../../../hooks/useGetMessages';
+
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -17,9 +19,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/components/ui/use-toast';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useSocket } from '@/context/socket';
-import { useCustomContext } from '@/context/use-custom';
-import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
 import api from '@/utils/api';
 import { APIS, DEFAULT_AVATAR } from '@/utils/constants';
@@ -90,12 +91,29 @@ const ChatPage = ({ profileId }) => {
   const [userStatusColor, setUserStatusColor] = useState('bg-gray-500');
   const [input, setInput] = useState('');
   const { data: userInfo } = useGetUserInfo(profileId);
-  const { data: currentProfile, refetch: refetchUserInfo } = useGetUserInfo(
-    auth?.currentProfile?._id
-  );
   const messagesEndRef = useRef(null);
   const { toast } = useToast();
-  const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
+  const { data: messages, refetch: refetchMessages } = useGetMessages(
+    auth?.currentProfile?._id,
+    profileId
+  );
+
+  useEffect(() => {
+    const func = async () => {
+      await refetchMessages();
+
+      auth?.setUnreadMessages((prev) => prev.filter((p) => p.senderId !== profileId));
+    };
+
+    func();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refetchMessages, profileId, auth?.setUnreadMessages]);
+
+  useEffect(() => {
+    if (messages) {
+      setConversation(messages);
+    }
+  }, [messages]);
 
   useEffect(() => {
     setUserStatusColor(
@@ -116,13 +134,17 @@ const ChatPage = ({ profileId }) => {
       }
     });
 
+    socket?.on('newMessage', (message) => {
+      setConversation((prevMessages) => [...prevMessages, message]);
+    });
+
     return () => {
       socket?.off('statusChanged');
     };
   }, [socket, profileId]);
 
   useEffect(() => {
-    if (userInfo && auth?.currentProfile) {
+    if (userInfo) {
       setRceiver({
         _id: userInfo._id,
         avatar: userInfo.avatarURL,
@@ -131,42 +153,8 @@ const ChatPage = ({ profileId }) => {
         status: userInfo.status,
         timestamp: userInfo.userId?.timestamp,
       });
-
-      let from = auth.currentProfile._id;
-      let to = userInfo._id;
-
-      socket?.emit('getHistory', { from, to });
-
-      socket?.on('history', (history) => {
-        setConversation(history);
-      });
-
-      socket?.on('newMessage', (message) => {
-        setConversation((prevMessages) => [...prevMessages, message]);
-      });
-
-      return () => {
-        socket?.off('newMessage');
-      };
     }
-  }, [userInfo, auth.currentProfile, socket, refetch, usersWithMessages]);
-
-  useEffect(() => {
-    if (usersWithMessages) {
-      let convs = [];
-
-      usersWithMessages.messages.map((message) => {
-        convs.push({
-          messageText: message.messageText,
-          receiverId: message.receiverId._id,
-          senderId: message.senderId._id,
-          timeStamp: message.timeStamp,
-        });
-      });
-
-      setConversation(convs);
-    }
-  }, [usersWithMessages]);
+  }, [userInfo]);
 
   // Function to scroll to the bottom
   const scrollToBottom = () => {
@@ -177,13 +165,6 @@ const ChatPage = ({ profileId }) => {
   useEffect(() => {
     scrollToBottom();
   }, [conversations]);
-
-  useEffect(() => {
-    if (currentProfile && auth) {
-      auth.setCurrentProfile(currentProfile);
-      auth.setNewMessages((prev) => prev.filter((p) => p.senderId !== profileId));
-    }
-  }, [currentProfile, auth, profileId]);
 
   const sendMessage = () => {
     const message = {
@@ -221,8 +202,11 @@ const ChatPage = ({ profileId }) => {
     if (auth?.currentProfile?._id) {
       api
         .put(`${APIS.ADD_FAVORITES}/${auth.currentProfile._id}/${profileId}`)
-        .then(async () => {
-          await refetchUserInfo();
+        .then(() => {
+          auth.setCurrentProfile({
+            ...auth.currentProfile,
+            favorites: [...auth.currentProfile.favorites, profileId],
+          });
 
           return toast({
             className:
@@ -248,8 +232,11 @@ const ChatPage = ({ profileId }) => {
     if (auth?.currentProfile?._id) {
       api
         .put(`${APIS.REMOVE_FAVORITES}/${auth.currentProfile._id}/${profileId}`)
-        .then(async () => {
-          await refetchUserInfo();
+        .then(() => {
+          auth.setCurrentProfile({
+            ...auth.currentProfile,
+            favorites: auth.currentProfile.favorites.filter((prev) => prev !== profileId),
+          });
 
           return toast({
             className:
