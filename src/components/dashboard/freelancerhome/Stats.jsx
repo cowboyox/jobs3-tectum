@@ -22,6 +22,7 @@ import { useGetClientGigsContractedWithFreelancer } from '@/hooks/useGetClientGi
 import { useGetClientGigsProposedByFreelancer } from '@/hooks/useGetClientGigsProposedByFreelancer';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import { timeSincePublication } from '@/utils/Helpers';
+import api from '@/utils/api';
 
 const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
@@ -231,8 +232,7 @@ const Earnings = ({ searchText, filters }) => {
   );
 };
 
-const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery }) => {
-  const [searchType, setSearchType] = useState('normal');
+const Stats = ({ searchType, setSearchType, searchText, setSearchText, filtersToQuery, setFiltersToQuery, loading, setLoading, setAllGigs }) => {
   const [filters, setFilters] = useState([]);
 
   const { isSmallScreen } = useHandleResize();
@@ -245,9 +245,24 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
     setSearchText(e.target.value);
   };
 
+  const aiSearch = () => {
+    setLoading(true);
+    api.get(`/api/v1/client_gig/ai-search/${searchText}`).then((data) => {
+      let gigs = data.data.gigs;
+      let reasons = data.data.reasons;
+      gigs = gigs.map((gig, index) => {
+        gig.reason = reasons[index];
+        return gig;
+      });
+      console.log('new', gigs);
+      setLoading(false);
+      setAllGigs(gigs);
+    });
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && searchType === 'ai') {
-      // aiSearch();
+      aiSearch();
     }
   };
 
