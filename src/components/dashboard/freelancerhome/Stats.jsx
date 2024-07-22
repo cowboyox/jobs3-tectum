@@ -479,7 +479,7 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
               </PopoverTrigger>
               <PopoverContent
                 align='end'
-                className='my-5 flex w-full flex-col gap-4 rounded-xl bg-[#10191D] px-6 py-4'
+                className='my-5 flex max-h-[90vh] w-full flex-col gap-4 overflow-y-scroll rounded-xl bg-[#10191D] px-6 py-4'
                 side='left'
               >
                 <div className='grid grid-cols-1 gap-4'>
