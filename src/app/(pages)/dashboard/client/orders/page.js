@@ -43,8 +43,8 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/seperator';
 import { useToast } from '@/components/ui/use-toast';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useSocket } from '@/context/socket';
-import { useCustomContext } from '@/context/use-custom';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllClientGigsProposed } from '@/hooks/useGetAllClientGigsProposed';
 import { useHandleResize } from '@/hooks/useHandleResize';
@@ -94,7 +94,7 @@ const Orders = () => {
   const [filters, setFilters] = useState([]);
   const [locationFilters, setLocationFilters] = useState([]);
   const [countries, setCountries] = useState(COUNTRIES);
-  const [locationText, setLocationText] = useState("");
+  const [locationText, setLocationText] = useState('');
   const { data: gigs, refetch: refetchAllGigsProposed } = useGetAllClientGigsProposed(
     auth?.currentProfile?._id,
     page,
@@ -186,7 +186,6 @@ const Orders = () => {
           setCanLoadMore(false);
         }
 
-
         // if (page === 1) {
         setFilteredLiveList(gigs.lives);
         setFilteredLiveList(gigs.lives);
@@ -247,9 +246,13 @@ const Orders = () => {
   }, [gigs, page, mode, itemsPerPage]);
 
   useEffect(() => {
-    setCountries(COUNTRIES.filter((item) => item.toLocaleLowerCase().includes(locationText.toLocaleLowerCase())));
+    setCountries(
+      COUNTRIES.filter((item) =>
+        item.toLocaleLowerCase().includes(locationText.toLocaleLowerCase())
+      )
+    );
   }, [locationText]);
-  
+
   const handleLoadMore = () => {
     // setPage((prev) => prev + 1);
     setItemsPerPage((prev) => prev + 2);
@@ -599,7 +602,7 @@ const Orders = () => {
       setLocationFilters((prev) => prev.filter((item) => item !== name));
     }
   };
-  
+
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex gap-2 rounded-xl bg-[#10191d] pr-4'>
@@ -630,11 +633,15 @@ const Orders = () => {
           <PopoverTrigger asChild>
             <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
               <IoLocationOutline size={20} stroke='#96B0BD' />
-              {
-                locationFilters.length == 0 ?
-                <span className='text-[#96B0BD]'>Anywhere</span> :
-                <span className='text-[#96B0BD]'>{ locationFilters.join(", ").length > 11 ? locationFilters.join(", ").slice(0,10) + "..." : locationFilters.join(", ") }</span>
-              }
+              {locationFilters.length == 0 ? (
+                <span className='text-[#96B0BD]'>Anywhere</span>
+              ) : (
+                <span className='text-[#96B0BD]'>
+                  {locationFilters.join(', ').length > 11
+                    ? locationFilters.join(', ').slice(0, 10) + '...'
+                    : locationFilters.join(', ')}
+                </span>
+              )}
               <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
                 {locationFilters.length}
               </span>
@@ -642,19 +649,19 @@ const Orders = () => {
           </PopoverTrigger>
           <PopoverContent
             align='end'
-            className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] pl-4 pr-1 py-4'
+            className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] py-4 pl-4 pr-1'
           >
-            <div className='max-h-[300px] overflow-y-auto country-list'>
-              <div className='sticky top-0 flex bg-[#1B272C] p-1 mb-1'>
-                <input 
-                  className='w-full px-7 relative text-[#96B0BD] border-[#96B0BD] border-2 bg-transparent rounded-full outline-none mobile:text-sm' 
+            <div className='country-list max-h-[300px] overflow-y-auto'>
+              <div className='sticky top-0 mb-1 flex bg-[#1B272C] p-1'>
+                <input
+                  className='relative w-full rounded-full border-2 border-[#96B0BD] bg-transparent px-7 text-[#96B0BD] outline-none mobile:text-sm'
                   onChange={(e) => {
                     setLocationText(e.target.value);
                   }}
                   value={locationText}
                 />
                 <svg
-                  className='absolute w-5 h-5 top-2 left-3'
+                  className='absolute left-3 top-2 h-5 w-5'
                   fill='none'
                   stroke='currentColor'
                   strokeWidth={1.5}
@@ -668,8 +675,7 @@ const Orders = () => {
                   />
                 </svg>
               </div>
-              {
-                countries.length > 0 ?
+              {countries.length > 0 ? (
                 <div className='flex flex-col gap-2'>
                   {countries.map((con, i) => {
                     return (
@@ -678,17 +684,16 @@ const Orders = () => {
                         category_name={con}
                         checked={locationFilters.includes(con)}
                         key={i}
-                        onCheckedChange={(value) =>
-                          onCheckedLocationChange(value, con, con)
-                        }
+                        onCheckedChange={(value) => onCheckedLocationChange(value, con, con)}
                       />
                     );
                   })}
-                </div> :
+                </div>
+              ) : (
                 <div className='flex flex-col gap-2'>
                   <span className='text-[#96B0BD]'>No results found</span>
                 </div>
-              }
+              )}
             </div>
           </PopoverContent>
         </Popover>
@@ -1491,7 +1496,9 @@ const Orders = () => {
                               strokeWidth='1.5'
                             />
                           </svg>
-                          {proposal?.gigPostDate ? `${formattedDate(proposal?.gigPostDate)} - Present` : "Present"} 
+                          {proposal?.gigPostDate
+                            ? `${formattedDate(proposal?.gigPostDate)} - Present`
+                            : 'Present'}
                         </div>
                       </div>
                     </div>

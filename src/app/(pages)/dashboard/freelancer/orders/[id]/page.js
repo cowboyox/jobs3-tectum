@@ -21,7 +21,7 @@ import PanelContainer from '@/components/elements/panel';
 import { Form } from '@/components/ui/form';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useGetClientGigContractById } from '@/hooks/useGetClientGigContractById';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';

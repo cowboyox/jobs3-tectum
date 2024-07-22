@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import api from '@/utils/api';
 import { PAYTOKEN_MINT, USER_ROLE } from '@/utils/constants';
 
@@ -179,7 +179,6 @@ const DashboardHeader = () => {
 
           setBalance(info.value.uiAmount);
         } catch (error) {
-          console.log('Error while getting balance of the wallet:', error);
           console.log('Error while getting balance of the wallet:', error);
           setBalance(0);
         }
@@ -355,11 +354,6 @@ const DashboardHeader = () => {
                   <h1>Balance</h1>
                 </div>
                 <div>
-                  {wallet?.publicKey ? (
-                    <h1 className='text-[#F5F5F5]'>$ {balance.toFixed(2)}</h1>
-                  ) : (
-                    <h1 className='text-sm text-[#F5F5F5]'>No Wallet Connected</h1>
-                  )}
                   {wallet?.publicKey ? (
                     <h1 className='text-[#F5F5F5]'>$ {balance.toFixed(2)}</h1>
                   ) : (

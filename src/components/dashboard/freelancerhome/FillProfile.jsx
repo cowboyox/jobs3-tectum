@@ -4,7 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 
 import { Button } from '@/components/ui/button';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { USER_ROLE } from '@/utils/constants';
 
 const FillProfile = () => {

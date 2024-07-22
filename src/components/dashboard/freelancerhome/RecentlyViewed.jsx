@@ -3,7 +3,7 @@ import Image from 'next/image';
 import React from 'react';
 import EmptyCard from '@/components/elements/emptyCard';
 
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useGetAllFLRecentViews } from '@/hooks/useGetAllFLRecentViews';
 import { getLocationType } from '@/utils/gigInfo';
 

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { fixHTMLEntities, timeSincePublication } from '@/utils/Helpers';
 
-const JobCard = ({ job }) => {
+const JobCard = ({ job, reason }) => {
   const [imageValid, setImageValid] = useState(false);
 
   const urlValidation = async (url) => {
@@ -124,6 +124,7 @@ const JobCard = ({ job }) => {
           </p>
         </div>
       </div>
+      <div className='pt-4 text-xl'>{reason}</div>
       <div className='card_footer'>
         <Link className='view_details' href={'/jobs/' + job.slug}>
           View Details
