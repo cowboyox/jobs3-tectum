@@ -45,9 +45,35 @@ import { useGetFreelancerGigById } from '@/hooks/useGetFreelancerGigById';
 import api from '@/utils/api';
 import { FileUploader } from 'react-drag-drop-files';
 import { AiOutlinePlus } from 'react-icons/ai';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+
+
+
+const all_form_structure = {
+  budget_mode: [
+    {
+      label: 'Hourly Rate',
+      value: 'hourly',
+    },
+    {
+      label: 'Fixed Price',
+      value: 'fixed',
+    },
+  ],
+  gig_from_to: {
+    // From
+    from_label: 'From',
+    from_placeholder: '36.00',
+    // To
+    to_label: 'To',
+    to_placeholder: '60.00',
+  },
+  gig_fixed_price: '36.00',
+};
 function FileUploadBody() {
   return (
-    <div className='flex w-full items-center justify-center rounded-xl pb-2 pt-2 cursor-pointer'>
+    <div className='flex w-full cursor-pointer items-center justify-center rounded-xl pb-2 pt-2'>
       <PiExportThin className='mr-2 h-[24px] w-[24px] text-[#A0B4C0]' />
       <p className='text-center'>
         <span className='text-base text-[#A0B4C0]'>Upload</span>
@@ -76,6 +102,7 @@ const EditGig = () => {
   const { data: gigInfo, refetch: refetchGig } = useGetFreelancerGigById(gigId);
   const [isAuth, setIsAuth] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
+  const [budgetMode, setBudgetMode] = useState('hourly');
 
   const categories_list = [
     {
@@ -463,10 +490,18 @@ const EditGig = () => {
         subCategory: gigInfo.subCategory,
         tags: gigInfo.searchKeywords,
         video: gigInfo.gallery?.video,
+        paymentType: gigInfo?.paymentType,
+        minBudget: gigInfo.minBudget,
+        maxBudget: gigInfo.maxBudget,
+        initialConcept: gigInfo.initialConcept,
+        instantBuy: gigInfo.instantBuy,
       });
+      setBudgetMode(gigInfo.paymentType === 1 ? 'hourly' : 'fixed');
       setIsAuth(auth.currentProfile?._id === gigInfo.creator?._id);
     }
   }, [gigInfo, auth]);
+
+  console.log("gigInfo", gigInfo);
 
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);
@@ -641,15 +676,15 @@ const EditGig = () => {
   };
   const DocumentFileChanged = (file) => {
     let tmp = [];
-    const filesArray = (Array.from(file)).slice(0,2);
+    const filesArray = Array.from(file).slice(0, 2);
     filesArray.map((fi) => tmp.push(fi));
     setDocumentFiles(filesArray);
   };
-  console.log("formInfo", formInfo);
+  console.log('formInfo', formInfo);
   return (
     <StepProvider>
       <div className='flex w-full flex-col'>
-        <nav className='mobile:overflow-x-scroll flex w-full flex-nowrap rounded-t-xl bg-[#10191d]'>
+        <nav className='flex w-full flex-nowrap rounded-t-xl bg-[#10191d] mobile:overflow-x-scroll'>
           <StepNavItem isEdit name='Overview' num={1} />
           <StepNavItem isEdit name='Pricing' num={2} />
           <StepNavItem isEdit name='Description' num={3} />
@@ -659,7 +694,7 @@ const EditGig = () => {
         </nav>
         <Form {...form}>
           <form
-            className='mobile:px-3 mx-auto mt-10 flex w-full max-w-3xl flex-col gap-6 rounded-xl bg-[#10191d] p-7'
+            className='mx-auto mt-10 flex w-full max-w-3xl flex-col gap-6 rounded-xl bg-[#10191d] p-7 mobile:px-3'
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormStep stepOrder={1}>
@@ -685,7 +720,7 @@ const EditGig = () => {
                 <p className='text-base text-[#96B0BD]'>
                   Choose the category and subcategory most suitable for your Gig
                 </p>
-                <div className='mobile:flex-col flex gap-3'>
+                <div className='flex gap-3 mobile:flex-col'>
                   <FormItem className='flex w-full flex-col gap-2'>
                     <FormControl>
                       <Select
@@ -783,7 +818,7 @@ const EditGig = () => {
               </div>
             </FormStep>
             <FormStep stepOrder={2}>
-              <FormItem className='flex flex-col gap-2'>
+              {/* <FormItem className='flex flex-col gap-2'>
                 <FormLabel className='text-2xl text-[#F5F5F5]'>Setup price</FormLabel>
                 <FormControl>
                   <Input
@@ -846,7 +881,214 @@ const EditGig = () => {
                   </Select>
                 </FormControl>
                 <FormMessage />
+              </FormItem> */}
+              <FormItem className='mt-8'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>Setup Price</FormLabel>
+                <RadioGroup
+                  className='flex flex-col gap-3 pt-3'
+                  defaultValue={formInfo.paymentType === 1 ? all_form_structure.budget_mode[0].value : all_form_structure.budget_mode[1].value}
+                  onValueChange={(val) => {
+                    setBudgetMode(val);
+                    setFormInfo((prev) => ({
+                      ...prev,
+                      gigPaymentType: val === 'hourly' ? 1 : 0,
+                      gigPrice: val === 'hourly' ? 0 : prev.gigPrice,
+                      maxBudget: val === 'hourly' ? prev.maxBudget : 0,
+                      minBudget: val === 'hourly' ? prev.minBudget : 0,
+                    }));
+                  }}
+                >
+                  {all_form_structure.budget_mode.map((budget_option, key) => (
+                    <div className='items-centerspace-x-2 flex w-full flex-col px-0 py-0' key={key}>
+                      <div
+                        className={`flex w-full items-center gap-2 space-x-2 rounded-t-xl border border-slate-500 px-3 py-0 ${budgetMode !== budget_option.value ? 'rounded-xl' : 'bg-[#28373E]'}`}
+                      >
+                        <RadioGroupItem
+                          className='h-4 w-4'
+                          id={budget_option.value}
+                          value={budget_option.value}
+                        />
+                        <Label
+                          className='w-full cursor-pointer py-7 text-xl text-slate-300'
+                          htmlFor={budget_option.value}
+                        >
+                          {budget_option.label}
+                        </Label>
+                      </div>
+                      {budgetMode == 'hourly' && budget_option.value == 'hourly' && (
+                        <div
+                          className='flex w-full flex-col items-center justify-center gap-5 rounded-b-xl border border-[#526872] bg-[#1B272C] px-3 xl:flex-row'
+                          key={key}
+                        >
+
+                              <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                                <FormLabel className='text-base font-normal text-[#96B0BD]'>
+                                  {all_form_structure.gig_from_to.from_label}
+                                </FormLabel>
+                                <FormControl>
+                                  <div className='relative w-full pr-7'>
+                                    <Input
+                                      className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                      min={0}
+                                      onChange={(e) =>
+                                        setFormInfo((prev) => ({
+                                          ...prev,
+                                          minBudget: parseInt(e.target.value),
+                                        }))
+                                      }
+                                      placeholder={all_form_structure.gig_from_to.from_placeholder}
+                                      type='number'
+                                      value={formInfo.minBudget}
+                                    />
+                                    <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      $
+                                    </span>
+                                    <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      /hr
+                                    </span>
+                                  </div>
+                                </FormControl>
+                              </FormItem>
+                              <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                                <FormLabel className='text-base font-normal text-[#96B0BD]'>
+                                  {all_form_structure.gig_from_to.to_label}
+                                </FormLabel>
+                                <FormControl>
+                                  <div className='relative w-full pr-7'>
+                                    <Input
+                                      className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                      min={0}
+                                      onChange={(e) => {
+                                        setFormInfo((prev) => ({
+                                          ...prev,
+                                          maxBudget: parseInt(e.target.value),
+                                        }));
+                                      }}
+                                      placeholder={all_form_structure.gig_from_to.to_placeholder}
+                                      type='number'
+                                      value={formInfo.maxBudget}
+                                    />
+                                    <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      $
+                                    </span>
+                                    <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      /hr
+                                    </span>
+                                  </div>
+                                </FormControl>
+                              </FormItem>
+                        </div>
+                      )}
+                      {budgetMode == 'fixed' && budget_option.value == 'fixed' && (
+                           <FormItem className='flex w-full rounded-b-xl border border-[#526872] bg-[#1B272C] pl-3 pr-5'>
+                              <FormControl>
+                                <div className='relative my-4 w-full'>
+                                  <Input
+                                    className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                    min={0}
+                                    onChange={(e) => {
+                                      setFormInfo((prev) => ({
+                                        ...prev,
+                                        gigPrice: parseInt(e.target.value),
+                                      }));
+                                    }}
+                                    placeholder={all_form_structure.gig_fixed_price}
+                                    type='number'
+                                    value={formInfo.gigPrice}
+                                  />
+                                  <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                    $
+                                  </span>
+                                </div>
+                              </FormControl>
+                            </FormItem>
+                      )}
+                    </div>
+                  ))}
+                </RadioGroup>
               </FormItem>
+
+              <FormItem className='flex w-full flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Revisions</FormLabel>
+                <FormControl>
+                  <Select defaultValue={String(formInfo.revision)} onValueChange={(e) => setFormInfo((prev) => ({ ...prev, revision: e }))}>
+                    <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                      <SelectValue placeholder='Revisions' />
+                    </SelectTrigger>
+                    <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                      <SelectGroup>
+                        {Array.from({ length: 31 }, (_, i) => (
+                          <SelectItem key={i + 1} value={`${i + 1}`}>
+                            {i}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+
+              <FormItem className='flex w-full flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>Delivery time</FormLabel>
+                <FormControl>
+                  <Select defaultValue={formInfo.deliveryTime} onValueChange={(e) => setFormInfo((prev) => ({ ...prev, deliveryTime: e }))}>
+                    <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                      <SelectValue placeholder='Select' />
+                    </SelectTrigger>
+                    <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                      <SelectGroup>
+                        {Array.from({ length: 60 }, (_, i) => (
+                          <SelectItem key={i + 1} value={`${i + 1} days`}>
+                            {i + 1} day{i + 1 > 1 ? 's' : ''}
+                          </SelectItem>
+                        ))}
+                        <SelectItem value='+ 2 months'>+ 2 Months</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+
+              <FormItem className='flex w-full flex-col gap-2'>
+                <FormLabel className='text-2xl text-[#F5F5F5]'>
+                  Number Of Initial Concepts
+                </FormLabel>
+                <FormControl>
+                  <Select defaultValue={formInfo.initialConcept} onValueChange={(e) => setFormInfo((prev) => ({ ...prev, initialConcept: e }))}>
+                    <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                      <SelectValue placeholder='Select' />
+                    </SelectTrigger>
+                    <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                      <SelectGroup>
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <SelectItem key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+
+              <FormItem className=''>
+                <FormLabel className='mb-4 text-2xl font-semibold'>Setup Price</FormLabel>
+                <div
+                  className={`flex w-full cursor-pointer gap-6 rounded-[15px] border border-[#3E525B] py-[25px] pl-[24px] pr-[16px] ${formInfo.instantBuy && 'bg-[#28373E]'}`}
+                  onClick={() => setFormInfo((prev) => ({ ...prev, instantBuy: !prev.instantBuy }))}
+                >
+                  <div
+                    className={`h-6 w-6 rounded-full border border-[#A0B4C0] ${formInfo.instantBuy && 'border-8 border-[#E0F0F9]'}`}
+                  ></div>
+                  <div className='text-[18px]'>Instant Buy</div>
+                </div>
+              </FormItem>
+              <div className='text-[#96B0BD]'>
+                Allow buyers to purchase your gig instantly without needing to apply
+              </div>
             </FormStep>
             <FormStep stepOrder={3}>
               <FormItem className='flex flex-col gap-2'>
@@ -908,7 +1150,7 @@ const EditGig = () => {
               )}
             </FormStep>
             <FormStep stepOrder={5}>
-              <div className='mobile:text-xl text-3xl text-[#F5F5F5]'>
+              <div className='text-3xl text-[#F5F5F5] mobile:text-xl'>
                 Showcase your services in a Gig gallery. Drag and drop your files here or{' '}
                 <span className='main_color'>browse</span> to upload
               </div>
@@ -992,7 +1234,7 @@ const EditGig = () => {
                           height={175}
                           alt='imageFile'
                         />
-                      ) : formInfo?.images?.length > key && formInfo?.images[key]? (
+                      ) : formInfo?.images?.length > key && formInfo?.images[key] ? (
                         <Image
                           className='relative flex h-[178px] w-full items-center justify-center rounded-xl border-[#526872] object-cover'
                           src={formInfo?.images[key]}
@@ -1035,7 +1277,7 @@ const EditGig = () => {
                             onClick={() => onRemoveImage(index)}
                           >
                             <MdOutlineAttachFile size={'20px'} />
-                            <span className='mobile:w-[80%] overflow-hidden'>{item.name}</span>
+                            <span className='overflow-hidden mobile:w-[80%]'>{item.name}</span>
                           </div>
                         );
                       })}
@@ -1051,7 +1293,7 @@ const EditGig = () => {
                             key={index}
                           >
                             <MdOutlineAttachFile size={'20px'} />
-                            <span className='mobile:w-[80%] overflow-hidden'>
+                            <span className='overflow-hidden mobile:w-[80%]'>
                               {String(item).split('/').pop() || ''}
                             </span>
                           </div>
