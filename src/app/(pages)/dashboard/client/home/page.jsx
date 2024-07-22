@@ -11,6 +11,7 @@ import RecentlyViewed from '@/components/home/RecentlyViewed';
 import { useGetFreelancers } from '@/hooks/useGetFreelancersBySkills';
 import searchOptions from '../freelancers/searchOptions';
 import { useHandleResize } from '@/hooks/useHandleResize';
+import api from '@/utils/api';
 
 
 const Page = () => {
@@ -56,7 +57,7 @@ const Page = () => {
             profile.reason = reasons[index];
             return profile;
           });
-          setFilteredFreelancers(profiles);
+          setAllFreelancers(profiles);
           setLoading(false);
         }
       });
@@ -120,6 +121,7 @@ const Page = () => {
           allFreelancers={allFreelancers}
           canLoadMore={canLoadMore}
           setCanLoadMore={setCanLoadMore}
+          loading={loading}
         />
       </div>
     </div>
