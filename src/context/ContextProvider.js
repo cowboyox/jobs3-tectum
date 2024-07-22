@@ -105,7 +105,6 @@ export const ContextProvider = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [newMessages, setNewMessages] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState([]);
   const [lastMessage, setLastMessage] = useState(new Map());
 
@@ -113,8 +112,6 @@ export const ContextProvider = ({ children }) => {
     if (currentProfile?._id) {
       socket?.on('newMessage', (message) => {
         if (message.receiverId === currentProfile._id) {
-          setNewMessages((prev) => [...prev, message]);
-
           if (!pathname.includes(`inbox/${message.senderId}`)) {
             setUnreadMessages((prev) => {
               const filtered = prev.filter((p) => p.timeStamp !== message.timeStamp);
@@ -547,7 +544,6 @@ export const ContextProvider = ({ children }) => {
         loader: [loadCompleted, setLoadCompleted],
         loading3D: [load3D, setLoad3D],
         login,
-        newMessages,
         preloader: [loading, setLoading],
         register,
         scroll: [scrollPause, setScrollPause],
@@ -555,7 +551,6 @@ export const ContextProvider = ({ children }) => {
         setCurrentProfile,
         setCurrentRole,
         setLastMessage,
-        setNewMessages,
         setRole,
         setUnreadMessages,
         signInwithWallet,

@@ -99,25 +99,15 @@ const ChatPage = ({ profileId }) => {
   );
 
   useEffect(() => {
-    console.log('here');
     const func = async () => {
       await refetchMessages();
 
       auth?.setUnreadMessages((prev) => prev.filter((p) => p.senderId !== profileId));
-      auth?.setNewMessages((prev) => prev.filter((p) => p.senderId !== profileId));
     };
 
     func();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refetchMessages, profileId, auth?.setUnreadMessages, auth?.setNewMessages]);
-
-  useEffect(() => {
-    if (auth?.newMessages?.length > 0) {
-      const newMsgs = auth.newMessages.filter((prev) => prev.senderId === profileId);
-
-      setConversation((prev) => [...prev, ...newMsgs]);
-    }
-  }, [auth?.newMessages, profileId]);
+  }, [refetchMessages, profileId, auth?.setUnreadMessages]);
 
   useEffect(() => {
     if (messages) {
@@ -142,6 +132,10 @@ const ChatPage = ({ profileId }) => {
           status === 'online' ? 'bg-green-500' : status === 'idle' ? 'bg-yellow-500' : 'bg-gray-500'
         );
       }
+    });
+
+    socket?.on('newMessage', (message) => {
+      setConversation((prevMessages) => [...prevMessages, message]);
     });
 
     return () => {
