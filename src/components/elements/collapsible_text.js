@@ -30,7 +30,7 @@ const CollapsibleText = ({ previewText, expandedText, isEditBio, setBio, bio }) 
     <div className='relative'>
       {!isEditBio ? (
         <div className='w-full'>
-          <pre className='break-all'>
+          <pre className='whitespace-pre-wrap break-all'>
           {
             bio.length < descriptionTextMaxLength
               ? bio

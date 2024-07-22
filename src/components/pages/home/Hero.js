@@ -4,28 +4,56 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import Marquee from 'react-fast-marquee';
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import searchOptions from 'src/app/(pages)/dashboard/client/freelancers/searchOptions';
 const Hero = () => {
   const router = useRouter();
   const [search, setSearch] = useState();
+  const [searchType, setSearchType] = useState('normal');
 
   const searchQuery = (e) => {
     e.preventDefault();
-    router.push(`/jobs?search=${search}`);
+    router.push(`/jobs?search=${search}&type=${searchType}`);
   };
-
+  const onChangeType = (value) => {
+    setSearchType(value);
+  };
   return (
     <div className='hero_section'>
       <div className='section_content'>
         <h1>YOUR WEB3 CAREER STARTS HERE</h1>
         <p>Decentralising and globalising the employment landscape</p>
-        <form onSubmit={(e) => searchQuery(e)}>
+        <form onSubmit={(e) => searchQuery(e)} className='flex items-center'>
+          <Select
+            className='mr-2 flex-shrink-0 bg-transparent'
+            defaultValue='normal'
+            onValueChange={(e) => onChangeType(e)}
+          >
+            <SelectTrigger className='w-15 rounded-xl bg-transparent mobile:w-14 mobile:p-2'>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='rounded-xl bg-transparent'>
+              <SelectGroup>
+                <SelectItem value='normal'>{searchOptions[0].icon}</SelectItem>
+                <SelectItem value='ai'>{searchOptions[1].icon}</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <input
             onChange={(e) => setSearch(e.target.value)}
             placeholder='Search: Frontend developer, Marketing, Binance, etc.'
             type='text'
+            className='flex-grow rounded-md border px-4 py-2'
           />
-          <button>
+
+          {/* <button>
             <svg
               className='h-6 w-6'
               fill='none'
@@ -40,7 +68,7 @@ const Hero = () => {
                 strokeLinejoin='round'
               />
             </svg>
-          </button>
+          </button> */}
         </form>
         {/* <div className="sl_counters" >
 					<div className="single_counter">

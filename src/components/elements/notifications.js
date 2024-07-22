@@ -19,6 +19,7 @@ import { useGetClientGigById } from '@/hooks/useGetClientGigById';
 import { useGetFreelancerGigById } from '@/hooks/useGetFreelancerGigById';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
 import { USER_ROLE } from '@/utils/constants';
+import { timeDifference } from '@/utils/Helpers';
 
 const NotificationMessageItem = ({ msg }) => {
   const { data: userInfo } = useGetUserInfo(msg.senderId);
@@ -55,12 +56,7 @@ const NotificationMessageItem = ({ msg }) => {
           <p className={`text-sm text-[#96B0BD]`}>
             <strong className='text-white'>{userInfo?.fullName}</strong> {msg.messageText}
           </p>
-          <p className='text-xs text-[#96B0BD]'>
-            {new Date(msg.timeStamp).toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </p>
+          <p className='text-xs text-[#96B0BD]'>{timeDifference(msg.timeStamp)}</p>
         </div>
         <GoInbox className='my-auto ml-auto h-5 w-5 cursor-pointer fill-[#96B0BD]' />
       </div>
