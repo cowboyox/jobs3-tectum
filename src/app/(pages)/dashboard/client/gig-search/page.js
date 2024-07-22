@@ -307,19 +307,17 @@ const GigSearch = () => {
 
   const aiSearch = () => {
     setLoading(true);
-    // api.get(`/api/v1/freelancer_gig/ai-search/${searchKeywords}`).then((data) => {
-    //   let ai_ids = [];
-    //   if (data.data.profileIDs) ai_ids = data.data.profileIDs;
-    //   const ai_filtered = ai_ids
-    //     .map((id) => gigList.find((gig) => gig._id.toString() === id))
-    //     .filter((gig) => gig != undefined)
-    //     .map((gig, index) => {
-    //       gig.reason = data.data.reasons[index];
-    //       return gig;
-    //     });
-    //   setLoading(false);
-    //   setFilteredGigList(ai_filtered);
-    // });
+    api.get(`/api/v1/freelancer_gig/ai-search/${searchKeywords}`).then((data) => {
+      let gigs = data.data.gigs;
+      let reasons = data.data.reasons;
+      gigs = gigs.map((gig, index) => {
+        gig.reason = reasons[index];
+        return gig;
+      });
+      console.log('new', gigs);
+      setLoading(false);
+      setFilteredGigList(gigs);
+    });
   };
 
   const handleKeyDown = (e) => {
