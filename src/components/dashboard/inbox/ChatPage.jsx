@@ -99,6 +99,7 @@ const ChatPage = ({ profileId }) => {
   );
 
   useEffect(() => {
+    console.log('here');
     const func = async () => {
       await refetchMessages();
 
@@ -114,7 +115,7 @@ const ChatPage = ({ profileId }) => {
     if (auth?.newMessages?.length > 0) {
       const newMsgs = auth.newMessages.filter((prev) => prev.senderId === profileId);
 
-      setConversation((prev) => [...prev, newMsgs]);
+      setConversation((prev) => [...prev, ...newMsgs]);
     }
   }, [auth?.newMessages, profileId]);
 

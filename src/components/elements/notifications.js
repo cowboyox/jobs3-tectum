@@ -158,7 +158,7 @@ const Notifications = ({ className }) => {
       <DropdownMenuTrigger className={className}>
         <div className='relative cursor-pointer rounded-xl bg-[#10191D] p-3'>
           <CiBellOn className='h-7 w-7 fill-[#96B0BD]' />
-          {auth?.newMessages?.length > 0 && (
+          {auth?.unreadMessages?.length > 0 && (
             <div className='absolute right-0 top-0 h-3 w-3 rounded-full bg-[#dc4f14]' />
           )}
         </div>
@@ -196,8 +196,8 @@ const Notifications = ({ className }) => {
           </TabsList>
           <TabsContent className='flex flex-col gap-5' value='Inbox'>
             <div className='mt-6 flex flex-col gap-5'>
-              {auth?.newMessages.length > 0 &&
-                auth.newMessages.map((msg, index) => {
+              {auth?.unreadMessages.length > 0 &&
+                auth.unreadMessages.map((msg, index) => {
                   return <NotificationMessageItem key={index} msg={msg} />;
                 })}
               {/* <NotificationItem

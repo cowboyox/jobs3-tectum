@@ -42,7 +42,6 @@ const MessageItem = ({ user }) => {
   const [unReadCount, setUnReadCount] = useState(0);
   const [lastMessage, setLastMessage] = useState();
   const [userStatusColor, setUserStatusColor] = useState('bg-gray-500');
-  const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
   const { data: currentProfile, refetch: refetchUserInfo } = useGetUserInfo(
     auth?.currentProfile?._id
   );
@@ -82,19 +81,10 @@ const MessageItem = ({ user }) => {
   }, [user.status]);
 
   useEffect(() => {
-    if (isSelected) {
-      socket.emit('readMessage', { from: user._id, to: auth.currentProfile._id });
-      setUnReadCount(0);
+    if (auth?.unreadMessages) {
+      setUnReadCount(auth?.unreadMessages.filter((u) => u.senderId === user._id).length);
     }
-  }, [auth?.currentProfile?._id, isSelected, socket, user._id]);
-
-  useEffect(() => {
-    socket.on('messagesRead', (data) => {
-      if (data.senderId === user._id && data.receiverId === auth?.currentProfile?._id) {
-        refetch();
-      }
-    });
-  }, [socket, auth?.currentProfile?._id, user._id, refetch]);
+  }, [auth?.unreadMessages, user._id]);
 
   useEffect(() => {
     if (auth?.lastMessage?.get(user._id)) {
@@ -122,23 +112,6 @@ const MessageItem = ({ user }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentProfile, auth?.setCurrentProfile]);
-
-  useEffect(() => {
-    if (usersWithMessages?.messages && auth?.currentProfile?._id) {
-      const unReadCount = usersWithMessages.messages.filter(
-        (message) =>
-          message.senderId._id === user._id &&
-          message.receiverId._id === auth.currentProfile._id &&
-          !message.read
-      ).length;
-
-      if (usersWithMessages.messages.length > 0) {
-        setLastMessage(usersWithMessages.messages[usersWithMessages.messages.length - 1]);
-      }
-
-      setUnReadCount(unReadCount);
-    }
-  }, [usersWithMessages?.messages, auth?.currentProfile?._id, user._id]);
 
   const handleAddFavorite = async () => {
     if (auth?.currentProfile?._id) {
