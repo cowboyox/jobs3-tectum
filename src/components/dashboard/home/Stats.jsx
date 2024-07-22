@@ -213,8 +213,10 @@ const Stats = ({
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && searchType === 'ai') {
-      // aiSearch();
+    if (e.key === 'Enter' && searchType === searchOptions[1]) {
+      setIsAiSearch(true);
+    } else {
+      setIsAiSearch(false);
     }
   };
 
