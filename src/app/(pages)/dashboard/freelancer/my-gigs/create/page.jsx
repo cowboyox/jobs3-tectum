@@ -558,6 +558,8 @@ const CreateGig = () => {
     values.gigPrice = postData.gigPrice;
     values.minBudget = postData.minBudget;
     values.maxBudget = postData.maxBudget;
+    values.gigCategory = currentCategory;
+    values.subCategory = currentSub;
     // if (profile) {
     //   values.creator = profile._id;
     // }
@@ -601,8 +603,7 @@ const CreateGig = () => {
       },
     };
 
-    console.log('values', values);
-
+    console.log("values", values);
     await api
       .post('/api/v1/freelancer_gig/post_gig', values)
       .then(async (gigData) => {
@@ -646,6 +647,7 @@ const CreateGig = () => {
         });
       });
   }
+
 
   return (
     <StepProvider>
@@ -809,7 +811,7 @@ const CreateGig = () => {
                         setBudgetMode(val);
                         setPostData((prev) => ({
                           ...prev,
-                          gigPaymentType: val === 'hourly' ? 1 : 0,
+                          paymentType: val === 'hourly' ? 1 : 0,
                           gigPrice: val === 'hourly' ? 0 : prev.gigPrice,
                           maxBudget: val === 'hourly' ? prev.maxBudget : 0,
                           minBudget: val === 'hourly' ? prev.minBudget : 0,
@@ -1013,12 +1015,11 @@ const CreateGig = () => {
                         </SelectTrigger>
                         <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
                           <SelectGroup>
-                            {Array.from({ length: 60 }, (_, i) => (
-                              <SelectItem key={i + 1} value={`${i + 1} days`}>
-                                {i + 1} day{i + 1 > 1 ? 's' : ''}
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <SelectItem key={i + 1} value={`${i + 1}`}>
+                                {i + 1}
                               </SelectItem>
                             ))}
-                            <SelectItem value='+ 2 months'>+ 2 Months</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
