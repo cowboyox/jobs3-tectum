@@ -6,7 +6,7 @@ import { GiLaurelCrown } from 'react-icons/gi';
 import { MdVerified } from 'react-icons/md';
 import { RiPoliceBadgeLine } from 'react-icons/ri';
 
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { getAllCLRecentViews } from '@/utils/http';
 
 const RecentlyViewed = ({ search }) => {

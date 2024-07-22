@@ -6,7 +6,7 @@ import BlankView from './Blank';
 import CreateRow from './CreateRow';
 import TabView from './TabView';
 
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useGetFLGigsPostedByProfileId } from '@/hooks/useGetFLGigsPostedByProfileId';
 
 const GigsPage = ({params}) => {

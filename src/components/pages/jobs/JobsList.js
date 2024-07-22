@@ -6,7 +6,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import JobCard from '@/components/elements/JobCard';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import FetchThis from '@/utils/FetchThis';
 import { manipulateIds } from '@/utils/Helpers';
 

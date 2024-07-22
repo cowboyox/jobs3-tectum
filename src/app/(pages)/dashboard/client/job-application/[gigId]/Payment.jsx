@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 import { useToast } from '@/components/ui/use-toast';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useGetFreelancerGigById } from '@/hooks/useGetFreelancerGigById';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';

@@ -6,7 +6,7 @@ import { useAnchorWallet } from '@solana/wallet-adapter-react';
 
 import Job from '@/components/dashboard/jobapplication/Job';
 import { useToast } from '@/components/ui/use-toast';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useGetClientGigById } from '@/hooks/useGetClientGigById';
 import api from '@/utils/api';
 

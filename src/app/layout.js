@@ -3,7 +3,7 @@ import './globals.css';
 
 import { Web3Modal } from '@/components/pages/auth/wallet-connect';
 import { Toaster } from '@/components/ui/toaster';
-import ContextProvider from '@/context/ContextProvider';
+import { ContextProvider } from '@/context/ContextProvider';
 import { SocketProvider } from '@/context/socket';
 import { ParentWalletContextProvider } from '@/context/WalletContextProvider';
 

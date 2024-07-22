@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { useToast } from '@/components/ui/use-toast';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 
 const Signin = () => {
   const { toast } = useToast();

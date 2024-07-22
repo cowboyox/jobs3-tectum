@@ -14,8 +14,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useSocket } from '@/context/socket';
-import { useCustomContext } from '@/context/use-custom';
+import { useGetLastMessage } from '@/hooks/useGetLastMessage';
 import { useGetMembersWithMessages } from '@/hooks/useGetMembersWithMessages';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
 import api from '@/utils/api';
@@ -45,6 +46,22 @@ const MessageItem = ({ user }) => {
   const { data: currentProfile, refetch: refetchUserInfo } = useGetUserInfo(
     auth?.currentProfile?._id
   );
+  const { data: lastMsg } = useGetLastMessage(auth?.currentProfile?._id, user._id);
+
+  useEffect(() => {
+    if (lastMsg) {
+      auth?.setLastMessage((prev) => {
+        const res = new Map(prev);
+        res.set(
+          lastMsg.senderId === auth.currentProfile?._id ? lastMsg.receiverId : lastMsg.senderId,
+          lastMsg
+        );
+
+        return res;
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastMsg, auth?.setLastMessage]);
 
   useEffect(() => {
     if (pathname?.split('/').pop() === user._id) {
@@ -100,10 +117,11 @@ const MessageItem = ({ user }) => {
   }, [socket, user._id]);
 
   useEffect(() => {
-    if (currentProfile && auth) {
-      auth.setCurrentProfile(currentProfile);
+    if (currentProfile) {
+      auth?.setCurrentProfile(currentProfile);
     }
-  }, [currentProfile, auth]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentProfile, auth?.setCurrentProfile]);
 
   useEffect(() => {
     if (usersWithMessages?.messages && auth?.currentProfile?._id) {
@@ -120,7 +138,7 @@ const MessageItem = ({ user }) => {
 
       setUnReadCount(unReadCount);
     }
-  }, [usersWithMessages?.messages, auth.currentProfile._id, user._id]);
+  }, [usersWithMessages?.messages, auth?.currentProfile?._id, user._id]);
 
   const handleAddFavorite = async () => {
     if (auth?.currentProfile?._id) {
@@ -236,24 +254,10 @@ const MessageItem = ({ user }) => {
 const InboxPage = ({ children }) => {
   const auth = useCustomContext();
   const [users, setUsers] = useState([]);
-  const socket = useSocket();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState(users);
-  const { data: usersWithMessages, refetch } = useGetMembersWithMessages(auth?.currentProfile?._id);
-
-  useEffect(() => {
-    socket?.on('newMessage', (data) => {
-      auth?.setLastMessage((prev) => {
-        const res = new Map(prev);
-        res.set(data.senderId, data);
-
-        return res;
-      });
-
-      socket.emit('readMessage', { from: data.receiverId, to: data.senderId });
-    });
-  }, [auth, auth?.currentProfile?._id, refetch, socket]);
+  const { data: usersWithMessages } = useGetMembersWithMessages(auth?.currentProfile?._id);
 
   useEffect(() => {
     if (usersWithMessages) {
@@ -271,8 +275,6 @@ const InboxPage = ({ children }) => {
     );
     setFilteredUsers(filtered);
   };
-
-  console.log(filteredUsers);
 
   return (
     <div className='inbox-page border-t border-[#28373E]'>

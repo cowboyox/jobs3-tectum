@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { COUNTRIES_OPTIONS } from '@/utils/constants';
 import api from '@/utils/api';
 import MultipleSelector, { Option } from '@/components/ui/multiple-selector';

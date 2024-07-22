@@ -4,7 +4,7 @@ import { FaRegUser } from 'react-icons/fa';
 import { IoIosMore } from 'react-icons/io';
 import { MdAccessTime } from 'react-icons/md';
 
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { minutesDifference } from '@/utils/Helpers';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 

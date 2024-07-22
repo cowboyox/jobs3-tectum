@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import api from '@/utils/api';
 import { PAYTOKEN_MINT, USER_ROLE } from '@/utils/constants';
 

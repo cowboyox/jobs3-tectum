@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useCustomContext } from '@/context/use-custom';
+import { useCustomContext } from '@/context/ContextProvider';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllFreelancerOrdersProposed } from '@/hooks/useGetAllFreelancerOrdersProposed';
 import { useHandleResize } from '@/hooks/useHandleResize';
