@@ -202,10 +202,10 @@ const ChatPage = ({ profileId }) => {
     if (auth?.currentProfile?._id) {
       api
         .put(`${APIS.ADD_FAVORITES}/${auth.currentProfile._id}/${profileId}`)
-        .then(async () => {
+        .then(() => {
           auth.setCurrentProfile({
             ...auth.currentProfile,
-            favorites: [...currentProfile.favorites, profileId],
+            favorites: [...auth.currentProfile.favorites, profileId],
           });
 
           return toast({
@@ -232,10 +232,10 @@ const ChatPage = ({ profileId }) => {
     if (auth?.currentProfile?._id) {
       api
         .put(`${APIS.REMOVE_FAVORITES}/${auth.currentProfile._id}/${profileId}`)
-        .then(async () => {
+        .then(() => {
           auth.setCurrentProfile({
             ...auth.currentProfile,
-            favorites: currentProfile.favorites.filter((prev) => prev !== profileId),
+            favorites: auth.currentProfile.favorites.filter((prev) => prev !== profileId),
           });
 
           return toast({
