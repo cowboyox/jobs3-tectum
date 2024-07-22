@@ -1,8 +1,8 @@
 'use client';
 
+import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { useAnchorWallet } from '@solana/wallet-adapter-react';
 
 import Job from '@/components/dashboard/jobapplication/Job';
 import { useToast } from '@/components/ui/use-toast';
@@ -41,7 +41,7 @@ const Page = () => {
         title: <h1 className='text-center'>Error</h1>,
         variant: 'destructive',
       });
-      router.push(`/signin`)
+      router.push(`/signin`);
       return;
     }
     if (!wallet) {
@@ -58,11 +58,16 @@ const Page = () => {
 
     values.freelancerId = auth.currentProfile._id;
     values.proposalText = coverLetter;
-    values.profileId = gigInfo?.data?.data?.profileId;
+    values.profileId = gigInfo?.data?.data?.profileId._id;
 
     await api
       .post(`/api/v1/bidding/${gigId}/apply-to-clientgig`, values)
       .then(async () => {
+        socket.emit('freelancer_applied_job', {
+          clientId: gigInfo?.data?.data?.profileId._id,
+          freelancerId: auth.currentProfile._id,
+          gigId,
+        });
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',

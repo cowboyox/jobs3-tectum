@@ -106,7 +106,8 @@ export const ContextProvider = ({ children }) => {
   const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [unreadMessages, setUnreadMessages] = useState([]);
-  const [unreadOrders, setUnreadOrders] = useState([]);
+  const [unreadClientOrders, setUnreadClientOrders] = useState([]);
+  const [unreadFreelancerOrders, setUnreadFreelancerOrders] = useState([]);
   const [lastMessage, setLastMessage] = useState(new Map());
 
   useEffect(() => {
@@ -133,7 +134,17 @@ export const ContextProvider = ({ children }) => {
 
     socket?.on('client_applied', (data) => {
       if (data.freelancerId === currentProfile._id) {
-        setUnreadOrders((prev) => {
+        setUnreadClientOrders((prev) => {
+          const filtered = prev.filter((p) => p.gigId !== data.gigId);
+
+          return [...filtered, data];
+        });
+      }
+    });
+
+    socket?.on('freelancer_applied', (data) => {
+      if (data.clientId === currentProfile._id) {
+        setUnreadFreelancerOrders((prev) => {
           const filtered = prev.filter((p) => p.gigId !== data.gigId);
 
           return [...filtered, data];
@@ -144,6 +155,7 @@ export const ContextProvider = ({ children }) => {
     return () => {
       socket?.off('newMessage');
       socket?.off('client_applied');
+      socket?.off('freelancer_applied');
     };
   }, [socket, currentProfile?._id, pathname]);
 
@@ -568,8 +580,9 @@ export const ContextProvider = ({ children }) => {
         signInwithWallet,
         signOut,
         signUpwithWallet,
+        unreadClientOrders,
+        unreadFreelancerOrders,
         unreadMessages,
-        unreadOrders,
         verifyOTP,
         verifyOTPPassword,
       }}
