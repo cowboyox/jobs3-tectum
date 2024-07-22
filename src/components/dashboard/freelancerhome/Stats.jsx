@@ -480,6 +480,7 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
               <PopoverContent
                 align='end'
                 className='my-5 flex w-full flex-col gap-4 rounded-xl bg-[#10191D] px-6 py-4'
+                side='left'
               >
                 <div className='grid grid-cols-1 gap-4'>
                   {filterCategories.map((item, index) => {
@@ -491,12 +492,12 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
                             <Select
                               id={item.title}
                               onValueChange={(e) => onSelectChange(e)}
-                              value={
-                                (() => {
-                                  const returns_value = item.content.filter((_item) => filters.map((f) => f.name).includes(_item.category_name));
-                                  return returns_value[0];
-                                })()
-                              }
+                              value={(() => {
+                                const returns_value = item.content.filter((_item) =>
+                                  filters.map((f) => f.name).includes(_item.category_name)
+                                );
+                                return returns_value[0];
+                              })()}
                             >
                               <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                                 <SelectValue placeholder={item.choose} />
