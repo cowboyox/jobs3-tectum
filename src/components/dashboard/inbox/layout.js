@@ -47,10 +47,15 @@ const MessageItem = ({ user }) => {
     if (lastMsg) {
       auth?.setLastMessage((prev) => {
         const res = new Map(prev);
-        res.set(
-          lastMsg.senderId === auth.currentProfile?._id ? lastMsg.receiverId : lastMsg.senderId,
-          lastMsg
-        );
+        const id =
+          lastMsg.senderId === auth.currentProfile?._id ? lastMsg.receiverId : lastMsg.senderId;
+        const prevMsg = prev.get(id);
+        if (!prevMsg || new Date(prevMsg.timeStamp) < new Date(lastMsg.timeStamp)) {
+          res.set(
+            lastMsg.senderId === auth.currentProfile?._id ? lastMsg.receiverId : lastMsg.senderId,
+            lastMsg
+          );
+        }
 
         return res;
       });
