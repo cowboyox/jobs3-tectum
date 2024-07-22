@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/ContextProvider';
+import { useSocket } from '@/context/socket';
 import { useGetFreelancerGigById } from '@/hooks/useGetFreelancerGigById';
 import IDL from '@/idl/gig_basic_contract.json';
 import api from '@/utils/api';
@@ -20,6 +21,7 @@ const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity 
 
   const wallet = useAnchorWallet();
   const { sendTransaction } = useWallet();
+  const socket = useSocket();
   const { connection } = useConnection();
 
   const [program, setProgram] = useState();
@@ -74,7 +76,7 @@ const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity 
       values.clientId = auth.currentProfile._id;
       values.proposalText = coverLetter;
       values.connects = gigInfo.connects;
-      values.ownerId = gigInfo.creator;
+      values.ownerId = gigInfo.creator._id;
       values.quantity = quantity;
 
       const config = {
@@ -95,6 +97,12 @@ const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity 
         formData,
         config
       );
+
+      socket.emit('client_applied_job', {
+        clientId: auth.currentProfile._id,
+        freelancerId: gigInfo.creator._id,
+        gigId,
+      });
 
       toast({
         className:
@@ -133,7 +141,7 @@ const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity 
   };
 
   return (
-    <div className='flex flex-col gap-4 px-6 py-6 text-white rounded-2xl bg-deepGreen'>
+    <div className='flex flex-col gap-4 rounded-2xl bg-deepGreen px-6 py-6 text-white'>
       <div className='flex flex-col gap-3'>
         <div className='flex items-center justify-center gap-2 rounded-xl bg-[#1B272C] p-3'>
           <svg
