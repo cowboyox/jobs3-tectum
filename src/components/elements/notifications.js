@@ -260,14 +260,7 @@ const Notifications = ({ className }) => {
                 auth.unreadMessages.map((msg, index) => {
                   return <NotificationMessageItem key={index} msg={msg} />;
                 })}
-              {auth?.unreadClientOrders.length > 0 &&
-                auth.unreadClientOrders.map((order, index) => {
-                  return <NotificationClientOrderItem key={index} order={order} />;
-                })}
-              {auth?.unreadFreelancerOrders.length > 0 &&
-                auth.unreadFreelancerOrders.map((order, index) => {
-                  return <NotificationFreelancerOrderItem key={index} order={order} />;
-                })}
+
               {/* <NotificationItem
                 highlighted
                 icon
@@ -318,7 +311,7 @@ const Notifications = ({ className }) => {
           </TabsContent>
           <TabsContent className='flex flex-col gap-5' value='General'>
             <div className='mt-6 flex flex-col gap-5'>
-              <NotificationItem
+              {/* <NotificationItem
                 highlighted
                 icon
                 isOnline
@@ -343,7 +336,15 @@ const Notifications = ({ className }) => {
                 type='message'
                 userImage='/assets/images/users/user-5.png'
                 userName='Emily Rose'
-              />
+              /> */}
+              {auth?.unreadClientOrders.length > 0 &&
+                auth.unreadClientOrders.map((order, index) => {
+                  return <NotificationClientOrderItem key={index} order={order} />;
+                })}
+              {auth?.unreadFreelancerOrders.length > 0 &&
+                auth.unreadFreelancerOrders.map((order, index) => {
+                  return <NotificationFreelancerOrderItem key={index} order={order} />;
+                })}
             </div>
             <div className='border-t border-[#28373E]' />
             <div className='flex justify-between'>
