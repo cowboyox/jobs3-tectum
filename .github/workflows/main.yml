@@ -28,5 +28,5 @@ jobs:
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /var/www
+          cd /home/ubuntu/work/
           pm2 reload all  # This command restarts your application
