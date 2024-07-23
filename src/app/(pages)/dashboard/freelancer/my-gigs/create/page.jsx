@@ -554,7 +554,7 @@ const CreateGig = () => {
     values.creator = auth.currentProfile._id;
     values.walletPubkey = wallet.publicKey;
     values.instantBuy = postData.instantBuy;
-    values.paymentType = postData.paymentType;
+    values.gigPaymentType = postData.gigPaymentType;
     values.gigPrice = postData.gigPrice;
     values.minBudget = postData.minBudget;
     values.maxBudget = postData.maxBudget;
@@ -811,7 +811,7 @@ const CreateGig = () => {
                         setBudgetMode(val);
                         setPostData((prev) => ({
                           ...prev,
-                          paymentType: val === 'hourly' ? 1 : 0,
+                          gigPaymentType: val === 'hourly' ? 1 : 0,
                           gigPrice: val === 'hourly' ? 0 : prev.gigPrice,
                           maxBudget: val === 'hourly' ? prev.maxBudget : 0,
                           minBudget: val === 'hourly' ? prev.minBudget : 0,
