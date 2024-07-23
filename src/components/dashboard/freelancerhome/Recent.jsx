@@ -23,7 +23,7 @@ import api from '@/utils/api';
 import { skillSets } from '@/utils/constants';
 import { getDeadline } from '@/utils/gigInfo';
 
-const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setAllGigs }) => {
+const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setAllGigs, locationFilters }) => {
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [page, setPage] = useState(1);
   const auth = useCustomContext();
@@ -34,8 +34,7 @@ const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setA
   const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, searchText, [
     ...selectedSkills,
     ...filtersToQuery,
-  ]);
-
+  ], locationFilters);
   console.log(filtersToQuery);
   useEffect(() => {
     if (searchType == 'normal') {

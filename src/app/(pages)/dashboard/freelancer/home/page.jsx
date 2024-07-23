@@ -16,6 +16,9 @@ const Page = () => {
   const [searchType, setSearchType] = useState('normal');
   const [loading, setLoading] = useState(false)
   const [allGigs, setAllGigs] = useState([]);
+  const [locationFilters, setLocationFilters] = useState([]);
+
+
 
   return (
     <div className='flex min-h-screen w-full flex-col items-center py-10'>
@@ -33,10 +36,12 @@ const Page = () => {
           setAllGigs={setAllGigs}
           loading={loading}
           setLoading={setLoading}
+          locationFilters={locationFilters}
+          setLocationFilters={setLocationFilters}
         />
         <RecentlyViewed />
         <Ratings />
-        <Recent filtersToQuery={filtersToQuery} searchText={searchText} searchType={searchType} loading={loading} allGigs={allGigs} setAllGigs={setAllGigs}/>
+        <Recent filtersToQuery={filtersToQuery} searchText={searchText} searchType={searchType} loading={loading} allGigs={allGigs} setAllGigs={setAllGigs} locationFilters={locationFilters}/>
       </div>
     </div>
   );
