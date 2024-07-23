@@ -7,12 +7,14 @@ import React, { useEffect, useState } from 'react';
 import Job from '@/components/dashboard/jobapplication/Job';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/ContextProvider';
+import { useSocket } from '@/context/socket';
 import { useGetClientGigById } from '@/hooks/useGetClientGigById';
 import api from '@/utils/api';
 
 const Page = () => {
   const { gigId } = useParams();
   const wallet = useAnchorWallet();
+  const socket = useSocket();
   const router = useRouter();
   const { toast } = useToast();
   const [coverLetter, setCoverLetter] = useState();
