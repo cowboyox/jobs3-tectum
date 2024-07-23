@@ -383,14 +383,10 @@ const Offer = () => {
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
           You have <span className='font-bold text-[#DC4F13]'>{orders?.livesTotal}</span>{' '}
           Accepteds😊
-          You have <span className='font-bold text-[#DC4F13]'>{orders?.livesTotal}</span>{' '}
-          Accepteds😊
         </div>
       )}
       {mode == 'proposal' && orders?.proposalsTotal > 0 && (
         <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center'>
-          You have <span className='font-bold text-[#DC4F13]'>{orders?.proposalsTotal}</span>{' '}
-          Proposals😊
           You have <span className='font-bold text-[#DC4F13]'>{orders?.proposalsTotal}</span>{' '}
           Proposals😊
         </div>
