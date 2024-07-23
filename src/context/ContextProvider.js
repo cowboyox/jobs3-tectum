@@ -130,27 +130,27 @@ export const ContextProvider = ({ children }) => {
           });
         }
       });
+
+      socket?.on('client_applied', (data) => {
+        if (data.freelancerId === currentProfile._id) {
+          setUnreadClientOrders((prev) => {
+            const filtered = prev.filter((p) => p.gigId !== data.gigId);
+
+            return [...filtered, data];
+          });
+        }
+      });
+
+      socket?.on('freelancer_applied', (data) => {
+        if (data.clientId === currentProfile._id) {
+          setUnreadFreelancerOrders((prev) => {
+            const filtered = prev.filter((p) => p.gigId !== data.gigId);
+
+            return [...filtered, data];
+          });
+        }
+      });
     }
-
-    socket?.on('client_applied', (data) => {
-      if (data.freelancerId === currentProfile._id) {
-        setUnreadClientOrders((prev) => {
-          const filtered = prev.filter((p) => p.gigId !== data.gigId);
-
-          return [...filtered, data];
-        });
-      }
-    });
-
-    socket?.on('freelancer_applied', (data) => {
-      if (data.clientId === currentProfile._id) {
-        setUnreadFreelancerOrders((prev) => {
-          const filtered = prev.filter((p) => p.gigId !== data.gigId);
-
-          return [...filtered, data];
-        });
-      }
-    });
 
     return () => {
       socket?.off('newMessage');

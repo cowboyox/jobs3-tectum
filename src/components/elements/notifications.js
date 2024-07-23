@@ -93,9 +93,9 @@ const NotificationClientOrderItem = ({ order }) => {
         </div>
         <div className='flex w-full flex-col gap-2'>
           <p className={`text-sm text-[#96B0BD]`}>
-            <strong className='text-white'>{userInfo?.fullName}</strong>
+            <strong className='text-white'>{userInfo?.fullName} </strong>applied to your gig!
           </p>
-          <p className='text-xs text-[#96B0BD]'>{gigInfo?.gigTitle}</p>
+          <p className='text-xs text-[#96B0BD]'>Gig: {gigInfo?.gigTitle}</p>
         </div>
         <GoInbox className='my-auto ml-auto h-5 w-5 cursor-pointer fill-[#96B0BD]' />
       </div>
@@ -132,9 +132,9 @@ const NotificationFreelancerOrderItem = ({ order }) => {
         </div>
         <div className='flex w-full flex-col gap-2'>
           <p className={`text-sm text-[#96B0BD]`}>
-            <strong className='text-white'>{userInfo?.fullName}</strong>
+            <strong className='text-white'>{userInfo?.fullName} </strong>applied to your gig!
           </p>
-          <p className='text-xs text-[#96B0BD]'>{gigInfo?.gigTitle}</p>
+          <p className='text-xs text-[#96B0BD]'>Gig: {gigInfo?.gigTitle}</p>
         </div>
         <GoInbox className='my-auto ml-auto h-5 w-5 cursor-pointer fill-[#96B0BD]' />
       </div>
@@ -232,7 +232,7 @@ const Notifications = ({ className }) => {
       <DropdownMenuTrigger className={className}>
         <div className='relative cursor-pointer rounded-xl bg-[#10191D] p-3'>
           <CiBellOn className='h-7 w-7 fill-[#96B0BD]' />
-          {auth?.unreadMessages?.length > 0 && (
+          {inboxNum + generalNum > 0 && (
             <div className='absolute right-0 top-0 h-3 w-3 rounded-full bg-[#dc4f14]' />
           )}
         </div>
