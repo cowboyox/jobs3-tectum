@@ -7,15 +7,57 @@ export const useGetAllClientOrdersProposed = (
   pageNum,
   itemsPerPage,
   searchText = '',
-  locations = ''
+  locations = '',
+  filters = []
 ) => {
+  console.log("filters arrived", filters);
+  console.log("pageNum", pageNum);
+  console.log("itemsPerPage", itemsPerPage);
+  console.log("profileId", profileId);
   return useQuery({
     cacheTime: Infinity,
     enabled: !!profileId,
     queryFn: async () => {
       if (profileId && pageNum > 0 && itemsPerPage > 0) {
+        
         try {
-          const result = await api.get(`/api/v1/freelancer_gig/find_all_orders_of_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&locations=${locations}`);
+          console.log("filters", filters);
+          let payment = ['any'];
+          let skills = ['any'];
+          let sort = 0;
+          let category = ['any'];
+          let sortby = 'any';
+          let experience = 'any';
+          let info = 'any';
+          let fixed = ['any'];
+          let hourly = ['any'];
+          filters.map((filter) => {
+            if (filter.id === 'payment' && filter.value !== 'any') {
+              payment = [...payment, filter.value].filter((p) => p !== 'any');
+            } else if (filter.id === 'sort_by') {
+              sortby = filter.value;
+            } else if (filter.id === 'skills' && filter.value !== 'any') {
+              skills = [...skills, filter.value].filter((s) => s !== 'any');
+            } else if (filter.id === 'sort') {
+              sort = filter.value;
+            } else if (filter.id === 'category' && filter.value !== 'any') {
+              category = [...category, filter.value].filter((cv) => cv !== 'any');
+            } else if (filter.id === 'experience') {
+              experience = filter.value;
+            } else if (filter.id === 'job_type') {
+              payment = [...payment, filter.value].filter((p) => p !== 'any');
+            }  else if (filter.id === 'info') {
+              info = filter.value;
+            } else if (filter.id === 'amount' && filter.value !== 'any') {
+              fixed = [...fixed, filter.value].filter((p) => p !== 'any');
+            } else if (filter.id === 'hourly' && filter.value !== 'any') {
+              hourly = [...hourly, filter.value].filter((p) => p !== 'any');
+              fixed = [...fixed, filter.value].filter((p) => p !== 'any');
+            } else if (filter.id === 'hourly' && filter.value !== 'any') {
+              hourly = [...hourly, filter.value].filter((p) => p !== 'any');
+            }
+          });
+          const result = await api.get(`/api/v1/freelancer_gig/find_all_orders_of_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&sortby=${sortby}&experience=${experience}&info=${info}&fixed=${fixed}&hourly=${hourly}&locations=${locations}`);
           console.log("result in useGetAllClientOrdersProposed:", result);
           const proposals = [];
           const lives = [];
@@ -89,7 +131,8 @@ export const useGetAllClientOrdersProposed = (
       pageNum,
       itemsPerPage,
       searchText,
-      locations
+      locations,
+      filters
     ],
     staleTime: Infinity,
   });

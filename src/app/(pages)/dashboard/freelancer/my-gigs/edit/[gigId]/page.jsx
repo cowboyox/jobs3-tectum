@@ -490,13 +490,13 @@ const EditGig = () => {
         subCategory: gigInfo.subCategory,
         tags: gigInfo.searchKeywords,
         video: gigInfo.gallery?.video,
-        paymentType: gigInfo?.paymentType,
+        gigPaymentType: gigInfo?.gigPaymentType,
         minBudget: gigInfo.minBudget,
         maxBudget: gigInfo.maxBudget,
         initialConcept: gigInfo.initialConcept,
         instantBuy: gigInfo.instantBuy,
       });
-      setBudgetMode(gigInfo.paymentType === 1 ? 'hourly' : 'fixed');
+      setBudgetMode(gigInfo.gigPaymentType === 1 ? 'hourly' : 'fixed');
       setIsAuth(auth.currentProfile?._id === gigInfo.creator?._id);
     }
   }, [gigInfo, auth]);
@@ -886,7 +886,7 @@ const EditGig = () => {
                 <FormLabel className='mb-4 text-2xl font-semibold'>Setup Price</FormLabel>
                 <RadioGroup
                   className='flex flex-col gap-3 pt-3'
-                  defaultValue={formInfo.paymentType === 1 ? all_form_structure.budget_mode[0].value : all_form_structure.budget_mode[1].value}
+                  defaultValue={formInfo.gigPaymentType === 1 ? all_form_structure.budget_mode[0].value : all_form_structure.budget_mode[1].value}
                   onValueChange={(val) => {
                     setBudgetMode(val);
                     setFormInfo((prev) => ({
