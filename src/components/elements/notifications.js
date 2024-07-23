@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineSound } from 'react-icons/ai';
 import { CiBellOn } from 'react-icons/ci';
 import { GoInbox } from 'react-icons/go';
@@ -212,6 +212,20 @@ const NotificationItem = ({
 
 const Notifications = ({ className }) => {
   const auth = useCustomContext();
+  const [generalNum, setGeneralNum] = useState(0);
+  const [inboxNum, setInboxNum] = useState(0);
+
+  useEffect(() => {
+    setGeneralNum(
+      auth?.currentRole === USER_ROLE.FREELANCER
+        ? auth?.unreadClientOrders?.length || 0
+        : auth?.unreadFreelancerOrders?.length || 0
+    );
+  }, [auth?.currentRole, auth?.unreadClientOrders, auth?.unreadFreelancerOrders]);
+
+  useEffect(() => {
+    setInboxNum(auth?.unreadMessages?.length || 0);
+  }, [auth?.unreadMessages]);
 
   return (
     <DropdownMenu>
@@ -229,7 +243,9 @@ const Notifications = ({ className }) => {
         sideOffset={10}
       >
         <div className='flex items-center justify-between'>
-          <span className='text-xl font-bold'>Notifications (3)</span>
+          <span className='text-xl font-bold'>
+            Notifications {inboxNum + generalNum > 0 && <span>({inboxNum + generalNum})</span>}
+          </span>
           <span className='cursor-pointer text-base text-[#96B0BD]'>Mark all as read</span>
         </div>
         <Tabs className='mt-4' defaultValue='Inbox'>
@@ -239,13 +255,22 @@ const Notifications = ({ className }) => {
               value='Inbox'
             >
               Inbox
+              {inboxNum > 0 && (
+                <span className='ml-2 rounded-xl border border-[#3E525B] px-[8px] text-[10px]'>
+                  {inboxNum}
+                </span>
+              )}
             </TabsTrigger>
             <TabsTrigger
               className='data-[state=active]:bg-transparent] flex h-12 w-full items-center gap-2 border-b-2 border-[#516170] bg-transparent text-base data-[state=active]:border-[#dc4f14]'
               value='General'
             >
-              General{' '}
-              <span className='rounded-xl border border-[#3E525B] px-[8px] text-[10px]'>12</span>
+              General
+              {generalNum > 0 && (
+                <span className='ml-2 rounded-xl border border-[#3E525B] px-[8px] text-[10px]'>
+                  {generalNum}
+                </span>
+              )}
             </TabsTrigger>
             <TabsTrigger
               className='h-12 w-full border-b-2 border-[#516170] bg-transparent text-base data-[state=active]:border-[#dc4f14] data-[state=active]:bg-transparent'
@@ -260,14 +285,7 @@ const Notifications = ({ className }) => {
                 auth.unreadMessages.map((msg, index) => {
                   return <NotificationMessageItem key={index} msg={msg} />;
                 })}
-              {auth?.unreadClientOrders.length > 0 &&
-                auth.unreadClientOrders.map((order, index) => {
-                  return <NotificationClientOrderItem key={index} order={order} />;
-                })}
-              {auth?.unreadFreelancerOrders.length > 0 &&
-                auth.unreadFreelancerOrders.map((order, index) => {
-                  return <NotificationFreelancerOrderItem key={index} order={order} />;
-                })}
+
               {/* <NotificationItem
                 highlighted
                 icon
@@ -318,7 +336,7 @@ const Notifications = ({ className }) => {
           </TabsContent>
           <TabsContent className='flex flex-col gap-5' value='General'>
             <div className='mt-6 flex flex-col gap-5'>
-              <NotificationItem
+              {/* <NotificationItem
                 highlighted
                 icon
                 isOnline
@@ -343,7 +361,15 @@ const Notifications = ({ className }) => {
                 type='message'
                 userImage='/assets/images/users/user-5.png'
                 userName='Emily Rose'
-              />
+              /> */}
+              {auth?.unreadClientOrders.length > 0 &&
+                auth.unreadClientOrders.map((order, index) => {
+                  return <NotificationClientOrderItem key={index} order={order} />;
+                })}
+              {auth?.unreadFreelancerOrders.length > 0 &&
+                auth.unreadFreelancerOrders.map((order, index) => {
+                  return <NotificationFreelancerOrderItem key={index} order={order} />;
+                })}
             </div>
             <div className='border-t border-[#28373E]' />
             <div className='flex justify-between'>
