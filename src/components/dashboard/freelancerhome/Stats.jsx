@@ -22,18 +22,19 @@ import { useGetClientGigsContractedWithFreelancer } from '@/hooks/useGetClientGi
 import { useGetClientGigsProposedByFreelancer } from '@/hooks/useGetClientGigsProposedByFreelancer';
 import { useHandleResize } from '@/hooks/useHandleResize';
 import { timeSincePublication } from '@/utils/Helpers';
+import api from '@/utils/api';
+import { IoLocationOutline } from 'react-icons/io5';
+import { COUNTRIES } from '@/utils/constants';
 
 const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
     <div className='flex cursor-pointer items-center gap-4 p-0'>
-      {props.type === 1 && (
-        <Checkbox
-          checked={isChecked}
-          className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
-          id={props.category_id}
-          onCheckedChange={onCheckedChange}
-        />
-      )}
+      <Checkbox
+        checked={isChecked}
+        className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
+        id={props.category_id}
+        onCheckedChange={onCheckedChange}
+      />
       <label className='cursor-pointer text-sm text-[#96B0BD]' htmlFor={props.category_id}>
         {props.category_name}
       </label>
@@ -231,9 +232,23 @@ const Earnings = ({ searchText, filters }) => {
   );
 };
 
-const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery }) => {
-  const [searchType, setSearchType] = useState('normal');
+const Stats = ({
+  searchType,
+  setSearchType,
+  searchText,
+  setSearchText,
+  filtersToQuery,
+  setFiltersToQuery,
+  loading,
+  setLoading,
+  setAllGigs,
+  allGigs,
+  locationFilters,
+  setLocationFilters,
+}) => {
   const [filters, setFilters] = useState([]);
+  const [locationText, setLocationText] = useState('');
+  const [countries, setCountries] = useState(COUNTRIES);
 
   const { isSmallScreen } = useHandleResize();
 
@@ -245,9 +260,24 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
     setSearchText(e.target.value);
   };
 
+  const aiSearch = () => {
+    setLoading(true);
+    api.get(`/api/v1/client_gig/ai-search/${searchText}`).then((data) => {
+      let gigs = data.data.gigs;
+      let reasons = data.data.reasons;
+      gigs = gigs.map((gig, index) => {
+        gig.reason = reasons[index];
+        return gig;
+      });
+      console.log('new', gigs);
+      setLoading(false);
+      setAllGigs(gigs);
+    });
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && searchType === 'ai') {
-      // aiSearch();
+      aiSearch();
     }
   };
 
@@ -419,6 +449,20 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
     setFiltersToQuery([]);
   };
 
+  const onCheckedLocationChange = (value, id, name) => {
+    if (value) {
+      setLocationFilters((prev) => [...prev, name]);
+    } else {
+      setLocationFilters((prev) => prev.filter((item) => item !== name));
+    }
+  };
+  useEffect(() => {
+    setCountries(
+      COUNTRIES.filter((item) =>
+        item.toLocaleLowerCase().includes(locationText.toLocaleLowerCase())
+      )
+    );
+  }, [locationText]);
   return (
     <div className='mt-10 flex min-h-96 w-full flex-col font-roboto'>
       <div className='flex items-center justify-between gap-6 rounded-2xl bg-deepGreen pl-1 pr-4 md:h-16'>
@@ -453,13 +497,74 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
           />
         </div>
         <div className='flex h-16 items-center justify-center gap-4'>
-          {/* <div className='hidden rounded-full bg-[#1BBF36] md:block'>
-            <Image height={32} src={'/assets/icons/AIChatIcon.png'} width={32} />
-          </div> */}
-          <div className='flex items-center gap-4'>
-            <HiOutlineLocationMarker className='text-2xl text-medGray' />
-            <p className='hidden text-medGray md:block'>Anywhere</p>
-          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
+                <IoLocationOutline size={20} stroke='#96B0BD' />
+                {locationFilters.length == 0 ? (
+                  <span className='text-[#96B0BD]'>Anywhere</span>
+                ) : (
+                  <span className='text-[#96B0BD]'>
+                    {locationFilters.join(', ').length > 11
+                      ? locationFilters.join(', ').slice(0, 10) + '...'
+                      : locationFilters.join(', ')}
+                  </span>
+                )}
+                <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
+                  {locationFilters.length}
+                </span>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent
+              align='end'
+              className='mt-3 flex w-full flex-col gap-4 rounded-xl bg-[#1B272C] py-4 pl-4 pr-1'
+            >
+              <div className='country-list max-h-[300px] overflow-y-auto'>
+                <div className='sticky top-0 mb-1 flex bg-[#1B272C] p-1'>
+                  <input
+                    className='relative w-full rounded-full border-2 border-[#96B0BD] bg-transparent px-7 text-[#96B0BD] outline-none mobile:text-sm'
+                    onChange={(e) => {
+                      setLocationText(e.target.value);
+                    }}
+                    value={locationText}
+                  />
+                  <svg
+                    className='absolute left-3 top-2 h-5 w-5'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth={1.5}
+                    viewBox='0 0 24 24'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                  </svg>
+                </div>
+                {countries.length > 0 ? (
+                  <div className='flex flex-col gap-2'>
+                    {countries.map((con, i) => {
+                      return (
+                        <DropdownItem
+                          category_id={con}
+                          category_name={con}
+                          isChecked={locationFilters.includes(con)}
+                          key={i}
+                          onCheckedChange={(value) => onCheckedLocationChange(value, con, con)}
+                        />
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className='flex flex-col gap-2'>
+                    <span className='text-[#96B0BD]'>No results found</span>
+                  </div>
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
           <div className='flex flex-none flex-row items-center gap-2 px-4'>
             <Popover>
               <PopoverTrigger asChild>
@@ -491,12 +596,12 @@ const Stats = ({ searchText, setSearchText, filtersToQuery, setFiltersToQuery })
                             <Select
                               id={item.title}
                               onValueChange={(e) => onSelectChange(e)}
-                              value={
-                                (() => {
-                                  const returns_value = item.content.filter((_item) => filters.map((f) => f.name).includes(_item.category_name));
-                                  return returns_value[0];
-                                })()
-                              }
+                              value={(() => {
+                                const returns_value = item.content.filter((_item) =>
+                                  filters.map((f) => f.name).includes(_item.category_name)
+                                );
+                                return returns_value[0];
+                              })()}
                             >
                               <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
                                 <SelectValue placeholder={item.choose} />
