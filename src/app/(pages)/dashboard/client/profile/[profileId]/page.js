@@ -79,7 +79,7 @@ const ClientDashboard = () => {
     (async () => {
       try {
         setLoading(true);
-
+        console.log("here1");
         const data = await api.get(`/api/v1/profile/get_profile_by_id/${profileId}`);
         setProfileData(data.data.profile);
         if (data.data.profile.firstName === undefined) {
@@ -112,9 +112,10 @@ const ClientDashboard = () => {
           setFetchAvatar(fetchAvatarUrl);
         }
 
-        const loginData = await api.get(`/api/v1/user/get-last-login/${email}`);
+        const loginData = await api.get(`/api/v1/user/get-last-login/${data.data.profile?.email}`);
 
         setLastLogin(loginData.data.data);
+        console.log("loginData.data.data", loginData.data.data);
       } catch (error) {
         console.error('Error while fetching user profile data:', error);
       } finally {
