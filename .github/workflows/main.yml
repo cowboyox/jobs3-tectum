@@ -17,7 +17,7 @@ jobs:
       run: npm run build   
     
     - name: Deploy to AWS EC2
-      uses: appleboy/scp-action@develop
+      uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
@@ -26,7 +26,7 @@ jobs:
         target: "/home/ubuntu/work/jobs3"
 
     - name: Restart PM2 application
-      uses: appleboy/ssh-action@develop
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
