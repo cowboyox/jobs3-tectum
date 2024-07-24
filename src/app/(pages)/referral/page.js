@@ -11,15 +11,15 @@ import { TbArrowUpRight } from 'react-icons/tb';
 
 const Referral = () => {
   return (
-    <div className='mt-24 flex w-full flex-col items-center justify-center gap-4 p-0'>
+    <div className='mt-16 flex w-full flex-col items-center justify-center gap-4 p-0 md:mt-24'>
       <Image
         alt='referral'
-        className='w-[120vw] max-w-[120vw]'
+        className='w-[200vw] max-w-[200vw] md:w-[120vw] md:max-w-[120vw]'
         height={1569}
         src='/assets/dashboard-media/referral.png'
         width={5409}
       />
-      <div className='-mt-52 flex flex-col justify-center gap-4 rounded-xl bg-[#10191D] p-16 text-center md:w-[700px]'>
+      <div className='-mt-28 flex w-full flex-col justify-center gap-4 rounded-xl bg-[#10191D] p-16 text-center md:-mt-52 md:w-[700px]'>
         <div className='text-6xl font-bold text-[#F5F5F5]'>
           $4000 for referring friends to <span className='text-[#DC4F13]'>JOBS3</span>
         </div>
@@ -59,8 +59,8 @@ const Referral = () => {
           <FaTelegramPlane className='text-2xl' />
         </div>
       </div>
-      <div className='flex flex-row justify-center gap-4 rounded-xl bg-[#10191D] p-8 text-center md:w-[700px]'>
-        <div className='rounded-full bg-[#1B272C] p-4'>
+      <div className='flex w-full flex-row justify-center gap-4 rounded-xl bg-[#10191D] p-8 text-center md:w-[700px]'>
+        <div className='h-14 w-14 rounded-full bg-[#1B272C] p-4'>
           <svg
             fill='none'
             height='25'
@@ -100,8 +100,8 @@ const Referral = () => {
           </div>
         </div>
       </div>
-      <div className='flex flex-row justify-center gap-4 rounded-xl bg-[#10191D] p-8 text-center md:w-[700px]'>
-        <div className='rounded-full bg-[#1B272C] p-4'>
+      <div className='flex w-full flex-row justify-center gap-4 rounded-xl bg-[#10191D] p-8 text-center md:w-[700px]'>
+        <div className='h-14 w-14 rounded-full bg-[#1B272C] p-4'>
           <svg
             fill='none'
             height='25'
@@ -147,8 +147,8 @@ const Referral = () => {
           </div>
         </div>
       </div>
-      <div className='flex flex-row justify-center gap-4 rounded-xl bg-[#10191D] p-8 text-center md:w-[700px]'>
-        <div className='rounded-full bg-[#1B272C] p-4'>
+      <div className='flex w-full flex-row justify-center gap-4 rounded-xl bg-[#10191D] p-8 text-center md:w-[700px]'>
+        <div className='h-14 w-14 rounded-full bg-[#1B272C] p-4'>
           <svg
             fill='none'
             height='25'
@@ -188,7 +188,7 @@ const Referral = () => {
         </div>
       </div>
 
-      <div className='flex flex-col justify-center gap-4 rounded-xl bg-[#10191D] p-8 text-center md:w-[700px]'>
+      <div className='flex w-full flex-col justify-center gap-4 rounded-xl bg-[#10191D] p-8 text-center md:w-[700px]'>
         <div className='text-3xl font-bold text-[#F5F5F5]'>Get your rewards now!</div>
         <div className='text-sm text-[#A0B4C0]'>
           Be part of the refferal competition with a total prize pool $4,000
