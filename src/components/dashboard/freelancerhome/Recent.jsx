@@ -29,7 +29,7 @@ const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setA
   const auth = useCustomContext();
   const { toast } = useToast();
   const [canLoadMore, setCanLoadMore] = useState(true);
-  const itemsPerPage = 2;
+  const itemsPerPage = 5;
 
   const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, searchText, [
     ...selectedSkills,
