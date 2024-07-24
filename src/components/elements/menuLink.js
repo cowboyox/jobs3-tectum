@@ -37,13 +37,13 @@ const MenuLink = ({ href, icon, name, desktopCollapsed, sideBarSettings }) => {
           >
             {icon}
             <span className='text-base font-medium uppercase text-slate-500 transition group-hover:text-white whitespace-nowrap overflow-hidden sidebar_link w-full text-left pl-4'>
-              {name.toUpperCase()}
+              {name.toLowerCase()}
             </span>
           </Link>
         </TooltipTrigger>
         {desktopCollapsed && (
           <TooltipContent side="right" className='bg-[#10191d] rounded'>
-            {name.toUpperCase()}
+            {name.toLowerCase()}
           </TooltipContent>
         )}
       </Tooltip>
