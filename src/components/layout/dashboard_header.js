@@ -190,9 +190,12 @@ const DashboardHeader = () => {
     (async () => {
       if (wallet) {
         try {
-          await api.put(`/api/v1/profile/update-walletPublickey`, JSON.stringify({ walletPublicKey: wallet.publicKey }));
+          await api.put(
+            `/api/v1/profile/update-walletPublickey`,
+            JSON.stringify({ walletPublicKey: wallet.publicKey })
+          );
         } catch (error) {
-          console.log("Error while updating wallet publicKey:", error);
+          console.log('Error while updating wallet publicKey:', error);
         }
       }
     })();
@@ -201,7 +204,7 @@ const DashboardHeader = () => {
   if (!auth?.currentProfile) {
     return (
       <header
-        className='flex flex-wrap items-center justify-end h-28 md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
+        className='flex h-28 flex-wrap items-center justify-end md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
         id='header_container'
       />
     );
@@ -209,14 +212,14 @@ const DashboardHeader = () => {
 
   return (
     <header
-      className='flex flex-wrap items-center justify-between h-28 md:h-20 mobile:flex-nowrap mobile:justify-center mobile:gap-3'
+      className='flex h-28 flex-wrap items-center justify-between md:h-20 mobile:flex-nowrap mobile:justify-center mobile:gap-3'
       id='header_container'
     >
       {renderPopup()}
       <div className='mobile:hidden'>
         <h1 className='text-3xl font-bold text-[#F5F5F5]'>{title}</h1>
       </div>
-      <div className='flex items-center w-full gap-3 md:w-auto md:gap-4 mobile:justify-between'>
+      <div className='flex w-full items-center gap-3 md:w-auto md:gap-4 mobile:justify-between'>
         <div
           className='order-1 cursor-pointer rounded-[10px] bg-[#10191D] p-3 md:hidden'
           onClick={() => {
@@ -232,18 +235,22 @@ const DashboardHeader = () => {
           </SelectTrigger>
           <SelectContent align='end' className='w-40 rounded-xl bg-[#10191D]'>
             <SelectGroup className='flex flex-col gap-2'>
-              <SelectItem
-                className='cursor-pointer rounded-xl py-3 text-lg font-medium text-[#96B0BD]'
-                value={USER_ROLE.CLIENT}
-              >
-                Client
-              </SelectItem>
-              <SelectItem
-                className='cursor-pointer rounded-xl py-3 text-lg font-medium text-[#96B0BD]'
-                value={USER_ROLE.FREELANCER}
-              >
-                Freelancer
-              </SelectItem>
+              {auth?.user?.role.includes(3) && (
+                <SelectItem
+                  className='cursor-pointer rounded-xl py-3 text-lg font-medium text-[#96B0BD]'
+                  value={USER_ROLE.CLIENT}
+                >
+                  Client
+                </SelectItem>
+              )}
+              {auth?.user?.role.includes(0) && (
+                <SelectItem
+                  className='cursor-pointer rounded-xl py-3 text-lg font-medium text-[#96B0BD]'
+                  value={USER_ROLE.FREELANCER}
+                >
+                  Freelancer
+                </SelectItem>
+              )}
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -298,12 +305,11 @@ const DashboardHeader = () => {
 
         <Notifications className='mobile:order-2' />
 
-
         <DropdownMenu>
           <DropdownMenuTrigger className='mobile:order-4'>
-            <div className='relative w-12 h-12 mobile:h-10 mobile:w-10'>
+            <div className='relative h-12 w-12 mobile:h-10 mobile:w-10'>
               <img
-                className='object-cover w-full h-full rounded-full aspect-square'
+                className='aspect-square h-full w-full rounded-full object-cover'
                 src={
                   auth?.currentProfile?.avatarURL
                     ? auth?.currentProfile?.avatarURL
@@ -311,7 +317,7 @@ const DashboardHeader = () => {
                 }
               />
               {/* Change background color depending on user online status */}
-              <div className='absolute w-2 h-2 bg-green-500 rounded-full bottom-1 right-1' />
+              <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent
