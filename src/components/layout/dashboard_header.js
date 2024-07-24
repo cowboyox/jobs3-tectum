@@ -235,7 +235,7 @@ const DashboardHeader = () => {
           </SelectTrigger>
           <SelectContent align='end' className='w-40 rounded-xl bg-[#10191D]'>
             <SelectGroup className='flex flex-col gap-2'>
-              {auth?.user?.role.includes(1) && (
+              {auth?.user?.role.includes(3) && (
                 <SelectItem
                   className='cursor-pointer rounded-xl py-3 text-lg font-medium text-[#96B0BD]'
                   value={USER_ROLE.CLIENT}
