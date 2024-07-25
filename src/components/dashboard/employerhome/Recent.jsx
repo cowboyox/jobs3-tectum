@@ -166,7 +166,7 @@ const Recent = ({
             allGigs.map((gig, index) => (
               <div key={`gig_${index}`}>
                 <div
-                  className={`flex flex-col gap-4 ${gig.reason ? 'rounded-t-2xl' : 'rounded-2xl'} text-white1 bg-deepGreen px-6 py-6`}
+                  className={`flex flex-col gap-4 ${gig.reason ? 'rounded-t-2xl' : 'rounded-2xl'} text-white1 h-full bg-deepGreen px-6 py-6`}
                   key={index}
                 >
                   <div className='flex flex-col gap-3 border-b border-lightGray pb-5'>
