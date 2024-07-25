@@ -18,7 +18,6 @@ const MenuLink = ({ href, icon, name, desktopCollapsed, sideBarSettings }) => {
       width: desktopCollapsed ? 0 : '100%',
     });
   }, [desktopCollapsed]);
-
   const pathname = usePathname();
   return (
     <TooltipProvider delayDuration={10}>
@@ -36,14 +35,14 @@ const MenuLink = ({ href, icon, name, desktopCollapsed, sideBarSettings }) => {
             href={href}
           >
             {icon}
-            <span className='text-base font-medium uppercase text-slate-500 transition group-hover:text-white whitespace-nowrap overflow-hidden sidebar_link w-full text-left pl-4'>
-              {name.toLowerCase()}
+            <span className='text-base font-medium text-slate-500 transition group-hover:text-white whitespace-nowrap overflow-hidden sidebar_link w-full text-left pl-4'>
+              {name} 
             </span>
           </Link>
         </TooltipTrigger>
         {desktopCollapsed && (
           <TooltipContent side="right" className='bg-[#10191d] rounded'>
-            {name.toLowerCase()}
+            {name} 
           </TooltipContent>
         )}
       </Tooltip>

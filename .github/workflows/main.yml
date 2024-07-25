@@ -23,6 +23,7 @@ jobs:
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "./"  # This now correctly points to the current directory
+
         target: "/home/ubuntu/work/jobs3"
 
     - name: Restart PM2 application
