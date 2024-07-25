@@ -85,7 +85,7 @@ const Job = ({ gigData }) => {
         <h3 className='whitespace-nowrap text-xl font-semibold text-white md:hidden'>
           {/* {gig.title} */} Figma and Flow bite mentor needed
         </h3>
-        <div className='flex flex-wrap justify-end gap-4'>
+        <div className='flex flex-wrap justify-start gap-4'>
           <div className='flex items-center gap-1'>
             <MdAccessTime className='text-xl text-medGray' />
             <span>{minutesDifference(gigData.data.data.gigPostDate)}</span>
