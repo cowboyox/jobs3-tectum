@@ -16,7 +16,7 @@ import api from '@/utils/api';
 
 const Referral = () => {
   const [emailStr, setEmailStr] = useState('');
-  const { isAuthenticated, user } = useCustomContext();
+  const auth = useCustomContext();
   const [copySuccess, setCopySuccess] = useState('');
 
   const { toast } = useToast();
@@ -37,7 +37,7 @@ const Referral = () => {
         await api
           .post(`/api/v1/profile/inviteFriendByEmail`, {
             email,
-            referralCode: user?.referralCode,
+            referralCode: auth?.user?.referralCode,
           })
           .then(() => {
             toast({
@@ -63,9 +63,9 @@ const Referral = () => {
 
   const handleCopy = async () => {
     try {
-      if (user?.referralCode && isAuthenticated) {
+      if (auth?.user?.referralCode && auth?.isAuthenticated) {
         await navigator.clipboard.writeText(
-          `https://jobs3.io/signup?referralCode=${user?.referralCode}`
+          `https://jobs3.io/signup?referralCode=${auth?.user?.referralCode}`
         );
 
         setCopySuccess('Text copied to clipboard!');
@@ -94,14 +94,14 @@ const Referral = () => {
           <div className='mx-auto flex h-14 w-full max-w-[684px] items-center gap-4 overflow-hidden rounded-2xl border border-[#526872] bg-[#28373E]'>
             <textarea
               className='h-full w-full resize-none content-center bg-transparent px-4 outline-none placeholder:text-[#96B0BD] disabled:cursor-not-allowed'
-              disabled={!isAuthenticated}
+              disabled={!auth?.isAuthenticated}
               onChange={(e) => setEmailStr(e.target.value)}
               placeholder='Add Email addresses (separate with commas)'
               value={emailStr}
             />
             <button
               className='group h-full rounded-e-xl rounded-s-none bg-[#dc4f14] p-4 transition disabled:cursor-not-allowed disabled:bg-gray-500'
-              disabled={!isAuthenticated}
+              disabled={!auth?.isAuthenticated}
               onClick={handleInvite}
             >
               <GoArrowRight className='h-full w-full fill-white' />
@@ -117,17 +117,17 @@ const Referral = () => {
           <div className='mx-auto flex h-14 w-full max-w-[684px] items-center gap-4 overflow-hidden rounded-2xl border border-[#646667] bg-[#28373E]'>
             <textarea
               className='h-full w-full resize-none content-center bg-transparent px-4 outline-none placeholder:text-[#96B0BD] disabled:cursor-not-allowed'
-              disabled={!isAuthenticated}
+              disabled={!auth?.isAuthenticated}
               placeholder='Jobs3.io/link'
               value={
-                user?.referralCode && isAuthenticated
-                  ? `https://jobs3.io/signup?referralCode=${user?.referralCode}`
+                auth?.user?.referralCode && auth?.isAuthenticated
+                  ? `https://jobs3.io/signup?referralCode=${auth?.user?.referralCode}`
                   : ''
               }
             />
             <button
               className='group h-full rounded-e-xl rounded-s-none bg-[#dc4f14] p-4 transition disabled:cursor-not-allowed disabled:bg-gray-500'
-              disabled={!isAuthenticated}
+              disabled={!auth?.isAuthenticated}
               onClick={handleCopy}
             >
               {copySuccess ? (
