@@ -5,7 +5,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { BiCopy } from 'react-icons/bi';
 import { BsInstagram } from 'react-icons/bs';
-import { FaTelegramPlane, FaWhatsapp } from 'react-icons/fa';
+import { FaCheck, FaTelegramPlane, FaWhatsapp } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6';
 import { GoArrowRight } from 'react-icons/go';
 import { TbArrowUpRight } from 'react-icons/tb';
@@ -17,6 +17,7 @@ import api from '@/utils/api';
 const Referral = () => {
   const [emailStr, setEmailStr] = useState('');
   const { isAuthenticated, user } = useCustomContext();
+  const [copySuccess, setCopySuccess] = useState('');
 
   const { toast } = useToast();
 
@@ -60,6 +61,21 @@ const Referral = () => {
     });
   };
 
+  const handleCopy = async () => {
+    try {
+      if (user?.referralCode && isAuthenticated) {
+        await navigator.clipboard.writeText(
+          `https://jobs3.io/signup?referralCode=${user?.referralCode}`
+        );
+
+        setCopySuccess('Text copied to clipboard!');
+        setTimeout(() => setCopySuccess(''), 2000);
+      }
+    } catch (err) {
+      // setCopySuccess('Failed to copy text');
+    }
+  };
+
   return (
     <div className='mt-16 flex w-full flex-col items-center justify-center gap-4 p-0 md:mt-24'>
       <Image
@@ -84,7 +100,7 @@ const Referral = () => {
               value={emailStr}
             />
             <button
-              className='group h-full rounded-e-xl rounded-s-none bg-[#dc4f14] p-4 transition hover:bg-white disabled:cursor-not-allowed disabled:bg-gray-500'
+              className='group h-full rounded-e-xl rounded-s-none bg-[#dc4f14] p-4 transition disabled:cursor-not-allowed disabled:bg-gray-500'
               disabled={!isAuthenticated}
               onClick={handleInvite}
             >
@@ -103,12 +119,25 @@ const Referral = () => {
               className='h-full w-full resize-none content-center bg-transparent px-4 outline-none placeholder:text-[#96B0BD] disabled:cursor-not-allowed'
               disabled={!isAuthenticated}
               placeholder='Jobs3.io/link'
+              value={
+                user?.referralCode && isAuthenticated
+                  ? `https://jobs3.io/signup?referralCode=${user?.referralCode}`
+                  : ''
+              }
             />
             <button
-              className='group h-full rounded-e-xl rounded-s-none bg-[#dc4f14] p-4 transition hover:bg-white disabled:cursor-not-allowed disabled:bg-gray-500'
+              className='group h-full rounded-e-xl rounded-s-none bg-[#dc4f14] p-4 transition disabled:cursor-not-allowed disabled:bg-gray-500'
               disabled={!isAuthenticated}
+              onClick={handleCopy}
             >
-              <BiCopy className='h-full w-full fill-white' />
+              {copySuccess ? (
+                <div className='flex h-full w-full flex-row items-center gap-2'>
+                  <FaCheck className='fill-white' />
+                  <p className='text-white'>Copied!</p>
+                </div>
+              ) : (
+                <BiCopy className='h-full w-full fill-white' />
+              )}
             </button>
           </div>
         </div>
