@@ -20,7 +20,7 @@ const Signup = () => {
     email: '',
     fullName: '',
     password: '',
-    referralCode: '',
+    referralCodeInvited: '',
     userName: '',
   });
   const { toast } = useToast();
@@ -30,7 +30,7 @@ const Signup = () => {
   const ref = useRef(null);
   const auth = useCustomContext();
   const [step, setStep] = useState(0);
-  const [referrer, setReferrer] = useState('');
+  const [referralCodeInvited, setReferralCodeInvited] = useState('');
   const [otp_value, setOTPValue] = useState('');
 
   const validateEmail = (email) => {
@@ -41,8 +41,8 @@ const Signup = () => {
       );
   };
   useEffect(() => {
-    const tmp = searchParams.get('referrer');
-    setReferrer(tmp);
+    const tmp = searchParams.get('referralCode');
+    setReferralCodeInvited(tmp);
   }, [searchParams]);
 
   const validateUserInfo = () => {
@@ -85,8 +85,7 @@ const Signup = () => {
         email: postData.email,
         name: postData.fullName,
         password: postData.password,
-        referralCode: postData.referralCode,
-        referrer,
+        referralCodeInvited,
         username: postData.userName,
       });
       if (!verified) {
@@ -406,20 +405,27 @@ const Signup = () => {
                   </span>
                 )}
             </div>
-            {!referrer && (
+            {!referralCodeInvited ? (
               <input
                 className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
                 onChange={(e) =>
                   setPostData((prev) => ({
                     ...prev,
-                    referralCode: e.target.value,
+                    referralCodeInvited: e.target.value,
                   }))
                 }
                 onKeyDown={(e) => {
                   onKeyDown(e);
                 }}
                 placeholder='Referral code'
-                value={postData.referralCode}
+                value={postData.referralCodeInvited}
+              />
+            ) : (
+              <input
+                className='w-full rounded-xl border border-[#28373E] bg-gray-700 px-5 py-3 outline-none'
+                placeholder='Referral code'
+                readOnly
+                value={referralCodeInvited}
               />
             )}
 
