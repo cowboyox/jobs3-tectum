@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import React from 'react';
+import Link from 'next/link';
+import React, { useState } from 'react';
 import { BiCopy } from 'react-icons/bi';
 import { BsInstagram } from 'react-icons/bs';
 import { FaTelegramPlane, FaWhatsapp } from 'react-icons/fa';
@@ -9,7 +10,56 @@ import { FaXTwitter } from 'react-icons/fa6';
 import { GoArrowRight } from 'react-icons/go';
 import { TbArrowUpRight } from 'react-icons/tb';
 
+import { useToast } from '@/components/ui/use-toast';
+import { useCustomContext } from '@/context/ContextProvider';
+import api from '@/utils/api';
+
 const Referral = () => {
+  const [emailStr, setEmailStr] = useState('');
+  const { isAuthenticated, user } = useCustomContext();
+
+  const { toast } = useToast();
+
+  const isValidateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const handleInvite = () => {
+    const emails = emailStr.split(',').map((item) => item.trim());
+
+    emails.map(async (email) => {
+      if (isValidateEmail(email)) {
+        await api
+          .post(`/api/v1/profile/inviteFriendByEmail`, {
+            email,
+            referralCode: user?.referralCode,
+          })
+          .then(() => {
+            toast({
+              className:
+                'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+              description: <h3>Successfully invited {email}</h3>,
+              title: <h1 className='text-center'>Success</h1>,
+              variant: 'default',
+            });
+          })
+          .catch((err) => {
+            toast({
+              className:
+                'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+              description: <h3>Invitation failed for {email}</h3>,
+              title: <h1 className='text-center'>Error</h1>,
+              variant: 'destructive',
+            });
+          });
+      }
+    });
+  };
+
   return (
     <div className='mt-16 flex w-full flex-col items-center justify-center gap-4 p-0 md:mt-24'>
       <Image
@@ -27,11 +77,18 @@ const Referral = () => {
         <div className='flex h-24 w-full items-center justify-center mobile:p-2'>
           <div className='mx-auto flex h-14 w-full max-w-[684px] items-center gap-4 overflow-hidden rounded-2xl border border-[#526872] bg-[#28373E]'>
             <textarea
-              className='h-full w-full resize-none content-center bg-transparent px-4 outline-none placeholder:text-[#96B0BD]'
+              className='h-full w-full resize-none content-center bg-transparent px-4 outline-none placeholder:text-[#96B0BD] disabled:cursor-not-allowed'
+              disabled={!isAuthenticated}
+              onChange={(e) => setEmailStr(e.target.value)}
               placeholder='Add Email addresses (separate with commas)'
+              value={emailStr}
             />
-            <button className='group h-full rounded-e-xl rounded-s-none bg-[#dc4f14] p-4 transition hover:bg-white'>
-              <GoArrowRight className='h-full w-full fill-white group-hover:fill-black' />
+            <button
+              className='group h-full rounded-e-xl rounded-s-none bg-[#dc4f14] p-4 transition hover:bg-white disabled:cursor-not-allowed disabled:bg-gray-500'
+              disabled={!isAuthenticated}
+              onClick={handleInvite}
+            >
+              <GoArrowRight className='h-full w-full fill-white' />
             </button>
           </div>
         </div>
@@ -43,20 +100,32 @@ const Referral = () => {
         <div className='flex h-24 w-full items-center justify-center mobile:p-2'>
           <div className='mx-auto flex h-14 w-full max-w-[684px] items-center gap-4 overflow-hidden rounded-2xl border border-[#646667] bg-[#28373E]'>
             <textarea
-              className='h-full w-full resize-none content-center bg-transparent px-4 outline-none placeholder:text-[#96B0BD]'
+              className='h-full w-full resize-none content-center bg-transparent px-4 outline-none placeholder:text-[#96B0BD] disabled:cursor-not-allowed'
+              disabled={!isAuthenticated}
               placeholder='Jobs3.io/link'
             />
-            <button className='group h-full rounded-e-xl rounded-s-none bg-[#dc4f14] p-4 transition hover:bg-white'>
-              <BiCopy className='h-full w-full fill-white group-hover:fill-black' />
+            <button
+              className='group h-full rounded-e-xl rounded-s-none bg-[#dc4f14] p-4 transition hover:bg-white disabled:cursor-not-allowed disabled:bg-gray-500'
+              disabled={!isAuthenticated}
+            >
+              <BiCopy className='h-full w-full fill-white' />
             </button>
           </div>
         </div>
 
         <div className='flex flex-row justify-center gap-4'>
-          <FaWhatsapp className='text-2xl' />
-          <BsInstagram className='text-2xl' />
-          <FaXTwitter className='text-2xl' />
-          <FaTelegramPlane className='text-2xl' />
+          <Link href={`https://web.whatsapp.com`} target='_blank'>
+            <FaWhatsapp className='text-2xl' />
+          </Link>
+          <Link href={`https://www.instagram.com/`} target='_blank'>
+            <BsInstagram className='text-2xl' />
+          </Link>
+          <Link href={`https://X.com/`} target='_blank'>
+            <FaXTwitter className='text-2xl' />
+          </Link>
+          <Link href={`https://web.telegram.org//`} target='_blank'>
+            <FaTelegramPlane className='text-2xl' />
+          </Link>
         </div>
       </div>
       <div className='flex w-full flex-row justify-center gap-4 rounded-xl bg-[#10191D] p-8 text-center md:w-[700px]'>
@@ -139,7 +208,6 @@ const Referral = () => {
             />
           </svg>
         </div>
-
         <div className='flex flex-1 flex-col items-start gap-1 self-center'>
           <div className='text-[#F5F5F5]'>Invite people & Friends</div>
           <div className='text-start text-sm text-[#96B0BD]'>
