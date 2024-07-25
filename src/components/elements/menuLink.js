@@ -1,14 +1,10 @@
 'use client';
-import React, { useEffect } from 'react'
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import gsap from 'gsap';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React, { useEffect } from 'react';
+
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const MenuLink = ({ href, icon, name, desktopCollapsed, sideBarSettings }) => {
   useEffect(() => {
@@ -22,32 +18,27 @@ const MenuLink = ({ href, icon, name, desktopCollapsed, sideBarSettings }) => {
   return (
     <TooltipProvider delayDuration={10}>
       <Tooltip>
-        <TooltipTrigger >
+        <TooltipTrigger>
           <Link
-            className={`
-                flex py-1 transition-all w-full
-                ${desktopCollapsed
-                ? `px-0 flex justify-center`
-                : `px-${sideBarSettings.x_spacing}`
-              }
-                ${pathname.includes(href) ? sideBarSettings.active_link_classes : 'group'}
-              `}
+            className={`flex w-full py-1 transition-all ${
+              desktopCollapsed ? `flex justify-center px-0` : `px-${sideBarSettings.x_spacing}`
+            } ${pathname.includes(href) ? sideBarSettings.active_link_classes : 'group'} `}
             href={href}
           >
             {icon}
-            <span className='text-base font-medium text-slate-500 transition group-hover:text-white whitespace-nowrap overflow-hidden sidebar_link w-full text-left pl-4'>
-              {name} 
+            <span className='sidebar_link w-full overflow-hidden whitespace-nowrap pl-4 text-left text-base font-medium text-slate-500 transition group-hover:text-white'>
+              {name}
             </span>
           </Link>
         </TooltipTrigger>
         {desktopCollapsed && (
-          <TooltipContent side="right" className='bg-[#10191d] rounded'>
-            {name} 
+          <TooltipContent className='rounded bg-[#10191d]' side='right'>
+            {name}
           </TooltipContent>
         )}
       </Tooltip>
     </TooltipProvider>
-  )
-}
+  );
+};
 
 export default MenuLink;
