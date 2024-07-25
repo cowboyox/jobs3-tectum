@@ -64,20 +64,23 @@ const Page = () => {
 
     await api
       .post(`/api/v1/bidding/${gigId}/apply-to-clientgig`, values)
-      .then(async () => {
-        socket.emit('freelancer_applied_job', {
-          clientId: gigInfo?.data?.data?.profileId._id,
-          freelancerId: auth.currentProfile._id,
-          gigId,
-        });
-        toast({
-          className:
-            'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Successfully applied!</h3>,
-          title: <h1 className='text-center'>Success</h1>,
-          variant: 'default',
-        });
-        router.push('../find-job');
+      .then(async (data) => {
+        if (data?.data?.newProposal) {
+          socket.emit('freelancer_applied_job', {
+            clientId: gigInfo?.data?.data?.profileId._id,
+            freelancerId: auth.currentProfile._id,
+            gigId,
+            proposalId: data?.data?.newProposal?._id,
+          });
+          toast({
+            className:
+              'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+            description: <h3>Successfully applied!</h3>,
+            title: <h1 className='text-center'>Success</h1>,
+            variant: 'default',
+          });
+          router.push('../find-job');
+        }
       })
       .catch((err) => {
         console.error('Error corrupted during applying gig', err);

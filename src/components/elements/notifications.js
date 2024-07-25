@@ -18,6 +18,7 @@ import { useCustomContext } from '@/context/ContextProvider';
 import { useGetClientGigById } from '@/hooks/useGetClientGigById';
 import { useGetFreelancerGigById } from '@/hooks/useGetFreelancerGigById';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
+import api from '@/utils/api';
 import { USER_ROLE } from '@/utils/constants';
 import { timeDifference } from '@/utils/Helpers';
 
@@ -25,6 +26,32 @@ const NotificationMessageItem = ({ msg }) => {
   const { data: userInfo } = useGetUserInfo(msg.senderId);
   const router = useRouter();
   const auth = useCustomContext();
+
+  const handleArchive = async () => {
+    try {
+      await api.put(
+        `/api/v1/message/updateArchivedMessage/${msg._id}`,
+        JSON.stringify({ isArchived: true })
+      );
+
+      toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully archived!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
+      });
+    } catch (err) {
+      console.error('Error corrupted during posting gig', err);
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
     <div
@@ -58,7 +85,10 @@ const NotificationMessageItem = ({ msg }) => {
           </p>
           <p className='text-xs text-[#96B0BD]'>{timeDifference(msg.timeStamp)}</p>
         </div>
-        <GoInbox className='my-auto ml-auto h-5 w-5 cursor-pointer fill-[#96B0BD]' />
+        <GoInbox
+          className='my-auto ml-auto h-5 w-5 cursor-pointer fill-[#96B0BD]'
+          onClick={handleArchive}
+        />
       </div>
     </div>
   );
@@ -68,6 +98,32 @@ const NotificationClientOrderItem = ({ order }) => {
   const { data: userInfo } = useGetUserInfo(order.clientId);
   const { data: gigInfo } = useGetFreelancerGigById(order.gigId);
   const router = useRouter();
+
+  const handleArchive = async () => {
+    try {
+      await api.put(
+        `/api/v1/proposal/updateArchivedProposal/${order.proposalId}`,
+        JSON.stringify({ isArchived: true })
+      );
+
+      toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully archived!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
+      });
+    } catch (err) {
+      console.error('Error corrupted during posting gig', err);
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
     <div
@@ -97,7 +153,10 @@ const NotificationClientOrderItem = ({ order }) => {
           </p>
           <p className='text-xs text-[#96B0BD]'>Gig: {gigInfo?.gigTitle}</p>
         </div>
-        <GoInbox className='my-auto ml-auto h-5 w-5 cursor-pointer fill-[#96B0BD]' />
+        <GoInbox
+          className='my-auto ml-auto h-5 w-5 cursor-pointer fill-[#96B0BD]'
+          onClick={handleArchive}
+        />
       </div>
     </div>
   );
@@ -107,6 +166,32 @@ const NotificationFreelancerOrderItem = ({ order }) => {
   const { data: userInfo } = useGetUserInfo(order.freelancerId);
   const { data: gigInfo } = useGetClientGigById(order.gigId);
   const router = useRouter();
+
+  const handleArchive = async () => {
+    try {
+      await api.put(
+        `/api/v1/proposal/updateArchivedProposal/${order.proposalId}`,
+        JSON.stringify({ isArchived: true })
+      );
+
+      toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully archived!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
+      });
+    } catch (err) {
+      console.error('Error corrupted during posting gig', err);
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
     <div
@@ -136,7 +221,10 @@ const NotificationFreelancerOrderItem = ({ order }) => {
           </p>
           <p className='text-xs text-[#96B0BD]'>Gig: {gigInfo?.gigTitle}</p>
         </div>
-        <GoInbox className='my-auto ml-auto h-5 w-5 cursor-pointer fill-[#96B0BD]' />
+        <GoInbox
+          className='my-auto ml-auto h-5 w-5 cursor-pointer fill-[#96B0BD]'
+          onClick={handleArchive}
+        />
       </div>
     </div>
   );
