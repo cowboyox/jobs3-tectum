@@ -8,6 +8,7 @@ import { useSocket } from '@/context/socket';
 import api from '@/utils/api';
 import { USER_ROLE } from '@/utils/constants';
 import { backend_url } from '@/utils/variables';
+import { useToast } from '@/components/ui/use-toast';
 
 const HANDLERS = {
   ACCOUNT_TYPE: 'ACCOUNT_TYPE',
@@ -87,6 +88,7 @@ const reducer = (state, action) =>
 export const CustomContext = createContext();
 
 export const ContextProvider = ({ children }) => {
+  const { toast } = useToast();
   const [currentRole, setCurrentRole] = useState(USER_ROLE.FREELANCER);
   const [currentProfile, setCurrentProfile] = useState(null);
   const [isIdle, setIsIdle] = useState(true);
@@ -411,6 +413,13 @@ export const ContextProvider = ({ children }) => {
       else router.push(`/dashboard/${accountTypeName}/home`);
     } catch (err) {
       console.error(err);
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Please Login First</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
     }
   };
 
