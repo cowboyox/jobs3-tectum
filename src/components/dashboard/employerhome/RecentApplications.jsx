@@ -18,7 +18,7 @@ const RecentApplication = () => {
       </div>
 
       {data?.gigId?.length ? (
-        <div className='mt-2 grid gap-4 lg:grid-cols-2'>
+        <div className='mt-2 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
           {data.gigId.map((gig, index) => (
             <div
               className='flex items-start justify-between gap-1 rounded-2xl bg-deepGreen p-8'
