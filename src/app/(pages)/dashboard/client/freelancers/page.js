@@ -194,7 +194,7 @@ const Freelancers = () => {
                       {freelancer.jobSuccessScore !== undefined && (
                         <div className='flex flex-row gap-2 '>
                           <JobSuccessIcon />
-                          <span className='text-white'>{freelancer.jobSuccessScore}% Job Success</span>
+                          <span className='text-white'>{freelancer.jobSuccessScore[freelancer.jobSuccessScore.length-1].score}% Job Success</span>
                         </div>
                       )}
                     </div>
