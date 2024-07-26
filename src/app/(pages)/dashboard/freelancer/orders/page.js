@@ -50,7 +50,7 @@ import { FaArrowRight, FaEllipsis, FaX } from 'react-icons/fa6';
 
 const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
-    <div className='flex cursor-pointer items-center gap-4 p-0'>
+    <div className='flex items-center gap-4 p-0 cursor-pointer'>
       <Checkbox
         checked={isChecked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
@@ -646,10 +646,10 @@ const Orders = () => {
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex flex-row items-center justify-between gap-5 rounded-xl bg-[#10191D] p-3'>
-        <div className='ml-3 flex flex-1 items-center gap-3'>
+        <div className='flex items-center flex-1 gap-3 ml-3'>
           <button>
             <svg
-              className='h-6 w-6'
+              className='w-6 h-6'
               fill='none'
               stroke='currentColor'
               strokeWidth={1.5}
@@ -726,7 +726,7 @@ const Orders = () => {
                   value={locationText}
                 />
                 <svg
-                  className='absolute left-3 top-2 h-5 w-5'
+                  className='absolute w-5 h-5 left-3 top-2'
                   fill='none'
                   stroke='currentColor'
                   strokeWidth={1.5}
@@ -765,7 +765,7 @@ const Orders = () => {
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
-              <button className='m-3 flex flex-row items-center justify-center gap-3'>
+              <button className='flex flex-row items-center justify-center gap-3 m-3'>
                 <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
                 {!isSmallScreen && (
                   <div className='flex flex-row gap-2'>
@@ -869,14 +869,14 @@ const Orders = () => {
           Submissions😊
         </div>
       )}
-      <div className='flex w-full items-center justify-center pb-5 pt-10'>
+      <div className='flex items-center justify-center w-full pt-10 pb-5'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block h-6 w-6 rounded-full bg-orange'>{lives?.length}</span>
+              <span className='inline-block w-6 h-6 rounded-full bg-orange'>{lives?.length}</span>
               &nbsp; Live
             </h1>
           ) : (
@@ -889,7 +889,7 @@ const Orders = () => {
         >
           {mode == 'submission' ? (
             <h1>
-              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
+              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
                 {submissions?.length}
               </span>
               &nbsp; Submitted
@@ -906,11 +906,11 @@ const Orders = () => {
               {lives.map((order, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
+                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {order.gigTitle}
                       </div>
-                      <div className='flex flex-none flex-row items-center justify-between gap-2 mobile:w-full'>
+                      <div className='flex flex-row items-center justify-between flex-none gap-2 mobile:w-full'>
                         <div className='flex gap-2'>
                           <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                             15 H: 30 S
@@ -922,7 +922,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='border-none bg-transparent hover:bg-transparent'
+                              className='bg-transparent border-none hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -968,7 +968,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1027,7 +1027,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1063,7 +1063,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1095,7 +1095,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -1204,14 +1204,14 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{order.gigDescription}</div>
                     {/* )} */}
-                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
-                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
+                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
+                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
                         <div>
                           <img
                             height={40}
                             src='/assets/images/Rectangle 273.png'
                             width={40}
-                            className='rounded-full object-cover'
+                            className='object-cover rounded-full'
                           />
                         </div>
                         <div className='flex flex-col gap-1 text-left'>
@@ -1255,7 +1255,7 @@ const Orders = () => {
                         )}
                         {order?.status == ContractStatus.ACTIVE && (
                           <button
-                            className='bg-green-500 p-4 px-8 md:p-5'
+                            className='p-4 px-8 bg-green-500 md:p-5'
                             onClick={() => onDeliver(order.id)}
                           >
                             Deliver
@@ -1263,7 +1263,7 @@ const Orders = () => {
                         )}
                         {order?.status == ContractStatus.DELIVERED && (
                           <button
-                            className='bg-green-500 p-4 px-8 md:p-5'
+                            className='p-4 px-8 bg-green-500 md:p-5'
                             // onClick={() => onActivate(order.id, order.contractId)}
                           >
                             Request Payment
@@ -1271,10 +1271,18 @@ const Orders = () => {
                         )}
                         {order?.status == ContractStatus.RELEASED && (
                           <button
-                            className='bg-green-500 p-4 px-8 md:p-5'
+                            className='p-4 px-8 bg-green-500 md:p-5'
                             onClick={() => onComplete(order.id, order.contractId)}
                           >
                             Complete
+                          </button>
+                        )}
+                        {order?.status == ContractStatus.COMPLETED && (
+                          <button
+                            className='p-4 px-8 bg-green-500 md:p-5'
+                            onClick={() => router.push(`./review/${order?.gigId}/${order?.clientId?._id}`)}
+                          >
+                            Give Review
                           </button>
                         )}
                       </div>
@@ -1284,7 +1292,7 @@ const Orders = () => {
               })}
               {canLoadMore && (
                 <div
-                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -1292,7 +1300,7 @@ const Orders = () => {
               )}
             </>
           ) : (
-            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Live proposals will be here</p>
             </div>
@@ -1305,11 +1313,11 @@ const Orders = () => {
               {submissions.map((submission, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='mt-1 flex items-start justify-between md:flex-row md:items-center'>
+                    <div className='flex items-start justify-between mt-1 md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {submission.gigTitle}
                       </div>
-                      <div className='flex flex-none flex-row items-center gap-2'>
+                      <div className='flex flex-row items-center flex-none gap-2'>
                         {/* <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                         15 H: 30 S
                       </div>
@@ -1319,7 +1327,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='border-none bg-transparent hover:bg-transparent'
+                              className='bg-transparent border-none hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -1365,7 +1373,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1424,7 +1432,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1460,7 +1468,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='mt-1 gap-2 rounded-xl hover:bg-white'
+                              className='gap-2 mt-1 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1492,7 +1500,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -1601,11 +1609,11 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{submission.gigDescription}</div>
                     {/* )} */}
-                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
-                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
+                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
+                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
                         <div>
                           <img
-                            className='rounded-full object-cover'
+                            className='object-cover rounded-full'
                             height={40}
                             src={submission.clientId.avatarURL}
                             width={40}
@@ -1650,7 +1658,7 @@ const Orders = () => {
               })}
               {canLoadMore && (
                 <div
-                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
+                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -1658,7 +1666,7 @@ const Orders = () => {
               )}
             </>
           ) : (
-            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Submitted proposals will be here</p>
             </div>
