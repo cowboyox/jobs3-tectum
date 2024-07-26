@@ -971,8 +971,7 @@ const OfferItem = ({
           )}
           {(status == ContractStatus.ACTIVE ||
             status == ContractStatus.RELEASED ||
-            status == ContractStatus.CONFIRMED ||
-            status == ContractStatus.COMPLETED) && (
+            status == ContractStatus.CONFIRMED) && (
             <div className='float-right grid w-[25%] grid-cols-1 rounded-xl bg-[#1B272C] p-1 text-white'>
               <div
                 className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
@@ -995,6 +994,22 @@ const OfferItem = ({
                 onClick={onRelease}
               >
                 Release
+              </div>
+            </div>
+          )}
+          {status == ContractStatus.COMPLETED && (
+            <div className='float-right grid w-[25%] grid-cols-2 rounded-xl bg-[#1B272C] p-1 text-white'>
+              <div
+                className='flex cursor-pointer items-center justify-center rounded-xl bg-[#1B272C] p-3 hover:opacity-60'
+                onClick={handleClientMessage}
+              >
+                Message
+              </div>
+              <div
+                className='flex items-center justify-center p-3 bg-green-500 cursor-pointer rounded-xl hover:opacity-60'
+                onClick={() => router.push(`./review/${gigId}/${freelancerId}`)}
+              >
+                Give Review
               </div>
             </div>
           )}
