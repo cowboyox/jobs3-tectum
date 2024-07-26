@@ -66,12 +66,7 @@ const Page = () => {
       .post(`/api/v1/bidding/${gigId}/apply-to-clientgig`, values)
       .then(async (data) => {
         if (data?.data?.newProposal) {
-          socket.emit('freelancer_applied_job', {
-            clientId: gigInfo?.data?.data?.profileId._id,
-            freelancerId: auth.currentProfile._id,
-            gigId,
-            proposalId: data?.data?.newProposal?._id,
-          });
+          socket.emit('freelancer_applied_job', data?.data?.newProposal);
           toast({
             className:
               'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',

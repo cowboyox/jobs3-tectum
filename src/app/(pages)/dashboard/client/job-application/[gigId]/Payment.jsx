@@ -100,12 +100,7 @@ const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity 
       );
 
       if (proposal?.data?.newProposal) {
-        socket.emit('client_applied_job', {
-          clientId: auth.currentProfile._id,
-          freelancerId: gigInfo.creator._id,
-          gigId,
-          proposalId: proposal?.data?.newProposal?._id,
-        });
+        socket.emit('client_applied_job', proposal?.data?.newProposal);
 
         toast({
           className:

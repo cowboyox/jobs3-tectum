@@ -11,7 +11,7 @@ export const useGetArchivedMessages = (profileId) => {
         try {
           const { data } = await api.get(`/api/v1/message/getArchivedMessages/${profileId}`);
 
-          return data?.messages;
+          return data?.messages || null;
         } catch (e) {
           console.error(e);
 

@@ -11,7 +11,7 @@ export const useGetArchivedProposals = (profileId) => {
         try {
           const { data } = await api.get(`/api/v1/proposal/getArchivedProposals/${profileId}`);
 
-          return data?.proposals;
+          return data?.proposals || null;
         } catch (e) {
           console.error(e);
 

@@ -14,7 +14,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/ContextProvider';
+import { useGetArchivedMessages } from '@/hooks/useGetArchivedMessages';
+import { useGetArchivedProposals } from '@/hooks/useGetArchivedProposals';
 import { useGetClientGigById } from '@/hooks/useGetClientGigById';
 import { useGetFreelancerGigById } from '@/hooks/useGetFreelancerGigById';
 import { useGetUserInfo } from '@/hooks/useGetUserInfo';
@@ -22,22 +25,27 @@ import api from '@/utils/api';
 import { USER_ROLE } from '@/utils/constants';
 import { timeDifference } from '@/utils/Helpers';
 
-const NotificationMessageItem = ({ msg }) => {
+const NotificationMessageItem = ({ msg, refetchArchivedMessages }) => {
   const { data: userInfo } = useGetUserInfo(msg.senderId);
   const router = useRouter();
   const auth = useCustomContext();
+  const { toast } = useToast();
 
-  const handleArchive = async () => {
+  const handleArchive = async (e) => {
+    e.stopPropagation();
+
     try {
       await api.put(
         `/api/v1/message/updateArchivedMessage/${msg._id}`,
-        JSON.stringify({ isArchived: true })
+        JSON.stringify({ isArchived: !msg.archived })
       );
+
+      await refetchArchivedMessages();
 
       toast({
         className:
           'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Successfully archived!</h3>,
+        description: <h3>Successfully {!msg.archived ? 'archived!' : 'removed!'}</h3>,
         title: <h1 className='text-center'>Success</h1>,
         variant: 'default',
       });
@@ -94,22 +102,27 @@ const NotificationMessageItem = ({ msg }) => {
   );
 };
 
-const NotificationClientOrderItem = ({ order }) => {
-  const { data: userInfo } = useGetUserInfo(order.clientId);
-  const { data: gigInfo } = useGetFreelancerGigById(order.gigId);
+const NotificationClientOrderItem = ({ order, refetchArchivedProposals }) => {
+  const { data: userInfo } = useGetUserInfo(order.proposer);
+  const { data: gigInfo } = useGetFreelancerGigById(order.freelancerGig);
   const router = useRouter();
+  const { toast } = useToast();
 
-  const handleArchive = async () => {
+  const handleArchive = async (e) => {
+    e.stopPropagation();
+
     try {
       await api.put(
-        `/api/v1/proposal/updateArchivedProposal/${order.proposalId}`,
-        JSON.stringify({ isArchived: true })
+        `/api/v1/proposal/updateArchivedProposal/${order._id}`,
+        JSON.stringify({ isArchived: !order.archived })
       );
+
+      await refetchArchivedProposals();
 
       toast({
         className:
           'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Successfully archived!</h3>,
+        description: <h3>Successfully {!order.archived ? 'archived!' : 'removed!'}</h3>,
         title: <h1 className='text-center'>Success</h1>,
         variant: 'default',
       });
@@ -162,22 +175,27 @@ const NotificationClientOrderItem = ({ order }) => {
   );
 };
 
-const NotificationFreelancerOrderItem = ({ order }) => {
-  const { data: userInfo } = useGetUserInfo(order.freelancerId);
-  const { data: gigInfo } = useGetClientGigById(order.gigId);
+const NotificationFreelancerOrderItem = ({ order, refetchArchivedProposals }) => {
+  const { data: userInfo } = useGetUserInfo(order.proposer);
+  const { data: gigInfo } = useGetClientGigById(order.clientGig);
   const router = useRouter();
+  const { toast } = useToast();
 
-  const handleArchive = async () => {
+  const handleArchive = async (e) => {
+    e.stopPropagation();
+
     try {
       await api.put(
-        `/api/v1/proposal/updateArchivedProposal/${order.proposalId}`,
-        JSON.stringify({ isArchived: true })
+        `/api/v1/proposal/updateArchivedProposal/${order._id}`,
+        JSON.stringify({ isArchived: !order.archived })
       );
+
+      await refetchArchivedProposals();
 
       toast({
         className:
           'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Successfully archived!</h3>,
+        description: <h3>Successfully {!order.archived ? 'archived!' : 'removed!'}</h3>,
         title: <h1 className='text-center'>Success</h1>,
         variant: 'default',
       });
@@ -302,6 +320,7 @@ const Notifications = ({ className }) => {
   const auth = useCustomContext();
   const [generalNum, setGeneralNum] = useState(0);
   const [inboxNum, setInboxNum] = useState(0);
+  const [archiveNum, setArchiveNum] = useState(0);
 
   useEffect(() => {
     setGeneralNum(
@@ -311,9 +330,31 @@ const Notifications = ({ className }) => {
     );
   }, [auth?.currentRole, auth?.unreadClientOrders, auth?.unreadFreelancerOrders]);
 
+  const { data: archivedMessages, refetch: refetchArchivedMessages } = useGetArchivedMessages(
+    auth?.currentProfile?._id
+  );
+  const { data: archivedProposals, refetch: refetchArchivedProposals } = useGetArchivedProposals(
+    auth?.currentProfile?._id
+  );
+
   useEffect(() => {
     setInboxNum(auth?.unreadMessages?.length || 0);
   }, [auth?.unreadMessages]);
+
+  useEffect(() => {
+    let msgNum = 0;
+    let orderNum = 0;
+
+    if (archivedMessages) {
+      msgNum = archivedMessages.length;
+    }
+
+    if (archivedProposals) {
+      orderNum = archivedProposals.length;
+    }
+
+    setArchiveNum(msgNum + orderNum);
+  }, [archivedMessages, archivedProposals]);
 
   return (
     <DropdownMenu>
@@ -365,13 +406,24 @@ const Notifications = ({ className }) => {
               value='Archived'
             >
               Archived
+              {archiveNum > 0 && (
+                <span className='ml-2 rounded-xl border border-[#3E525B] px-[8px] text-[10px]'>
+                  {archiveNum}
+                </span>
+              )}
             </TabsTrigger>
           </TabsList>
           <TabsContent className='flex flex-col gap-5' value='Inbox'>
             <div className='mt-6 flex flex-col gap-5'>
               {auth?.unreadMessages.length > 0 &&
                 auth.unreadMessages.map((msg, index) => {
-                  return <NotificationMessageItem key={index} msg={msg} />;
+                  return (
+                    <NotificationMessageItem
+                      key={index}
+                      msg={msg}
+                      refetchArchivedMessages={refetchArchivedMessages}
+                    />
+                  );
                 })}
 
               {/* <NotificationItem
@@ -452,11 +504,23 @@ const Notifications = ({ className }) => {
               /> */}
               {auth?.unreadClientOrders.length > 0 &&
                 auth.unreadClientOrders.map((order, index) => {
-                  return <NotificationClientOrderItem key={index} order={order} />;
+                  return (
+                    <NotificationClientOrderItem
+                      key={index}
+                      order={order}
+                      refetchArchivedProposals={refetchArchivedProposals}
+                    />
+                  );
                 })}
               {auth?.unreadFreelancerOrders.length > 0 &&
                 auth.unreadFreelancerOrders.map((order, index) => {
-                  return <NotificationFreelancerOrderItem key={index} order={order} />;
+                  return (
+                    <NotificationFreelancerOrderItem
+                      key={index}
+                      order={order}
+                      refetchArchivedProposals={refetchArchivedProposals}
+                    />
+                  );
                 })}
             </div>
             <div className='border-t border-[#28373E]' />
@@ -471,7 +535,37 @@ const Notifications = ({ className }) => {
             </div>
           </TabsContent>
           <TabsContent className='flex flex-col gap-5' value='Archived'>
-            <NotificationItem
+            {archivedMessages &&
+              archivedMessages.length > 0 &&
+              archivedMessages.map((message, index) => {
+                return (
+                  <NotificationMessageItem
+                    key={index}
+                    msg={message}
+                    refetchArchivedMessages={refetchArchivedMessages}
+                  />
+                );
+              })}
+            {archivedProposals &&
+              archivedProposals.length > 0 &&
+              archivedProposals.map((proposal, index) => {
+                return (
+                  <div key={index}>
+                    {proposal.clientGig ? (
+                      <NotificationFreelancerOrderItem
+                        order={proposal}
+                        refetchArchivedProposals={refetchArchivedProposals}
+                      />
+                    ) : (
+                      <NotificationClientOrderItem
+                        order={proposal}
+                        refetchArchivedProposals={refetchArchivedProposals}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            {/* <NotificationItem
               actions
               icon
               isOnline
@@ -480,7 +574,7 @@ const Notifications = ({ className }) => {
               type='offer'
               userImage='/assets/images/users/user-5.png'
               userName='Emily Rose'
-            />
+            /> */}
           </TabsContent>
         </Tabs>
       </DropdownMenuContent>

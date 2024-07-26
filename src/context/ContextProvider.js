@@ -4,11 +4,11 @@ import axios from 'axios';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 
+import { useToast } from '@/components/ui/use-toast';
 import { useSocket } from '@/context/socket';
 import api from '@/utils/api';
 import { USER_ROLE } from '@/utils/constants';
 import { backend_url } from '@/utils/variables';
-import { useToast } from '@/components/ui/use-toast';
 
 const HANDLERS = {
   ACCOUNT_TYPE: 'ACCOUNT_TYPE',
@@ -134,9 +134,9 @@ export const ContextProvider = ({ children }) => {
       });
 
       socket?.on('client_applied', (data) => {
-        if (data.freelancerId === currentProfile._id) {
+        if (data.gigOwner === currentProfile._id) {
           setUnreadClientOrders((prev) => {
-            const filtered = prev.filter((p) => p.gigId !== data.gigId);
+            const filtered = prev.filter((p) => p.freelancerGig !== data.freelancerGig);
 
             return [...filtered, data];
           });
@@ -144,9 +144,9 @@ export const ContextProvider = ({ children }) => {
       });
 
       socket?.on('freelancer_applied', (data) => {
-        if (data.clientId === currentProfile._id) {
+        if (data.gigOwner === currentProfile._id) {
           setUnreadFreelancerOrders((prev) => {
-            const filtered = prev.filter((p) => p.gigId !== data.gigId);
+            const filtered = prev.filter((p) => p.clientGig !== data.clientGig);
 
             return [...filtered, data];
           });
