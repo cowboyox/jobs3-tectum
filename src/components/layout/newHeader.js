@@ -204,7 +204,14 @@ const NewHeader = () => {
 
   useEffect(() => {
     (async () => {
-      if (wallet) {
+      const info = JSON.parse(localStorage.getItem('jobs_2024_token'));
+      let token;
+      
+      if (info) {
+        token = info?.data?.token; // Replace 'your_token_key' with the actual key name
+      }
+
+      if (wallet && token) {
         try {
           await api.put(`/api/v1/profile/update-walletPublickey`, JSON.stringify({ walletPublicKey: wallet.publicKey }));
         } catch (error) {
@@ -347,9 +354,9 @@ const NewHeader = () => {
 
             <DropdownMenu>
               <DropdownMenuTrigger className='mobile:order-4'>
-                <div className='relative h-12 w-12 mobile:h-10 mobile:w-10'>
+                <div className='relative w-12 h-12 mobile:h-10 mobile:w-10'>
                   <img
-                    className='aspect-square h-full w-full rounded-full object-cover'
+                    className='object-cover w-full h-full rounded-full aspect-square'
                     src={
                       auth?.currentProfile?.avatarURL
                         ? auth?.currentProfile?.avatarURL
@@ -357,7 +364,7 @@ const NewHeader = () => {
                     }
                   />
                   {/* Change background color depending on user online status */}
-                  <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
+                  <div className='absolute w-2 h-2 bg-green-500 rounded-full bottom-1 right-1' />
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent
