@@ -38,13 +38,13 @@ $breakpoint-small: 768px;
 	margin-right: auto;
 
 	@media screen and (min-width: $breakpoint-large) {
-		max-width: 1480px;
+		max-width: 1480px !important;
 		padding-left: 30px;
 		padding-right: 30px;
 	}
 
 	@media screen and (max-width: $breakpoint-large) {
-		max-width: 1300px;
+		max-width: 1300px !important;
 		padding: {
 			left: 20px !important;
 			right: 20px !important;
@@ -67,12 +67,12 @@ $breakpoint-small: 768px;
 |-------------------------------------*/
 
 .main_header {
-	padding: 20px 0;
+	padding: 50px 0;
 	position: absolute;
 	left: 0;
 	top: 0;
 	width: 100%;
-	z-index: 20;
+	z-index: 901;
 
 	.dropdown-link {
 		position: relative;
@@ -82,11 +82,9 @@ $breakpoint-small: 768px;
 			transition: 0.3s;
 			padding-bottom: 20px;
 			&.active {
-				color: var(--main-color);
-			}
-			&:hover {
-				color: var(--main-color);
-			}
+				color: white !important;
+				opacity: 1 !important;
+			} 
 		}
 		ul {
 			opacity: 0;
@@ -124,7 +122,7 @@ $breakpoint-small: 768px;
 	}
 	.main_logo {
 		width: 133px;
-		margin-right: 7%;
+		margin-right: 5%;
 		a {
 			color: white;
 		}
@@ -141,10 +139,12 @@ $breakpoint-small: 768px;
 			font-size: 20px;
 			transition: 0.3s;
 			&.active {
-				color: var(--main-color);
+				color: white;
+				opacity: 1;
 			}
 			&:hover {
-				color: var(--main-color);
+				color: white;
+				opacity: 1;
 			}
 		}
 	}
@@ -711,6 +711,10 @@ a.cta_button {
 
 .react-loading-skeleton {
 	border-radius: 12px !important;
+}
+
+.text-white-border { 
+	-webkit-text-stroke: 1pt white;
 }
 
 @media (max-width: 768px) {

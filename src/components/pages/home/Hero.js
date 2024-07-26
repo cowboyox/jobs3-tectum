@@ -1,101 +1,223 @@
 'use client';
-
+/*------------- Main libraries imports -------------*/
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import gsap from 'gsap';
+import SplitType from 'split-type'
+import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
 import Marquee from 'react-fast-marquee';
+
+/*------------- ShadCN imports -------------*/
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import searchOptions from 'src/app/(pages)/dashboard/client/freelancers/searchOptions';
-const Hero = () => {
-  const router = useRouter();
-  const [search, setSearch] = useState();
-  const [searchType, setSearchType] = useState('normal');
+} from "@/components/ui/select";
 
-  const searchQuery = (e) => {
-    e.preventDefault();
-    router.push(`/jobs?search=${search}&type=${searchType}`);
+/*------------- Icons -------------*/
+import { TfiArrowTopRight } from "react-icons/tfi";
+import { CiSearch } from "react-icons/ci";
+import { VscRobot } from "react-icons/vsc";
+
+/*------------- String variables -------------*/
+const mainHeadingStyle = 'text-[170px] uppercase font-bold leading-none white-space-nowrap';
+const usersImages = [
+  '/assets/images/users/landing-page-user-1.png',
+  '/assets/images/users/landing-page-user-2.png',
+  '/assets/images/users/landing-page-user-3.png',
+  '/assets/images/users/landing-page-user-4.png',
+  '/assets/images/users/landing-page-user-5.png',
+];
+
+const FloatingHeading = ({ moveSpeed, id })=> {
+  /*------------- Mouse Animation -------------*/
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    const handleMouseMove = (event) => {
+      setMousePosition({
+        x: event.clientX,
+        y: event.clientY
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+  const getTransformStyle = (x, y, factor) => {
+    const offsetX = (x / window.innerWidth - 0.5) * factor;
+    const offsetY = (y / window.innerHeight - 0.5) * factor;
+    return {
+      transform: `translate(${offsetX}px, ${offsetY}px)`
+    };
   };
-  const onChangeType = (value) => {
-    setSearchType(value);
-  };
+
   return (
-    <div className='hero_section'>
-      <div className='section_content'>
-        <h1>YOUR WEB3 CAREER STARTS HERE</h1>
-        <p>Decentralising and globalising the employment landscape</p>
-        <form onSubmit={(e) => searchQuery(e)} className='flex items-center'>
-          <Select
-            className='mr-2 flex-shrink-0 bg-transparent'
-            defaultValue='normal'
-            onValueChange={(e) => onChangeType(e)}
-          >
-            <SelectTrigger className='w-15 rounded-xl bg-transparent mobile:w-14 mobile:p-2'>
-              <SelectValue />
+    <div className='w-full absolute left-1/2 top-1/2 -translate-y-1/2 -mt-6'>
+      <div 
+        className='flex flex-col gap-5 w-full'
+        id={id}
+        style={getTransformStyle(mousePosition.x, mousePosition.y, moveSpeed)}
+      >
+        <span className={mainHeadingStyle + ' text-transparent text-white-border opacity-20'}> Your WEB3 </span>
+        <span className={mainHeadingStyle + ' text-transparent text-white-border opacity-20'}> Career </span>
+      </div> 
+    </div>
+  )
+}
+
+const HeroSection = () => {
+  const heroRef = useRef(null);
+  useLayoutEffect(() => {
+    // Split Headings
+    SplitType.create('#heading-1');
+    SplitType.create('#heading-2');
+    SplitType.create('#floating-heading-1 span');
+    SplitType.create('#floating-heading-2 span');
+
+    // Create GSAP animations
+    let ctx = gsap.context(()=> {
+      const timeline = gsap.timeline();
+      timeline
+      .from(['#light-1', '#light-2'], {
+        duration: .6,
+        opacity: 0,
+        delay: 0.3,
+      })
+      .from('#heading-1 .char', {
+        y: 100,
+        opacity: 0,
+        duration: .6,
+        stagger: .03,
+      })
+      .from(['#heading-2 .char', '#floating-heading-1 span .char'], {
+        x: 100,
+        opacity: 0,
+        duration: .6,
+        stagger: .03,
+      })
+      .from('#floating-heading-2 span .char', {
+        scale: .9,
+        duration: .3,
+        opacity: 0,
+      })
+      .from(['.user_0', '.user_1', '.user_2', '.user_3', '.user_4'], {
+        x: -5,
+        stagger: .2,
+        duration: .4,
+        opacity: 0,
+      })
+      .from('#user_arrow', {
+        x: -5,
+        opacity: 0,
+      })
+      .from('#search_bar', {
+        y: 10,
+        opacity: 0,
+        duration: .4,
+      })
+      .from('#search_options', {
+        x: -5,
+        opacity: 0,
+      })
+      .from('#search_input', {
+        x: -5,
+        opacity: 0,
+      })
+      .from('#logos_slider', {
+        y: 10,
+        opacity: 0,
+        duration: .4,
+      })
+    }, heroRef);
+
+    return ()=> ctx.revert();
+  }, []);
+
+  return (
+    <div className='w-full relative min-h-screen pt-40 pb-14 px-5 flex flex-col justify-center items-center gap-10' ref={heroRef}>
+      <div className='container relative'>
+        <div className='flex flex-col gap-5'>
+          {/*----- Main headings -----*/}
+          <h1 className={mainHeadingStyle + ' text-white relative z-20'} id='heading-1'> Your WEB3 </h1>
+          <div className='flex justify-between relative z-20'>
+            <h1 className={mainHeadingStyle + ' text-white'} id='heading-2'> Career </h1>
+            <div className='flex items-center'>
+              {usersImages.map((userImage, index) => (
+                <div className='aspect-square h-24 w-24 -ml-7 hover:mr-7 transition-all'>
+                  <Image 
+                    key={index}
+                    src={userImage} 
+                    width={100} height={100}
+                    className={`h-full w-full object-cover rounded-full user_${index}`}
+                  />
+                </div>
+              ))} 
+              <Link 
+                href='#' 
+                className='h-24 w-24 bg-orange rounded-full -ml-7 flex items-center justify-center'
+                id="user_arrow"
+              >
+                <TfiArrowTopRight fill='white' size={30} />
+              </Link>
+            </div>
+          </div>
+        </div>
+        {/*----- Floating headings -----*/}
+        <FloatingHeading moveSpeed={15} id="floating-heading-1" />
+        <FloatingHeading moveSpeed={30} id="floating-heading-2" />
+      </div> 
+      <div className='container'> 
+        {/*----- Search Bar -----*/}
+        {/* Note : Keep ids to not mess the animations */}
+        <div className='flex gap-5 bg-[#f5f5f50d] p-5 rounded-2xl relative z-20' id='search_bar'>
+          <Select default='classic' id="search_options">
+            <SelectTrigger className="w-20 h-16 rounded-xl bg-[#1a272c]">
+              <SelectValue placeholder={<CiSearch size={25} />} />
             </SelectTrigger>
-            <SelectContent className='rounded-xl bg-transparent'>
-              <SelectGroup>
-                <SelectItem value='normal'>{searchOptions[0].icon}</SelectItem>
-                <SelectItem value='ai'>{searchOptions[1].icon}</SelectItem>
-              </SelectGroup>
+            <SelectContent className='rounded-xl bg-[#1a272c] p-2'>  
+              <SelectItem className='rounded' value="classic"><CiSearch size={25} /></SelectItem>
+              <SelectItem className='rounded' value="ai"><VscRobot size={25} /></SelectItem>   
             </SelectContent>
           </Select>
-          <input
-            onChange={(e) => setSearch(e.target.value)}
+          <input 
+            type="text" id='search_input'
             placeholder='Search: Frontend developer, Marketing, Binance, etc.'
-            type='text'
-            className='flex-grow rounded-md border px-4 py-2'
-          />
-
-          {/* <button>
-            <svg
-              className='h-6 w-6'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth={1.5}
-              viewBox='0 0 24 24'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>
-          </button> */}
-        </form>
-        {/* <div className="sl_counters" >
-					<div className="single_counter">
-						<strong>20M+</strong>
-						<span>users</span>
-					</div>
-					<div className="single_counter">
-						<strong>500K+</strong>
-						<span>jobs</span>
-					</div>
-					<div className="single_counter">
-						<strong>100+</strong>
-						<span>partners</span>
-					</div>
-				</div> */}
-        <Marquee className='sl_logos'>
-          <div className='logos-set'>
-            <Image alt='' height={130} src={'/assets/images/Partners/Partner-1.webp'} width={450} />
-            <Image alt='' height={130} src={'/assets/images/Partners/Partner-2.png'} width={450} />
-            <Image alt='' height={130} src={'/assets/images/Partners/Partner-3.png'} width={450} />
-            <Image alt='' height={130} src={'/assets/images/Partners/Partner-4.png'} width={450} />
-            <Image alt='' height={130} src={'/assets/images/Partners/Partner-5.png'} width={450} />
+            className='w-full bg-transparent text-white h-16 border-none outline-none'
+          /> 
+        </div>
+      </div>
+      <div className='w-full mt-10' id='logos_slider'>
+        <Marquee speed={20}>
+          <div className='flex w-full items-center gap-16 mr-16'>
+            <Image className='invert brightness-0' height={30} src={'/assets/images/Partners/logo-1.svg'} width={100} />
+            <Image className='invert brightness-0' height={30} src={'/assets/images/Partners/logo-2.svg'} width={100} />
+            <Image className='invert brightness-0' height={30} src={'/assets/images/Partners/logo-3.svg'} width={100} />
+            <Image className='invert brightness-0' height={30} src={'/assets/images/Partners/logo-4.svg'} width={100} />
+            <Image className='invert brightness-0' height={30} src={'/assets/images/Partners/logo-5.svg'} width={100} />
+            <Image className='invert brightness-0' height={30} src={'/assets/images/Partners/logo-6.svg'} width={100} />
+            <Image className='invert brightness-0' height={30} src={'/assets/images/Partners/logo-7.png'} width={100} />
+            <Image className='invert brightness-0' height={30} src={'/assets/images/Partners/logo-8.png'} width={100} />
+            <Image className='invert brightness-0' height={30} src={'/assets/images/Partners/logo-9.png'} width={100} />
           </div>
         </Marquee>
       </div>
+      {/*----- Lighting -----*/}
+      <div id="light-1" className='
+        rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,_#00C2FF_0%,_#009EF6_100%)] blur-[150px]
+        h-[400px] w-[400px]
+        absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2
+      '/>
+      <div id="light-2" className='
+        rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,_#DC4F13_0%,_#FF4C00_100%)] blur-[150px]
+        h-[450px] w-[450px]
+        absolute right-0 top-1/2 -translate-y-1/2
+      '/>
     </div>
-  );
-};
+  )
+}
 
-export default Hero;
+export default HeroSection
