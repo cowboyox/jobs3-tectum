@@ -241,9 +241,9 @@ const Signup = () => {
   const { address, isConnected } = useAccount();
 
   useEffect(() => {
-    if (isConnected) {
+    if (isConnected && auth.acc_type) {
       try {
-        auth.signInwithWallet(address);
+        auth.signUpwithWallet(address);
       } catch (err) {
         console.error(err);
         // router.replace('/')
