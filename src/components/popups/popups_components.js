@@ -22,7 +22,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState(null);
   const [confirmPwd, setConfirmPwd] = useState(null);
-  const [referralUser, setReferralUser] = useState(null);
+  const [referralCode, setReferralCode] = useState(null);
   const [referrer, setReferrer] = useState('');
   const [accept, setAccept] = useState(null);
 
@@ -152,9 +152,9 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
           setConfirmPwd(ev.target.value);
         }
       }
-      if (attr === 'referralUser') {
+      if (attr === 'referralCode') {
         ev.target.closest('.field_container')?.classList.remove('field_error');
-        setReferralUser(ev.target.value);
+        setReferralCode(ev.target.value);
       }
       if (attr === 'accept') {
         if (!ev.target.checked) {
@@ -214,7 +214,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         email,
         name,
         password,
-        referralUser,
+        referralCode,
         referrer,
         username,
       });
@@ -352,13 +352,13 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
             {!referrer && (
               <div className='field_container'>
                 <input
-                  id='referral_user'
+                  id='referral_code'
                   onChange={(ev) => {
-                    checkInput(ev, 'referralUser');
+                    checkInput(ev, 'referralCode');
                   }}
                   type='text'
                 />
-                <label htmlFor='referral_user'>Referral User</label>
+                <label htmlFor='referral_code'>Referral Code</label>
                 <span className='error_message' />
               </div>
             )}

@@ -583,8 +583,11 @@ const FreelancerProfile = () => {
   };
 
   return !isLoading ? (
-    <div className='p-0 w-full'>
-      <div className={`group relative w-full ${isAuth && 'cursor-pointer'}`} {...getBannerRootProps()}>
+    <div className='w-full p-0'>
+      <div
+        className={`group relative w-full ${isAuth && 'cursor-pointer'}`}
+        {...getBannerRootProps()}
+      >
         <label
           className={`w-full ${isAuth && 'hover:cursor-pointer'}`}
           htmlFor='dropzone-banner'
@@ -616,7 +619,7 @@ const FreelancerProfile = () => {
           />
         )}
       </div>
-      <div className='mx-auto flex max-w-7xl -translate-y-8 flex-col gap-3 px-0 md:px-8 w-full'>
+      <div className='mx-auto flex w-full max-w-7xl -translate-y-8 flex-col gap-3 px-0 md:px-8'>
         <Tabs defaultValue='preview'>
           <div className='flex flex-col gap-4 rounded-xl bg-[#10191D] px-3 py-4 md:flex-row md:gap-0 md:p-8'>
             <div className='flex w-full items-center gap-4 md:w-3/4 md:gap-7'>
@@ -657,7 +660,15 @@ const FreelancerProfile = () => {
                   )}
                 </div>
                 {/* Change background color depending on user online status */}
-                <div className='absolute bottom-1 right-1 h-4 w-4 rounded-full bg-green-500' />
+                <div
+                  className={`absolute bottom-1 right-1 h-4 w-4 rounded-full ${
+                    auth?.currentProfile?.status === 'online'
+                      ? 'bg-green-500'
+                      : auth?.currentProfile?.status === 'idle'
+                        ? 'bg-yellow-500'
+                        : 'bg-gray-500'
+                  } `}
+                />
               </div>
               <div className='flex flex-col gap-4'>
                 <div className='flex items-center gap-4'>
@@ -721,7 +732,7 @@ const FreelancerProfile = () => {
             </div>
             )} */}
           </div>
-          <div className='mt-5 w-full flex flex-col md:flex-row'>
+          <div className='mt-5 flex w-full flex-col md:flex-row'>
             {/* Sidebar */}
             <div className='w-full md:w-1/4'>
               <div className='flex w-full flex-col overflow-hidden rounded-xl'>

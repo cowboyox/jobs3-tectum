@@ -91,26 +91,25 @@ const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity 
         if (file) formData.append('file', file);
       });
 
-      await api.post(`/api/v1/bidding/${gigId}/apply-to-freelancergig`, values);
+      const proposal = await api.post(`/api/v1/bidding/${gigId}/apply-to-freelancergig`, values);
+
       await api.post(
         `/api/v1/bidding/upload_attachment/${auth.currentProfile._id}/${gigId}`,
         formData,
         config
       );
 
-      socket.emit('client_applied_job', {
-        clientId: auth.currentProfile._id,
-        freelancerId: gigInfo.creator._id,
-        gigId,
-      });
+      if (proposal?.data?.newProposal) {
+        socket.emit('client_applied_job', proposal?.data?.newProposal);
 
-      toast({
-        className:
-          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Successfully Applied!</h3>,
-        title: <h1 className='text-center'>Success</h1>,
-        variant: 'default',
-      });
+        toast({
+          className:
+            'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+          description: <h3>Successfully Applied!</h3>,
+          title: <h1 className='text-center'>Success</h1>,
+          variant: 'default',
+        });
+      }
     } catch (err) {
       console.error('Error corrupted during applying gig', err);
 

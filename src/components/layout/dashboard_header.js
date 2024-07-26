@@ -55,6 +55,10 @@ const menu_data = [
     name: 'Gig Orders',
   },
   {
+    href: `/dashboard/freelancer/review`,
+    name: 'Write a review',
+  },
+  {
     href: `/dashboard/freelancer/offer`,
     name: 'Client Orders',
   },
@@ -97,6 +101,10 @@ const menu_data = [
   {
     href: `/dashboard/client/orders`,
     name: 'Gig Orders',
+  },
+  {
+    href: `/dashboard/client/review`,
+    name: 'Write a review',
   },
   {
     href: `/dashboard/client/offer`,
@@ -188,7 +196,14 @@ const DashboardHeader = () => {
 
   useEffect(() => {
     (async () => {
-      if (wallet) {
+      const info = JSON.parse(localStorage.getItem('jobs_2024_token'));
+      let token;
+      
+      if (info) {
+        token = info?.data?.token; // Replace 'your_token_key' with the actual key name
+      }
+
+      if (wallet && token) {
         try {
           await api.put(
             `/api/v1/profile/update-walletPublickey`,
@@ -204,7 +219,7 @@ const DashboardHeader = () => {
   if (!auth?.currentProfile) {
     return (
       <header
-        className='flex h-28 flex-wrap items-center justify-end md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
+        className='flex flex-wrap items-center justify-end h-28 md:h-20 mobile:flex-col mobile:justify-center mobile:gap-3'
         id='header_container'
       />
     );
@@ -212,14 +227,14 @@ const DashboardHeader = () => {
 
   return (
     <header
-      className='flex h-28 flex-wrap items-center justify-between md:h-20 mobile:flex-nowrap mobile:justify-center mobile:gap-3'
+      className='flex flex-wrap items-center justify-between h-28 md:h-20 mobile:flex-nowrap mobile:justify-center mobile:gap-3'
       id='header_container'
     >
       {renderPopup()}
       <div className='mobile:hidden'>
         <h1 className='text-3xl font-bold text-[#F5F5F5]'>{title}</h1>
       </div>
-      <div className='flex w-full items-center gap-3 md:w-auto md:gap-4 mobile:justify-between'>
+      <div className='flex items-center w-full gap-3 md:w-auto md:gap-4 mobile:justify-between'>
         <div
           className='order-1 cursor-pointer rounded-[10px] bg-[#10191D] p-3 md:hidden'
           onClick={() => {
@@ -307,9 +322,9 @@ const DashboardHeader = () => {
 
         <DropdownMenu>
           <DropdownMenuTrigger className='mobile:order-4'>
-            <div className='relative h-12 w-12 mobile:h-10 mobile:w-10'>
+            <div className='relative w-12 h-12 mobile:h-10 mobile:w-10'>
               <img
-                className='aspect-square h-full w-full rounded-full object-cover'
+                className='object-cover w-full h-full rounded-full aspect-square'
                 src={
                   auth?.currentProfile?.avatarURL
                     ? auth?.currentProfile?.avatarURL
@@ -317,7 +332,7 @@ const DashboardHeader = () => {
                 }
               />
               {/* Change background color depending on user online status */}
-              <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
+              <div className='absolute w-2 h-2 bg-green-500 rounded-full bottom-1 right-1' />
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent

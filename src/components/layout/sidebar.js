@@ -843,6 +843,283 @@ const SideBar = () => {
       name: 'Settings',
     },
   ];
+  const employer_menu_data = [
+    {
+      href: `/dashboard/employer/home`,
+      icon: (
+        <svg
+          fill='none'
+          height='25'
+          viewBox='0 0 24 25'
+          width='24'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M9.02 3.34016L3.63 7.54016C2.73 8.24016 2 9.73016 2 10.8602V18.2702C2 20.5902 3.89 22.4902 6.21 22.4902H17.79C20.11 22.4902 22 20.5902 22 18.2802V11.0002C22 9.79016 21.19 8.24016 20.2 7.55016L14.02 3.22016C12.62 2.24016 10.37 2.29016 9.02 3.34016Z'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M10.5 18.5H13.5C15.15 18.5 16.5 17.15 16.5 15.5V12.5C16.5 10.85 15.15 9.5 13.5 9.5H10.5C8.85 9.5 7.5 10.85 7.5 12.5V15.5C7.5 17.15 8.85 18.5 10.5 18.5Z'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M12 9.5V18.5'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M7.5 14H16.5'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+        </svg>
+      ),
+      id: 0,
+      name: 'Home',
+    },
+    {
+      href: `/dashboard/employer/profile/${auth?.currentProfile?._id}`,
+      icon: (
+        <svg
+          fill='none'
+          height='25'
+          viewBox='0 0 24 25'
+          width='24'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M12 12.5C14.7614 12.5 17 10.2614 17 7.5C17 4.73858 14.7614 2.5 12 2.5C9.23858 2.5 7 4.73858 7 7.5C7 10.2614 9.23858 12.5 12 12.5Z'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M20.5901 22.5C20.5901 18.63 16.7402 15.5 12.0002 15.5C7.26015 15.5 3.41016 18.63 3.41016 22.5'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+        </svg>
+      ),
+      id: 1,
+      name: 'Profile',
+    },
+    {
+      href: `/dashboard/employer/post_job`,
+      icon: (
+        <svg
+          fill='none'
+          height='25'
+          viewBox='0 0 24 25'
+          width='24'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M3.16992 7.93994L11.9999 13.0499L20.7699 7.96994'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M12 22.11V13.04'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M9.92965 2.97979L4.58965 5.93979C3.37965 6.60979 2.38965 8.28979 2.38965 9.66979V15.3198C2.38965 16.6998 3.37965 18.3798 4.58965 19.0498L9.92965 22.0198C11.0696 22.6498 12.9396 22.6498 14.0796 22.0198L19.4196 19.0498C20.6296 18.3798 21.6196 16.6998 21.6196 15.3198V9.66979C21.6196 8.28979 20.6296 6.60979 19.4196 5.93979L14.0796 2.96979C12.9296 2.33979 11.0696 2.33979 9.92965 2.97979Z'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+        </svg>
+      ),
+      id: 2,
+      name: 'Post A Job',
+    },
+    {
+      href: `/dashboard/employer/find_staff`,
+      icon: (
+        <svg
+          fill='none'
+          height='25'
+          viewBox='0 0 24 25'
+          width='24'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M11 2.5H9C4 2.5 2 4.5 2 9.5V15.5C2 20.5 4 22.5 9 22.5H15C20 22.5 22 20.5 22 15.5V13.5'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M16.0399 3.51976L8.15988 11.3998C7.85988 11.6998 7.55988 12.2898 7.49988 12.7198L7.06988 15.7298C6.90988 16.8198 7.67988 17.5798 8.76988 17.4298L11.7799 16.9998C12.1999 16.9398 12.7899 16.6398 13.0999 16.3398L20.9799 8.45976C22.3399 7.09976 22.9799 5.51976 20.9799 3.51976C18.9799 1.51976 17.3999 2.15976 16.0399 3.51976Z'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeMiterlimit='10'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M14.9102 4.6499C15.5802 7.0399 17.4502 8.9099 19.8502 9.5899'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeMiterlimit='10'
+            strokeWidth='1.5'
+          />
+        </svg>
+      ),
+      id: 3,
+      name: 'Find Staff',
+    },
+    {
+      href: `/dashboard/employer/contracts`,
+      icon: (
+        <svg
+          fill='none'
+          height='25'
+          viewBox='0 0 24 25'
+          width='24'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M9.15957 11.37C9.05957 11.36 8.93957 11.36 8.82957 11.37C6.44957 11.29 4.55957 9.34 4.55957 6.94C4.55957 4.49 6.53957 2.5 8.99957 2.5C11.4496 2.5 13.4396 4.49 13.4396 6.94C13.4296 9.34 11.5396 11.29 9.15957 11.37Z'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M16.4103 4.5C18.3503 4.5 19.9103 6.07 19.9103 8C19.9103 9.89 18.4103 11.43 16.5403 11.5C16.4603 11.49 16.3703 11.49 16.2803 11.5'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M4.15973 15.06C1.73973 16.68 1.73973 19.32 4.15973 20.93C6.90973 22.77 11.4197 22.77 14.1697 20.93C16.5897 19.31 16.5897 16.67 14.1697 15.06C11.4297 13.23 6.91973 13.23 4.15973 15.06Z'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M18.3398 20.5C19.0598 20.35 19.7398 20.06 20.2998 19.63C21.8598 18.46 21.8598 16.53 20.2998 15.36C19.7498 14.94 19.0798 14.66 18.3698 14.5'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+        </svg>
+      ),
+      id: 4,
+      name: 'Contracts',
+    },
+    {
+      href: `/dashboard/employer/messages`,
+      icon: (
+        <svg
+          fill='none'
+          height='25'
+          viewBox='0 0 24 25'
+          width='24'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M19 8.5C20.6569 8.5 22 7.15685 22 5.5C22 3.84315 20.6569 2.5 19 2.5C17.3431 2.5 16 3.84315 16 5.5C16 7.15685 17.3431 8.5 19 8.5Z'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M7 13.5H12'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M7 17.5H16'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M14 2.5H9C4 2.5 2 4.5 2 9.5V15.5C2 20.5 4 22.5 9 22.5H15C20 22.5 22 20.5 22 15.5V10.5'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+        </svg>
+      ),
+      id: 5,
+      name: 'Messages',
+    },
+    {
+      href: `/dashboard/employer/my_wallet`,
+      icon: (
+        <svg
+          fill='none'
+          height='24'
+          viewBox='0 0 24 24'
+          width='24'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M19 8C20.6569 8 22 6.65685 22 5C22 3.34315 20.6569 2 19 2C17.3431 2 16 3.34315 16 5C16 6.65685 17.3431 8 19 8Z'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M7 13H12'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M7 17H16'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+          <path
+            d='M14 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H15C20 22 22 20 22 15V10'
+            stroke='#96B0BD'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth='1.5'
+          />
+        </svg>
+      ),
+      id: 6,
+      name: 'My Wallet',
+    },
+  ];
   const sideBarRef = useRef(null);
   function MobileToggleSidebar() {
     if (window.innerWidth <= 768) {
@@ -903,6 +1180,18 @@ const SideBar = () => {
             ))}
           {auth?.currentRole === USER_ROLE.CLIENT &&
             client_menu_data.map((item, index) => (
+              <MenuLink
+                desktopCollapsed={desktopCollapsed}
+                href={item.href}
+                icon={item.icon}
+                item={item}
+                key={index}
+                name={item.name}
+                sideBarSettings={sideBarSettings}
+              />
+            ))}
+          {auth?.currentRole === USER_ROLE.EMPLOYER &&
+            employer_menu_data.map((item, index) => (
               <MenuLink
                 desktopCollapsed={desktopCollapsed}
                 href={item.href}

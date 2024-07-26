@@ -2,7 +2,7 @@ name: CI/CD for Frontend
 
 on:  
     push:
-        branches: [ develop ]
+        branches: [ master ]
 
 jobs:
   deploy:
@@ -17,16 +17,17 @@ jobs:
       run: npm run build   
     
     - name: Deploy to AWS EC2
-      uses: appleboy/scp-action@v0.1.7
+      uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "./"  # This now correctly points to the current directory
-        target: "/home/ubuntu/work/test-jobs3"
+
+        target: "/home/ubuntu/work/jobs3"
 
     - name: Restart PM2 application
-      uses: appleboy/ssh-action@v1.0.3
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
