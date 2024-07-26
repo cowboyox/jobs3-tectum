@@ -1,17 +1,15 @@
 'use client';
 
-import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { useRouter } from 'next/navigation';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { FileUploader } from 'react-drag-drop-files';
 import { useForm } from 'react-hook-form';
-import { GoTrash } from 'react-icons/go';
+import { IoIosCloseCircleOutline } from 'react-icons/io';
+import { MdOutlineAttachFile } from 'react-icons/md';
+import { PiExportThin } from 'react-icons/pi';
 
-import DropFile from '@/components/elements/dropFile';
-import FormStep from '@/components/elements/formSteps/Step';
-import { StepProvider } from '@/components/elements/formSteps/StepContext';
-import FormNavigation from '@/components/elements/formSteps/StepNavigation';
-import StepNavItem from '@/components/elements/formSteps/StepNavItem';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Command } from '@/components/ui/command';
 import {
   Form,
   FormControl,
@@ -23,6 +21,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import MultipleSelector from '@/components/ui/multiple-selector';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   Select,
@@ -32,12 +31,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { useCustomContext } from '@/context/ContextProvider';
 import api from '@/utils/api';
+import { COUNTRIES_OPTIONS } from '@/utils/constants';
 
+// Icons
+
+function FileUploadBody() {
+  return (
+    <div className='flex w-full items-center justify-center rounded-xl pb-2 pt-2'>
+      <PiExportThin className='mr-2 h-[24px] w-[24px] text-[#A0B4C0]' />
+      <p className='text-center'>
+        <span className='text-base text-[#A0B4C0]'>Upload</span>
+      </p>
+    </div>
+  );
+}
+
+/*
+ * This is the data for the form, like labels, placholders, options and more
+ * You can restructure it if you want no problem
+ * I just created it quickly to have an easier method to edit the info on the page
+ */
 const all_form_structure = {
+  budget_label: 'Setup Price',
   budget_mode: [
     {
       label: 'Hourly Rate',
@@ -48,7 +66,92 @@ const all_form_structure = {
       value: 'fixed',
     },
   ],
+
+  budget_placeholder: 'Choose',
+  categories_label: 'Choose the category and subcategory most suitable for your Gig',
+  categories_list: [
+    {
+      label: 'Accounting & Consulting',
+      value: 'category_1',
+    },
+    {
+      label: 'Admin Support',
+      value: 'category_2',
+    },
+    {
+      label: 'Customer Service',
+      value: 'category_3',
+    },
+    {
+      label: 'Crypto & Web3',
+      value: 'category_4',
+    },
+    {
+      label: 'Data Science & Analytics',
+      value: 'category_5',
+    },
+    {
+      label: 'Design & Creative',
+      value: 'category_6',
+    },
+    {
+      label: 'Engineering & Architecture',
+      value: 'category_7',
+    },
+    {
+      label: 'IT & Networking',
+      value: 'category_8',
+    },
+    {
+      label: 'Legal',
+      value: 'category_9',
+    },
+    {
+      label: 'Sales & Marketing',
+      value: 'category_10',
+    },
+    {
+      label: 'Translation',
+      value: 'category_11',
+    },
+    {
+      label: 'Web, Mobile & Software Development',
+      value: 'category_12',
+    },
+    {
+      label: 'Writing',
+      value: 'category_13',
+    },
+  ],
+  categories_placeholder: 'Choose',
+  experience_description: 'Determine what skills you are looking for',
+  experience_label: 'Experience Requirements',
+  experience_options: [
+    {
+      description: 'Looking for someone relatively new to this field',
+      indexNum: 0,
+      label: 'Entry',
+      value: 'Entry',
+    },
+    {
+      description: 'Looking for substantial experience in this field',
+      indexNum: 1,
+      label: 'Intermediate',
+      value: 'Intermediate',
+    },
+    {
+      description: 'Looking for comprehensive and deep expertise in this field',
+      indexNum: 2,
+      label: 'Expert',
+      value: 'Expert',
+    },
+  ],
+
+  gig_description_label: 'Briefly Describe Your Gig',
+  gig_description_placeholder: 'Type here',
+  gig_fixed_label: 'Project Price',
   gig_fixed_price: '36.00',
+
   gig_from_to: {
     // From
     from_label: 'From',
@@ -57,25 +160,97 @@ const all_form_structure = {
     to_label: 'To',
     to_placeholder: '60.00',
   },
-};
-const Question = (props) => {
-  return (
-    <div className='flex gap-2 rounded-xl border border-[#526872] p-4'>
-      <p className='text-base text-white'>{props.question_num}.</p>
-      <div className='flex w-full flex-col gap-1'>
-        <p className='text-base text-white'>{props.question}</p>
-        <p className='w-full border-0 bg-transparent p-0 text-base text-[#96B0BD] shadow-none shadow-transparent outline-none'>
-          {props.answer_placeholder}
-        </p>
-      </div>
-      <GoTrash className='cursor-pointer' onClick={() => props.onDelete(props.id)} />
-    </div>
-  );
+  git_description: '80/1200 characters',
+
+  location_label: 'Location',
+  location_placeholder: 'Budapest, Hungary',
+
+  scope_label: 'Estimate The Scope Of Your Work',
+  scope_options: [
+    {
+      indexNum: 3,
+      label: 'Above 6 months',
+      value: 'Above 6 months',
+    },
+    {
+      indexNum: 2,
+      label: '3 to 6 months',
+      value: '3 to 6 months',
+    },
+    {
+      indexNum: 1,
+      label: '1 to 3 months',
+      value: '1 to 3 months',
+    },
+    {
+      indexNum: 0,
+      label: 'Less than a month',
+      value: 'Less than a month',
+    },
+  ], // Default will be the first option
+  scope_placeholder: 'Choose the item',
+
+  skills_label: 'Skills',
+  skills_list: [
+    {
+      label: 'Web Development',
+    },
+    {
+      label: 'Adobe Photoshop',
+    },
+    {
+      label: 'UX Design',
+    },
+    {
+      label: 'Figma',
+    },
+    {
+      label: 'UI Design',
+    },
+  ],
+
+  skills_placeholder: 'Add tags',
+
+  title_label0: 'Your Title Is The Most Important Place',
+  title_label1: 'As your Gig storefront, ',
+  title_label2:
+    ' to include words that buyers  would likely use to search for a service like yours',
+  title_placeholder: 'Type the title here',
+
+  upload_files_description: 'Upload files. Format: PDF, DOC, JPG, PNG...',
+  upload_files_label: 'Documents (Up To 2)',
 };
 
 const PostJob = () => {
-  const wallet = useAnchorWallet();
+  const { toast } = useToast();
+  const auth = useCustomContext();
+  const router = useRouter();
+  const [openCategory, setOpenCategory] = useState(false);
+  const [openSubCategory, setOpenSubCategory] = useState(false);
+  const [jobCategories, setJobCategories] = useState([]);
+  const [skillSet, setSkillSet] = useState([]);
+  const [budgetMode, setBudgetMode] = useState('hourly');
+  const [files, setFiles] = useState([]);
+  const [files2, setFiles2] = useState([]);
+  const [selectedLevel, setSelectedLevel] = useState(0);
+  const [options, setOptions] = useState(COUNTRIES_OPTIONS);
+  const [placeholder, setPlaceholder] = useState('Add location');
 
+  const [postData, setPostData] = useState({
+    attachment: [],
+    experienceLevel: 0,
+    gigCategory: [],
+    gigDeadline: 3,
+    gigDescription: '',
+    gigPaymentType: 1, // hourly budget gig first
+    gigPrice: 0,
+    gigTitle: '',
+    location: '',
+    maxBudget: 0,
+    minBudget: 0,
+    profileId: null,
+    requiredSkills: [],
+  });
   const categories_list = [
     {
       label: 'Accounting & Consulting',
@@ -423,142 +598,66 @@ const PostJob = () => {
       ],
     },
   ];
+  const [selectedSkill, setSelectedSkill] = useState('');
   const [currentCategory, setCurrentCategory] = useState('Accounting & Consulting');
   const [currentSub, setCurrentSub] = useState('Personal Coaching');
-
-  const { toast } = useToast();
-  const auth = useCustomContext();
-  const router = useRouter();
-
-  const form = useForm();
-  const [tags, setTags] = useState([]);
-  const [requirementQuestions, setRequirementQuestions] = useState([
-    {
-      answer_placeholder: '3D design, e-commerce, accounting, marketing, etc',
-      id: 0,
-      question: 'If you are ordering for a business, what’s your industry?',
-    },
-    {
-      answer_placeholder: 'Building a mobile app, creating an animation, developing a game, etc',
-      id: 1,
-      question: 'Is this order part of a bigger project you’re working on?',
-    },
-  ]);
-
-  // const [profile, setProfileData] = useState(null);
-  // useEffect(() => {
-  //   if (auth.user) {
-  //     api.get(`/api/v1/profile/get-profile/${auth.user.email}/0`).then((res) => {
-  //       setProfileData(res.data.profile);
-  //     });
-  //   }
-  // }, [auth]);
-  const [budgetMode, setBudgetMode] = useState('hourly');
-  const [postData, setPostData] = useState({
-    instantBuy: false,
-  });
-
-  const newQuestionRef = useRef(null);
-  const newAnswerPlaceholderRef = useRef(null);
-  const [changedPostions, setChangedPostions] = useState([false, false, false, false]);
-  const [isWaiting, setIsWaiting] = useState(false);
-
-  const addNewQuestion = () => {
-    const newQuestion = newQuestionRef.current.value.trim();
-    const newAnswerPlaceholder = newAnswerPlaceholderRef.current.value.trim();
-
-    if (newQuestion && newAnswerPlaceholder) {
-      const newQuestionObject = {
-        answer_placeholder: newAnswerPlaceholder,
-        id: requirementQuestions.length + 1,
-        question: newQuestion,
-      };
-      setRequirementQuestions((prevState) => [...prevState, newQuestionObject]);
-
-      // Clear input fields
-      newQuestionRef.current.value = '';
-      newAnswerPlaceholderRef.current.value = '';
+  useEffect(() => {
+    if (auth) {
+      setPostData((prev) => ({
+        ...prev,
+        profileId: auth?.currentProfile?._id,
+      }));
     }
-  };
+  }, [auth]);
 
-  const deleteQuestion = (id) => {
-    setRequirementQuestions((prevState) => prevState.filter((question) => question.id !== id));
-  };
-
-  const [tagInputValue, setTagInputValue] = useState('');
-
-  const tagsInputFocus = (event) => {
-    if (event.key === 'Enter' && tagInputValue.trim()) {
-      event.preventDefault();
-      if (tags.length < 5) {
-        setTags([...tags, tagInputValue.trim()]);
-        setTagInputValue('');
-      }
-    }
-  };
-
-  const removeTag = (indexToRemove) => {
-    setTags(tags.filter((_, index) => index !== indexToRemove));
-  };
-
-  const [videoFile, setVideoFile] = useState(null);
-  const [imageFiles, setImageFiles] = useState([]);
-  const [documentFiles, setDocumentFiles] = useState([]);
-
-  const handleVideoUpload = (file) => {
-    setVideoFile(file[0]); // Assuming single file for video
-  };
-
-  const handleImageUpload = (files, index) => {
-    const newImageFiles = [...imageFiles];
-    newImageFiles[index] = files[0]; // Assuming single file for each image slot
-    setImageFiles(newImageFiles);
-    let tmp1 = [];
-    tmp1 = changedPostions.map((item) => item);
-    tmp1[index] = true;
-    setChangedPostions(tmp1);
-  };
-
-  const handleDocumentUpload = (files, index) => {
-    const newDocumentFiles = [...documentFiles];
-    newDocumentFiles[index] = files[0]; // Assuming single file for each document slot
-    setDocumentFiles(newDocumentFiles);
-  };
-  async function onSubmit(values) {
-    if (!wallet) {
+  useEffect(() => {
+    let tmp = localStorage.getItem('jobs_2024_token');
+    if (tmp === null) {
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-        description: <h3>Please connect your wallet!</h3>,
+        description: <h3>Please login first!</h3>,
         title: <h1 className='text-center'>Error</h1>,
         variant: 'destructive',
       });
-      return;
+      alert('Login First!');
+      router.push('/');
+    } else {
     }
+  }, [router, toast]);
 
-    /* Selmani: I didn't check if all the values are being passed here
-     * And i'm sure not all, so please make sure all necessary inputs are being passed
-     * NOTE: Make sure to check the ShadCN documentation
-     * https://ui.shadcn.com/docs/components
-     * I know you know but just wanted to mention :D
-     */
-    values.question = requirementQuestions;
-    values.searchKeywords = tags;
-    values.email = auth.user.email;
-    values.creator = auth.currentProfile._id;
-    values.walletPubkey = wallet.publicKey;
-    values.instantBuy = postData.instantBuy;
-    values.gigPaymentType = postData.gigPaymentType;
-    values.gigPrice = postData.gigPrice;
-    values.minBudget = postData.minBudget;
-    values.maxBudget = postData.maxBudget;
-    values.gigCategory = currentCategory;
-    values.subCategory = currentSub;
-    // if (profile) {
-    //   values.creator = profile._id;
-    // }
-
-    if (!values.gigTitle || !values.gigDescription) {
+  const FileChanged = (file) => {
+    console.log('file', file);
+    console.log('file.length', file.length);
+    let tmp = [];
+    const filesArray = Array.from(file);
+    console.log('filesArray', filesArray);
+    filesArray.map((fi) => tmp.push(fi));
+    setFiles(filesArray);
+    setFiles2(tmp);
+    console.log('tmp', tmp);
+    setPostData((prev) => ({
+      ...prev,
+      attachment: [...prev.attachment, filesArray],
+    }));
+  };
+  const onRemoveImage = (id) => {
+    setFiles(files.filter((_, i) => i !== id));
+  };
+  const FileError = (error) => {
+    console.error(error);
+  };
+  const form = useForm();
+  console.log('files is here', files);
+  console.log('postData', postData);
+  const handleSetGigTitle = (e) => {
+    setPostData((prev) => ({
+      ...prev,
+      gigTitle: e.target.value,
+    }));
+  };
+  const handlePublish = async () => {
+    if (!postData.gigTitle || !postData.gigDescription) {
       return toast({
         className:
           'bg-yellow-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -567,71 +666,52 @@ const PostJob = () => {
         variant: 'default',
       });
     }
-    setIsWaiting(true);
-
     const formData = new FormData();
-    if (videoFile) {
-      formData.append('files', videoFile);
-    }
-
-    imageFiles.forEach((file) => {
-      if (file) formData.append('files', file);
+    console.log('files2 ->', files2);
+    files2.map((file) => {
+      formData.append('files', file);
     });
-    documentFiles.forEach((file) => {
-      if (file) formData.append('files', file);
-    });
-    console.log('documentFiles.length', documentFiles.length);
-    formData.append(
-      'metadata',
-      JSON.stringify({
-        changedPostions: changedPostions,
-        documents: documentFiles.length,
-        images: imageFiles.length,
-        video: videoFile ? 1 : 0,
-      })
-    );
 
+    let tmp = localStorage.getItem('jobs_2024_token');
     const config = {
       headers: {
+        Authorization: `Bearer ${JSON.parse(tmp).data.token}`,
         'Content-Type': 'multipart/form-data',
       },
     };
 
-    console.log('values', values);
     await api
-      .post('/api/v1/freelancer_gig/post_gig', values)
+      .post('/api/v1/client_gig/post_gig', postData)
       .then(async (gigData) => {
         await api
           .post(
-            `/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${gigData.data.data._id}`,
+            `/api/v1/client_gig/upload_attachment/${auth.currentProfile._id}/${gigData.data.gigId}`,
             formData,
             config
           )
           .then(async (data) => {
             console.log('Successfully uploaded', data.data.msg[0]);
             await api.post('/api/v1/freelancer_gig/send_tg_bot', {
-              gigDescription: values.gigDescription,
+              gigDescription: postData.gigDescription,
               gigId: gigData.data.gigId,
-              gigTitle: values.gigTitle,
+              gigTitle: postData.gigTitle,
               imageURL:
                 auth?.currentProfile?.avatarURL != '' ? auth.currentProfile.avatarURL : null,
               profileName: auth.user.name,
-              profileType: 'Freelancer',
+              profileType: 'Client',
             });
           });
         toast({
           className:
             'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
-          description: <h3>Successfully posted gig titled {values.gigTitle}</h3>,
+          description: <h3>Successfully posted gig titled {postData.gigTitle}</h3>,
           title: <h1 className='text-center'>Success</h1>,
           variant: 'default',
         });
-        setIsWaiting(false);
-        router.push(`./${auth.currentProfile._id}`);
+        router.push('./my-gigs');
       })
       .catch((err) => {
         console.error('Error corrupted during posting gig', err);
-        setIsWaiting(false);
         toast({
           className:
             'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -640,559 +720,570 @@ const PostJob = () => {
           variant: 'destructive',
         });
       });
-  }
+  };
 
+  useEffect(() => {
+    setPostData((prev) => ({
+      ...prev,
+      requiredSkills: skillSet,
+    }));
+  }, [skillSet]);
+  console.log('postData', postData);
   return (
-    <StepProvider>
-      <div className='flex w-full flex-col'>
-        <nav className='flex w-full flex-nowrap rounded-t-xl bg-[#10191d] mobile:overflow-x-scroll'>
-          <StepNavItem name='Overview' num={1} />
-          <StepNavItem name='Pricing' num={2} />
-          <StepNavItem name='Description' num={3} />
-          <StepNavItem name='Requirements' num={4} />
-          <StepNavItem name='Gallery' num={5} />
-          <StepNavItem name='Publish' num={6} />
-        </nav>
-        <Form {...form}>
-          <form
-            className='mx-auto mt-10 flex w-full max-w-3xl flex-col gap-6 rounded-xl bg-[#10191d] p-7 mobile:px-3'
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
-            <FormStep stepOrder={1}>
+    <div className='gig_posting mb-4 flex justify-center rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>
+      <Form {...form}>
+        <form
+          className='itmes-end justify-center rounded-2xl bg-[#10191D] p-[30px] mobile:p-0'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handlePublish();
+          }}
+        >
+          <FormField
+            name='gig_title'
+            render={() => (
+              <FormItem className='mt-8'>
+                <h1 className='mb-4 text-2xl font-semibold'>Gig Title</h1>
+                <p className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.title_label1}
+                  <span className='font-bold'>{all_form_structure.title_label0}</span>
+                  {all_form_structure.title_label2}
+                </p>
+                <FormControl>
+                  <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
+                    <input
+                      className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
+                      onChange={(e) => handleSetGigTitle(e)}
+                      placeholder={all_form_structure.title_placeholder}
+                      value={postData.gigTitle}
+                    />
+                  </div>
+                </FormControl>
+                <FormDescription />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className='mt-14 flex flex-col gap-2'>
+            <p className='mb-4 text-2xl text-[#F5F5F5]'>Category</p>
+            <p className='text-base text-[#96B0BD]'>
+              Choose the category and subcategory most suitable for your Gig
+            </p>
+            <div className='flex gap-3'>
               <FormField
-                name='gigTitle'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Gig title</FormLabel>
-                    <FormDescription className='text-base text-[#96B0BD]'>
-                      As your Gig storefront, your title is the most important place to include
-                      words that buyers would likely use to search for a service like yours
-                    </FormDescription>
+                name='gigCategory'
+                render={() => (
+                  <FormItem className='flex w-full flex-col gap-2'>
                     <FormControl>
-                      <Textarea
-                        {...field}
-                        className='h-18 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
-                        placeholder='I will do something im really good at...'
-                      />
+                      <Select
+                        onValueChange={(e) => {
+                          setPostData((prev) => ({
+                            ...prev,
+                            gigCategory: [...prev.gigCategory, e],
+                          }));
+                          setCurrentCategory(e);
+                        }}
+                      >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Choose' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {categories_list.map((job_category) => (
+                              <SelectItem key={job_category.value} value={job_category.label}>
+                                {job_category.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <div className='flex flex-col gap-2'>
-                <p className='text-2xl text-[#F5F5F5]'>Category</p>
-                <p className='text-base text-[#96B0BD]'>
-                  Choose the category and subcategory most suitable for your Gig
-                </p>
-                <div className='flex gap-3 mobile:flex-col'>
-                  <FormField
-                    name='gigCategory'
-                    render={() => (
-                      <FormItem className='flex w-full flex-col gap-2'>
-                        <FormControl>
-                          <Select
-                            onValueChange={(e) => {
-                              setCurrentCategory(e);
-                            }}
-                          >
-                            <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                              <SelectValue placeholder='Select a Category' />
-                            </SelectTrigger>
-                            <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                              <SelectGroup>
-                                {categories_list.map((job_category) => (
-                                  <SelectItem key={job_category.value} value={job_category.label}>
-                                    {job_category.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name='subCategory'
-                    render={() => (
-                      <FormItem className='flex w-full flex-col gap-2'>
-                        <FormControl>
-                          <Select
-                            onValueChange={(e) => {
-                              setCurrentSub(e);
-                            }}
-                          >
-                            <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                              <SelectValue placeholder='Select a Sub Category' />
-                            </SelectTrigger>
-                            <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                              <SelectGroup>
-                                {subcategory_list.map((subcat) => {
-                                  if (subcat.parent === currentCategory) {
-                                    return subcat.value.map((item, index) => (
-                                      <SelectItem key={index} value={item}>
-                                        {item} {/* Displaying the item instead of index */}
-                                      </SelectItem>
-                                    ));
-                                  }
-                                  return null; // Return null if condition is not met
-                                })}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-              <div className='flex w-full flex-col gap-4'>
-                <FormField
-                  name='gig_tags'
-                  render={({ field }) => (
-                    <FormItem className='flex flex-col gap-2'>
-                      <FormLabel className='text-2xl text-[#F5F5F5]'>
-                        Search tags, positive keywords
-                      </FormLabel>
-                      <FormDescription className='text-base text-[#96B0BD]'>
-                        Enter search terms you feel buyers will use when looking for service.
-                      </FormDescription>
-                      <FormControl>
-                        <Input defaultValue={tags.join(', ')} type='hidden' {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <input
-                  className={`h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base ${tags.length >= 5 ? 'cursor-not-allowed opacity-15' : ''}`}
-                  onChange={(event) => setTagInputValue(event.target.value)}
-                  onKeyDown={tagsInputFocus}
-                  placeholder='Enter tag'
-                  value={tagInputValue}
-                />
-                <div className='flex flex-wrap items-center gap-3'>
-                  {tags.map((tag, index) => (
-                    <div
-                      className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-white px-2 py-1 text-sm text-black'
-                      key={index}
-                      onClick={() => removeTag(index)}
-                    >
-                      {tag}
-                      <GoTrash className='ml-2' />
-                    </div>
-                  ))}
-                </div>
-                <p className='text-sm text-[#526872]'>
-                  5 tags maximum, use letters and numbers only
-                </p>
-              </div>
-            </FormStep>
-            <FormStep stepOrder={2}>
               <FormField
-                name='budget'
-                render={({ field }) => (
-                  <FormItem className='mt-8'>
-                    <FormLabel className='mb-4 text-2xl font-semibold'>Setup Price</FormLabel>
-                    <RadioGroup
-                      className='flex flex-col gap-3 pt-3'
-                      defaultValue={all_form_structure.budget_mode[0].value}
-                      onValueChange={(val) => {
-                        field.onChange();
-                        setBudgetMode(val);
-                        setPostData((prev) => ({
-                          ...prev,
-                          gigPaymentType: val === 'hourly' ? 1 : 0,
-                          gigPrice: val === 'hourly' ? 0 : prev.gigPrice,
-                          maxBudget: val === 'hourly' ? prev.maxBudget : 0,
-                          minBudget: val === 'hourly' ? prev.minBudget : 0,
-                        }));
-                      }}
-                    >
-                      {all_form_structure.budget_mode.map((budget_option, key) => (
+                name='subCategory'
+                render={() => (
+                  <FormItem className='flex w-full flex-col gap-2'>
+                    <FormControl>
+                      <Select
+                        onValueChange={(e) => {
+                          setPostData((prev) => ({
+                            ...prev,
+                            gigCategory: [...prev.gigCategory, e],
+                          }));
+                        }}
+                      >
+                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
+                          <SelectValue placeholder='Choose' />
+                        </SelectTrigger>
+                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
+                          <SelectGroup>
+                            {subcategory_list.map((subcat) => {
+                              if (subcat.parent === currentCategory) {
+                                return subcat.value.map((item, index) => (
+                                  <SelectItem key={index} value={item}>
+                                    {item} {/* Displaying the item instead of index */}
+                                  </SelectItem>
+                                ));
+                              }
+                              return null; // Return null if condition is not met
+                            })}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          <FormField
+            name='gig_skills'
+            render={() => (
+              <FormItem className='gig_skills mt-8'>
+                <FormLabel className='mb-4 text-2xl text-[#F5F5F5]'>
+                  {all_form_structure.skills_label}
+                </FormLabel>
+                <p className='mb-4 text-base text-[#96B0BD]'>
+                  Enter Skills. 5 tags maximum, use letters and numbers only
+                </p>
+                <FormControl className='w-full bg-[#10191D]'>
+                  <Command>
+                    <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
+                      <input
+                        className='box-border w-full bg-transparent !p-0 text-[#96B0BD] outline-none'
+                        onChange={(e) => setSelectedSkill(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            if (skillSet.length < 5) {
+                              setSkillSet((prevSkillSet) => [...prevSkillSet, selectedSkill]);
+                            }
+                            setSelectedSkill('');
+                          }
+                        }}
+                        placeholder={all_form_structure.skills_placeholder}
+                        value={selectedSkill}
+                      />
+                    </div>
+                    <div className='mt-8 flex flex-wrap items-center gap-3'>
+                      {skillSet.map((index, selectedSkillIndex) => (
                         <div
-                          className='items-centerspace-x-2 flex w-full flex-col px-0 py-0'
-                          key={key}
+                          className='flex w-auto cursor-pointer items-center whitespace-nowrap rounded-full bg-[#28373E] px-5 py-1 text-sm text-[#F5F5F5]'
+                          data-index={selectedSkillIndex}
+                          key={selectedSkillIndex}
+                          onClick={() => {
+                            const newSkillSet = [...skillSet];
+                            newSkillSet.splice(selectedSkillIndex, 1);
+                            setSkillSet(newSkillSet);
+                          }}
                         >
-                          <div
-                            className={`flex w-full items-center gap-2 space-x-2 rounded-t-xl border border-slate-500 px-3 py-0 ${budgetMode !== budget_option.value ? 'rounded-xl' : 'bg-[#28373E]'}`}
-                          >
-                            <RadioGroupItem
-                              className='h-4 w-4'
-                              id={budget_option.value}
-                              value={budget_option.value}
-                            />
-                            <Label
-                              className='w-full cursor-pointer py-7 text-xl text-slate-300'
-                              htmlFor={budget_option.value}
-                            >
-                              {budget_option.label}
-                            </Label>
-                          </div>
-                          {budgetMode == 'hourly' && budget_option.value == 'hourly' && (
-                            <div
-                              className='flex w-full flex-col items-center justify-center gap-5 rounded-b-xl border border-[#526872] bg-[#1B272C] px-3 xl:flex-row'
-                              key={key}
-                            >
-                              <FormField
-                                name='hourly_rate_from'
-                                render={() => (
-                                  <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
-                                    <FormLabel className='text-base font-normal text-[#96B0BD]'>
-                                      {all_form_structure.gig_from_to.from_label}
-                                    </FormLabel>
-                                    <FormControl>
-                                      <div className='relative w-full pr-7'>
-                                        <Input
-                                          className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                                          min={0}
-                                          onChange={(e) =>
-                                            setPostData((prev) => ({
-                                              ...prev,
-                                              minBudget: parseInt(e.target.value),
-                                            }))
-                                          }
-                                          placeholder={
-                                            all_form_structure.gig_from_to.from_placeholder
-                                          }
-                                          type='number'
-                                          value={postData.minBudget}
-                                        />
-                                        <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
-                                          $
-                                        </span>
-                                        <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
-                                          /hr
-                                        </span>
-                                      </div>
-                                    </FormControl>
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                name='hourly_rate_to'
-                                render={() => (
-                                  <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
-                                    <FormLabel className='text-base font-normal text-[#96B0BD]'>
-                                      {all_form_structure.gig_from_to.to_label}
-                                    </FormLabel>
-                                    <FormControl>
-                                      <div className='relative w-full pr-7'>
-                                        <Input
-                                          className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                                          min={0}
-                                          onChange={(e) => {
-                                            setPostData((prev) => ({
-                                              ...prev,
-                                              maxBudget: parseInt(e.target.value),
-                                            }));
-                                          }}
-                                          placeholder={
-                                            all_form_structure.gig_from_to.to_placeholder
-                                          }
-                                          type='number'
-                                          value={postData.maxBudget}
-                                        />
-                                        <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
-                                          $
-                                        </span>
-                                        <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
-                                          /hr
-                                        </span>
-                                      </div>
-                                    </FormControl>
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
-                          )}
-                          {budgetMode == 'fixed' && budget_option.value == 'fixed' && (
-                            <FormField
-                              name='fixed_price'
-                              render={() => (
-                                <FormItem className='flex w-full rounded-b-xl border border-[#526872] bg-[#1B272C] pl-3 pr-5'>
-                                  <FormControl>
-                                    <div className='relative my-4 w-full'>
-                                      <Input
-                                        className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                                        min={0}
-                                        onChange={(e) => {
-                                          setPostData((prev) => ({
-                                            ...prev,
-                                            gigPrice: parseInt(e.target.value),
-                                          }));
-                                        }}
-                                        placeholder={all_form_structure.gig_fixed_price}
-                                        type='number'
-                                        value={postData.gigPrice}
-                                      />
-                                      <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
-                                        $
-                                      </span>
-                                    </div>
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
-                          )}
+                          <IoIosCloseCircleOutline className='ml-2 mr-1 text-base' />
+                          {index}
                         </div>
                       ))}
-                    </RadioGroup>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name='revision'
-                render={({ field }) => (
-                  <FormItem className='flex w-full flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Revisions</FormLabel>
-                    <FormControl>
-                      <Select defaultValue={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                          <SelectValue placeholder='Revisions' />
-                        </SelectTrigger>
-                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                          <SelectGroup>
-                            {Array.from({ length: 31 }, (_, i) => (
-                              <SelectItem key={i + 1} value={`${i + 1}`}>
-                                {i}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name='deliveryTime'
-                render={({ field }) => (
-                  <FormItem className='flex w-full flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Delivery time</FormLabel>
-                    <FormControl>
-                      <Select defaultValue={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                          <SelectValue placeholder='Select' />
-                        </SelectTrigger>
-                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                          <SelectGroup>
-                            {Array.from({ length: 60 }, (_, i) => (
-                              <SelectItem key={i + 1} value={`${i + 1} days`}>
-                                {i + 1} day{i + 1 > 1 ? 's' : ''}
-                              </SelectItem>
-                            ))}
-                            <SelectItem value='+ 2 months'>+ 2 Months</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name='initialConcept'
-                render={({ field }) => (
-                  <FormItem className='flex w-full flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>
-                      Number Of Initial Concepts
-                    </FormLabel>
-                    <FormControl>
-                      <Select defaultValue={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className='rounded-xl bg-[#1B272C] px-5 py-7 text-base text-[#96B0BD]'>
-                          <SelectValue placeholder='Select' />
-                        </SelectTrigger>
-                        <SelectContent className='rounded-xl bg-[#1B272C] text-base text-[#96B0BD]'>
-                          <SelectGroup>
-                            {Array.from({ length: 5 }, (_, i) => (
-                              <SelectItem key={i + 1} value={`${i + 1}`}>
-                                {i + 1}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name='instantBuy'
-                render={({ field }) => (
-                  <FormItem className=''>
-                    <FormLabel className='mb-4 text-2xl font-semibold'>Setup Price</FormLabel>
-                    <div
-                      className={`flex w-full cursor-pointer gap-6 rounded-[15px] border border-[#3E525B] py-[25px] pl-[24px] pr-[16px] ${postData.instantBuy && 'bg-[#28373E]'}`}
-                      onClick={() =>
-                        setPostData((prev) => ({ ...prev, instantBuy: !prev.instantBuy }))
-                      }
-                    >
-                      <div
-                        className={`h-6 w-6 rounded-full border border-[#A0B4C0] ${postData.instantBuy && 'border-8 border-[#E0F0F9]'}`}
-                      ></div>
-                      <div className='text-[18px]'>Instant Buy</div>
                     </div>
-                  </FormItem>
-                )}
-              />
-              <div className='text-[#96B0BD]'>
-                Allow buyers to purchase your gig instantly without needing to apply
-              </div>
-            </FormStep>
-            <FormStep stepOrder={3}>
+                    {/* <CommandList>
+                      <CommandEmpty>No skills found.</CommandEmpty>
+                      <CommandGroup>
+                        <div className='suggested_skills mt-3 flex flex-wrap gap-3'>
+                          {all_form_structure.skills_list.map((suggestedSkill) => (
+                            <CommandItem
+                              className={`skill_name ${skillSet.includes(suggestedSkill.label) && 'hidden'} w-auto cursor-pointer whitespace-nowrap rounded-full border border-slate-500 bg-transparent px-4 py-2`}
+                              key={suggestedSkill.label}
+                              onSelect={(currentSkill) => {
+                                setSkillSet((prevSkillSet) => [...prevSkillSet, currentSkill]);
+                                setPostData((prev) => ({
+                                  ...prev,
+                                  requiredSkills: [...prev.requiredSkills, currentSkill],
+                                }));
+                              }}
+                              value={suggestedSkill.label}
+                            >
+                              {suggestedSkill.label}
+                              <FiPlus className='ml-2' />
+                            </CommandItem>
+                          ))}
+                        </div>
+                      </CommandGroup>
+                    </CommandList> */}
+                  </Command>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            name='gig_scope'
+            render={({ field }) => (
+              <FormItem className='mt-8'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
+                  {all_form_structure.scope_label}
+                </FormLabel>
+
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.scope_placeholder}
+                </FormDescription>
+                <RadioGroup
+                  className='radio_items flex flex-wrap gap-0 pt-3'
+                  defaultValue={all_form_structure.scope_options[0].value}
+                  onValueChange={field.onChange}
+                >
+                  {all_form_structure.scope_options.map((single_option) => (
+                    <div
+                      className='radio_item mb-4 flex w-full items-center space-x-2 md:w-1/2 md:pr-2 xl:w-1/4'
+                      key={single_option.value}
+                    >
+                      <RadioGroupItem
+                        className='hidden'
+                        id={single_option.value}
+                        onClick={() => {
+                          setPostData((prev) => ({
+                            ...prev,
+                            gigDeadline: single_option.indexNum,
+                          }));
+                        }}
+                        value={single_option.value}
+                      />
+                      <Label
+                        className='ml-[4px] w-full cursor-pointer rounded-[15px] border border-slate-500 p-5 transition'
+                        htmlFor={single_option.value}
+                      >
+                        {single_option.label}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </FormItem>
+            )}
+          />
+          <FormField
+            name='gig_experience'
+            render={({ field }) => (
+              <FormItem className='mt-8'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
+                  {all_form_structure.experience_label}
+                </FormLabel>
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.experience_description}
+                </FormDescription>
+                <RadioGroup
+                  className='flex flex-col gap-[15px] pt-3 xl:flex-row'
+                  defaultValue={all_form_structure.experience_options[0].value}
+                  onValueChange={field.onChange}
+                >
+                  {all_form_structure.experience_options.map((experience_option, key) => (
+                    <div
+                      className={`flex w-full items-start gap-3 space-x-2 rounded-[15px] border border-slate-500 px-3 py-0 xl:w-1/3 ${selectedLevel == key && 'border-[#526872] bg-[#28373E]'}`}
+                      key={key}
+                    >
+                      <RadioGroupItem
+                        className='mt-7 h-6 w-6'
+                        id={experience_option.value}
+                        onClick={() => {
+                          setPostData((prev) => ({
+                            ...prev,
+                            experienceLevel: experience_option.indexNum,
+                          }));
+                          setSelectedLevel(key);
+                        }}
+                        value={experience_option.value}
+                      />
+                      <Label
+                        className='w-full cursor-pointer py-7'
+                        htmlFor={experience_option.value}
+                      >
+                        <span className='text-xl text-slate-300'>{experience_option.label}</span>
+                        <p className='mt-4 text-base text-slate-500'>
+                          {experience_option.description}
+                        </p>
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </FormItem>
+            )}
+          />
+          <div className='mt-14 flex flex-col gap-2'>
+            <p className='mb-4 text-2xl font-semibold text-[#F5F5F5]'>Location</p>
+            <div className='flex gap-3'>
               <FormField
-                name='gigDescription'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>
-                      Briefly describe your Gig
-                    </FormLabel>
-                    <FormDescription className='text-base text-[#96B0BD]'>
-                      0/1200 characters
-                      {/* 
-                        * Selmani: Needs to be functional for sure, just 
-                        didn't got a chance to complete it 
-                        * And it would be better to create a reusable component!
-                      */}
-                    </FormDescription>
+                name='location'
+                render={() => (
+                  <FormItem className='flex w-full flex-col gap-2'>
                     <FormControl>
-                      <Textarea
-                        {...field}
-                        className='h-60 rounded-xl border-slate-500 bg-transparent px-4 py-4 text-base'
-                        placeholder='Add info here...'
+                      <MultipleSelector
+                        emptyIndicator={
+                          <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>
+                            No results found.
+                          </p>
+                        }
+                        onChange={(e) => {
+                          setPostData((prev) => ({
+                            ...prev,
+                            location: e.map((item) => item.value).join(','),
+                          }));
+                        }}
+                        options={options}
+                        placeholder={placeholder}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </FormStep>
-            <FormStep stepOrder={4}>
-              <div className='text-2xl text-[#F5F5F5]'>
-                Get all the information you need from buyers to get started
-              </div>
-              <div className='text-base text-[#96B0BD]'>
-                Add questions to help buyers provide you with exactly what you need to start working
-                on their order
-              </div>
-              {requirementQuestions.map((requirement_question, q_indx) => (
-                <Question
-                  answer_placeholder={requirement_question.answer_placeholder}
-                  id={requirement_question.id}
-                  key={requirement_question.id}
-                  onDelete={deleteQuestion}
-                  question={requirement_question.question}
-                  question_num={q_indx + 1}
-                />
-              ))}
-              <div className='flex flex-col gap-3 rounded-xl border border-[#526872] p-3'>
-                <input
-                  className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
-                  placeholder='Add question here'
-                  ref={newQuestionRef}
-                />
-                <input
-                  className='h-14 w-full rounded-xl border border-slate-500 bg-transparent px-4 py-4 text-base'
-                  placeholder='Answer example (For the client to know how to answer)'
-                  ref={newAnswerPlaceholderRef}
-                />
-                <div
-                  className='h-14 w-full cursor-pointer rounded-xl bg-slate-700 px-4 py-4 text-center text-base text-white transition hover:bg-white hover:text-black'
-                  onClick={addNewQuestion}
+            </div>
+          </div>
+          {/* Budget */}
+          <FormField
+            name='budget'
+            render={({ field }) => (
+              <FormItem className='mt-8'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
+                  {all_form_structure.budget_label}
+                </FormLabel>
+                <RadioGroup
+                  className='flex flex-wrap gap-3 pt-3 md:flex-nowrap'
+                  defaultValue={all_form_structure.budget_mode[0].value}
+                  onValueChange={(val) => {
+                    field.onChange();
+                    setBudgetMode(val);
+                    setPostData((prev) => ({
+                      ...prev,
+                      gigPaymentType: val === 'hourly' ? 1 : 0,
+                      gigPrice: val === 'hourly' ? 0 : prev.gigPrice,
+                      maxBudget: val === 'hourly' ? prev.maxBudget : 0,
+                      minBudget: val === 'hourly' ? prev.minBudget : 0,
+                    }));
+                  }}
                 >
-                  Add new question
-                </div>
-              </div>
-            </FormStep>
-            <FormStep stepOrder={5}>
-              <div className='text-3xl text-[#F5F5F5] mobile:text-xl'>
-                Showcase your services in a Gig gallery. Drag and drop your files here or{' '}
-                <span className='main_color'>browse</span> to upload
-              </div>
-              <div className='text-base text-[#96B0BD]'>
-                Encourage buyers to choose your Gig by featuring a variety of your work. Format:
-                JPEG, JPG, PNG, GIF, MP4, AVI. Max size per image/video: 50MB
-              </div>
-              <div className='flex flex-col gap-4'>
-                <p className='text-2xl text-[#F5F5F5]'>Video (1 only)</p>
-                <p className='text-base text-[#96B0BD]'>
-                  Capture buyers attention with a video that showcases your services
-                </p>
-                <DropFile
-                  acceptOnly='video'
-                  className='aspect-video max-h-80'
-                  inputName='video'
-                  onFileUpload={handleVideoUpload}
-                  placeHolderPlusIconSize={60}
-                />
-              </div>
-              <div className='flex flex-col gap-4'>
-                <p className='text-2xl text-[#F5F5F5]'>Images (up to 4)</p>
-                <p className='text-base text-[#96B0BD]'>
-                  Het noticed by the right buyers with visual examples of your services
-                </p>
-                <div className='grid gap-5 md:grid-cols-2'>
-                  {Array.from({ length: 4 }, (_, indx) => (
-                    <DropFile
-                      acceptOnly='image'
-                      className='aspect-video'
-                      inputName={`gig_image_${indx}`}
-                      key={indx}
-                      onFileUpload={(files) => handleImageUpload(files, indx)}
-                      placeHolderPlusIconSize={40}
-                    />
+                  {all_form_structure.budget_mode.map((budget_option, key) => (
+                    <div className='items-centerspace-x-2 flex w-full flex-col px-0 py-0' key={key}>
+                      <div
+                        className={`flex w-full items-center gap-2 space-x-2 rounded-t-xl border border-slate-500 px-3 py-0 ${budgetMode !== budget_option.value ? 'rounded-xl' : 'bg-[#28373E]'}`}
+                      >
+                        <RadioGroupItem
+                          className='h-4 w-4'
+                          id={budget_option.value}
+                          value={budget_option.value}
+                        />
+                        <Label
+                          className='w-full cursor-pointer py-7 text-xl text-slate-300'
+                          htmlFor={budget_option.value}
+                        >
+                          {budget_option.label}
+                        </Label>
+                      </div>
+                      {budgetMode == 'hourly' && budget_option.value == 'hourly' && (
+                        <div
+                          className='flex w-full flex-col items-center justify-center gap-5 rounded-b-xl border border-[#526872] bg-[#1B272C] px-3 xl:flex-row'
+                          key={key}
+                        >
+                          <FormField
+                            name='hourly_rate_from'
+                            render={() => (
+                              <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                                <FormLabel className='text-base font-normal text-[#96B0BD]'>
+                                  {all_form_structure.gig_from_to.from_label}
+                                </FormLabel>
+                                <FormControl>
+                                  <div className='relative w-full pr-7'>
+                                    <Input
+                                      className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                      min={0}
+                                      onChange={(e) =>
+                                        setPostData((prev) => ({
+                                          ...prev,
+                                          minBudget: parseInt(e.target.value),
+                                        }))
+                                      }
+                                      placeholder={all_form_structure.gig_from_to.from_placeholder}
+                                      type='number'
+                                      value={postData.minBudget}
+                                    />
+                                    <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      $
+                                    </span>
+                                    <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      /hr
+                                    </span>
+                                  </div>
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            name='hourly_rate_to'
+                            render={() => (
+                              <FormItem className='mb-4 mt-2 flex w-full flex-col items-center justify-between gap-2 xl:flex-row'>
+                                <FormLabel className='text-base font-normal text-[#96B0BD]'>
+                                  {all_form_structure.gig_from_to.to_label}
+                                </FormLabel>
+                                <FormControl>
+                                  <div className='relative w-full pr-7'>
+                                    <Input
+                                      className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                      min={0}
+                                      onChange={(e) => {
+                                        setPostData((prev) => ({
+                                          ...prev,
+                                          maxBudget: parseInt(e.target.value),
+                                        }));
+                                      }}
+                                      placeholder={all_form_structure.gig_from_to.to_placeholder}
+                                      type='number'
+                                      value={postData.maxBudget}
+                                    />
+                                    <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      $
+                                    </span>
+                                    <span className='absolute right-0 top-1/2 -translate-y-1/2 border-slate-400'>
+                                      /hr
+                                    </span>
+                                  </div>
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      )}
+                      {budgetMode == 'fixed' && budget_option.value == 'fixed' && (
+                        <FormField
+                          name='fixed_price'
+                          render={() => (
+                            <FormItem className='flex w-full rounded-b-xl border border-[#526872] bg-[#1B272C] pl-3 pr-5'>
+                              <FormControl>
+                                <div className='relative my-4 w-full'>
+                                  <Input
+                                    className='rounded-xl border-slate-400 bg-[#28373E] px-6 py-6 text-end text-base [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                                    min={0}
+                                    onChange={(e) => {
+                                      setPostData((prev) => ({
+                                        ...prev,
+                                        gigPrice: parseInt(e.target.value),
+                                      }));
+                                    }}
+                                    placeholder={all_form_structure.gig_fixed_price}
+                                    type='number'
+                                    value={postData.gigPrice}
+                                  />
+                                  <span className='absolute left-5 top-1/2 -translate-y-1/2 border-slate-400'>
+                                    $
+                                  </span>
+                                </div>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                    </div>
                   ))}
-                </div>
-              </div>
-              <div className='flex flex-col gap-4'>
-                <p className='text-2xl text-[#F5F5F5]'>Documents (up to 2)</p>
-                <p className='text-base text-[#96B0BD]'>
-                  Show some the best work you created in a document. Format: PDF
-                </p>
-                <div className='grid gap-5 md:grid-cols-2'>
-                  {Array.from({ length: 2 }, (_, indx) => (
-                    <DropFile
-                      acceptOnly='other'
-                      className='h-12'
-                      inputName={`gig_document_${indx}`}
-                      key={indx}
-                      onFileUpload={(files) => handleDocumentUpload(files, indx)}
-                      placeHolderPlusIconSize={40}
+                </RadioGroup>
+              </FormItem>
+            )}
+          />
+
+          {/* For Hourly Rate budget */}
+
+          {/* For Hourly Rate budget */}
+
+          {/* Description */}
+          <FormField
+            name='gig_description'
+            render={() => (
+              <FormItem className='mt-8'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
+                  {all_form_structure.gig_description_label}
+                </FormLabel>
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.git_description}
+                </FormDescription>
+                <FormControl>
+                  <div className='mt-4 rounded-2xl border border-[#526872] bg-transparent p-5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50'>
+                    <textarea
+                      className='box-border w-full resize-none bg-transparent !p-0 text-[#96B0BD] outline-none'
+                      onChange={(e) => {
+                        setPostData((prev) => ({
+                          ...prev,
+                          gigDescription: e.target.value,
+                        }));
+                      }}
+                      placeholder={all_form_structure.gig_description_placeholder}
+                      rows={7}
+                      value={postData.gigDescription}
                     />
-                  ))}
-                </div>
-              </div>
-              <div className='flex items-start gap-5'>
-                <Checkbox id='terms' />
-                <label
-                  className='text-sm peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
-                  htmlFor='terms'
-                >
-                  I declare that these materials were created by myself or by my team and do not
-                  infringe on any 3rd party rights. I understand that the illegal use of digital
-                  assets is against JOBS3’s Terms of Service and may result in blocking my account
-                </label>
-              </div>
-            </FormStep>
-            <FormStep stepOrder={6}>
-              <div className='flex flex-col gap-2'>
-                <div className='text-center text-3xl text-[#F5F5F5]'>You’re almost done!</div>
-                <div className='text-center text-base text-[#96B0BD]'>
-                  Let’s publish your Gig and get you ready to start selling
-                </div>
-              </div>
-              <img className='mx-auto w-1/2' src='/assets/images/publish_image.png' />
-            </FormStep>
-            <FormNavigation isWaiting={isWaiting} />
-          </form>
-        </Form>
-      </div>
-    </StepProvider>
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          {/* File Upload */}
+          <FormField
+            name='attachemnts'
+            render={() => (
+              <FormItem className='mt-8'>
+                <FormLabel className='mb-4 text-2xl font-semibold'>
+                  {all_form_structure.upload_files_label}
+                </FormLabel>
+                <FormDescription className='text-base font-normal text-[#96B0BD]'>
+                  {all_form_structure.upload_files_description}
+                </FormDescription>
+                <FormControl>
+                  <div className='rounded-xl border border-dashed border-slate-500'>
+                    <FileUploader
+                      fileOrFiles={files}
+                      handleChange={(e) => FileChanged(e)}
+                      label={''}
+                      multiple={true}
+                      types={[
+                        'jpg',
+                        'jpeg',
+                        'png',
+                        'gif',
+                        'pdf',
+                        'mp4',
+                        'avi',
+                        'mov',
+                        'doc',
+                        'docx',
+                      ]}
+                    >
+                      <FileUploadBody />
+                    </FileUploader>
+                    {files.length > 0 && (
+                      <div className='mt-5 flex w-full flex-wrap justify-center gap-0 rounded-xl border border-slate-500'>
+                        {files.map((item, index) => {
+                          return (
+                            <div
+                              aria-hidden
+                              className='flex w-full cursor-pointer items-center justify-center gap-2 p-3 md:w-1/2 lg:w-1/3'
+                              key={index}
+                              onClick={() => onRemoveImage(index)}
+                            >
+                              <MdOutlineAttachFile size={'20px'} />
+                              <span className='overflow-hidden mobile:w-[80%]'>{item.name}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <div className='flex justify-center md:justify-end'>
+            <Button
+              className='mt-8 w-full min-w-[220px] rounded-xl bg-[#DC4F13] text-white md:w-1/5 xl:w-1/5'
+              type='submit'
+            >
+              Publish Gig
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 };
 
