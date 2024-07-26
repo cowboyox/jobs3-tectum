@@ -196,7 +196,14 @@ const DashboardHeader = () => {
 
   useEffect(() => {
     (async () => {
-      if (wallet) {
+      const info = JSON.parse(localStorage.getItem('jobs_2024_token'));
+      let token;
+      
+      if (info) {
+        token = info?.data?.token; // Replace 'your_token_key' with the actual key name
+      }
+
+      if (wallet && token) {
         try {
           await api.put(
             `/api/v1/profile/update-walletPublickey`,
