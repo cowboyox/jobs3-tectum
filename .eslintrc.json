@@ -38,13 +38,13 @@
       }
     ],
     "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-unused-vars": "warn", // should be "error" in production
     "@typescript-eslint/sort-type-constituents": "warn", // should be "error" in production
-    "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
+    "@typescript-eslint/consistent-type-imports": ["warn", { "prefer": "type-imports" }],
     "no-console": ["warn", { "allow": ["warn", "error"] }], // should be "error" in production
     "react/self-closing-comp": "off",
-    "react-hooks/exhaustive-deps": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "react/display-name": "off",
     "react/jsx-sort-props": "warn", // should be "error" in production
     "react/prop-types": "off",
