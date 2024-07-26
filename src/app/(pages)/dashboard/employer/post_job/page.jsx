@@ -1278,7 +1278,7 @@ const PostJob = () => {
               className='mt-8 w-full min-w-[220px] rounded-xl bg-[#DC4F13] text-white md:w-1/5 xl:w-1/5'
               type='submit'
             >
-              Publish Gig
+              Publish
             </Button>
           </div>
         </form>
