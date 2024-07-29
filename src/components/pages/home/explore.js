@@ -14,7 +14,7 @@ const JobCard = ({ title, location, priceFrom, priceTo }) => {
     return (
         <div className='bg-[#10191D] rounded-2xl px-7 mobile:px-5 py-10 mobile:py-5 flex flex-col gap-10 mobile:gap-5 job-card'>
             <h3 className='text-6xl mobile:text-[44px] text-white font-bold txt_animate'>{title}</h3>
-            <div className='block h-1 w-20 bg-[#1B272C]'></div>
+            <div className='block h-1 w-20 bg-[#1B272C]' />
             <div className='flex flex-col gap-5 mobile:gap-3'>
                 <div className='flex gap-2 items-center job-info'>
                     <Image src='/assets/icons/svgs/location.svg' height={30} width={30} alt='location' />
@@ -89,7 +89,7 @@ const ExploreSection = () => {
     return (
         <div className='relative py-10 overflow-hidden' ref={ExploreRef}>
             {/* --------------- Background ------------ */}
-            <div className='bg-orange h-3/4 w-[98%] absolute top-0 left-[1%] rounded-xl z-0'></div>
+            <div className='bg-orange h-3/4 w-[98%] absolute top-0 left-[1%] rounded-xl z-0' />
             {/* --------------- Content --------------- */}
             <div className='container relative z-10'>
                 <div className='w-full max-w-2xl ml-auto flex justify-end items-center gap-5 pr-10'>

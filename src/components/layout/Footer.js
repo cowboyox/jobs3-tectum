@@ -105,7 +105,7 @@ const Footer = () => {
           </button>
         </form>
       </div> 
-      <div className='footerDivider h-[1px] w-full bg-[#1B272C]'></div>
+      <div className='footerDivider h-[1px] w-full bg-[#1B272C]' />
       <div className='w-full flex mobile:flex-wrap'>
         <div className='flex flex-col gap-5 w-4/12 mobile:w-6/12'>
           <span className='text-orange text-xl'>Top Categories</span>
@@ -136,7 +136,7 @@ const Footer = () => {
           <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>YouTube</Link>
         </div>
       </div>
-      <div className='footerDivider h-[1px] w-full bg-[#1B272C]'></div>
+      <div className='footerDivider h-[1px] w-full bg-[#1B272C]' />
       <div className='flex justify-between'>
         <span className='text-[#6A828D] text-base mobile:text-sm'>© 2022-2024 / JOBS3  / All rights reserved</span>
         <Link href="signup" className='cursor-pointer whitespace-nowrap rounded-full bg-orange px-5 py-2 text-center text-white transition hover:bg-[#c2440e] w-fit flex items-center gap-2'>

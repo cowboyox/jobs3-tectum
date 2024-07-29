@@ -13,7 +13,7 @@ const AccordionComponent = ({ accordionTitle, accordionContent }) => {
                     <GoPlus size={25} />
                 </div>
             </div>
-            <div className='accordion_divider h-[1px] w-0 bg-[#1B272C]'></div>
+            <div className='accordion_divider h-[1px] w-0 bg-[#1B272C]' />
             <div className='accordion_content px-10 py-0 h-0 mobile:px-5 overflow-hidden'>
                 <p className='text-[#96B0BD] text-base mobile:text-sm leading-normal'>
                     {accordionContent}

@@ -146,9 +146,9 @@ const PerfectFor = () => {
         <h2 className="text-white text-[150px] mobile:text-5xl font-bold text-center" id="perfect_for_heading">Perfect for</h2>
         <div className="flex mobile:flex-col gap-20 mobile:gap-10 w-full">
           <div className="relative w-1/2 mobile:w-full h-[600px] mobile:h-[300px]">
-            <div className='layer_effect absolute top-0 left-0 h-full w-full rounded-xl bg-[#28373E] z-30'></div>
-            <div className='layer_effect absolute top-0 left-0 h-full w-full rounded-xl bg-[#1B272C] z-20'></div>
-            <div className='layer_effect absolute top-0 left-0 h-full w-full rounded-xl bg-[#10191D] z-10'></div>
+            <div className='layer_effect absolute top-0 left-0 h-full w-full rounded-xl bg-[#28373E] z-30' />
+            <div className='layer_effect absolute top-0 left-0 h-full w-full rounded-xl bg-[#1B272C] z-20' />
+            <div className='layer_effect absolute top-0 left-0 h-full w-full rounded-xl bg-[#10191D] z-10' />
             <img 
               id='main_image'
               src='/assets/images/perfect-for-section-img-2.jpg'

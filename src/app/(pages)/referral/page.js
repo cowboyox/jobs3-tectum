@@ -36,9 +36,9 @@ const Referral = () => {
           </div>
         </div>
         <div class='flex items-center space-x-8'>
-          <div class='flex-grow border-t text-[#A0B4C0]'></div>
+          <div class='flex-grow border-t text-[#A0B4C0]' />
           <div className='text-base text-[#A0B4C0]'>Or share your personal referral link</div>
-          <div class='flex-grow border-t text-[#A0B4C0]'></div>
+          <div class='flex-grow border-t text-[#A0B4C0]' />
         </div>
         <div className='flex h-24 w-full items-center justify-center mobile:p-2'>
           <div className='mx-auto flex h-14 w-full max-w-[684px] items-center gap-4 overflow-hidden rounded-2xl border border-[#646667] bg-[#28373E]'>

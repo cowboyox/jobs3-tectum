@@ -140,9 +140,9 @@ const Freelancers = () => {
             <div className='flex h-fit items-baseline text-[20px]'>
               <p className='mr-3'>The neural network is thinking</p>
               <div className='flex gap-1'>
-                <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.3s]'></div>
-                <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.15s]'></div>
-                <div className='h-2 w-2 animate-bounce rounded-full bg-white'></div>
+                <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.3s]' />
+                <div className='h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.15s]' />
+                <div className='h-2 w-2 animate-bounce rounded-full bg-white' />
               </div>
             </div>
           </div>
