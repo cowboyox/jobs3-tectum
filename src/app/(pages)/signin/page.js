@@ -37,7 +37,7 @@ const Signin = () => {
         // router.replace('/')
       }
     }
-  }, [isConnected, address, auth]);
+  }, [isConnected, address]);
 
   const handleLogin = async () => {
     console.log(postData.email, postData.password, postData.fullName);

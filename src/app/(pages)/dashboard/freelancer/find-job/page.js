@@ -87,7 +87,6 @@ const FindJob = () => {
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
 
-  console.log('filteredGigList', filteredGigList);
 
   const filterItems = [
     {
@@ -228,7 +227,12 @@ const FindJob = () => {
       }
       setCanLoadMore(false);
     }
+    
   }, [gigList, page]);
+
+  useEffect(() => {
+    setFilteredGigShowModeList(new Array(filteredGigList.length).fill(false));
+  }, [filteredGigList])
 
   const onChangeType = (e) => {
     setSearchType(e);
@@ -437,8 +441,6 @@ const FindJob = () => {
   const handleClearAll = () => {
     setFilters([]);
   };
-
-  console.log('auth.currentProfile', auth?.currentProfile);
   function truncateString(str) {
       // Find the first comma's index
       const commaIndex = str.indexOf(',');

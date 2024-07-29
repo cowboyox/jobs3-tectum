@@ -20,7 +20,7 @@ const Signup = () => {
     email: '',
     fullName: '',
     password: '',
-    referralUser: '',
+    referralCodeInvited: '',
     userName: '',
   });
   const { toast } = useToast();
@@ -30,7 +30,7 @@ const Signup = () => {
   const ref = useRef(null);
   const auth = useCustomContext();
   const [step, setStep] = useState(0);
-  const [referrer, setReferrer] = useState('');
+  const [referralCodeInvited, setReferralCodeInvited] = useState('');
   const [otp_value, setOTPValue] = useState('');
 
   const validateEmail = (email) => {
@@ -41,8 +41,8 @@ const Signup = () => {
       );
   };
   useEffect(() => {
-    const tmp = searchParams.get('referrer');
-    setReferrer(tmp);
+    const tmp = searchParams.get('referralCode');
+    setReferralCodeInvited(tmp);
   }, [searchParams]);
 
   const validateUserInfo = () => {
@@ -85,8 +85,7 @@ const Signup = () => {
         email: postData.email,
         name: postData.fullName,
         password: postData.password,
-        referralUser: postData.referralUser,
-        referrer,
+        referralCodeInvited,
         username: postData.userName,
       });
       if (!verified) {
@@ -242,9 +241,9 @@ const Signup = () => {
   const { address, isConnected } = useAccount();
 
   useEffect(() => {
-    if (isConnected) {
+    if (isConnected && auth.acc_type) {
       try {
-        auth.signInwithWallet(address);
+        auth.signUpwithWallet(address);
       } catch (err) {
         console.error(err);
         // router.replace('/')
@@ -257,13 +256,13 @@ const Signup = () => {
     }
   };
   return (
-    <div className='xxs:mx-0 mx-[30px] mt-[70px] flex h-full flex-col items-center justify-center gap-[30px] lg:ml-[500px]'>
-      <div className='xxs:gap-7 flex w-full items-center justify-center gap-1 lg:hidden'>
+    <div className='mx-[30px] mt-[70px] flex h-full flex-col items-center justify-center gap-[30px] xxs:mx-0 lg:ml-[500px]'>
+      <div className='flex w-full items-center justify-center gap-1 xxs:gap-7 lg:hidden'>
         <h1 className='text-[24px] text-[#F5F5F5]'>Welcome to</h1>
         <img src='assets/images/LOGO1.png' />
       </div>
       {step === 0 && (
-        <div className='xxs:w-[400px] mt-[20px] flex w-full flex-col items-center justify-center gap-[30px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD] lg:mt-[50px]'>
+        <div className='mt-[20px] flex w-full flex-col items-center justify-center gap-[30px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD] xxs:w-[400px] lg:mt-[50px]'>
           <div className='flex flex-col items-center justify-center gap-4'>
             <p className='text-2xl text-[#F5F5F5]'>Type of Account</p>
             <p className=''>Select which account you want to create</p>
@@ -293,7 +292,7 @@ const Signup = () => {
       )}
       {step === 1 && (
         <>
-          <div className='signup_page xxs:w-[400px] flex w-full flex-col items-center justify-center gap-[15px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD]'>
+          <div className='signup_page flex w-full flex-col items-center justify-center gap-[15px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD] xxs:w-[400px]'>
             <div className='flex flex-col items-center justify-center gap-4'>
               <p className='text-2xl text-[#F5F5F5]'>Sign Up</p>
               <p className=''>Enter Details Below</p>
@@ -406,20 +405,27 @@ const Signup = () => {
                   </span>
                 )}
             </div>
-            {!referrer && (
+            {!referralCodeInvited ? (
               <input
                 className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
                 onChange={(e) =>
                   setPostData((prev) => ({
                     ...prev,
-                    referralUser: e.target.value,
+                    referralCodeInvited: e.target.value,
                   }))
                 }
                 onKeyDown={(e) => {
                   onKeyDown(e);
                 }}
-                placeholder='Referral user'
-                value={postData.referralUser}
+                placeholder='Referral code'
+                value={postData.referralCodeInvited}
+              />
+            ) : (
+              <input
+                className='w-full rounded-xl border border-[#28373E] bg-gray-700 px-5 py-3 outline-none'
+                placeholder='Referral code'
+                readOnly
+                value={referralCodeInvited}
               />
             )}
 
@@ -466,7 +472,7 @@ const Signup = () => {
         </>
       )}
       {step === 2 && (
-        <div className='xxs:w-[400px] mt-[200px] flex w-full flex-col items-center justify-center gap-[15px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD]'>
+        <div className='mt-[200px] flex w-full flex-col items-center justify-center gap-[15px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD] xxs:w-[400px]'>
           <div className='flex flex-col items-center justify-center gap-4'>
             <p className='text-2xl text-[#F5F5F5]'>Verification</p>
             <p className=''>Enter your code to confirm your account</p>

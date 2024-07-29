@@ -14,7 +14,7 @@ import { useCustomContext } from '@/context/ContextProvider';
 import api from '@/utils/api';
 import { USER_ROLE } from '@/utils/constants';
 
-const ClientDashboard = () => {
+const EmployerProfile = () => {
   const { toast } = useToast();
   const router = useRouter();
   const [lastLogin, setLastLogin] = useState('');
@@ -24,6 +24,7 @@ const ClientDashboard = () => {
   const [profileData, setProfileData] = useState({
     avatar: null,
     avgResponseTime: '',
+    clHistory: [],
     clientBanner: null,
     companyDetails: [
       {
@@ -52,7 +53,6 @@ const ClientDashboard = () => {
     timeZone: '',
     userId: '',
     zkpId: '',
-    clHistory: [],
   });
 
   // const [previewBanner, setPreviewBanner] = useState(false);
@@ -79,7 +79,7 @@ const ClientDashboard = () => {
     (async () => {
       try {
         setLoading(true);
-        console.log("here1");
+        console.log('here1');
         const data = await api.get(`/api/v1/profile/get_profile_by_id/${profileId}`);
         setProfileData(data.data.profile);
         if (data.data.profile.firstName === undefined) {
@@ -115,7 +115,7 @@ const ClientDashboard = () => {
         const loginData = await api.get(`/api/v1/user/get-last-login/${data.data.profile?.email}`);
 
         setLastLogin(loginData.data.data);
-        console.log("loginData.data.data", loginData.data.data);
+        console.log('loginData.data.data', loginData.data.data);
       } catch (error) {
         console.error('Error while fetching user profile data:', error);
       } finally {
@@ -285,7 +285,7 @@ const ClientDashboard = () => {
     let totalHoursCount = 0;
     let totalHiresCount = 0;
     let totalPaidAmount = 0;
-  
+
     profileData.clHistory?.forEach((item) => {
       totalJobsCount += 1;
       totalHiresCount += item.pays.length;
@@ -295,23 +295,24 @@ const ClientDashboard = () => {
         totalPaidAmount += pay.amount;
       });
     });
-  
+
     return {
-      totalSpentAmount,
-      totalJobsCount,
-      totalHoursCount,
       totalHiresCount,
+      totalHoursCount,
+      totalJobsCount,
       totalPaidAmount,
+      totalSpentAmount,
     };
   };
 
   useEffect(() => {
-    const { totalSpentAmount, totalJobsCount, totalHoursCount, totalHiresCount, totalPaidAmount } = calculateClientHistory(profileData);
+    const { totalSpentAmount, totalJobsCount, totalHoursCount, totalHiresCount, totalPaidAmount } =
+      calculateClientHistory(profileData);
     setTotalSpent(totalSpentAmount);
     setTotalJobs(totalJobsCount);
     setTotalHours(totalHoursCount);
     setTotalHires(totalHiresCount);
-    setHireRate(!totalHiresCount ? 0 : totalHiresCount * 100 / totalJobsCount);
+    setHireRate(!totalHiresCount ? 0 : (totalHiresCount * 100) / totalJobsCount);
     setHourlyRate(!totalPaidAmount ? 0 : totalPaidAmount / totalHoursCount);
   }, [profileData]);
 
@@ -471,7 +472,9 @@ const ClientDashboard = () => {
               {/* Sidebar */}
               <div className='flex flex-col gap-1'>
                 <p className='text-base text-[#96B0BD] md:text-center'>Total Spent</p>
-                <p className='text-2xl text-white md:text-center'>${totalSpent < 1000 ? totalSpent : totalSpent / 1000 + "K+"}</p>
+                <p className='text-2xl text-white md:text-center'>
+                  ${totalSpent < 1000 ? totalSpent : totalSpent / 1000 + 'K+'}
+                </p>
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-base text-[#96B0BD] md:text-center'>Total jobs</p>
@@ -573,4 +576,4 @@ const ClientDashboard = () => {
   );
 };
 
-export default ClientDashboard;
+export default EmployerProfile;
