@@ -688,7 +688,7 @@ const FreelancerProfile = () => {
                       className='h-6 w-6 object-contain object-center'
                       src='/assets/images/icons/green-job-success.svg'
                     />
-                    <p className='text-lg text-white'>{profileData.jobSuccessScore}% Job Success</p>
+                    <p className='text-lg text-white'>{profileData.jobSuccessScore[profileData.jobSuccessScore.length-1].score}% Job Success</p>
                   </div>
                 </div>
               </div>
