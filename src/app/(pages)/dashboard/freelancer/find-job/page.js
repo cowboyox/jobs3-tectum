@@ -227,8 +227,12 @@ const FindJob = () => {
       }
       setCanLoadMore(false);
     }
-    setFilteredGigShowModeList(new Array(gigList.length).fill(false));
+    
   }, [gigList, page]);
+
+  useEffect(() => {
+    setFilteredGigShowModeList(new Array(filteredGigList.length).fill(false));
+  }, [filteredGigList])
 
   const onChangeType = (e) => {
     setSearchType(e);
