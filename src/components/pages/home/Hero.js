@@ -149,7 +149,7 @@ const HeroSection = () => {
             <h1 className={mainHeadingStyle + ' text-white'} id='heading-2'> Career </h1>
             <div className='flex items-center mobile:pl-7'>
               {usersImages.map((userImage, index) => (
-                <div className='aspect-square h-24 w-24 mobile:h-auto mobile:w-full -ml-7 hover:mr-7 transition-all'>
+                <div className='aspect-square h-24 w-24 mobile:h-auto mobile:w-full -ml-7 hover:mr-7 transition-all' key={index}>
                   <Image 
                     key={index}
                     src={userImage} 
