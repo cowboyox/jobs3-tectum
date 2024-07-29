@@ -125,7 +125,7 @@ const Gigs = ({
                           {freelancer.badge}
                         </div>
                       )}
-                      {freelancer.jobSuccessScore !== undefined && (
+                      {freelancer.jobSuccessScore[freelancer.jobSuccessScore.length-1].score !== undefined && (
                         <div className='flex flex-row gap-2'>
                           <svg
                             fill='none'
@@ -161,7 +161,7 @@ const Gigs = ({
                               strokeWidth='0.625'
                             />
                           </svg>
-                          {freelancer.jobSuccessScore}% Job Success
+                          {freelancer.jobSuccessScore[freelancer.jobSuccessScore.length - 1].score}% Job Success
                         </div>
                       )}
                     </div>
