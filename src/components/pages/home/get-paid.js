@@ -7,7 +7,6 @@ import { HiOutlineArrowDownLeft } from "react-icons/hi2";
 import { TfiArrowTopRight } from "react-icons/tfi";
 import Spline from '@splinetool/react-spline/next';
 
-
 const staticTransactions = [
     { price: 401, status: "Received" },
     { price: 7.446, status: "Received" },
@@ -15,7 +14,7 @@ const staticTransactions = [
     { price: 325, status: "Sent" },
     { price: 677, status: "Sent" },
     { price: 994, status: "Received" },
-]
+];
 
 const CounterCard = ({ suffixe, totalNumber, text, id }) => { 
     return (
@@ -153,9 +152,9 @@ const GetPaid = () => {
     }, []);
 
   return (
-    <div className='w-full py-96 relative' ref={GetPaidRef}>
-      <div className='max-w-3xl mx-auto flex flex-col gap-6'>
-        <div className='flex gap-3 bg-[#10191D] p-2 rounded-xl relative z-10' id='counter_cards'>
+    <div className='w-full py-96 mobile:py-40 mobile:px-5 relative' ref={GetPaidRef}>
+      <div className='max-w-3xl mx-auto flex flex-col gap-6 mobile:gap-10'>
+        <div className='flex mobile:flex-col gap-3 bg-[#10191D] p-2 rounded-xl relative z-10' id='counter_cards'>
             <CounterCard 
                 suffixe='M' 
                 totalNumber={20} 
@@ -175,8 +174,8 @@ const GetPaid = () => {
                 id="counter_card_3"
             />
         </div>
-        <div className='flex items-center flex-nowrapx'>
-            <div className='w-6/12 flex flex-col gap-3 bg-[#10191D] p-2 rounded-xl'>
+        <div className='flex mobile:flex-col-reverse mobile:gap-5 items-center flex-nowrapx'>
+            <div className='w-6/12 mobile:w-full flex flex-col gap-3 bg-[#10191D] p-2 rounded-xl relative'>
                 {staticTransactions.map((transaction, index) => (
                     <TransactionCard 
                         key={index}
@@ -186,15 +185,15 @@ const GetPaid = () => {
                 ))}
                 <div className='bg-[linear-gradient(180deg,_transparent_0%,_#111111_100%)] h-full w-full absolute left-0 top-0 rounded-xl' />
             </div>
-            <div className='w-7/12 relative z-10 flex flex-col gap-10'>
-                <h2 className='text-white font-bold text-[130px] leading-none w-[110%] -ml-7 paid_crypto_heading'> Paid In Crypto </h2>
-                <Link href="signup" className='cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3 w-fit ml-auto' id='signup'>
+            <div className='w-7/12 mobile:w-full relative z-10 flex flex-col gap-10'>
+                <h2 className='text-white font-bold text-[130px] mobile:text-6xl mobile:text-center mobile:mx-auto mobile:w-3/4 leading-none w-[110%] -ml-7 paid_crypto_heading'> Paid In Crypto </h2>
+                <Link href="signup" className='cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] mobile:mx-auto px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3 w-fit ml-auto' id='signup'>
                     Get Started
                 </Link>
             </div>
         </div>
         <Spline
-            className='pointer-events-none absolute bottom-0 left-0 translate-y-1/3 w-full z-0 opacity-50 '
+            className='pointer-events-none absolute bottom-0 left-0 translate-y-1/3 w-full z-0 opacity-50 mobile:opacity-75 mobile:!w-[200%] mobile:-mb-28'
             scene="https://prod.spline.design/pyaH7mDix3coO0yJ/scene.splinecode" 
         />
       </div>

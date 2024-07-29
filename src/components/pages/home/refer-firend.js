@@ -59,20 +59,20 @@ const ReferFirend = () => {
 
 
   return (
-    <div className='w-[98%] ml-[1%] flex rounded-xl overflow-hidden' ref={referFriendRef}>
-      <div className='w-3/4 flex h-[500px] bg-orange'>
-        <img src='/assets/images/refer-img-1.png' className='w-1/3 refer_image h-full -ml-6 object-cover relative z-0' />
-        <img src='/assets/images/refer-img-2.png' className='w-1/3 refer_image h-full -ml-6 object-cover relative z-10' />
-        <img src='/assets/images/refer-img-3.png' className='w-1/3 refer_image h-full -ml-6 object-cover relative z-20' />
+    <div className='w-[98%] ml-[1%] flex mobile:flex-col rounded-xl overflow-hidden' ref={referFriendRef}>
+      <div className='w-3/4 mobile:w-full flex h-[500px] mobile:h-[250px] bg-orange'>
+        <img src='/assets/images/refer-img-1.png' className='w-1/3 refer_image h-full md:-ml-6 object-cover relative z-0' />
+        <img src='/assets/images/refer-img-2.png' className='w-1/3 refer_image h-full md:-ml-6 object-cover relative z-10' />
+        <img src='/assets/images/refer-img-3.png' className='w-1/3 refer_image h-full md:-ml-6 object-cover relative z-20' />
       </div>
-      <div className='w-1/4 flex flex-col gap-6 justify-center min-h-full bg-orange'>
+      <div className='w-1/4 mobile:w-full flex flex-col gap-6 justify-center min-h-full bg-orange mobile:py-7'>
         <h2 
-            className='text-[150px] font-bold text-white w-[150%] -translate-x-1/3 relative z-30 leading-none' 
+            className='text-[150px] mobile:text-[70px] mobile:text-center font-bold text-white w-[150%] md:-translate-x-1/3 mobile:w-3/4 mobile:mx-auto relative z-30 leading-none' 
             id='refer_friend_heading'
         > 
             Refer a friend 
         </h2>
-        <Link href="signup" className='cursor-pointer whitespace-nowrap rounded-2xl bg-[#111] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3 w-fit ml-auto mr-5' id='signup_link'>
+        <Link href="signup" className='cursor-pointer whitespace-nowrap rounded-2xl bg-[#111] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3 w-fit ml-auto mr-5 mobile:mx-auto' id='signup_link'>
             Get Started
         </Link>
       </div>

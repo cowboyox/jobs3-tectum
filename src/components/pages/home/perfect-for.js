@@ -24,7 +24,7 @@ const IsFor = ({ title, description, isDefault, link, image }) => {
         <Link 
           id="navigatable_link"
           href='#' 
-          className='h-14 w-14 bg-orange rounded-full -ml-7 flex items-center justify-center absolute top-0 left-0'
+          className='h-14 w-14 mobile:h-10 mobile:w-10 bg-orange rounded-full -ml-7 mobile:-ml-0 flex items-center justify-center absolute top-0 left-0'
         >
           <TfiArrowTopRight fill='white' size={20} />
         </Link>       
@@ -141,11 +141,11 @@ const PerfectFor = () => {
   }, []);
 
   return (
-    <div className="py-52 relative" ref={PerfectForRef}>
+    <div className="py-52 mobile:py-10 relative" ref={PerfectForRef}>
       <div className="container flex flex-col gap-20 relative z-20">
-        <h2 className="text-white text-[150px] font-bold text-center" id="perfect_for_heading">Perfect for</h2>
-        <div className="flex gap-20 w-full">
-          <div className="relative w-1/2 h-[600px]">
+        <h2 className="text-white text-[150px] mobile:text-5xl font-bold text-center" id="perfect_for_heading">Perfect for</h2>
+        <div className="flex mobile:flex-col gap-20 mobile:gap-10 w-full">
+          <div className="relative w-1/2 mobile:w-full h-[600px] mobile:h-[300px]">
             <div className='layer_effect absolute top-0 left-0 h-full w-full rounded-xl bg-[#28373E] z-30'></div>
             <div className='layer_effect absolute top-0 left-0 h-full w-full rounded-xl bg-[#1B272C] z-20'></div>
             <div className='layer_effect absolute top-0 left-0 h-full w-full rounded-xl bg-[#10191D] z-10'></div>
@@ -155,7 +155,7 @@ const PerfectFor = () => {
               className="relative object-cover rounded-xl h-full w-full grayscale z-40"
             />
           </div>
-          <div className="flex flex-col gap-6 w-1/2">
+          <div className="flex flex-col gap-6 w-1/2 mobile:w-full">
             <IsFor 
               isDefault={true}
               title="Freelancers"

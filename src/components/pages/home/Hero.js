@@ -22,7 +22,7 @@ import { CiSearch } from "react-icons/ci";
 import { VscRobot } from "react-icons/vsc";
 
 /*------------- String variables -------------*/
-const mainHeadingStyle = 'text-[170px] uppercase font-bold leading-none white-space-nowrap';
+const mainHeadingStyle = 'text-[170px] mobile:text-[50px] uppercase font-bold leading-none white-space-nowrap flex-nowrap';
 const usersImages = [
   '/assets/images/users/landing-page-user-1.png',
   '/assets/images/users/landing-page-user-2.png',
@@ -56,7 +56,7 @@ const FloatingHeading = ({ moveSpeed, id })=> {
   };
 
   return (
-    <div className='w-full absolute left-1/2 top-1/2 -translate-y-1/2 -mt-6'>
+    <div className='w-full absolute left-1/2 top-1/2 -translate-y-1/2 -mt-6 mobile:mt-0 mobile:top-0 mobile:-translate-y-0'>
       <div 
         className='flex flex-col gap-5 w-full'
         id={id}
@@ -138,16 +138,18 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className='w-full relative min-h-screen pt-40 pb-14 px-5 flex flex-col justify-center items-center gap-10' ref={heroRef}>
+    <div className='w-full relative min-h-screen pt-40 pb-14 flex flex-col justify-center items-center gap-10' ref={heroRef}>
       <div className='container relative'>
         <div className='flex flex-col gap-5'>
           {/*----- Main headings -----*/}
-          <h1 className={mainHeadingStyle + ' text-white relative z-20'} id='heading-1'> Your WEB3 </h1>
-          <div className='flex justify-between relative z-20'>
+          <h1 className={mainHeadingStyle + ' text-white relative z-20'} id='heading-1'> 
+            Your WEB3 
+          </h1>
+          <div className='flex justify-between mobile:flex-col mobile:gap-10 relative z-20'>
             <h1 className={mainHeadingStyle + ' text-white'} id='heading-2'> Career </h1>
-            <div className='flex items-center'>
+            <div className='flex items-center mobile:pl-7'>
               {usersImages.map((userImage, index) => (
-                <div className='aspect-square h-24 w-24 -ml-7 hover:mr-7 transition-all'>
+                <div className='aspect-square h-24 w-24 mobile:h-auto mobile:w-full -ml-7 hover:mr-7 transition-all'>
                   <Image 
                     key={index}
                     src={userImage} 
@@ -158,7 +160,7 @@ const HeroSection = () => {
               ))} 
               <Link 
                 href='#' 
-                className='h-24 w-24 bg-orange rounded-full -ml-7 flex items-center justify-center'
+                className='h-24 w-24 mobile:h-full mobile:w-full bg-orange rounded-full -ml-7 flex items-center justify-center aspect-square'
                 id="user_arrow"
               >
                 <TfiArrowTopRight fill='white' size={30} />
@@ -173,9 +175,9 @@ const HeroSection = () => {
       <div className='container'> 
         {/*----- Search Bar -----*/}
         {/* Note : Keep ids to not mess the animations */}
-        <div className='flex gap-5 bg-[#f5f5f50d] p-5 rounded-2xl relative z-20' id='search_bar'>
+        <div className='flex gap-5 mobile:gap-3 bg-[#f5f5f50d] p-5 mobile:p-2 rounded-2xl relative z-20' id='search_bar'>
           <Select default='classic' id="search_options">
-            <SelectTrigger className="w-20 h-16 rounded-xl bg-[#1a272c]">
+            <SelectTrigger className="w-20 h-16 mobile:h-12 rounded-xl bg-[#1a272c]">
               <SelectValue placeholder={<CiSearch size={25} />} />
             </SelectTrigger>
             <SelectContent className='rounded-xl bg-[#1a272c] p-2'>  
@@ -186,7 +188,7 @@ const HeroSection = () => {
           <input 
             type="text" id='search_input'
             placeholder='Search: Frontend developer, Marketing, Binance, etc.'
-            className='w-full bg-transparent text-white h-16 border-none outline-none'
+            className='w-full bg-transparent text-white h-16 mobile:h-12 mobile:text-sm border-none outline-none'
           /> 
         </div>
       </div>
@@ -207,14 +209,14 @@ const HeroSection = () => {
       </div>
       {/*----- Lighting -----*/}
       <div id="light-1" className='
-        rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,_#00C2FF_0%,_#009EF6_100%)] blur-[150px]
-        h-[400px] w-[400px]
-        absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2
+        rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,_#00C2FF_0%,_#009EF6_100%)] blur-[150px] mobile
+        h-[400px] w-[400px] mobile:h-[423px] mobile:w-[423px]
+        absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 mobile:left-0 mobile:bottom-1/2 mobile:z-10
       '/>
       <div id="light-2" className='
         rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,_#DC4F13_0%,_#FF4C00_100%)] blur-[150px]
-        h-[450px] w-[450px]
-        absolute right-0 top-1/2 -translate-y-1/2
+        h-[450px] w-[450px] mobile:h-[423px] mobile:w-[423px]
+        absolute right-0 top-1/2 -translate-y-1/2 mobile:translate-x-1/2 mobile:z-0
       '/>
     </div>
   )

@@ -7,15 +7,15 @@ import { GoPlus } from "react-icons/go";
 const AccordionComponent = ({ accordionTitle, accordionContent }) => {
     return (
         <div className='accordion_item bg-[#10191D] rounded-xl flex flex-col overflow-x-hidden'>
-            <div className='accordion_toggler px-10 py-6 flex items-center justify-between cursor-pointer'>
-                <span className="text-white text-xl">{accordionTitle}</span>
+            <div className='accordion_toggler px-10 py-6 mobile:px-5 mobile:py-3 flex items-center justify-between cursor-pointer'>
+                <span className="text-white text-xl mobile:text-base">{accordionTitle}</span>
                 <div className='bg-orange h-10 w-10 rounded-xl flex items-center justify-center'>
                     <GoPlus size={25} />
                 </div>
             </div>
             <div className='accordion_divider h-[1px] w-0 bg-[#1B272C]'></div>
-            <div className='accordion_content px-10 py-0 h-0 overflow-hidden'>
-                <p className='text-[#96B0BD] text-base leading-normal'>
+            <div className='accordion_content px-10 py-0 h-0 mobile:px-5 overflow-hidden'>
+                <p className='text-[#96B0BD] text-base mobile:text-sm leading-normal'>
                     {accordionContent}
                 </p>
             </div>
@@ -149,10 +149,10 @@ const FAQ = () => {
     }, [])
 
     return (
-        <div className="py-40 relative" ref={faqUseRef}>
+        <div className="py-40 mobile:py-20 relative" ref={faqUseRef}>
             <div className='max-w-4xl mx-auto relative z-10'>
-                <h2 className="text-white text-[150px] font-bold text-center" id="faq_heading">FAQ</h2>
-                <div className="flex flex-col gap-5">
+                <h2 className="text-white text-[150px] mobile:text-7xl font-bold text-center" id="faq_heading">FAQ</h2>
+                <div className="flex flex-col gap-5 mobile:mt-10 mobile:px-5">
                     <AccordionComponent
                         accordionTitle='What is JOBS3'
                         accordionContent='But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes'

@@ -12,19 +12,19 @@ import Image from 'next/image';
 
 const JobCard = ({ title, location, priceFrom, priceTo }) => {
     return (
-        <div className='bg-[#10191D] rounded-2xl px-7 py-10 flex flex-col gap-10 job-card'>
-            <h3 className='text-6xl text-white font-bold txt_animate'>{title}</h3>
+        <div className='bg-[#10191D] rounded-2xl px-7 mobile:px-5 py-10 mobile:py-5 flex flex-col gap-10 mobile:gap-5 job-card'>
+            <h3 className='text-6xl mobile:text-[44px] text-white font-bold txt_animate'>{title}</h3>
             <div className='block h-1 w-20 bg-[#1B272C]'></div>
-            <div className='flex flex-col gap-5'>
+            <div className='flex flex-col gap-5 mobile:gap-3'>
                 <div className='flex gap-2 items-center job-info'>
                     <Image src='/assets/icons/svgs/location.svg' height={30} width={30} alt='location' />
-                    <span className='text-white text-base'>
+                    <span className='text-white text-base mobile:text-sm'>
                         {location}
                     </span>
                 </div>
                 <div className='flex gap-2 items-center job-info'>
                     <Image src='/assets/icons/svgs/receipt.svg' height={30} width={30} alt='location' />
-                    <span className='text-white text-base'>
+                    <span className='text-white text-base mobile:text-sm'>
                         ${priceFrom} - {priceTo}
                     </span>
                 </div>
@@ -93,14 +93,22 @@ const ExploreSection = () => {
             {/* --------------- Content --------------- */}
             <div className='container relative z-10'>
                 <div className='w-full max-w-2xl ml-auto flex justify-end items-center gap-5 pr-10'>
-                    <h2 className='font-bold text-9xl relative' id='explore-heading'>Explore</h2>
-                    <TfiArrowTopRight size={50} />
+                    <h2 className='font-bold text-9xl relative mobile:text-5xl' id='explore-heading'>Explore</h2>
+                    <TfiArrowTopRight size={50} className='mobile:h-8' />
                 </div>
             </div>
-            <div className='block pl-10 pt-10'> 
+            <div className='block pl-10 pt-10 mobile:pl-5'> 
                 <Swiper
                     spaceBetween={20}
-                    slidesPerView={3.5}
+                    slidesPerView={1.2}
+                    breakpoints={
+                        {
+                            768: {
+                                slidesPerView: 3.5,
+                                spaceBetween: 10,
+                            },
+                        }
+                    }
                     className='!overflow-visible'
                 >
                     <SwiperSlide>
