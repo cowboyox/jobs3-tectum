@@ -83,7 +83,7 @@ const Page = () => {
         if (err?.response?.data?.message == 'You already applied to this gig!') {
           toast({
             className:
-              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+              'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 tex  t-center',
             description: <h3>{err?.response?.data?.message}</h3>,
             title: <h1 className='text-center'>Error</h1>,
             variant: 'destructive',
