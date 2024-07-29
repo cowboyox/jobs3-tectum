@@ -139,6 +139,11 @@ const Signup = () => {
       title: 'Freelancer',
     },
     {
+      avatar: 'assets/icons/signup/client.png',
+      description: 'Users who hire people on the basis of a gig',
+      title: 'Client',
+    },
+    {
       avatar: 'assets/icons/signup/employee.png',
       description: 'People looking for a long-term job and apply on the Jobs Board',
       title: 'Employee',
@@ -147,11 +152,6 @@ const Signup = () => {
       avatar: 'assets/icons/signup/employer.png',
       description: 'Companies that can post jobs on the Jobs Board',
       title: 'Employer',
-    },
-    {
-      avatar: 'assets/icons/signup/client.png',
-      description: 'Users who hire people on the basis of a gig',
-      title: 'Client',
     },
   ];
   const [choosen_account_types, setChoosenAccountType] = useState([]);
@@ -188,9 +188,21 @@ const Signup = () => {
         variant: 'destructive',
       });
     }
-    auth.setRole(choosen_account_types);
+    const new_choosen_account = [];
+    choosen_account_types.forEach((account_type) => {
+      let id = account_type;
+      if(account_type === 1) id = 3 ;
+      else if(account_type > 0) id -= 1;
+      new_choosen_account.push(id);
+    });
+    auth.setRole(new_choosen_account);
+    console.log("new_choosen_account", new_choosen_account);
     setStep(1);
   };
+
+  console.log("user.role", auth?.user?.role);
+
+
 
   const handleOTPCode = async () => {
     if (!otp_value || otp_value.length < 1) {
@@ -286,7 +298,7 @@ const Signup = () => {
             className='w-full bg-[#DC4F13] px-[30px] py-5 text-center text-[#F5F5F5]'
             onClick={() => handleSubmit()}
           >
-            Conitnue
+            Continue
           </button>
         </div>
       )}
