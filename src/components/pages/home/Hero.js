@@ -14,7 +14,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"; 
 
 /*------------- Icons -------------*/
 import { TfiArrowTopRight } from "react-icons/tfi";
