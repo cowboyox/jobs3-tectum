@@ -1082,7 +1082,7 @@ const EditGig = () => {
                 >
                   <div
                     className={`h-6 w-6 rounded-full border border-[#A0B4C0] ${formInfo.instantBuy && 'border-8 border-[#E0F0F9]'}`}
-                  ></div>
+                   />
                   <div className='text-[18px]'>Instant Buy</div>
                 </div>
               </FormItem>
