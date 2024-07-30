@@ -617,7 +617,7 @@ h6 {
 }
 
 body {
-  background-color: #111313 !important;
+  background-color: #111111 !important;
   overflow-x: hidden;
 }
 body.mobile-menu-open {
@@ -8446,7 +8446,7 @@ body.mobile-menu-open {
   }
 }
 
-::-webkit-scrollbar {
+*:not(.country-list)::-webkit-scrollbar {
   display: none;
 }
 
@@ -10798,14 +10798,14 @@ body.mobile-menu-open {
 }
 @media screen and (min-width: 1600px) {
   .container {
-    max-width: 1480px;
+    max-width: 1480px !important;
     padding-left: 30px;
     padding-right: 30px;
   }
 }
 @media screen and (max-width: 1600px) {
   .container {
-    max-width: 1300px;
+    max-width: 1300px !important;
     padding-left: 20px !important;
     padding-right: 20px !important;
   }
@@ -10827,12 +10827,12 @@ body.mobile-menu-open {
 |                Main Header           |
 |-------------------------------------*/
 .main_header {
-  padding: 20px 0;
+  padding: 50px 0;
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
-  z-index: 20;
+  z-index: 901;
 }
 .main_header .dropdown-link {
   position: relative;
@@ -10844,10 +10844,8 @@ body.mobile-menu-open {
   padding-bottom: 20px;
 }
 .main_header .dropdown-link a.active {
-  color: var(--main-color);
-}
-.main_header .dropdown-link a:hover {
-  color: var(--main-color);
+  color: white !important;
+  opacity: 1 !important;
 }
 .main_header .dropdown-link ul {
   opacity: 0;
@@ -10882,7 +10880,7 @@ body.mobile-menu-open {
 }
 .main_header .main_logo {
   width: 133px;
-  margin-right: 7%;
+  margin-right: 5%;
 }
 .main_header .main_logo a {
   color: white;
@@ -10901,10 +10899,12 @@ body.mobile-menu-open {
   transition: 0.3s;
 }
 .main_header nav a.active {
-  color: var(--main-color);
+  color: white;
+  opacity: 1;
 }
 .main_header nav a:hover {
-  color: var(--main-color);
+  color: white;
+  opacity: 1;
 }
 .main_header .right_side {
   margin-left: auto;
@@ -11462,6 +11462,10 @@ a.cta_button:hover {
 
 .react-loading-skeleton {
   border-radius: 12px !important;
+}
+
+.text-white-border {
+  -webkit-text-stroke: 1pt white;
 }
 
 @media (max-width: 768px) {

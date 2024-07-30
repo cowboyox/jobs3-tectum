@@ -12,6 +12,7 @@ import { useCustomContext } from '@/context/ContextProvider';
 // Components
 
 const Header = () => {
+  // get current path
   const [user, setUser] = useState({
     email: '',
     name: 'no-user',
@@ -24,6 +25,7 @@ const Header = () => {
       setUser(JSON.parse(tmp).data.user);
     }
   }, []);
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
 
   const { openPopup, renderPopup } = usePopupFunctions();
 
@@ -50,15 +52,7 @@ const Header = () => {
     disconnect();
     auth.signOut();
     location.href = '/';
-  };
-
-  // Authenticated user details
-  const isAuthenticated = auth.isAuthenticated;
-  const userRole = Array.isArray(user?.role) ? user.role : [];
-
-  const clientUrl = isAuthenticated && userRole.includes(3) ? `/dashboard/client/home` : '/';
-  const freelancerUrl =
-    isAuthenticated && userRole.includes(0) ? `/dashboard/freelancer/home` : '/';
+  }; 
 
   return (
     <>
@@ -79,24 +73,35 @@ const Header = () => {
             <Image alt='' height={40} src={'/assets/images/menu_icon.svg'} width={40} />
           </button>
           <nav>
-            <Link href='/'>HOME</Link>
-            <Link href={clientUrl}>Client</Link>
-            <Link href={freelancerUrl}>Freelancer</Link>
-            {/* <Link href={employerUrl}>Employer</Link>
-						<Link href={employeeUrl}>Employee</Link> */}
+            {/* add "active" class if it's current path */}
+            <Link 
+              className={`text-[#F5F5F5] opacity-50 hover:opacity-100 uppercase text-base ${currentPath === '/' ? 'active' : ''}`} 
+              href='/'>
+              HOME
+            </Link>
+            <Link 
+              className={`text-[#F5F5F5] opacity-50 hover:opacity-100 uppercase text-base ${currentPath === '/blog' ? 'active' : ''}`} 
+              href='/blog'>
+              BLOG
+            </Link>
+            <Link 
+              className={`text-[#F5F5F5] opacity-50 hover:opacity-100 uppercase text-base ${currentPath} `} 
+              href='#'>
+              $THREE
+            </Link> 
           </nav>
           <div className='right_side'>
             {!auth?.isAuthenticated ? (
               <Link
-                className='btn_classified ml-10 whitespace-nowrap'
-                href={'/signup'}
+                className='ml-10 cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'
+                href='/signup'
               >
                 Sign Up
               </Link>
             ) : (
               <Link
-                className='btn_classified ml-10 whitespace-nowrap'
-                href={'/jobs'}
+                className='ml-10 cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'
+                href='#'
                 onClick={handleSignOut}
               >
                 Sign Out
@@ -105,8 +110,8 @@ const Header = () => {
             {!auth?.isAuthenticated && (
               <div>
                 <Link
-                  className='btn_classified whitespace-nowrap'
-                  href={'signin'}
+                  className='w-full cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'
+                  href='signin'
                 >
                   Launch App
                 </Link>

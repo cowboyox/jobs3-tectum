@@ -179,23 +179,25 @@ const Orders = () => {
   }, [allGigs]);
   console.log('allGigs', allGigs);
   console.log('gigs', gigs);
+  console.log("submissions", submissions);
   useEffect(() => {
     if (mode == 'live') {
       if (gigs?.lives?.length > 0) {
         setCanLoadMore(true);
         if (page === 1) {
           setLives(gigs?.lives);
+          if(gigs?.livesTotal === gigs?.lives?.length) setCanLoadMore(false);
         } else {
           setLives((prev) => {
             let result = [...prev];
-            const ids = prev.map((item) => item._id);
+            const ids = prev.map((item) => item.gigId);
 
             gigs?.lives.map((cg) => {
-              if (!ids.includes(cg._id)) {
+              if (!ids.includes(cg.gigId)) {
                 result = [...result, cg];
               }
             });
-
+            if(gigs?.livesTotal === result.length) setCanLoadMore(false);
             return result;
           });
         }
@@ -210,17 +212,19 @@ const Orders = () => {
         setCanLoadMore(true);
         if (page === 1) {
           setSubmissions(gigs?.submissions);
+          if(gigs?.submissionsTotal === gigs?.submissions?.length) setCanLoadMore(false);
         } else {
           setSubmissions((prev) => {
+            console.log("arrived here....");
             let result = [...prev];
-            const ids = prev.map((item) => item._id);
-
+            const ids = prev.map((item) => item.gigId);
+            console.log("ids", ids);
             gigs?.submissions.map((cg) => {
-              if (!ids.includes(cg._id)) {
+              if (!ids.includes(cg.gigId)) {
                 result = [...result, cg];
               }
             });
-
+            if(gigs?.submissionsTotal === result.length) setCanLoadMore(false);
             return result;
           });
         }
