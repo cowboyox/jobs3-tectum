@@ -277,7 +277,7 @@ const Signup = () => {
         <div className='mt-[20px] flex w-full flex-col items-center justify-center gap-[30px] rounded-xl border border-[#28373E] p-[30px] text-[#96B0BD] xxs:w-[400px] lg:mt-[50px]'>
           <div className='flex flex-col items-center justify-center gap-4'>
             <p className='text-2xl text-[#F5F5F5]'>Type of Account</p>
-            <p className=''>Select which account you want to create</p>
+            <p className=''>Select the type of accounts you want to create. You may select multiple options at once.</p>
           </div>
           {accountType.map((item, key) => (
             <div

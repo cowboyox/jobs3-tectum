@@ -114,7 +114,7 @@ const Signin = () => {
           <p className='text-2xl text-[#F5F5F5]'>Sign In</p>
           <p className=''>Enter Details Below</p>
         </div>
-        <input
+        {/* <input
           className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
           onChange={(e) =>
             setPostData((prev) => ({
@@ -127,7 +127,7 @@ const Signin = () => {
           }}
           placeholder='Full name'
           value={postData.fullName}
-        />
+        /> */}
         <div className='flex w-full flex-col'>
           <input
             className='w-full rounded-xl border border-[#28373E] bg-[#111] px-5 py-3 outline-none'
