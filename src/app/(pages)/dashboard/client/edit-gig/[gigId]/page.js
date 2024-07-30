@@ -647,14 +647,10 @@ const GigPosting = ({ params }) => {
     setFiles(fileObjects);
   };
 
-  console.log('postData', postData);
   const getGigById = async (gigId) => {
     const resData = await api.get(`/api/v1/client_gig/get_gig_by_id/${gigId}`);
     return resData;
   };
-
-  console.log('postData', postData);
-  console.log('files', files);
 
   useEffect(() => {
     if (auth) {

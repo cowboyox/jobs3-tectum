@@ -1,27 +1,23 @@
 import React from 'react';
-
 // Components
 import Layout from '@/components/layout/Layout';
-import BlogPosts from '@/components/pages/home/BlogPosts';
-import ByCategories from '@/components/pages/home/ByCategories';
-import Companies from '@/components/pages/home/Companies';
-import FeaturedJobs from '@/components/pages/home/FeaturedJobs';
-import ForEmployers from '@/components/pages/home/ForEmployers';
-import GetPaid from '@/components/pages/home/GetPaid';
-import Hero from '@/components/pages/home/Hero';
-import PostAJob from '@/components/pages/home/PostAJob';
+
+import HeroSection from '@/components/pages/home/hero-section';
+import GetPaid from '@/components/pages/home/get-paid';
+import ExploreSection from '@/components/pages/home/explore';
+import PerfectFor from '@/components/pages/home/perfect-for';
+import FAQ from '@/components/pages/home/faq';
+import ReferFirend from '@/components/pages/home/refer-firend';
 
 export default function Home() {
   return (
     <Layout pageClass='home_page'>
-      <Hero />
+      <HeroSection />
       <GetPaid />
-      <FeaturedJobs />
-      <ByCategories />
-      <PostAJob />
-      <ForEmployers />
-      <Companies />
-      <BlogPosts />
+      <ExploreSection />
+      <PerfectFor />
+      <FAQ />
+      <ReferFirend />
     </Layout>
   );
 }
