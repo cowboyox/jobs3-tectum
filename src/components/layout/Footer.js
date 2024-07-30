@@ -1,107 +1,148 @@
-import Image from 'next/image';
+'use client';
+import React, { useLayoutEffect, useRef } from 'react';
+import gsap from 'gsap';
 import Link from 'next/link';
-import React from 'react';
+import SplitType from 'split-type';
+
+/*-------- Icons --------*/
+import { GoArrowRight } from "react-icons/go";
+import { TfiArrowTopRight } from "react-icons/tfi";
 
 const Footer = () => {
-  return (
-    <footer>
-      <div className='email_subscribe'>
-        <p>
-          Always get the <span>latest</span> information
-        </p>
-        <form>
-          <input placeholder='Email Address' type='text' />
-          <button>subscribe</button>
-        </form>
-      </div>
-      <div className='footer_bottom'>
-        <Link className='footer_logo' href={'/'}>
-          <Image alt='Jobs3' height={50} src={'/assets/images/logo.svg'} width={133} />
-        </Link>
-        <p className='footer_description'>Find Us On Social Media:</p>
-        <div className='social_icons'>
-          <a className='icon_circle' href={'https://t.me/Threeprotocol'} target='_blank'>
-            <svg
-              className='bi bi-telegram'
-              fill='#fff'
-              height='18'
-              viewBox='0 0 16 16'
-              width='18'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.287 5.906q-1.168.486-4.666 2.01-.567.225-.595.442c-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294q.39.01.868-.32 3.269-2.206 3.374-2.23c.05-.012.12-.026.166.016s.042.12.037.141c-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8 8 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629q.14.092.27.187c.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.4 1.4 0 0 0-.013-.315.34.34 0 0 0-.114-.217.53.53 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09' />
-            </svg>
-          </a>
-          <a className='icon_circle' href={'https://medium.com/@JOBS3_io'} target='_blank'>
-            <svg
-              className='bi bi-medium'
-              fill='#fff'
-              height='18'
-              viewBox='0 0 16 16'
-              width='18'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path d='M9.025 8c0 2.485-2.02 4.5-4.513 4.5A4.506 4.506 0 0 1 0 8c0-2.486 2.02-4.5 4.512-4.5A4.506 4.506 0 0 1 9.025 8m4.95 0c0 2.34-1.01 4.236-2.256 4.236S9.463 10.339 9.463 8c0-2.34 1.01-4.236 2.256-4.236S13.975 5.661 13.975 8M16 8c0 2.096-.355 3.795-.794 3.795-.438 0-.793-1.7-.793-3.795 0-2.096.355-3.795.794-3.795.438 0 .793 1.699.793 3.795' />
-            </svg>
-          </a>
-          <a className='icon_circle' href={'https://www.youtube.com/@Jobs3.'} target='_blank'>
-            <svg
-              className='bi bi-youtube'
-              fill='#fff'
-              height='18'
-              viewBox='0 0 16 16'
-              width='18'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path d='M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.194-.01 1.108-.082 2.06l-.008.105-.009.104c-.05.572-.124 1.14-.235 1.558a2.01 2.01 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.167-.128-2.654-.26a2.01 2.01 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31 31 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.01 2.01 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A100 100 0 0 1 7.858 2zM6.4 5.209v4.818l4.157-2.408z' />
-            </svg>
-          </a>
-          <a className='icon_circle' href={'https://x.com/threeprotocol'} target='_blank'>
-            <svg
-              className='bi bi-twitter-x'
-              fill='#fff'
-              height='18'
-              viewBox='0 0 16 16'
-              width='18'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path d='M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z' />
-            </svg>
-          </a>
-          <a
-            className='icon_circle'
-            href={'https://www.linkedin.com/company/threeprotocol/'}
-            target='_blank'
-          >
-            <svg
-              className='bi bi-linkedin'
-              fill='#fff'
-              height='18'
-              viewBox='0 0 16 16'
-              width='18'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path d='M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z' />
-            </svg>
-          </a>
-          <a className='icon_circle' href={'https://Reddit.com/r/jobs3'} target='_blank'>
-            <svg
-              className='bi bi-reddit'
-              fill='#fff'
-              height='18'
-              viewBox='0 0 16 16'
-              width='18'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path d='M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z' />
-              <path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165' />
-            </svg>
-          </a>
-        </div>
+  const footerRef = useRef(null);
+  useLayoutEffect(() => {
+      // Create GSAP animations
+      let ctx = gsap.context(()=> {
+          // Animate Text
+          SplitType.create('#asdf');
+          gsap.from('#signup_asdf', {
+              y: 30,
+              opacity: 0,
+              duration: 1,
+              scrollTrigger: {
+                  trigger: '#signup_link',
+                  start: 'top 70%',
+                  end: 'center 70%',
+                  scrub: 1,
+              },
+          }
+          )
 
-        <hr />
-        <p>Copyright © 2024</p>
+          // subscribe to newsletter
+          gsap.from('#subscribe_newsletter', {
+              y: 30,
+              opacity: 0,
+              duration: 1,
+              scrollTrigger: {
+                trigger: '#subscribe_newsletter',
+                start: 'top 90%',
+                end: 'center 70%',
+                scrub: 1,
+              },
+          }
+          )
+          gsap.from('#footer_form', {
+            y: 30,  
+            opacity: 0,
+            duration: 1,
+            scrollTrigger: {
+              trigger: '#footer_form',
+              start: 'top 90%',
+              end: 'center 70%',
+              scrub: 1,
+            },
+          });
+
+          // footer deviders
+          const footerDivider = document.querySelectorAll('.footerDivider');
+          footerDivider.forEach((divider) => {
+              gsap.from(divider, {
+                  width: 0,
+                  duration: 1,
+                  scrollTrigger: {
+                    trigger: divider,
+                    start: 'top 70%',
+                    end: 'center 70%',
+                    scrub: 1,
+                  },
+              });
+          });
+
+          // footer links
+          const footerLinks = document.querySelectorAll('.footer_link');
+          footerLinks.forEach((link, index) => {
+              SplitType.create(link);
+              gsap.from(link.querySelectorAll('.char'), {
+                  x: -20,
+                  opacity: 0,
+                  duration: 1,
+                  stagger: 0.3,
+                  scrollTrigger: {
+                      trigger: link,
+                      start: 'top bottom',
+                      end: 'center 70%',
+                      scrub: 1,
+                  },
+              });
+          });
+      }, footerRef);
+  
+      return ()=> ctx.revert();
+  }, []);
+
+
+  return (
+    <footer className='flex flex-col gap-10 py-14 bg-[linear-gradient(180deg,_#111_0%,_#10191D_100%)]' ref={footerRef}>
+      <div className='flex mobile:flex-col mobile:gap-4 justify-between'>
+        <div className='flex flex-col gap-2'>
+          <span className='text-[#F5F5F5] text-3xl mobile:text-center' id="subscribe_newsletter">Subscribe to our newsletter</span>
+          <span className='text-[#6A828D] text-base mobile:text-center'>Features and news from JOBS3</span>
+        </div>
+        <form id='footer_form' className='relative h-12 w-[335px] mobile:w-full rounded-xl overflow-hidden border border-[#526872]'>
+          <input placeholder='Email address' className='text-[#96B0BD] px-4 bg-transparent h-full w-full text-base' />
+          <button type="submit" className='cursor-pointer rounded-xl bg-orange flex items-center justify-center text-center text-white transition absolute top-1/2 -translate-y-1/2 right-1 h-10 w-10'>
+            <GoArrowRight size={15} />
+          </button>
+        </form>
+      </div> 
+      <div className='footerDivider h-[1px] w-full bg-[#1B272C]' />
+      <div className='w-full flex mobile:flex-wrap'>
+        <div className='flex flex-col gap-5 w-4/12 mobile:w-6/12'>
+          <span className='text-orange text-xl'>Top Categories</span>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Graphics & Design</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Marketing</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Video</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Writing & Translation</Link>
+        </div>
+        <div className='flex flex-col gap-5 w-4/12 mobile:w-6/12 mobile:pl-5'>
+          <span className='text-orange text-xl'>Learn</span>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Help & Support</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>How to Post a Job</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>How to Find an Employee</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>How to Arrange a Portfolio</Link>
+        </div>
+        <div className='flex flex-col gap-5 w-4/12 mobile:w-6/12 mobile:pt-5'>
+          <span className='text-orange text-xl'>About</span>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Blog</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Privacy Policy</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Terms of Service</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Contact Sales</Link>
+        </div>
+        <div className='flex flex-col gap-5 w-4/12 mobile:w-6/12 mobile:pt-5 mobile:pl-5'>
+          <span className='text-orange text-xl'>Socials</span>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>$THREE</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Medium</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>YouTube</Link>
+          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>YouTube</Link>
+        </div>
       </div>
+      <div className='footerDivider h-[1px] w-full bg-[#1B272C]' />
+      <div className='flex justify-between'>
+        <span className='text-[#6A828D] text-base mobile:text-sm'>© 2022-2024 / JOBS3  / All rights reserved</span>
+        <Link href="signup" className='cursor-pointer whitespace-nowrap rounded-full bg-orange px-5 py-2 text-center text-white transition hover:bg-[#c2440e] w-fit flex items-center gap-2'>
+          <TfiArrowTopRight size={20} /> Jobs3.io
+        </Link>
+      </div> 
     </footer>
   );
 };

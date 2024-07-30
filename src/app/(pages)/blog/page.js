@@ -21,7 +21,6 @@ const Blog = () => {
   const [blogPostsData, loading, error] = useFetchThis(
     `${contentfulConfig.baseUrl}/spaces/${contentfulConfig.spaceId}/environments/${contentfulConfig.environmentId}/entries?access_token=${contentfulConfig.accessToken}&content_type=${contentfulConfig.requiredContentType}`
   );
-  console.log(blogPostsData);
   const [assetUrls, setAssetUrls] = useState({});
 
   const fetchAssetUrl = useCallback(
