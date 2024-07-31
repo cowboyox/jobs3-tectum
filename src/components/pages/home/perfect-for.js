@@ -159,25 +159,25 @@ const PerfectFor = () => {
             <IsFor 
               isDefault={true}
               title="Freelancers"
-              description="But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system,"
+              description="Build your profile using our no-KYC ZKP on-chain profiles. Create your own gigs, develop your reputation, and earn in crypto. Leverage our Tri-Proof smart contracts to get paid securely."
               link="/dashboard/freelancers"
               image="/assets/images/perfect-for-section-img-2.jpg"
             />
             <IsFor 
               title="Clients"
-              description="Here goes Clients text"
+              description="Looking for a particular service or freelancer? Use our powerful AI to find them, or publish a gig for freelancers to apply to. Then, when you have selected the best talent, use our Tri-Proof smart contract to pay them securely once the gig is complete."
               link= "/dashboard/clients"
               image="/assets/images/perfect-for-section-img-1.png"
             />
             <IsFor 
               title="Employers"
-              description="Here goes Employers text"
+              description="Ready to find your next hire? Use Jobs3 to find the best talent available. Our AI does the hard work for you. Simply input your requirements to get connected. Build a profile and attract quality candidates."
               link="/dashboard/employers"
               image="/assets/images/perfect-for-section-img-3.jpg"
             />
             <IsFor 
               title="Employees"
-              description="Here goes Employees text"
+              description="What’s the next step in your career? With Jobs3, it could be just a few clicks away. Use our extensive network to link up with the leading companies in your space. Apply online in just a few steps."
               link="/dashboard/employees"
               image="/assets/images/perfect-for-section-img-4.jpg"
             />
