@@ -62,7 +62,7 @@ const roadmap = async () => {
 
         <section className='roadmap-container'>
           {boardData.length > 0 &&
-            boardData.map((milestone, index) => {
+            boardData?.map((milestone, index) => {
               if (isEven(index + 1)) {
                 // Block - Right
                 return (
