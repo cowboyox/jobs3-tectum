@@ -44,7 +44,7 @@ const fetchBoardData = async () => {
     });
 
     const data = await response.json();
-    return data.data.boards[0].groups[0].items_page.items;
+    return data.data.boards[0].groups[0]?.items_page.items;
   } catch (error) {
     console.error('Error fetching data:', error);
     return null;
@@ -62,7 +62,7 @@ const roadmap = async () => {
 
         <section className='roadmap-container'>
           {boardData?.length > 0 &&
-            boardData.map((milestone, index) => {
+            boardData?.map((milestone, index) => {
               if (isEven(index + 1)) {
                 // Block - Right
                 return (
