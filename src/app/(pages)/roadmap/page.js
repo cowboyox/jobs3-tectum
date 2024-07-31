@@ -44,7 +44,7 @@ const fetchBoardData = async () => {
     });
 
     const data = await response.json();
-    return data.data.boards[0].groups[0].items_page.items;
+    return data.data.boards[0].groups[0]?.items_page.items;
   } catch (error) {
     console.error('Error fetching data:', error);
     return null;
