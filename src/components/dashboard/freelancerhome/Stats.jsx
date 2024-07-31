@@ -4,6 +4,7 @@ import { CiSearch } from 'react-icons/ci';
 import { FaX } from 'react-icons/fa6';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 import { RiRobot2Line } from 'react-icons/ri';
+import searchOptions from './searchOptions';
 
 import { FilterIcon } from '@/components/elements/svgs/FilterIcon';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -477,12 +478,8 @@ const Stats = ({
             </SelectTrigger>
             <SelectContent className='rounded-xl bg-[#1B272C]'>
               <SelectGroup>
-                <SelectItem value='normal'>
-                  <CiSearch className='mobile:max-w-4' size={20} />
-                </SelectItem>
-                <SelectItem value='ai'>
-                  <RiRobot2Line className='mobile:max-w-4' size={20} />
-                </SelectItem>
+                <SelectItem value='normal'>{searchOptions[0].icon}</SelectItem>
+                <SelectItem value='ai'>{searchOptions[1].icon}</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
