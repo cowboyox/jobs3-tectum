@@ -15,9 +15,9 @@ const AccordionComponent = ({ accordionTitle, accordionContent }) => {
             </div>
             <div className='accordion_divider h-[1px] w-0 bg-[#1B272C]' />
             <div className='accordion_content px-10 py-0 h-0 mobile:px-5 overflow-hidden'>
-                <p className='text-[#96B0BD] text-base mobile:text-sm leading-normal'>
+                <pre className='text-[#96B0BD] text-base mobile:text-sm leading-normal whitespace-pre-wrap'>
                     {accordionContent}
-                </p>
+                </pre>
             </div>
         </div>
     )
@@ -155,19 +155,42 @@ const FAQ = () => {
                 <div className="flex flex-col gap-5 mobile:mt-10 mobile:px-5">
                     <AccordionComponent
                         accordionTitle='What is JOBS3'
-                        accordionContent='But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes'
+                        accordionContent={`  Jobs3 is an advanced services and employment portal that connects buyers and sellers through their skills and requirements. We have an extensive network of professionals either looking for work or looking to have work completed.
+                        
+Jobs3 uses extensive technology from Three Protocol to deliver a seamless, intuitive jobs and services marketplace unlike anything seen before.
+                        
+Profiles are completely decentralised and require no-KYC. Jobs3 leverages Zero Knowledge Proof pseudo anonymisation to create a form of decentralised digital identification that can be used across all of Three Protocol’s marketplaces.
+                        
+Users can securely transact with each other through the Tri-Proof Smart Contract system. Ensuring that users can pay and be paid without any concerns, and if there are ever any disputes the impartial DAO assesses the evidence and makes a judgement accordingly.
+                        
+Your time is precious, that’s why we’ve built a groundbreaking neural network AI called the Procurement Matching AI. This AI allows buyers and sellers to be connected on more than just keywords and dramatically increases the efficiency of the marketplace.`}
                     />
                     <AccordionComponent
-                        accordionTitle='What is JOBS3'
-                        accordionContent='But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes'
+                        accordionTitle='How do I create a profile?'
+                        accordionContent={`  Simply click the Sign Up button at the top of the page and you’ll be guided through the intuitive account creation process. 
+Then, on the profile page, you can change your avatar and personal information. Freelancers can show off their portfolios, and Clients can share important information.`}
                     />
                     <AccordionComponent
-                        accordionTitle='What is JOBS3'
-                        accordionContent='But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes'
+                        accordionTitle='How does the Tri-Proof Smart Contract work?'
+                        accordionContent={`  Our Tri-Proof Smart Contracts are a straightforward solution to secure and reliable transactions. Upon engagement between two parties (let’s say someone wants a new website), a tri-proof contract is instantly created with three signatories: the buyer, the seller, and the DAO. 
+
+This contract serves as an escrow, holding the payment for services and potential dispute funds.
+                        
+If everything goes well in the transaction, then the buyer and seller sign, and funds are released. 
+                        
+In cases where there are disputes, the disputing party won’t sign and it will be escalated to the DAO. 
+                        
+The DAO's judgment determines the rightful recipient of the escrowed funds.`}
                     />
                     <AccordionComponent
-                        accordionTitle='What is JOBS3'
-                        accordionContent='But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes'
+                        accordionTitle='How does Jobs3 protect buyers and sellers?'
+                        accordionContent={`  Each profile can only accumulate reviews following genuine transactions thanks to the ZKP process.
+
+During transactions, each party is protected by the Tri-Proof Smart Contracts. If there is ever an issue, one party needs only to escalate the issue to the DAO and they will be supported appropriately.`}
+                    />
+                    <AccordionComponent
+                        accordionTitle='Do I have to use an ID?'
+                        accordionContent={`  No, the ZKP Decentralised Digital IDs are designed to be created without the need for KYC. Of course, some long-term employers may request to get to know you in a more personal sense, but that decision is for you to come to with the employer.`}
                     />
                 </div>
             </div>
