@@ -100,6 +100,13 @@ const OrderPage = ({ params }) => {
   const { toast } = useToast();
 
   const [program, setProgram] = useState();
+  const [requirementText, setRequirementText] = useState("");
+  const [requirementFile, setRequirementFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    setRequirementText(contractInfo?.requirementText);
+  }, [contractInfo]);
   
   useEffect(() => {
     if (wallet) {
@@ -121,6 +128,11 @@ const OrderPage = ({ params }) => {
       })();
     }
   }, [wallet, connection]);
+
+  const handleFileUpload = (files) => {
+    console.log('file', files[0])
+    setRequirementFile(files[0]);
+  };
 
   const onRelease = async (id, contractId) => {
     if (!wallet || !program) {
@@ -212,6 +224,50 @@ const OrderPage = ({ params }) => {
     }
   };
 
+  const onSubmit = async () => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      
+      if (requirementFile) {
+        formData.append('file', requirementFile);
+      }
+
+      formData.append('contractId', params.id);
+      formData.append('requirementText', requirementText);
+
+      await api.put(`/api/v1/client_gig/requirement`, formData,
+        {
+          headers: {
+          'Content-Type': 'multipart/form-data', // Set the Content-Type header
+          }
+        }
+      );
+
+      toast({
+        className:
+          'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Successfully submitted the requirements!</h3>,
+        title: <h1 className='text-center'>Success</h1>,
+        variant: 'default',
+      });
+
+      await refetchClientGigContractById();
+    } catch (err) {
+      console.error('Error corrupted during submitting requirements', err);
+
+      toast({
+        className:
+          'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
+        description: <h3>Internal Server Error</h3>,
+        title: <h1 className='text-center'>Error</h1>,
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Tabs className='flex flex-col w-full gap-6' defaultValue='details'>
       <TabsList className='w-full h-auto p-0 bg-transparent'>
@@ -296,7 +352,7 @@ const OrderPage = ({ params }) => {
                         <div className='flex flex-col gap-2'>
                           <span className='text-base text-[#96B0BD] mobile:text-xs'>Item</span>
                           <span className='text-base font-bold text-white mobile:text-xs'>
-                            Design UI/UX design for your mobile apps
+                            {contractInfo?.clientGig?.gigTitle}
                           </span>
                         </div>
                       </div>
@@ -333,29 +389,58 @@ const OrderPage = ({ params }) => {
             </div>
           </TabsContent>
           <TabsContent value='requirements'>
-            <Form {...form}>
-              <form>
-                <PanelContainer>
-                  <span className='text-2xl font-bold text-white mobile:text-xl mobile:font-normal'>
-                    Brief about the project
-                  </span>
-                  <textarea className='h-80 rounded-2xl border border-[#526872] bg-transparent p-5 text-white' />
-                  <div className='mt-5 text-3xl text-[#F5F5F5] mobile:text-xl'>
-                    Drag and drop your files here or
-                    <span className='main_color'> browse</span> to upload
-                  </div>
-                  <div className='text-base text-[#96B0BD]'>
-                    Format: JPEG, JPG, PNG, GIF, MP4, AVI. Max size per image/video: 50MB
-                  </div>
+            <PanelContainer>
+              <span className='text-2xl font-bold text-white mobile:text-xl mobile:font-normal'>
+                Brief about the project
+              </span>
+              <textarea value={requirementText} onChange={(e) => setRequirementText(e.target.value)} className='h-80 rounded-2xl border border-[#526872] bg-transparent p-5 text-white' />
+              {
+                contractInfo?.requirementFiles.length > 0 ? 
+                  <div>
+                   <div className='text-base text-[#96B0BD]'>
+                      Attachment
+                    </div>
+                    <a className='text-white' href={contractInfo?.requirementFiles[0]} download>{contractInfo?.requirementFiles[0].split("/").pop()}</a>
+                  </div> : 
+                  <></>
+              }
+              <div className='mt-5 text-3xl text-[#F5F5F5] mobile:text-xl'>
+                Drag and drop your files here or
+                <span className='main_color'> browse</span> to upload
+              </div>
+              <div className='text-base text-[#96B0BD]'>
+                Format: JPEG, JPG, PNG, GIF, MP4, AVI. Max size per image/video: 50MB
+              </div>
+              <Form {...form}>
+                <form>
                   <DropFile
-                    acceptOnly='image'
+                    acceptOnly='*'
                     className='aspect-video'
                     inputName='order_attachment'
                     placeHolderPlusIconSize={80}
+                    onFileUpload={handleFileUpload}
                   />
-                </PanelContainer>
-              </form>
-            </Form>
+                </form>
+              </Form>
+              <button className='w-[50%] ml-auto flex items-center justify-center bg-[#DC4F13] p-4 px-8 md:p-5' onClick={onSubmit} disabled={loading}>
+                {
+                  loading ? 
+                    <span className="flex items-center">
+                        <svg
+                            className="w-5 text-white h-15 animate-spin"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                        </svg>
+                        &nbsp; Submitting...
+                    </span> :
+                  "Submit"
+                }
+              </button>
+            </PanelContainer>
           </TabsContent>
         </div>
         <div className='flex flex-col w-4/12 gap-5 mobile:w-full'>
@@ -389,7 +474,11 @@ const OrderPage = ({ params }) => {
               </div>
               <PiLineVerticalLight className='-my-3' fill='#DC4F13' size={30} />
               <div className='flex items-center gap-3'>
-                <GoCircle fill='#DC4F13' size={30} />
+                {
+                  contractInfo?.submittedRequirement ?
+                    <IoIosCheckmarkCircle fill='#DC4F13' size={30} /> :
+                    <GoCircle fill='#DC4F13' size={30} />
+                }
                 <span className='text-base font-bold text-[#F5F5F5]'>Submit requirements</span>
               </div>
             </div>
