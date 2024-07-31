@@ -1,6 +1,6 @@
 'use client';
 /* ------------ Libraries ------------ */
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import SplitType from 'split-type';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -8,9 +8,10 @@ import gsap from 'gsap';
 
 /* ------------ Icons ------------ */
 import { TfiArrowTopRight } from "react-icons/tfi";
-import Image from 'next/image'; 
+import Image from 'next/image';
+import api from '@/utils/api';
 
-const JobCard = ({ title, location, priceFrom, priceTo }) => {
+const JobCard = ({ title, location, priceFrom, priceTo, paymentType }) => {
     return (
         <div className='bg-[#10191D] rounded-2xl px-7 mobile:px-5 py-10 mobile:py-5 flex flex-col gap-10 mobile:gap-5 job-card'>
             <h3 className='text-6xl mobile:text-[44px] text-white font-bold txt_animate'>{title}</h3>
@@ -25,7 +26,8 @@ const JobCard = ({ title, location, priceFrom, priceTo }) => {
                 <div className='flex gap-2 items-center job-info'>
                     <Image src='/assets/icons/svgs/receipt.svg' height={30} width={30} alt='location' />
                     <span className='text-white text-base mobile:text-sm'>
-                        ${priceFrom} - {priceTo}
+                        {paymentType ? `$${priceFrom} - ${priceTo}` : `$${priceFrom}`}
+                        
                     </span>
                 </div>
             </div>
@@ -33,10 +35,11 @@ const JobCard = ({ title, location, priceFrom, priceTo }) => {
     )
 }
 const ExploreSection = () => {
+    const [latestGigs, setLatestGigs] = useState([]);
     const ExploreRef = useRef(null);
     useLayoutEffect(() => {
         // Create GSAP animations
-        let ctx = gsap.context(()=> {
+        let ctx = gsap.context(() => {
             // Animate Explore Heading
             SplitType.create('#explore-heading');
             gsap.from('#explore-heading .char', {
@@ -63,7 +66,7 @@ const ExploreSection = () => {
                 duration: .03,
                 opacity: 0,
                 scrollTrigger: {
-                    trigger: '.job-card .txt_animate', 
+                    trigger: '.job-card .txt_animate',
                     start: 'top 80%',
                     end: 'bottom top',
                 },
@@ -75,7 +78,7 @@ const ExploreSection = () => {
                 duration: 1,
                 opacity: 0,
                 scrollTrigger: {
-                    trigger: '.job-card .job-info', 
+                    trigger: '.job-card .job-info',
                     start: 'top 80%',
                     end: 'bottom top',
                     scrub: true,
@@ -83,8 +86,15 @@ const ExploreSection = () => {
             });
         }, ExploreRef);
 
-        return ()=> ctx.revert();
+        return () => ctx.revert();
     }, []);
+
+    useEffect(() => {
+        api.get(`/api/v1/client_gig/get_latest_4gigs`).then((data) => {
+            console.log("++++++++ ", data.data.data)
+            setLatestGigs(data.data.data);
+        });
+    }, [])
 
     return (
         <div className='relative py-10 overflow-hidden' ref={ExploreRef}>
@@ -97,7 +107,7 @@ const ExploreSection = () => {
                     <TfiArrowTopRight size={50} className='mobile:h-8' />
                 </div>
             </div>
-            <div className='block pl-10 pt-10 mobile:pl-5'> 
+            <div className='block pl-10 pt-10 mobile:pl-5'>
                 <Swiper
                     spaceBetween={20}
                     slidesPerView={1.2}
@@ -111,34 +121,20 @@ const ExploreSection = () => {
                     }
                     className='!overflow-visible'
                 >
-                    <SwiperSlide>
-                        <JobCard 
-                            title='Digital interface  for finance project'
-                            location='London, United Kingdom'
-                            priceFrom={21000} priceTo={36000}
-                        />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <JobCard 
-                            title='Digital interface  for finance project'
-                            location='London, United Kingdom'
-                            priceFrom={21000} priceTo={36000}
-                        />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <JobCard 
-                            title='Digital interface  for finance project'
-                            location='London, United Kingdom'
-                            priceFrom={21000} priceTo={36000}
-                        />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <JobCard 
-                            title='Digital interface  for finance project'
-                            location='London, United Kingdom'
-                            priceFrom={21000} priceTo={36000}
-                        />
-                    </SwiperSlide>
+                    {
+                        latestGigs?.length > 0 &&
+                        latestGigs.map((item, index) => {
+                            return <SwiperSlide key={index}>
+                                <JobCard
+                                    key={index}
+                                    title={item.gigTitle}
+                                    location={!item.location ? "Anywhere" : item.location}
+                                    priceFrom={item.gigPaymentType ? item.minBudget : item.gigPrice} priceTo={item.maxBudget}
+                                    paymentType={item.gigPaymentType}
+                                />
+                            </SwiperSlide>
+                        })
+                    }
                 </Swiper>
             </div>
         </div>
