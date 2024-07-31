@@ -75,11 +75,11 @@ const DropFile = ({
         ) : filePreview.type === 'image' ? (
           <img
             alt='Preview'
-            className='absolute left-0 top-0 h-full w-full cursor-pointer'
+            className='absolute top-0 left-0 w-full h-full cursor-pointer'
             src={filePreview.url}
           />
         ) : filePreview.url ? (
-          <div className='absolute flex h-full w-full items-center justify-center rounded-xl bg-white'>
+          <div className='absolute flex items-center justify-center w-full h-full bg-white rounded-xl'>
             <p className='text-black'>{filePreview.name}</p>
           </div>
         ) : (
@@ -88,11 +88,11 @@ const DropFile = ({
         <FormField
           name={inputName}
           render={({ field }) => (
-            <FormItem className='absolute left-0 top-0 h-full w-full opacity-0'>
+            <FormItem className='absolute top-0 left-0 w-full h-full opacity-0'>
               <FormControl>
                 <Input
                   {...field}
-                  className='absolute left-0 top-0 h-full w-full cursor-pointer bg-black'
+                  className='absolute top-0 left-0 w-full h-full bg-black cursor-pointer'
                   name={inputName}
                   onChange={(evnt) => previewPhoto(evnt.target)}
                   title={filePreview.url ? filePreview.name : 'Add an image'}
