@@ -197,6 +197,10 @@ const FreelancerProfile = () => {
     timeZone: '',
     userId: '',
     zkpId: '',
+    risingTalent: [],
+    topRated: [],
+    topRatedPlus: [],
+    expertVetted: [],
   });
   const [portfolioShowNumber, setPortfolioShowNumber] = useState(3);
   const [gigShowNumber, setGigShowNumber] = useState(3);
@@ -676,13 +680,36 @@ const FreelancerProfile = () => {
                   <img className='h-5 w-5' src='/assets/images/icons/checkmark.svg' />
                 </div>
                 <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
-                  <div className='flex items-center gap-2'>
+
+                  {(profileData.risingTalent.length > 0 && profileData.risingTalent[profileData.risingTalent.length - 1].state === true) && <div className='flex items-center gap-2'>
                     <img
                       className='h-6 w-6 object-contain object-center'
-                      src='/assets/images/icons/blue-top-rated.svg'
+                      src='/assets/icons/badge/rising-talent.svg'
+                    />
+                    <p className='text-lg text-white'>Rising Talent</p>
+                  </div>}
+                  {(profileData.topRated.length > 0 && profileData.topRated[profileData.topRated.length - 1].state === true) && <div className='flex items-center gap-2'>
+                    <img
+                      className='h-6 w-6 object-contain object-center'
+                      src='/assets/icons/badge/top-rated.svg'
                     />
                     <p className='text-lg text-white'>Top Rated</p>
-                  </div>
+                  </div>}
+                  {(profileData.topRatedPlus.length > 0 && profileData.topRatedPlus[profileData.topRatedPlus.length - 1].state === true) && <div className='flex items-center gap-2'>
+                    <img
+                      className='h-6 w-6 object-contain object-center'
+                      src='/assets/icons/badge/top-rated-plus.svg'
+                    />
+                    <p className='text-lg text-white'>Top Rated Plus</p>
+                  </div>}
+                  {(profileData.expertVetted?.length > 0 && profileData.expertVetted[profileData.expertVetted.length - 1].state === true) && <div className='flex items-center gap-2'>
+                    <img
+                      className='h-6 w-6 object-contain object-center'
+                      src='/assets/icons/badge/expert-vetted.svg'
+                    />
+                    <p className='text-lg text-white'>Expert Vetted</p>
+                  </div>}
+
                   <div className='flex items-center gap-2'>
                     <img
                       className='h-6 w-6 object-contain object-center'
