@@ -115,6 +115,21 @@ export const APIS = {
 
 export const DEFAULT_AVATAR = '/assets/images/users/user-5.png';
 
+export const MONTHS = [
+  'January', 
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
+
 export const COUNTRIES = [
   'Afghanistan',
   'Albania',
