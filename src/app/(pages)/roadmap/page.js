@@ -61,7 +61,7 @@ const roadmap = async () => {
         <p>Please note that the dates are not final</p>
 
         <section className='roadmap-container'>
-          {boardData.length > 0 &&
+          {boardData?.length > 0 &&
             boardData.map((milestone, index) => {
               if (isEven(index + 1)) {
                 // Block - Right
