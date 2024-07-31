@@ -21,13 +21,15 @@ export const StepNumber = () => {
   return stepNumber;
 };
 
-export const NextStep = ({ max, className, isAuth, isWaiting }) => {
+export const NextStep = ({ max, className, isAuth, isWaiting, setStepNumbers, finalButtonName, setIsResumePreview }) => {
   const { stepNumber, setStepNumber } = useStep();
+
+  console.log('useContext',stepNumber)
 
   return (
     <>
       {stepNumber < max && (
-        <div className={className} onClick={() => setStepNumber((prev) => prev + 1)}>
+        <div className={className} onClick={() => {setStepNumber((prev) => prev + 1); setStepNumbers?.((prev) => prev + 1)}}>
           {
             isAuth === false ?
             'Continue'
@@ -39,7 +41,7 @@ export const NextStep = ({ max, className, isAuth, isWaiting }) => {
       {stepNumber == max && (
         <button
           className={className}
-          // onClick={() => setStepNumber(prev => prev + 1)}
+          onClick={() => setIsResumePreview?.(true)}
           type='submit'
         >
           {isWaiting && <Spinner/>}
@@ -47,14 +49,14 @@ export const NextStep = ({ max, className, isAuth, isWaiting }) => {
             isAuth === false ?
             'End'
             :
-            'Publish'     
+            finalButtonName ? finalButtonName : 'Publish'     
           }
         </button>
       )}
     </>
   );
 };
-export const PrevStep = ({ className }) => {
+export const PrevStep = ({ className, setStepNumbers }) => {
   const { stepNumber, setStepNumber } = useStep();
 
   return (
@@ -63,6 +65,7 @@ export const PrevStep = ({ className }) => {
       onClick={() => {
         if (stepNumber > 1) {
           setStepNumber((prev) => prev - 1);
+          setStepNumbers?.((prev) => prev - 1);
         }
       }}
     >
