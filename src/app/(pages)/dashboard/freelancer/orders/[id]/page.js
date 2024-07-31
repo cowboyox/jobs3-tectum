@@ -39,22 +39,22 @@ const MessagesArea = () => {
   return (
     <PanelContainer>
       <div className='flex flex-col gap-4'>
-        <div className='space-between flex'>
+        <div className='flex space-between'>
           <div className='flex w-1/2 gap-5 mobile:w-7/12 mobile:gap-2'>
             <img
-              className='aspect-square h-12 w-12 rounded-full object-cover mobile:h-8 mobile:w-8'
+              className='object-cover w-12 h-12 rounded-full aspect-square mobile:h-8 mobile:w-8'
               src={
                 auth?.currentProfile?.avatarURL
                   ? auth?.currentProfile?.avatarURL
                   : '/assets/images/users/user-1.png'
               }
             />
-            <div className='flex cursor-pointer items-center gap-2 mobile:gap-1'>
+            <div className='flex items-center gap-2 cursor-pointer mobile:gap-1'>
               <span className='text-base mobile:text-xs'>Use a quick response</span>
               <FaAngleDown />
             </div>
           </div>
-          <div className='flex w-1/2 items-center justify-end gap-3 mobile:w-5/12'>
+          <div className='flex items-center justify-end w-1/2 gap-3 mobile:w-5/12'>
             <span className='text-base text-[#96B0BD] mobile:text-xs'>Local time:</span>
             <span className='text-base text-white mobile:text-xs'>4:25 pm</span>
           </div>
@@ -64,7 +64,7 @@ const MessagesArea = () => {
           placeholder='Type your message here...'
         />
         <div className='flex gap-3 rounded-2xl bg-[#1B272C] p-2'>
-          <div className='w-full cursor-pointer rounded-2xl py-5 text-center text-white transition hover:bg-white hover:text-black mobile:py-3'>
+          <div className='w-full py-5 text-center text-white transition cursor-pointer rounded-2xl hover:bg-white hover:text-black mobile:py-3'>
             Back
           </div>
           <div className='w-full cursor-pointer rounded-2xl bg-[#DC4F13] py-5 text-center text-white mobile:py-3'>
@@ -331,8 +331,8 @@ const OrderPage = ({ params }) => {
   };
 
   return (
-    <Tabs className='flex w-full flex-col gap-6' defaultValue='details'>
-      <TabsList className='h-auto w-full bg-transparent p-0'>
+    <Tabs className='flex flex-col w-full gap-6' defaultValue='details'>
+      <TabsList className='w-full h-auto p-0 bg-transparent'>
         <TabsTrigger
           className='w-full border-b-4 border-[#516170] bg-transparent py-6 text-base data-[state=active]:border-[#dc4f14]'
           value='details'
@@ -349,7 +349,7 @@ const OrderPage = ({ params }) => {
       <div className='flex gap-8 mobile:flex-col'>
         <div className='w-8/12 mobile:w-full'>
           <TabsContent className='w-full' value='details'>
-            <div className='flex w-full flex-col gap-5'>
+            <div className='flex flex-col w-full gap-5'>
               <PanelContainer>
                 <div className='flex items-center justify-between text-[24px] text-white mobile:text-xl'>
                   <div>{contractInfo?.clientGig?.gigTitle}</div>
@@ -364,7 +364,7 @@ const OrderPage = ({ params }) => {
                     )}
                     {contractInfo?.status == ContractStatus.ACTIVE && (
                       <button
-                        className='bg-green-500 p-2 px-4 text-sm md:p-3'
+                        className='p-2 px-4 text-sm bg-green-500 md:p-3'
                         onClick={() => onDeliver(contractInfo._id)}
                       >
                         Deliver
@@ -372,7 +372,7 @@ const OrderPage = ({ params }) => {
                     )}
                     {contractInfo?.status == ContractStatus.DELIVERED && (
                       <button
-                        className='bg-green-500 p-2 px-4 text-sm md:p-3'
+                        className='p-2 px-4 text-sm bg-green-500 md:p-3'
                         // onClick={() => onActivate(order.id, order.contractId)}
                       >
                         Request Payment
@@ -380,7 +380,7 @@ const OrderPage = ({ params }) => {
                     )}
                     {contractInfo?.status == ContractStatus.RELEASED && (
                       <button
-                        className='bg-green-500 p-2 px-4 text-sm md:p-3'
+                        className='p-2 px-4 text-sm bg-green-500 md:p-3'
                         onClick={() => onComplete(contractInfo._id, contractInfo.contractId)}
                       >
                         Complete
@@ -388,23 +388,23 @@ const OrderPage = ({ params }) => {
                     )}
                   </div>
                 </div>
-                <div className='flex w-full items-center gap-2 md:w-3/4 md:gap-5'>
-                  <div className='relative h-12 w-12 mobile:h-8 mobile:w-8'>
+                <div className='flex items-center w-full gap-2 md:w-3/4 md:gap-5'>
+                  <div className='relative w-12 h-12 mobile:h-8 mobile:w-8'>
                     <img
-                      className='aspect-square h-12 w-12 rounded-full object-cover mobile:h-8 mobile:w-8'
+                      className='object-cover w-12 h-12 rounded-full aspect-square mobile:h-8 mobile:w-8'
                       src={
                         contractInfo?.gigOwner?.avatarURL
                           ? contractInfo?.gigOwner?.avatarURL
                           : '/assets/images/users/user-3.png'
                       }
                     />
-                    <div className='absolute bottom-1 right-1 h-3 w-3 rounded-full bg-green-500 mobile:bottom-0 mobile:right-0 mobile:h-3 mobile:w-3' />
+                    <div className='absolute w-3 h-3 bg-green-500 rounded-full bottom-1 right-1 mobile:bottom-0 mobile:right-0 mobile:h-3 mobile:w-3' />
                   </div>
                   <div className='flex flex-col gap-4'>
                     <div className='flex items-center gap-2'>
                       <h2 className='text-xl mobile:text-xs'>{contractInfo?.gigOwner?.fullName}</h2>
                       <img
-                        className='h-4 w-4 mobile:h-3 mobile:w-3'
+                        className='w-4 h-4 mobile:h-3 mobile:w-3'
                         src='/assets/images/icons/checkmark.svg'
                       />
                     </div>
@@ -417,7 +417,7 @@ const OrderPage = ({ params }) => {
                   </div>
                 </div>
                 <PanelContainer nested={true}>
-                  <div className='space-between flex items-center gap-4'>
+                  <div className='flex items-center gap-4 space-between'>
                     <span className='text-base text-[#96B0BD] mobile:text-xs'>Order number</span>
                     <span className='text-base font-bold text-white mobile:text-xs'>
                       #{params.id}
@@ -434,7 +434,7 @@ const OrderPage = ({ params }) => {
                         <div className='flex flex-col gap-2'>
                           <span className='text-base text-[#96B0BD] mobile:text-xs'>Item</span>
                           <span className='text-base font-bold text-white mobile:text-xs'>
-                            Design UI/UX design for your mobile apps
+                            {contractInfo?.clientGig?.gigTitle}
                           </span>
                         </div>
                       </div>
@@ -471,32 +471,25 @@ const OrderPage = ({ params }) => {
             </div>
           </TabsContent>
           <TabsContent value='requirements'>
-            <Form {...form}>
-              <form>
-                <PanelContainer>
-                  <span className='text-2xl font-bold text-white mobile:text-xl mobile:font-normal'>
-                    Brief about the project
-                  </span>
-                  <textarea className='h-80 rounded-2xl border border-[#526872] bg-transparent p-5 text-white' />
-                  <div className='mt-5 text-3xl text-[#F5F5F5] mobile:text-xl'>
-                    Drag and drop your files here or
-                    <span className='main_color'> browse</span> to upload
-                  </div>
-                  <div className='text-base text-[#96B0BD]'>
-                    Format: JPEG, JPG, PNG, GIF, MP4, AVI. Max size per image/video: 50MB
-                  </div>
-                  <DropFile
-                    acceptOnly='image'
-                    className='aspect-video'
-                    inputName='order_attachment'
-                    placeHolderPlusIconSize={80}
-                  />
-                </PanelContainer>
-              </form>
-            </Form>
+            <PanelContainer>
+              <span className='text-2xl font-bold text-white mobile:text-xl mobile:font-normal'>
+                Brief about the project
+              </span>
+              <textarea disabled value={contractInfo?.requirementText} className='h-80 rounded-2xl border border-[#526872] bg-transparent p-5 text-white' />
+              {
+                contractInfo?.requirementFiles.length > 0 ? 
+                  <div>
+                   <div className='text-base text-[#96B0BD]'>
+                      Attachment
+                    </div>
+                    <a className='text-white' href={contractInfo?.requirementFiles[0]} download>{contractInfo?.requirementFiles[0].split("/").pop()}</a>
+                  </div> : 
+                  <></>
+              }
+            </PanelContainer>
           </TabsContent>
         </div>
-        <div className='flex w-4/12 flex-col gap-5 mobile:w-full'>
+        <div className='flex flex-col w-4/12 gap-5 mobile:w-full'>
           <PanelContainer>
             <span className='text-xl font-bold text-white'>Time left</span>
             <div className='flex gap-2'>
@@ -527,7 +520,11 @@ const OrderPage = ({ params }) => {
               </div>
               <PiLineVerticalLight className='-my-3' fill='#DC4F13' size={30} />
               <div className='flex items-center gap-3'>
-                <GoCircle fill='#DC4F13' size={30} />
+                {
+                  contractInfo?.submittedRequirement ?
+                    <IoIosCheckmarkCircle fill='#DC4F13' size={30} /> :
+                    <GoCircle fill='#DC4F13' size={30} />
+                }
                 <span className='text-base font-bold text-[#F5F5F5]'>Submit requirements</span>
               </div>
             </div>
@@ -535,7 +532,7 @@ const OrderPage = ({ params }) => {
           <PanelContainer>
             <div className='flex justify-between'>
               <span className='text-lg font-bold text-white'>Private Note</span>
-              <div className='flex cursor-pointer items-center gap-2'>
+              <div className='flex items-center gap-2 cursor-pointer'>
                 <FaPlus fill='#DC4F13' size={15} />
                 <span className='text-[#DC4F13]'>Add Note</span>
               </div>
