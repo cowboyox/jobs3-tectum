@@ -774,7 +774,7 @@ const CreateResume = () => {
                     />
                   </div>
                   <div className='flex w-full flex-col gap-4'>
-                    <br />
+                    <hr />
                   </div>
                   <FormField
                     name='gigTitle'
