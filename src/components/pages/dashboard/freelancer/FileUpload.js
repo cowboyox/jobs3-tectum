@@ -53,9 +53,9 @@ const FileUpload = ({
   return (
     <div className={`h-full ${className}`}>
       <Dialog>
-        <div className='realative flex h-full items-center justify-center'>
+        <div className='realative flex items-center justify-center'>
           <label
-            className={`flex w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] py-10 transition hover:bg-[#23343b]`}
+            className={`flex w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] py-10 transition hover:bg-[#23343b] ${className}`}
             htmlFor='dropzone-file1'
           >
             {loading && (
