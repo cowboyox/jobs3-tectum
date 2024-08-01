@@ -1274,7 +1274,7 @@ const Orders = () => {
                           <div className='flex flex-row items-center gap-[6px]'>
                             {order.skills.map((skill, index) => {
                               return (
-                                <div className='flex items-center gap-1 rounded-full bg-[#28373e] px-3 py-2 text-sm'>
+                                <div className='flex items-center gap-1 rounded-full bg-[#28373e] px-3 py-2 text-sm' key={index}>
                                   {index === order.skills.length - 1 && (
                                     <img
                                       src='/assets/images/icons/multiple.svg'
