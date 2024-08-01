@@ -7,11 +7,14 @@ import { useDisconnect } from 'wagmi';
 import { usePopupFunctions } from '../popups/popups';
 
 import { useCustomContext } from '@/context/ContextProvider';
+import { useRouter } from 'next/navigation';
 // Dependencies
 
 // Components
 
 const Header = () => {
+  const router = useRouter()
+  const url = ['freelancer','employee','employer','client',]
   // get current path
   const [user, setUser] = useState({
     email: '',
@@ -99,13 +102,22 @@ const Header = () => {
                 Sign Up
               </Link>
             ) : (
-              <Link
-                className='ml-10 cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'
-                href='#'
-                onClick={handleSignOut}
-              >
-                Sign Out
-              </Link>
+              <div className='flex gap-2'>
+                <Link
+                  className='ml-10 cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'
+                  href={`/dashboard/${url[auth?.user?.role[0]]}`}
+                  // onClick={() => {console.log('about Auth > ',auth);}}
+                >
+                  Launch App
+                </Link>
+                <Link
+                  className='ml-10 cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'
+                  href='#'
+                  onClick={handleSignOut}
+                >
+                  Sign Out
+                </Link>
+              </div>
             )}
             {!auth?.isAuthenticated && (
               <div>
