@@ -5,6 +5,7 @@ import SplitType from 'split-type';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import gsap from 'gsap';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 /* ------------ Icons ------------ */
 import { TfiArrowTopRight } from "react-icons/tfi";
@@ -12,23 +13,44 @@ import Image from 'next/image';
 import api from '@/utils/api';
 
 const JobCard = ({ title, location, priceFrom, priceTo, paymentType }) => {
+    function truncateString(str) {
+        // Find the first comma's index
+        const commaIndex = str.indexOf(',');
+    
+        // If a comma is found before 15 characters
+        if (commaIndex > 0 && commaIndex < 15) {
+          return str.substring(0, commaIndex) + '...';
+        } 
+        return str;
+    }
     return (
-        <div className='bg-[#10191D] rounded-2xl px-7 mobile:px-5 py-10 mobile:py-5 flex flex-col gap-10 mobile:gap-5 job-card'>
-            <h3 className='text-6xl mobile:text-[44px] text-white font-bold txt_animate'>{title}</h3>
-            <div className='block h-1 w-20 bg-[#1B272C]' />
-            <div className='flex flex-col gap-5 mobile:gap-3'>
-                <div className='flex gap-2 items-center job-info'>
-                    <Image src='/assets/icons/svgs/location.svg' height={30} width={30} alt='location' />
-                    <span className='text-white text-base mobile:text-sm'>
-                        {location}
-                    </span>
-                </div>
-                <div className='flex gap-2 items-center job-info'>
-                    <Image src='/assets/icons/svgs/receipt.svg' height={30} width={30} alt='location' />
-                    <span className='text-white text-base mobile:text-sm'>
-                        {paymentType ? `$${priceFrom} - ${priceTo}` : `$${priceFrom}`}
-                        
-                    </span>
+        <div className='bg-[#10191D] rounded-2xl px-7 mobile:px-5 py-10 mobile:py-5 flex flex-col gap-10 mobile:gap-5 h-[420px] justify-between'>
+            <h3 className='text-[48px] mobile:text-[44px] text-white font-bold txt_animate min-h-[205px] h-[180px] overflow-hidden flex items-center'>{title}</h3>
+            <div className='flex flex-col gap-5'>
+                <div className='block h-1 w-20 bg-[#1B272C]' />
+                <div className='flex flex-col gap-5 mobile:gap-3'>
+                    <div className='flex gap-2 items-center job-info'>
+                        <Image src='/assets/icons/svgs/location.svg' height={30} width={30} alt='location' />
+                        <span className='text-white text-base mobile:text-sm'>
+                        <TooltipProvider>
+                            <Tooltip>
+                            <TooltipTrigger>
+                                {truncateString(location !== '' ? location: "Anywhere")}
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{location !== ''? location: "Anywhere"}</p>
+                            </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        </span>
+                    </div>
+                    <div className='flex gap-2 items-center job-info'>
+                        <Image src='/assets/icons/svgs/receipt.svg' height={30} width={30} alt='location' />
+                        <span className='text-white text-base mobile:text-sm'>
+                            {paymentType ? `$${priceFrom} - ${priceTo}` : `$${priceFrom}`}
+                            
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -119,7 +141,7 @@ const ExploreSection = () => {
                             },
                         }
                     }
-                    className='!overflow-visible'
+                    className='!overflow-visible !flex'
                 >
                     {
                         latestGigs?.length > 0 &&

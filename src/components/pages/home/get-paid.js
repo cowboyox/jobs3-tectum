@@ -1,11 +1,13 @@
 'use client';
-import React, { useLayoutEffect, useRef } from 'react';
+
+import React, { useLayoutEffect, useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import SplitType from 'split-type';
 import Link from 'next/link';
 import { HiOutlineArrowDownLeft } from "react-icons/hi2";
 import { TfiArrowTopRight } from "react-icons/tfi";
 import Spline from '@splinetool/react-spline/next';
+import api from '@/utils/api';
 
 const staticTransactions = [
     { price: 401, status: "Received" },
@@ -17,6 +19,7 @@ const staticTransactions = [
 ];
 
 const CounterCard = ({ suffixe, totalNumber, text, id }) => { 
+    console.log("fjdklsajfds: ", totalNumber, " suffixes: ", suffixe, text);
     return (
         <div className='bg-[#1B272C] flex flex-col gap-2 p-6 rounded-xl w-full counter_card' id={id}> 
             <div className='flex gap-1'>
@@ -52,6 +55,8 @@ const TransactionCard = ({ price, status }) => {
 
 const GetPaid = () => {
     const GetPaidRef = useRef(null);
+    const [usersLength, setUsersLength] = useState(0);
+    const [gigsLength, setGigsLength] = useState(0);
     useLayoutEffect(() => {
         // Create GSAP animations
         let ctx = gsap.context(()=> {
@@ -151,22 +156,29 @@ const GetPaid = () => {
         return ()=> ctx.revert();
     }, []);
 
+    useEffect(async () => {
+        const data = await api.get(`/api/v1/user/get-users-length`)
+        setUsersLength(data.data.usersLength)
+        setGigsLength(data.data.gigsLength)
+        console.log('usersLength > ',usersLength)
+    }, [])
+
   return (
     <div className='w-full py-96 mobile:py-40 mobile:px-5 relative' ref={GetPaidRef}>
       <div className='max-w-3xl mx-auto flex flex-col gap-6 mobile:gap-10'>
         <div className='flex mobile:flex-col gap-3 bg-[#10191D] p-2 rounded-xl relative z-10' id='counter_cards'>
-            <CounterCard 
-                suffixe='M' 
-                totalNumber={20} 
+            {usersLength !== 0 && <CounterCard 
+                suffixe={usersLength > 1000 ? usersLength > 1000000 ? 'M' : 'K' : ''}
+                totalNumber={usersLength > 1000 ? usersLength > 1000000 ? usersLength / 1000000 : usersLength / 1000 : usersLength} 
                 text='Users'
                 id="counter_card_1"
-            />
-            <CounterCard 
-                suffixe='K+' 
-                totalNumber={500} 
+            />}
+            {gigsLength !==0 && <CounterCard 
+                suffixe={gigsLength > 1000 ? gigsLength > 1000000 ? 'M' : 'K' : ''}
+                totalNumber={gigsLength > 1000 ? gigsLength > 1000000 ? gigsLength / 1000000 : gigsLength / 1000 : gigsLength} 
                 text='Jobs'
                 id="counter_card_2"
-            />
+            />}
             <CounterCard 
                 suffixe='+' 
                 totalNumber={100} 
