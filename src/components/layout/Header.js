@@ -105,7 +105,7 @@ const Header = () => {
               <div className='flex gap-2'>
                 <Link
                   className='ml-10 cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'
-                  href={`/dashboard/${url[auth?.user?.role[0]]}`}
+                  href={`/dashboard/${url[auth?.user?.role[0]]}/home`}
                   // onClick={() => {console.log('about Auth > ',auth);}}
                 >
                   Launch App
