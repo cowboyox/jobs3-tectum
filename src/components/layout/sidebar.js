@@ -7,6 +7,7 @@ import { IoMdClose } from 'react-icons/io';
 import MenuLink from '@/components/elements/menuLink';
 import { useCustomContext } from '@/context/ContextProvider';
 import { USER_ROLE } from '@/utils/constants';
+import { useRouter } from 'next/navigation';
 
 const sideBarSettings = {
   active_link_classes: 'border-l-4 border-[#DC4F13] py-3',
@@ -16,6 +17,7 @@ const sideBarSettings = {
 
 const SideBar = () => {
   const auth = useCustomContext();
+  const router = useRouter();
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   useEffect(() => {
     gsap.to('.main_sidebar', {
@@ -1136,8 +1138,9 @@ const SideBar = () => {
         onClick={MobileToggleSidebar}
       >
         <img
-          className={desktopCollapsed ? `mx-auto w-1/2` : 'mr-auto w-1/2'}
+          className={desktopCollapsed ? `mx-auto w-1/2 cursor-pointer` : 'mr-auto w-1/2 cursor-pointer'}
           src={desktopCollapsed ? '/favicon.ico' : '/assets/images/logo.svg'}
+          onClick={() => {router.push('/');console.log('logo is clicked.')}}
         />
         <div className='cursor-pointer rounded-[10px] bg-[#1B272C] p-2 md:hidden'>
           <IoMdClose size={25} />
