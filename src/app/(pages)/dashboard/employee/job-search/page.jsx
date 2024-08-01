@@ -50,7 +50,7 @@ import { FaArrowRight, FaEllipsis, FaX } from 'react-icons/fa6';
 
 const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
-    <div className='flex items-center gap-4 p-0 cursor-pointer'>
+    <div className='flex cursor-pointer items-center gap-4 p-0'>
       <Checkbox
         checked={isChecked}
         className='rounded border-[#96B0BD] data-[state=checked]:border-orange data-[state=checked]:bg-orange data-[state=checked]:text-white'
@@ -77,7 +77,20 @@ const Orders = () => {
   const [search, setSearch] = useState('');
   const filterCategory = ['Active', 'Paused', 'Completed', 'Cancelled'];
   const [submissions, setSubmissions] = useState([]);
-  const [lives, setLives] = useState([]);
+  const [lives, setLives] = useState([
+    {
+      gigTitle: 'React',
+      status: 'Active',
+      location: 'London, UK',
+      gigPrice: 1000,
+      gigDescription: 'This is gigDescription',
+      creator: {
+        fullName: 'Lucas',
+        lastName: 'Lee',
+      },
+      skills: ['React', 'Next.js', 'express', 'Vue.js', 'Angular.js'],
+    },
+  ]);
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const [mode, setMode] = useState('live');
   const [page, setPage] = useState(1);
@@ -179,14 +192,14 @@ const Orders = () => {
   }, [allGigs]);
   console.log('allGigs', allGigs);
   console.log('gigs', gigs);
-  console.log("submissions", submissions);
+  console.log('submissions', submissions);
   useEffect(() => {
     if (mode == 'live') {
       if (gigs?.lives?.length > 0) {
         setCanLoadMore(true);
         if (page === 1) {
           setLives(gigs?.lives);
-          if(gigs?.livesTotal === gigs?.lives?.length) setCanLoadMore(false);
+          if (gigs?.livesTotal === gigs?.lives?.length) setCanLoadMore(false);
         } else {
           setLives((prev) => {
             let result = [...prev];
@@ -197,7 +210,7 @@ const Orders = () => {
                 result = [...result, cg];
               }
             });
-            if(gigs?.livesTotal === result.length) setCanLoadMore(false);
+            if (gigs?.livesTotal === result.length) setCanLoadMore(false);
             return result;
           });
         }
@@ -212,19 +225,19 @@ const Orders = () => {
         setCanLoadMore(true);
         if (page === 1) {
           setSubmissions(gigs?.submissions);
-          if(gigs?.submissionsTotal === gigs?.submissions?.length) setCanLoadMore(false);
+          if (gigs?.submissionsTotal === gigs?.submissions?.length) setCanLoadMore(false);
         } else {
           setSubmissions((prev) => {
-            console.log("arrived here....");
+            console.log('arrived here....');
             let result = [...prev];
             const ids = prev.map((item) => item.gigId);
-            console.log("ids", ids);
+            console.log('ids', ids);
             gigs?.submissions.map((cg) => {
               if (!ids.includes(cg.gigId)) {
                 result = [...result, cg];
               }
             });
-            if(gigs?.submissionsTotal === result.length) setCanLoadMore(false);
+            if (gigs?.submissionsTotal === result.length) setCanLoadMore(false);
             return result;
           });
         }
@@ -647,13 +660,97 @@ const Orders = () => {
     );
   };
 
+  //---------------------------------------------------------------- static data used for testing -----------------------------------------------------------------------
+  useEffect(() => {
+    setLives([
+      {
+        id: 0,
+        gigTitle: 'React',
+        status: 'Active',
+        location: 'London, UK',
+        gigPrice: 1000,
+        gigDescription: 'This is gigDescription',
+        creator: {
+          fullName: 'Lucas',
+          lastName: 'Lee',
+        },
+        skills: ['React', 'Next.js', 'express', 'Vue.js', 'Angular.js'],
+      },
+      {
+        id: 1,
+        gigTitle: 'Smart Contract',
+        status: 'Active',
+        location: 'Newyork, US',
+        gigPrice: 2000,
+        gigDescription: 'This is Smart Contract project',
+        creator: {
+          fullName: 'Bruce',
+          lastName: 'Lee',
+        },
+        skills: ['Solidity', 'Solana', 'express', 'Vue.js', 'Angular.js'],
+      },
+      {
+        id: 2,
+        gigTitle: 'Smart Contract',
+        status: 'Active',
+        location: 'Newyork, US',
+        gigPrice: 2000,
+        gigDescription: 'This is Smart Contract project',
+        creator: {
+          fullName: 'Bruce',
+          lastName: 'Lee',
+        },
+        skills: ['Solidity', 'Solana', 'express', 'Vue.js', 'Angular.js'],
+      },
+      {
+        id: 3,
+        gigTitle: 'Smart Contract',
+        status: 'Active',
+        location: 'Newyork, US',
+        gigPrice: 2000,
+        gigDescription: 'This is Smart Contract project',
+        creator: {
+          fullName: 'Bruce',
+          lastName: 'Lee',
+        },
+        skills: ['Solidity', 'Solana', 'express', 'Vue.js', 'Angular.js'],
+      },
+      {
+        id: 4,
+        gigTitle: 'Smart Contract',
+        status: 'Active',
+        location: 'Newyork, US',
+        gigPrice: 2000,
+        gigDescription: 'This is Smart Contract project',
+        creator: {
+          fullName: 'Bruce',
+          lastName: 'Lee',
+        },
+        skills: ['Solidity', 'Solana', 'express', 'Vue.js', 'Angular.js'],
+      },
+      {
+        id: 5,
+        gigTitle: 'Smart Contract',
+        status: 'Active',
+        location: 'Newyork, US',
+        gigPrice: 2000,
+        gigDescription: 'This is Smart Contract project',
+        creator: {
+          fullName: 'Bruce',
+          lastName: 'Lee',
+        },
+        skills: ['Solidity', 'Solana', 'express', 'Vue.js', 'Angular.js'],
+      },
+    ]);
+  }, []);
+
   return (
     <div className='p-0 sm:p-0 lg:mt-8 xl:mt-8'>
       <div className='flex flex-row items-center justify-between gap-5 rounded-xl bg-[#10191D] p-3'>
-        <div className='flex items-center flex-1 gap-3 ml-3'>
+        <div className='ml-3 flex flex-1 items-center gap-3'>
           <button>
             <svg
-              className='w-6 h-6'
+              className='h-6 w-6'
               fill='none'
               stroke='currentColor'
               strokeWidth={1.5}
@@ -730,7 +827,7 @@ const Orders = () => {
                   value={locationText}
                 />
                 <svg
-                  className='absolute w-5 h-5 left-3 top-2'
+                  className='absolute left-3 top-2 h-5 w-5'
                   fill='none'
                   stroke='currentColor'
                   strokeWidth={1.5}
@@ -769,7 +866,7 @@ const Orders = () => {
         {(!isSmallScreen || searchType === 'normal') && (
           <Popover>
             <PopoverTrigger asChild>
-              <button className='flex flex-row items-center justify-center gap-3 m-3'>
+              <button className='m-3 flex flex-row items-center justify-center gap-3'>
                 <FilterIcon isFiltered={filters.length > 0} isSmallScreen={isSmallScreen} />
                 {!isSmallScreen && (
                   <div className='flex flex-row gap-2'>
@@ -873,14 +970,14 @@ const Orders = () => {
           Submissions😊
         </div>
       )}
-      <div className='flex items-center justify-center w-full pt-10 pb-5'>
+      <div className='flex w-full items-center justify-center pb-5 pt-10'>
         <div
           className={`w-[50%] cursor-pointer border-b-4 pb-3 text-center ${mode == 'live' ? 'border-b-orange' : ''}`}
           onClick={() => setMode('live')}
         >
           {mode == 'live' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>{lives?.length}</span>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>{lives?.length}</span>
               &nbsp; Best Matches
             </h1>
           ) : (
@@ -893,7 +990,7 @@ const Orders = () => {
         >
           {mode == 'submission' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>
                 {submissions?.length}
               </span>
               &nbsp; Most Recent
@@ -908,9 +1005,7 @@ const Orders = () => {
         >
           {mode == 'favourites' ? (
             <h1>
-              <span className='inline-block w-6 h-6 rounded-full bg-orange'>
-                {0}
-              </span>
+              <span className='inline-block h-6 w-6 rounded-full bg-orange'>{0}</span>
               &nbsp; Favourites
             </h1>
           ) : (
@@ -925,23 +1020,28 @@ const Orders = () => {
               {lives.map((order, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='flex flex-col-reverse items-start justify-between mt-1 md:flex-row md:items-center'>
+                    <div className='mt-1 flex flex-col-reverse items-start justify-between md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {order.gigTitle}
                       </div>
-                      <div className='flex flex-row items-center justify-between flex-none gap-2 mobile:w-full'>
-                        <div className='flex gap-2'>
-                          <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
-                            15 H: 30 S
+                      <div className='flex flex-none flex-row items-center justify-between gap-2 mobile:w-full'>
+                        <div className='flex items-center gap-2'>
+                          <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-sm text-[#F7AE20]'>
+                            Remote
                           </div>
-                          <div className='rounded-xl border border-[#1BBF36] p-1 px-3 text-[#1BBF36]'>
-                            {order?.status}
+                          <div className='rounded-xl border border-[#1BBF36] p-1 px-3 text-sm text-[#1BBF36]'>
+                            Full-time
                           </div>
+                          <img
+                            alt='like'
+                            src='/assets/images/icons/heart.svg'
+                            className='h-6 w-6'
+                          />
                         </div>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='bg-transparent border-none hover:bg-transparent'
+                              className='border-none bg-transparent hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -987,7 +1087,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1046,7 +1146,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1082,7 +1182,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1114,7 +1214,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -1146,61 +1246,6 @@ const Orders = () => {
                             xmlns='http://www.w3.org/2000/svg'
                           >
                             <path
-                              d='M22 6V8.42C22 10 21 11 19.42 11H16V4.01C16 2.9 16.91 2 18.02 2C19.11 2.01 20.11 2.45 20.83 3.17C21.55 3.9 22 4.9 22 6Z'
-                              stroke='#96B0BD'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeMiterlimit='10'
-                              strokeWidth='1.5'
-                            />
-                            <path
-                              d='M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z'
-                              stroke='#96B0BD'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeMiterlimit='10'
-                              strokeWidth='1.5'
-                            />
-                            <path
-                              d='M9 13.0098H12'
-                              stroke='#96B0BD'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth='1.5'
-                            />
-                            <path
-                              d='M9 9.00977H12'
-                              stroke='#96B0BD'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth='1.5'
-                            />
-                            <path
-                              d='M5.99609 13H6.00508'
-                              stroke='#96B0BD'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth='1.5'
-                            />
-                            <path
-                              d='M5.99609 9H6.00508'
-                              stroke='#96B0BD'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth='1.5'
-                            />
-                          </svg>
-                          {order.gigPrice}
-                        </div>
-                        <div className='flex flex-row items-center gap-2'>
-                          <svg
-                            fill='none'
-                            height='24'
-                            viewBox='0 0 24 24'
-                            width='24'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
                               d='M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z'
                               stroke='#96B0BD'
                               strokeLinecap='round'
@@ -1223,87 +1268,49 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{order.gigDescription}</div>
                     {/* )} */}
-                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
-                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
-                        <div>
-                          <img
-                            height={40}
-                            src='/assets/images/Rectangle 273.png'
-                            width={40}
-                            className='object-cover rounded-full'
-                          />
-                        </div>
+                    <div className='mt-3 flex items-start justify-between md:flex-row md:items-center'>
+                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                         <div className='flex flex-col gap-1 text-left'>
-                          <div className='flex flex-row items-center gap-1 font-bold'>
-                            {order.creator.fullName}
-                            <svg
-                              fill='none'
-                              height='17'
-                              viewBox='0 0 17 17'
-                              width='17'
-                              xmlns='http://www.w3.org/2000/svg'
-                            >
-                              <path
-                                d='M14.1422 6.03555C14.1585 5.9123 14.167 5.78905 14.167 5.6665C14.167 3.98138 12.649 2.62917 10.9646 2.85796C10.4737 1.98459 9.53874 1.4165 8.50033 1.4165C7.46191 1.4165 6.52691 1.98459 6.03603 2.85796C4.34808 2.62917 2.83366 3.98138 2.83366 5.6665C2.83366 5.78905 2.84216 5.9123 2.85845 6.03555C1.98508 6.52713 1.41699 7.46213 1.41699 8.49984C1.41699 9.53755 1.98508 10.4725 2.85845 10.9641C2.84211 11.0865 2.83383 11.2097 2.83366 11.3332C2.83366 13.0183 4.34808 14.367 6.03603 14.1417C6.52691 15.0151 7.46191 15.5832 8.50033 15.5832C9.53874 15.5832 10.4737 15.0151 10.9646 14.1417C12.649 14.367 14.167 13.0183 14.167 11.3332C14.167 11.2106 14.1585 11.0874 14.1422 10.9641C15.0156 10.4725 15.5837 9.53755 15.5837 8.49984C15.5837 7.46213 15.0156 6.52713 14.1422 6.03555ZM7.76012 11.6278L5.16266 8.99709L6.17133 8.00259L7.77003 9.62184L10.835 6.58025L11.8323 7.58609L7.76012 11.6278Z'
-                                fill='#0A75C2'
-                              />
-                            </svg>
+                          <div className='flex flex-row items-center gap-[6px]'>
+                            {order.skills.map((skill, index) => {
+                              return (
+                                <div className='flex items-center gap-1 rounded-full bg-[#28373e] px-3 py-2 text-sm' key={index}>
+                                  {index === order.skills.length - 1 && (
+                                    <img
+                                      src='/assets/images/icons/multiple.svg'
+                                      onClick={() => {
+                                        let swapLives = lives;
+                                        swapLives = lives.map((swap, index) => {
+                                          if (swap.id === order.id) {
+                                            swap.skills.pop();
+                                          }
+                                          return swap;
+                                        });
+                                        console.log('swap', swapLives);
+                                        setLives(swapLives);
+                                      }}
+                                    />
+                                  )}
+                                  {skill}
+                                </div>
+                              );
+                            })}
                           </div>
-                          <div className='text-left text-[14px] text-[#516170]'>Client</div>
                         </div>
                       </div>
-                      <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-                        <button className='p-4 px-10 md:p-5' onClick={() => handleMessage(order)}>
+                      <div className='flex w-60 gap-3 rounded-2xl bg-[#1B272C] p-2'>
+                        <button
+                          className='w-28 cursor-pointer rounded-2xl py-5 text-center text-base text-white transition hover:bg-white hover:text-black mobile:py-3'
+                          onClick={() => setApplicationPosition((prevState) => prevState - 1)}
+                        >
                           Message
                         </button>
-                        {order?.status == ContractStatus.STARTED && (
-                          <button
-                            className='bg-[#DC4F13] p-4 px-8 md:p-5'
-                            onClick={() => onActivate(order.id, order.contractId)}
-                          >
-                            Activate
-                          </button>
-                        )}
-                        {order?.status != ContractStatus.STARTED && (
-                          <button
-                            className='bg-[#DC4F13] p-4 px-8 md:p-5'
-                            onClick={() => router.push(`/dashboard/freelancer/orders/${order?.id}`)}
-                          >
-                            See Order
-                          </button>
-                        )}
-                        {order?.status == ContractStatus.ACTIVE && (
-                          <button
-                            className='p-4 px-8 bg-green-500 md:p-5'
-                            onClick={() => onDeliver(order.id)}
-                          >
-                            Deliver
-                          </button>
-                        )}
-                        {order?.status == ContractStatus.DELIVERED && (
-                          <button
-                            className='p-4 px-8 bg-green-500 md:p-5'
-                            // onClick={() => onActivate(order.id, order.contractId)}
-                          >
-                            Request Payment
-                          </button>
-                        )}
-                        {order?.status == ContractStatus.RELEASED && (
-                          <button
-                            className='p-4 px-8 bg-green-500 md:p-5'
-                            onClick={() => onComplete(order.id, order.contractId)}
-                          >
-                            Complete
-                          </button>
-                        )}
-                        {order?.status == ContractStatus.COMPLETED && (
-                          <button
-                            className='p-4 px-8 bg-green-500 md:p-5'
-                            onClick={() => router.push(`./review/${order?.gigId}/${order?.clientId?._id}`)}
-                          >
-                            Give Review
-                          </button>
-                        )}
+                        <button
+                          className='flex w-32 cursor-pointer items-center justify-center gap-1 rounded-2xl bg-[#DC4F13] py-5 text-center text-white mobile:py-3'
+                          onClick={() => setApplicationPosition((prevState) => prevState)}
+                        >
+                          Apply
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -1311,7 +1318,7 @@ const Orders = () => {
               })}
               {canLoadMore && (
                 <div
-                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -1319,7 +1326,7 @@ const Orders = () => {
               )}
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Best Matches will be here</p>
             </div>
@@ -1332,11 +1339,11 @@ const Orders = () => {
               {submissions.map((submission, index) => {
                 return (
                   <div className='mt-4 rounded-xl bg-[#10191D] p-5 text-center' key={index}>
-                    <div className='flex items-start justify-between mt-1 md:flex-row md:items-center'>
+                    <div className='mt-1 flex items-start justify-between md:flex-row md:items-center'>
                       <div className='mt-3 flex-1 text-left text-[20px] md:mt-0 md:text-2xl'>
                         {submission.gigTitle}
                       </div>
-                      <div className='flex flex-row items-center flex-none gap-2'>
+                      <div className='flex flex-none flex-row items-center gap-2'>
                         {/* <div className='rounded-xl border border-[#F7AE20] p-1 px-3 text-[#F7AE20]'>
                         15 H: 30 S
                       </div>
@@ -1346,7 +1353,7 @@ const Orders = () => {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
-                              className='bg-transparent border-none hover:bg-transparent'
+                              className='border-none bg-transparent hover:bg-transparent'
                               variant='outline'
                             >
                               <FaEllipsis />
@@ -1392,7 +1399,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showActivityBar}
                               // onCheckedChange={setShowActivityBar}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1451,7 +1458,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1487,7 +1494,7 @@ const Orders = () => {
                             <DropdownMenuCheckboxItem
                               // checked={showPanel}
                               // onCheckedChange={setShowPanel}
-                              className='gap-2 mt-1 rounded-xl hover:bg-white'
+                              className='mt-1 gap-2 rounded-xl hover:bg-white'
                             >
                               <svg
                                 fill='none'
@@ -1519,7 +1526,7 @@ const Orders = () => {
                         </DropdownMenu>
                       </div>
                     </div>
-                    <div className='flex flex-col items-start justify-between gap-3 mt-3 md:flex-row md:justify-start md:gap-6'>
+                    <div className='mt-3 flex flex-col items-start justify-between gap-3 md:flex-row md:justify-start md:gap-6'>
                       <div className='flex flex-row items-center gap-2'>
                         <svg
                           fill='none'
@@ -1628,11 +1635,11 @@ const Orders = () => {
                     {/* {isSmallScreen && ( */}
                     <div className='text-left text-[#96B0BD]'>{submission.gigDescription}</div>
                     {/* )} */}
-                    <div className='flex flex-col items-start justify-between mt-3 md:flex-row md:items-center'>
-                      <div className='flex flex-row items-center flex-1 gap-3 text-left'>
+                    <div className='mt-3 flex flex-col items-start justify-between md:flex-row md:items-center'>
+                      <div className='flex flex-1 flex-row items-center gap-3 text-left'>
                         <div>
                           <img
-                            className='object-cover rounded-full'
+                            className='rounded-full object-cover'
                             height={40}
                             src={submission.clientId.avatarURL}
                             width={40}
@@ -1677,7 +1684,7 @@ const Orders = () => {
               })}
               {canLoadMore && (
                 <div
-                  className='py-3 mt-4 text-center border cursor-pointer rounded-2xl border-lightGray'
+                  className='mt-4 cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
                   onClick={handleLoadMore}
                 >
                   Load More +
@@ -1685,19 +1692,18 @@ const Orders = () => {
               )}
             </>
           ) : (
-            <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
+            <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
               <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
               <p className='text-[18px] text-slate-600'>Most Recents will be here</p>
             </div>
           )}
         </>
       ) : (
-        <div className='flex flex-col items-center justify-center h-full gap-3 py-20'>
-              <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
-              <p className='text-[18px] text-slate-600'>Favourites will be here</p>
-            </div>
-      )
-    }
+        <div className='flex h-full flex-col items-center justify-center gap-3 py-20'>
+          <h2 className='text-3xl font-bold'>Nothing Here Yet</h2>
+          <p className='text-[18px] text-slate-600'>Favourites will be here</p>
+        </div>
+      )}
     </div>
   );
 };
