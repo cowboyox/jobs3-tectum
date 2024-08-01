@@ -271,7 +271,7 @@ const CompanyProfile = () => {
                   <div className='flex w-full flex-col gap-2'>
                     <p className='text-[18px] text-[#f5f5f5]'>Password has been set</p>
                     <p className='text-base text-[#96b0bd]'>
-                      Choose a strong unique password that's at least 8 characters long.
+                      Choose a strong unique password that&apos;s at least 8 characters long.
                     </p>
                   </div>
                   <img
@@ -309,7 +309,7 @@ const CompanyProfile = () => {
                     <div className='flex flex-col gap-2'>
                       <p className='text-[18px] text-[#f5f5f5]'>Mobile app prompt</p>
                       <p className='text-base text-[#96b0bd]'>
-                        Receive a prompt from your mobile to confirm it's you
+                        Receive a prompt from your mobile to confirm it&apos;s you
                       </p>
                     </div>
                     <div>
@@ -321,7 +321,7 @@ const CompanyProfile = () => {
                     <div className='flex flex-col gap-2'>
                       <p className='text-[18px] text-[#f5f5f5]'>Text message</p>
                       <p className='text-base text-[#96b0bd]'>
-                        Receive a six digit code by text message to confirm it's you
+                        Receive a six digit code by text message to confirm it&apos;s you
                       </p>
                     </div>
                     <div>

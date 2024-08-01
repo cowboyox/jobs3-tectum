@@ -801,7 +801,7 @@ const Freelancer = () => {
                         <p className='cursor-pointer text-sm text-slate-400 hover:text-white'>
                           Drafts
                         </p>
-                        <img className='cursor-pointer' src='/assets/images/icons/edit-pen.svg' />
+                        <img className='cursor-pointer' src='/assets/images/icons/edit-pen.svg' alt='editPen' width={24} height={24}/>
                       </div>
                     </div>
                     <div className='hidden grid-cols-3 gap-4 md:grid'>
