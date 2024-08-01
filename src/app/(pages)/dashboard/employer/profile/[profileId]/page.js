@@ -73,6 +73,7 @@ const EmployerProfile = () => {
     } else {
       setIsAuth(false);
     }
+    console.log('auth > ', auth?.currentProfile,'profileId > ',profileId)
   }, [auth, profileId]);
 
   useEffect(() => {
@@ -467,9 +468,8 @@ const EmployerProfile = () => {
           )}
         </div>
         <div className='flex flex-col gap-4 md:flex-row md:gap-0'>
-          <div className='w-full md:w-1/3'>
+          {/* <div className='w-full md:w-1/3'>
             <div className='grid grid-cols-3 gap-4 bg-[#10191D] px-5 py-4 md:rounded-xl md:p-8'>
-              {/* Sidebar */}
               <div className='flex flex-col gap-1'>
                 <p className='text-base text-[#96B0BD] md:text-center'>Total Spent</p>
                 <p className='text-2xl text-white md:text-center'>
@@ -497,8 +497,8 @@ const EmployerProfile = () => {
                 <p className='text-2xl text-white md:text-center'>~${hourlyRate}</p>
               </div>
             </div>
-          </div>
-          <div className='flex w-full flex-col gap-4 md:w-2/3 md:pl-4'>
+          </div> */}
+          <div className='flex w-full flex-col gap-4'>
             {/* All this should be dynamic data for sure */}
             <InfoPanel
               editAction='editPersonalInfo'
