@@ -91,7 +91,9 @@ const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity 
         if (file) formData.append('file', file);
       });
 
-      const proposal = await api.post(`/api/v1/bidding/${gigId}/apply-to-freelancergig`, values);
+      console.log('values > ', values)
+
+      const proposal = await api.post(`/api/v1/bidding/${gigId}/apply-to-freelancergig`, values); 
 
       await api.post(
         `/api/v1/bidding/upload_attachment/${auth.currentProfile._id}/${gigId}`,
@@ -185,11 +187,11 @@ const Payment = ({ coverLetter, gigPrice, documentFiles, walletPubkey, quantity 
           </div>
           <div className='flex justify-between'>
             <p>Service Fee</p>
-            <p>${gigPrice * 0.1}</p>
+            <p>${gigPrice * quantity * 0.1}</p>
           </div>
           <div className='flex justify-between'>
             <p className='text-xl font-bold'>Total</p>
-            <p className='text-xl font-bold'>${gigPrice - gigPrice * 0.1}</p>
+            <p className='text-xl font-bold'>${(gigPrice - gigPrice * 0.1) * quantity}</p>
           </div>
         </div>
         <div className='mt-2 flex rounded-xl bg-[#1B272C] p-1 md:mt-0'>
