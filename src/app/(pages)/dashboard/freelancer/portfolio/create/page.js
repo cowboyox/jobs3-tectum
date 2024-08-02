@@ -518,7 +518,7 @@ const Createportfolio = () => {
         <nav className='flex w-full flex-nowrap rounded-t-xl bg-[#10191d] mobile:overflow-x-scroll'>
           <StepNavItem name='Overview' num={1} />
           <StepNavItem name='Category' num={2} />
-          <StepNavItem name='Description' num={3} /> 
+          <StepNavItem name='Gallery' num={3} /> 
         </nav>
         <Form {...form}>
           <form
@@ -526,62 +526,48 @@ const Createportfolio = () => {
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormStep stepOrder={1}>
-              <div className='text-3xl text-[#F5F5F5] mobile:text-xl'>
-              Drag and drop your files here or{' '}
-                <span className='main_color'>browse</span> to upload
-              </div>
-              <div className='text-base text-[#96B0BD]'>
-                Format: JPEG, JPG, PNG, GIF, MP4, AVI. Max size per image/video: 50MB
-              </div>
-              <div className='flex flex-col gap-4'>
-                <p className='text-2xl text-[#F5F5F5]'>Video (1 only)</p>
-                <p className='text-base text-[#96B0BD]'>
-                  Capture buyers attention with a video that showcases your services
-                </p>
-                <DropFile
-                  acceptOnly='video'
-                  className='aspect-video max-h-80'
-                  inputName='video'
-                  onFileUpload={handleVideoUpload}
-                  placeHolderPlusIconSize={60}
-                />
-              </div>
-              <div className='flex flex-col gap-4'>
-                <p className='text-2xl text-[#F5F5F5]'>Images (up to 4)</p>
-                <p className='text-base text-[#96B0BD]'>
-                  Het noticed by the right buyers with visual examples of your services
-                </p>
-                <div className='grid gap-5 md:grid-cols-2'>
-                  {Array.from({ length: 4 }, (_, indx) => (
-                    <DropFile
-                      acceptOnly='image'
-                      className='aspect-video'
-                      inputName={`portfolio_image_${indx}`}
-                      key={indx}
-                      onFileUpload={(files) => handleImageUpload(files, indx)}
-                      placeHolderPlusIconSize={40}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div className='flex flex-col gap-4'>
-                <p className='text-2xl text-[#F5F5F5]'>Documents (up to 2)</p>
-                <p className='text-base text-[#96B0BD]'>
-                  Show some the best work you created in a document. Format: PDF
-                </p>
-                <div className='grid gap-5 md:grid-cols-2'>
-                  {Array.from({ length: 2 }, (_, indx) => (
-                    <DropFile
-                      acceptOnly='other'
-                      className='h-12'
-                      inputName={`portfolio_document_${indx}`}
-                      key={indx}
-                      onFileUpload={(files) => handleDocumentUpload(files, indx)}
-                      placeHolderPlusIconSize={40}
-                    />
-                  ))}
-                </div>
-              </div>
+              <FormField
+                name='portfolioTitle'
+                render={({ field }) => (
+                  <FormItem className='flex flex-col gap-2'>
+                    <FormLabel className='text-2xl text-[#F5F5F5]'>Project title</FormLabel>
+                    <FormDescription className='text-base text-[#96B0BD]'>
+                      {field && field.value ? field.value.length : '0'}/50 characters
+                    </FormDescription>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        className='px-4 py-4 text-base bg-transparent h-18 rounded-xl border-slate-500'
+                        placeholder='Type your project title'
+                        maxLength={50}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name='portfolioDescription'
+                render={({ field }) => (
+                  <FormItem className='flex flex-col gap-2'>
+                    <FormLabel className='text-2xl text-[#F5F5F5]'>
+                      Briefly describe your Project
+                    </FormLabel>
+                    <FormDescription className='text-base text-[#96B0BD]'>
+                      {field && field.value ? field.value.length : '0'}/1200 characters
+                    </FormDescription>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        className='px-4 py-4 text-base bg-transparent h-60 rounded-xl border-slate-500'
+                        placeholder='Add info here...'
+                        maxLength={1200}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </FormStep>
             <FormStep stepOrder={2}>  
               <div className='flex flex-col gap-2'>
@@ -657,48 +643,62 @@ const Createportfolio = () => {
               </div> 
             </FormStep> 
             <FormStep stepOrder={3}>
-              <FormField
-                name='portfolioTitle'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>Project title</FormLabel>
-                    <FormDescription className='text-base text-[#96B0BD]'>
-                      {field && field.value ? field.value.length : '0'}/50 characters
-                    </FormDescription>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        className='px-4 py-4 text-base bg-transparent h-18 rounded-xl border-slate-500'
-                        placeholder='Type your project title'
-                        maxLength={50}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name='portfolioDescription'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <FormLabel className='text-2xl text-[#F5F5F5]'>
-                      Briefly describe your Project
-                    </FormLabel>
-                    <FormDescription className='text-base text-[#96B0BD]'>
-                      {field && field.value ? field.value.length : '0'}/1200 characters
-                    </FormDescription>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        className='px-4 py-4 text-base bg-transparent h-60 rounded-xl border-slate-500'
-                        placeholder='Add info here...'
-                        maxLength={1200}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> 
+            <div className='text-3xl text-[#F5F5F5] mobile:text-xl'>
+              Drag and drop your files here or{' '}
+                <span className='main_color'>browse</span> to upload
+              </div>
+              <div className='text-base text-[#96B0BD]'>
+                Format: JPEG, JPG, PNG, GIF, MP4, AVI. Max size per image/video: 50MB
+              </div>
+              <div className='flex flex-col gap-4'>
+                <p className='text-2xl text-[#F5F5F5]'>Video (1 only)</p>
+                <p className='text-base text-[#96B0BD]'>
+                  Capture buyers attention with a video that showcases your services
+                </p>
+                <DropFile
+                  acceptOnly='video'
+                  className='aspect-video max-h-80'
+                  inputName='video'
+                  onFileUpload={handleVideoUpload}
+                  placeHolderPlusIconSize={60}
+                />
+              </div>
+              <div className='flex flex-col gap-4'>
+                <p className='text-2xl text-[#F5F5F5]'>Images (up to 4)</p>
+                <p className='text-base text-[#96B0BD]'>
+                  Het noticed by the right buyers with visual examples of your services
+                </p>
+                <div className='grid gap-5 md:grid-cols-2'>
+                  {Array.from({ length: 4 }, (_, indx) => (
+                    <DropFile
+                      acceptOnly='image'
+                      className='aspect-video'
+                      inputName={`portfolio_image_${indx}`}
+                      key={indx}
+                      onFileUpload={(files) => handleImageUpload(files, indx)}
+                      placeHolderPlusIconSize={40}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className='flex flex-col gap-4'>
+                <p className='text-2xl text-[#F5F5F5]'>Documents (up to 2)</p>
+                <p className='text-base text-[#96B0BD]'>
+                  Show some the best work you created in a document. Format: PDF
+                </p>
+                <div className='grid gap-5 md:grid-cols-2'>
+                  {Array.from({ length: 2 }, (_, indx) => (
+                    <DropFile
+                      acceptOnly='other'
+                      className='h-12'
+                      inputName={`portfolio_document_${indx}`}
+                      key={indx}
+                      onFileUpload={(files) => handleDocumentUpload(files, indx)}
+                      placeHolderPlusIconSize={40}
+                    />
+                  ))}
+                </div>
+              </div>
             </FormStep> 
             <FormStep stepOrder={4}>
               <div className='flex flex-col gap-2'>
