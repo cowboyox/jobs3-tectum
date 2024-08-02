@@ -49,16 +49,16 @@ const Recent = ({
   console.log(filtersToQuery);
   useEffect(() => {
     if (searchType == 'normal') {
-      if (clientGigs?.length > 0) {
+      if (clientGigs?.data?.length > 0) {
         setCanLoadMore(true);
         if (page === 1) {
-          setAllGigs(clientGigs);
+          setAllGigs(clientGigs?.data);
         } else {
           setAllGigs((prev) => {
             let result = [...prev];
             const ids = prev.map((item) => item._id);
 
-            clientGigs.map((cg) => {
+            clientGigs?.data.map((cg) => {
               if (!ids.includes(cg._id)) {
                 result = [...result, cg];
               }
@@ -74,7 +74,7 @@ const Recent = ({
         setCanLoadMore(false);
       }
     }
-  }, [clientGigs, page, searchType, setAllGigs]);
+  }, [clientGigs?.data, page, searchType, setAllGigs]);
 
   useEffect(() => {
     setPage(1);

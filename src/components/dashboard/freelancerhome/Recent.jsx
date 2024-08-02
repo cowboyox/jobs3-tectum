@@ -40,6 +40,8 @@ const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setA
     ...filtersToQuery,
   ], locationFilters);
 
+  console.log('data > ',data)
+
   useEffect(() => {
     setClientGigs(data?.data);
     setGigsLength(data?.gigsLength)

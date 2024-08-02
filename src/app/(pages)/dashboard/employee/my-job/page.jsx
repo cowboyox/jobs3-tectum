@@ -180,10 +180,10 @@ const MyJob = () => {
   //   }, [filters]);
 
   //   useEffect(() => {
-  //     if (clientGigs) {
-  //       setGigList(clientGigs);
+  //     if (clientGigs.data) {
+  //       setGigList(clientGigs.data);
   //     }
-  //   }, [clientGigs]);
+  //   }, [clientGigs.data]);
 
   //   useEffect(() => {
   //     const handleResize = () => {
