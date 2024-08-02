@@ -79,17 +79,17 @@ const Header = () => {
             {/* add "active" class if it's current path */}
             <Link 
               className={`text-[#F5F5F5] opacity-50 hover:opacity-100 uppercase text-base ${currentPath === '/' ? 'active' : ''}`} 
-              href='/'>
+              href='/' target='_parent'>
               HOME
             </Link>
             <Link 
               className={`text-[#F5F5F5] opacity-50 hover:opacity-100 uppercase text-base ${currentPath === '/blog' ? 'active' : ''}`} 
-              href='/blog'>
+              href='/blog' target='_parent'>
               BLOG
             </Link>
             <Link 
               className={`text-[#F5F5F5] opacity-50 hover:opacity-100 uppercase text-base ${currentPath} `} 
-              href='#'>
+              href='#' target='_parent'>
               $THREE
             </Link> 
           </nav>
@@ -98,6 +98,7 @@ const Header = () => {
               <Link
                 className='ml-10 cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'
                 href='/signup'
+                target='_parent'
               >
                 Sign Up
               </Link>
@@ -114,6 +115,7 @@ const Header = () => {
                   className='ml-10 cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'
                   href='#'
                   onClick={handleSignOut}
+                  target='_parent'
                 >
                   Sign Out
                 </Link>
