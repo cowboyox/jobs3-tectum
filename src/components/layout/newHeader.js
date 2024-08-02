@@ -319,7 +319,7 @@ const NewHeader = () => {
             </DropdownMenu>
 
             <Notifications className='mobile:order-2' />
-
+{/* 
             <DropdownMenu>
               <DropdownMenuTrigger className='mobile:order-4'>
                 <div className='relative w-12 h-12 mobile:h-10 mobile:w-10'>
@@ -331,7 +331,6 @@ const NewHeader = () => {
                         : '/assets/images/users/user-5.png'
                     }
                   />
-                  {/* Change background color depending on user online status */}
                   <div className='absolute w-2 h-2 bg-green-500 rounded-full bottom-1 right-1' />
                 </div>
               </DropdownMenuTrigger>
@@ -347,9 +346,8 @@ const NewHeader = () => {
                   <h1>Community and Forums</h1>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
 
-            <Notifications className='mobile:order-2' />
 
             <DropdownMenu>
               <DropdownMenuTrigger className='mobile:order-4'>
@@ -362,7 +360,6 @@ const NewHeader = () => {
                         : '/assets/images/users/user-5.png'
                     }
                   />
-                  {/* Change background color depending on user online status */}
                   <div className='absolute w-2 h-2 bg-green-500 rounded-full bottom-1 right-1' />
                 </div>
               </DropdownMenuTrigger>

@@ -114,10 +114,10 @@ const GigPage = ({
                 <div className='flex items-center gap-2'>
                   <FaStar className='text-2xl text-orange' />
                   <span>
-                    5.5 <span className='text-medGray'>(921)</span>
+                    0 <span className='text-medGray'>(0)</span>
                   </span>
                 </div>
-                <div className='flex items-center gap-2'>
+                {/* <div className='flex items-center gap-2'>
                   <svg
                     fill='none'
                     height='24'
@@ -139,7 +139,7 @@ const GigPage = ({
                     />
                   </svg>
                   <span>Top Rated</span>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className='flex items-start gap-4 rounded-t-xl bg-[#10191D] md:items-center md:gap-4 md:rounded-xl'>
