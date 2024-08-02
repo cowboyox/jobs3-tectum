@@ -78,16 +78,16 @@ const GigCard = (props) => {
   return (
     <div>
       <div
-        className={`flex w-full items-center gap-4 ${props.info.reason ? 'rounded-t-xl' : 'rounded-xl'} mt-4 bg-[#10191d] p-4 text-white mobile:flex-col`}
+        className={`flex w-full items-center gap-4 ${props.info.reason ? 'rounded-t-xl' : 'rounded-xl'} mt-4 bg-[#10191d] p-4 text-white sm:flex-col md:flex-row mobile:flex-col`}
       >
-        <div className='relative w-[400px] max-w-full'>
+        <div className='relative xs:w-full md:w-[400px] max-w-full xl:block md:hidden'>
           <img
             alt='Gig Image'
             className='aspect-video w-full rounded-xl object-cover'
             src={`${props.info.gallery?.images[0] ? props.info.gallery?.images[0] : '/assets/images/portfolio_works/portfolio.jpeg'}`}
           />
         </div>
-        <div className='flex flex-grow flex-col gap-2'>
+        <div className='flex flex-grow w-full flex-col gap-2'>
           <Link href={`/dashboard/client/job-application/${props.info._id}`} target='_blank'>
             <h3 className='cursor-pointer text-2xl font-semibold text-[#F5F5F5]'>
               {props.info.gigTitle}
@@ -116,7 +116,7 @@ const GigCard = (props) => {
           </div> */}
           </div>
           <hr className='my-3 border-[#1B272C]' />
-          <div className='flex justify-between'>
+          <div className='flex justify-between md:flex-row xs:flex-col'>
             <div className='flex items-center'>
               <Image
                 alt='Devon Miles'
@@ -126,8 +126,8 @@ const GigCard = (props) => {
                 width={50}
               />
               <div className='ml-2'>
-                <div className='flex items-center gap-2'>
-                  <p className='text-2xl font-semibold mobile:text-xl'>
+                <div className='flex items-center gap-2 justify-start'>
+                  <p className='text-2xl font-semibold mobile:text-xl overflow-hidden whitespace-nowrap overflow-ellipsis'>
                     {props.info.creator?.fullName}
                   </p>
                   <BsPatchCheckFill fill='#0b75c2' />
@@ -137,16 +137,17 @@ const GigCard = (props) => {
                 </p>
               </div>
             </div>
-            <div className='mt-2 flex-none rounded-xl bg-[#1B272C] p-1 md:mt-0'>
-              <button className='p-4 px-10 md:p-5' onClick={() => handleMessage(props.info._id)}>
+            <div className='mt-2 flex rounded-xl bg-[#1B272C] p-1 md:mt-0'>
+              <button className='w-1/2 p-4 px-10 md:p-5' onClick={() => handleMessage(props.info._id)}>
                 Message
               </button>
               <Link
+                className='bg-[#DC4F13] w-1/2 rounded-xl px-10 md:px-10 md:py-4 flex items-center justify-center'
                 href={`/dashboard/client/job-application/${props.info._id}`}
                 onClick={() => handleRecentView(props.info?._id)}
                 target='_blank'
               >
-                <button className='bg-[#DC4F13] px-10 md:px-10 md:py-4'>Order</button>
+                Order
               </Link>
             </div>
           </div>
@@ -343,7 +344,7 @@ const GigSearch = () => {
   };
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className='flex flex-col gap-4 min-w-80'>
       <div className='flex gap-2 rounded-xl bg-[#10191d]'>
         <div className='m-3 flex flex-1 gap-2 mobile:m-1'>
           <Select defaultValue='normal' onValueChange={(e) => onChangeType(e)}>
@@ -373,7 +374,7 @@ const GigSearch = () => {
             <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
               <IoLocationOutline size={20} stroke='#96B0BD' />
               {locationFilters.length == 0 ? (
-                <span className='text-[#96B0BD]'>Anywhere</span>
+                <span className='text-[#96B0BD] mobile:hidden'>Anywhere</span>
               ) : (
                 <span className='text-[#96B0BD]'>
                   {locationFilters.join(', ').length > 11
@@ -381,7 +382,7 @@ const GigSearch = () => {
                     : locationFilters.join(', ')}
                 </span>
               )}
-              <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
+              <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:hidden mobile:text-sm'>
                 {locationFilters.length}
               </span>
             </div>
@@ -441,8 +442,8 @@ const GigSearch = () => {
             <PopoverTrigger asChild>
               <div className='m-3 flex cursor-pointer items-center gap-3 rounded-xl px-2 transition hover:bg-[#1B272C] mobile:m-1'>
                 <CiFilter className='mobile:max-w-4' fill='#96B0BD' size={20} />
-                <span className='text-[#96B0BD] mobile:text-sm'>Filter</span>
-                <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:text-sm'>
+                <span className='text-[#96B0BD] mobile:text-sm mobile:hidden'>Filter</span>
+                <span className='flex h-5 w-5 items-center justify-center rounded-full bg-[#DC4F13] text-sm mobile:h-4 mobile:w-4 mobile:hidden mobile:text-sm'>
                   {filters.length}
                 </span>
               </div>
