@@ -19,7 +19,6 @@ const staticTransactions = [
 ];
 
 const CounterCard = ({ suffixe, totalNumber, text, id }) => { 
-    console.log("fjdklsajfds: ", totalNumber, " suffixes: ", suffixe, text);
     return (
         <div className='bg-[#1B272C] flex flex-col gap-2 p-6 rounded-xl w-full counter_card' id={id}> 
             <div className='flex gap-1'>
@@ -160,7 +159,6 @@ const GetPaid = () => {
         const data = await api.get(`/api/v1/user/get-users-length`)
         setUsersLength(data.data.usersLength)
         setGigsLength(data.data.gigsLength)
-        console.log('usersLength > ',usersLength)
     }, [])
 
   return (
