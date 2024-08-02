@@ -113,7 +113,7 @@ const ExploreSection = () => {
 
     useEffect(() => {
         api.get(`/api/v1/client_gig/get_latest_4gigs`).then((data) => {
-            console.log("++++++++ ", data.data.data)
+            // console.log("++++++++ ", data.data.data)
             setLatestGigs(data.data.data);
         });
     }, [])
