@@ -271,8 +271,8 @@ const Stats = ({
         return gig;
       });
       console.log('new', gigs);
-      setLoading(false);
       setAllGigs(gigs);
+      setLoading(false);
     });
   };
 

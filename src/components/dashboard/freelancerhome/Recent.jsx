@@ -29,9 +29,10 @@ const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setA
   const [page, setPage] = useState(1);
   const auth = useCustomContext();
   const { toast } = useToast();
-  const [canLoadMore, setCanLoadMore] = useState(true);
   const itemsPerPage = 5;
   const router = useRouter();
+  const [canLoadMore, setCanLoadMore] = useState(true);
+
 
   const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, searchText, [
     ...selectedSkills,
@@ -64,6 +65,9 @@ const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setA
         }
         setCanLoadMore(false);
       }
+    }
+    else{
+      setCanLoadMore(false);
     }
   }, [clientGigs, page, searchType, setAllGigs]);
 
