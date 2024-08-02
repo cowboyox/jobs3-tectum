@@ -101,7 +101,7 @@ const GigCard = (props) => {
             </div>
             <div className='flex items-center gap-2'>
               <CiReceipt size={28} />
-              <span className='text-base'>${props.info.gigPrice}</span>
+              <span className='text-base'>${props.info.gigPrice === 0 ? `${props.info.minBudget} - $${props.info.maxBudget}` : props.info.gigPrice}</span>
             </div>
             <div className='flex items-center gap-2'>
               <FaStar fill='#DC4F13' size={24} />
