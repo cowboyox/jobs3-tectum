@@ -22,6 +22,7 @@ import { useGetClientGigs } from '@/hooks/useGetClientGigs';
 import api from '@/utils/api';
 import { skillSets } from '@/utils/constants';
 import { getDeadline } from '@/utils/gigInfo';
+import {useRouter} from 'next/navigation' ;
 
 const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setAllGigs, locationFilters }) => {
   const [selectedSkills, setSelectedSkills] = useState([]);
@@ -30,6 +31,7 @@ const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setA
   const { toast } = useToast();
   const [canLoadMore, setCanLoadMore] = useState(true);
   const itemsPerPage = 5;
+  const router = useRouter();
 
   const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, searchText, [
     ...selectedSkills,
@@ -163,7 +165,7 @@ const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setA
                       <div className='flex items-center justify-between gap-4'>
                         <div className='flex items-center gap-4'>
                           <Image height={45} src={'/assets/icons/ActiveOrder.png'} width={45} />
-                          <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block'>
+                          <h3 className='hidden whitespace-nowrap text-xl font-semibold text-white md:block cursor-pointer' onClick={() => router.push(`/dashboard/freelancer/job-application/${gig._id}`)}>
                             {gig.gigTitle}
                           </h3>
                         </div>
