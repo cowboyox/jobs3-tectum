@@ -32,12 +32,20 @@ const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setA
   const itemsPerPage = 5;
   const router = useRouter();
   const [canLoadMore, setCanLoadMore] = useState(true);
+  const [clientGigs, setClientGigs] = useState([]);
+  const [gigsLength, setGigsLength] = useState(0)
 
-
-  const { data: clientGigs } = useGetClientGigs(page, itemsPerPage, searchText, [
+  const { data } = useGetClientGigs(page, itemsPerPage, searchText, [
     ...selectedSkills,
     ...filtersToQuery,
   ], locationFilters);
+
+  useEffect(() => {
+    setClientGigs(data?.data);
+    setGigsLength(data?.gigsLength)
+  }, [data])
+
+  console.log('gigsLength', gigsLength, 'clientGigs', clientGigs);
   console.log(filtersToQuery);
   useEffect(() => {
     if (searchType == 'normal') {
@@ -456,7 +464,7 @@ const Recent = ({ searchText, filtersToQuery, searchType, loading, allGigs, setA
           </div>
         </div>
       )}
-      {canLoadMore && (
+      {canLoadMore && gigsLength > 5 && (
         <div
           className='cursor-pointer rounded-2xl border border-lightGray py-3 text-center'
           onClick={handleLoadMore}
