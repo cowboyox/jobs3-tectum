@@ -66,7 +66,7 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
 
           console.log(data);
 
-          return data?.data || null;
+          return data || null;
         } catch (e) {
           console.error(e);
 

@@ -84,6 +84,9 @@ const FindJob = () => {
     filters,
     locationFilters
   );
+
+console.log('freelancer > find-job > cliengGigs > ',clientGigs)
+
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
 
@@ -161,10 +164,10 @@ const FindJob = () => {
   }, [filters]);
   
   useEffect(() => {
-    if (clientGigs) {
-      setGigList(clientGigs);
+    if (clientGigs?.data) {
+      setGigList(clientGigs?.data);
     }
-  }, [clientGigs]);
+  }, [clientGigs?.data]);
 
   useEffect(() => {
     const handleResize = () => {
