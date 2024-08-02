@@ -106,7 +106,7 @@ const Header = () => {
                 <Link
                   className='ml-10 cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'
                   href={`/dashboard/${url[auth?.user?.role[0]]}/home`}
-                  // onClick={() => {console.log('about Auth > ',auth);}}
+                  target='_parent'
                 >
                   Launch App
                 </Link>
@@ -123,7 +123,8 @@ const Header = () => {
               <div>
                 <Link
                   className='w-full cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'
-                  href='signin'
+                  href='/signin'
+                  target='_parent'
                 >
                   Launch App
                 </Link>
