@@ -8,6 +8,7 @@ import { HiOutlineArrowDownLeft } from "react-icons/hi2";
 import { TfiArrowTopRight } from "react-icons/tfi";
 import Spline from '@splinetool/react-spline/next';
 import api from '@/utils/api';
+import { useCustomContext } from '@/context/ContextProvider';
 
 const staticTransactions = [
     { price: 401, status: "Received" },
@@ -56,7 +57,10 @@ const GetPaid = () => {
     const GetPaidRef = useRef(null);
     const [usersLength, setUsersLength] = useState(0);
     const [gigsLength, setGigsLength] = useState(0);
-    useLayoutEffect(() => {
+    const auth = useCustomContext();
+    const url = ['freelancer','employee','employer','client',]
+
+  useLayoutEffect(() => {
         // Create GSAP animations
         let ctx = gsap.context(()=> {
             // Counter functionality
@@ -197,7 +201,7 @@ const GetPaid = () => {
             </div>
             <div className='w-7/12 mobile:w-full relative z-10 flex flex-col gap-10'>
                 <h2 className='text-white font-bold text-[130px] mobile:text-6xl mobile:text-center mobile:mx-auto mobile:w-3/4 leading-none w-[110%] -ml-7 paid_crypto_heading'> Paid In Crypto </h2>
-                <Link href="signup" className='cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] mobile:mx-auto px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3 w-fit ml-auto' id='signup'>
+                <Link target='_parent' href={`${auth?.isAuthenticated ? `/dashboard/${url[auth?.user?.role[0]]}/home` : '/signin'}`} className='cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] mobile:mx-auto px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3 w-fit ml-auto' id='signup'>
                     Get Started
                 </Link>
             </div>

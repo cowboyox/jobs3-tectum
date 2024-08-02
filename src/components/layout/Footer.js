@@ -116,14 +116,14 @@ const Footer = () => {
         </div>
         <div className='flex flex-col gap-5 w-4/12 mobile:w-6/12 mobile:pl-5'>
           <span className='text-orange text-xl'>Learn</span>
-          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Help & Support</Link>
+          <Link href='/help' target='_parent' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Help & Support</Link>
           <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>How to Post a Job</Link>
           <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>How to Find an Employee</Link>
           <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>How to Arrange a Portfolio</Link>
         </div>
         <div className='flex flex-col gap-5 w-4/12 mobile:w-6/12 mobile:pt-5'>
           <span className='text-orange text-xl'>About</span>
-          <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Blog</Link>
+          <Link href='/blog' target='_parent' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Blog</Link>
           <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Privacy Policy</Link>
           <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Terms of Service</Link>
           <Link href='/' className='footer_link text-[#F5F5F5] opacity-75 hover:opacity-100 text-base mobile:text-sm'>Contact Sales</Link>
