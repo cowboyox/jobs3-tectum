@@ -102,15 +102,15 @@ const FindJob = () => {
     },
     {
       content: [
-        { category_id: 'amount', category_value: 'any', category_name: 'Any Rate' },
-        { category_id: 'amount', category_value: [0, 100], category_name: '$100 and Below' },
-        { category_id: 'amount', category_value: [100, 500], category_name: '$100 to $500' },
-        { category_id: 'amount', category_value: [500, 1000], category_name: '$500 to $1000' },
-        { category_id: 'amount', category_value: [1000, 5000], category_name: '$1000 to $5000' },
+        { category_id: 'amount', category_name: 'Any Rate', category_value: 'any',  },
+        { category_id: 'amount', category_name: '$100 and Below', category_value: [0, 100],  },
+        { category_id: 'amount', category_name: '$100 to $500', category_value: [100, 500],  },
+        { category_id: 'amount', category_name: '$500 to $1000', category_value: [500, 1000],  },
+        { category_id: 'amount', category_name: '$1000 to $5000', category_value: [1000, 5000],  },
         {
           category_id: 'amount',
-          category_value: [5000, 99999999],
           category_name: '$5000 and Above',
+          category_value: [5000, 99999999],
         },
       ],
       title: 'Amount(Fixed)',
