@@ -59,6 +59,8 @@ const Stats = ({
   const [filteredApplications, setFilteredApplications] = useState([]);
 
 
+  console.log("clientInfo", clientInfo);
+
   useEffect(() => {
     if (clientInfo?.recentHires?.length > 0) {
       if (searchKeywords) {

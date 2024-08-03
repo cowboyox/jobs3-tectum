@@ -117,11 +117,11 @@ const FindJob = () => {
     },
     {
       content: [
-        { category_id: 'hourly', category_value: 'any', category_name: 'Any Rate' },
-        { category_id: 'hourly', category_value: [0, 10], category_name: '$10 and Below' },
-        { category_id: 'hourly', category_value: [10, 30], category_name: '$10 to $30' },
-        { category_id: 'hourly', category_value: [30, 60], category_name: '$30 to $60' },
-        { category_id: 'hourly', category_value: [60, 99999999], category_name: '$60 and Above' },
+        { category_id: 'hourly', category_name: 'Any Rate', category_value: 'any',  },
+        { category_id: 'hourly', category_name: '$10 and Below', category_value: [0, 10],  },
+        { category_id: 'hourly', category_name: '$10 to $30', category_value: [10, 30],  },
+        { category_id: 'hourly', category_name: '$30 to $60', category_value: [30, 60],  },
+        { category_id: 'hourly', category_name: '$60 and Above', category_value: [60, 99999999],  },
       ],
       title: 'Amount(Hourly)',
     },
