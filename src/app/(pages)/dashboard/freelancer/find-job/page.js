@@ -86,7 +86,6 @@ const FindJob = () => {
     locationFilters
   );
 
-console.log('freelancer > find-job > cliengGigs > ',clientGigs)
 
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
@@ -268,7 +267,6 @@ console.log('freelancer > find-job > cliengGigs > ',clientGigs)
         gig.reason = reasons[index];
         return gig;
       });
-      console.log('new', gigs);
       setLoading(false);
       setFilteredGigList(gigs);
       setFilteredGigShowModeList(new Array(gigs.length).fill(false));
@@ -584,8 +582,8 @@ console.log('freelancer > find-job > cliengGigs > ',clientGigs)
                         {item.content.map((con, i) => {
                           return (
                             <DropdownItem
+                            category_name={con.category_name}
                               category_id={con.category_id + con.category_value}
-                              category_name={con.category_name}
                               isChecked={
                                 !!filters.find(
                                   (f) =>
