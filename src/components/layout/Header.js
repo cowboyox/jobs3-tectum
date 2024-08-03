@@ -13,8 +13,8 @@ import { useRouter } from 'next/navigation';
 // Components
 
 const Header = () => {
-  const router = useRouter()
-  const url = ['freelancer','employee','employer','client',]
+  const router = useRouter();
+  const url = ['freelancer', 'employee', 'employer', 'client'];
   // get current path
   const [user, setUser] = useState({
     email: '',
@@ -55,7 +55,7 @@ const Header = () => {
     disconnect();
     auth.signOut();
     location.href = '/';
-  }; 
+  };
 
   return (
     <>
@@ -77,21 +77,27 @@ const Header = () => {
           </button>
           <nav>
             {/* add "active" class if it's current path */}
-            <Link 
-              className={`text-[#F5F5F5] opacity-50 hover:opacity-100 uppercase text-base ${currentPath === '/' ? 'active' : ''}`} 
-              href='/' target='_parent'>
+            <Link
+              className={`text-base uppercase text-[#F5F5F5] opacity-50 hover:opacity-100 ${currentPath === '/' ? 'active' : ''}`}
+              href='/'
+              target='_parent'
+            >
               HOME
             </Link>
-            <Link 
-              className={`text-[#F5F5F5] opacity-50 hover:opacity-100 uppercase text-base ${currentPath === '/blog' ? 'active' : ''}`} 
-              href='/blog' target='_parent'>
+            <Link
+              className={`text-base uppercase text-[#F5F5F5] opacity-50 hover:opacity-100 ${currentPath === '/blog' ? 'active' : ''}`}
+              href='/blog'
+              target='_parent'
+            >
               BLOG
             </Link>
-            <Link 
-              className={`text-[#F5F5F5] opacity-50 hover:opacity-100 uppercase text-base ${currentPath} `} 
-              href='#' target='_parent'>
+            <Link
+              className={`text-base uppercase text-[#F5F5F5] opacity-50 hover:opacity-100 ${currentPath} `}
+              href='#'
+              target='_parent'
+            >
               $THREE
-            </Link> 
+            </Link>
           </nav>
           <div className='right_side'>
             {!auth?.isAuthenticated ? (

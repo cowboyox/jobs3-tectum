@@ -209,17 +209,12 @@ const DashboardHeader = () => {
         token = info?.data?.token; // Replace 'your_token_key' with the actual key name
       }
 
-      console.log("token", token);
-
       if (wallet && token) {
-        console.log("wallet and token") ;
         try {
-          console.log("11111") ;
           await api.put(
             `/api/v1/profile/update-walletPublickey`,
             JSON.stringify({ walletPublicKey: wallet.publicKey })
           );
-          console.log("22222");
         } catch (error) {
           console.log('Error while updating wallet publicKey:', error);
         }
@@ -440,7 +435,7 @@ const DashboardHeader = () => {
                     strokeWidth='1.5'
                   />
                 </svg>
-                // <h1 className='text-[#96B0BD]'>$THREE Wallet</h1>
+                <h1 className='text-[#96B0BD]'>$THREE Wallet</h1>
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem className='cursor-pointer rounded py-3 text-lg font-medium hover:bg-[#1B272C]'>
@@ -481,7 +476,9 @@ const DashboardHeader = () => {
                     strokeWidth='1.5'
                   />
                 </svg>
-                <h1 className='text-[#96B0BD]' onClick={() => router.push('/refer')}>Refer a Friend</h1>
+                <h1 className='text-[#96B0BD]' onClick={() => router.push('/refer')}>
+                  Refer a Friend
+                </h1>
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem

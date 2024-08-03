@@ -47,8 +47,6 @@ const Freelancers = () => {
     filters,
     locationFilters
   );
-  console.log("page > filters > ", filters);
-  console.log("page > data > ", freelancers);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

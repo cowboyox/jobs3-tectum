@@ -6,10 +6,8 @@ import InfiniteScroll from 'react-infinite-scroller';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import JobCard from '@/components/elements/JobCard';
-import { useCustomContext } from '@/context/ContextProvider';
 import FetchThis from '@/utils/FetchThis';
 import { manipulateIds } from '@/utils/Helpers';
-import CustomIconDropdown from '@/components/ui/dropdown';
 
 import 'react-loading-skeleton/dist/skeleton.css';
 import api from '@/utils/api';
@@ -46,8 +44,6 @@ const JobsList = () => {
   const [filterQuery, setFilterQuery] = useState(
     'https://main.jobs3.io/wp-json/wp/v2/jobs?orderby=date&order=desc'
   );
-  const prevValues = useRef({});
-  const auth = useCustomContext();
 
   const searchJobs = (e) => {
     e.preventDefault();

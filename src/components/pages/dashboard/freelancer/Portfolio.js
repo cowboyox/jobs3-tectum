@@ -1,13 +1,10 @@
 import Image from 'next/image';
-import React, { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import React, { useState } from 'react';
 import { GoPlus } from 'react-icons/go';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
-import { Input } from '@/components/ui/input';
 import RadialProgress from '@/components/ui/progress';
 import api from '@/utils/api';
-import { backend_url } from '@/utils/variables';
 import {
   Dialog,
   DialogContent,
@@ -16,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-  DialogClose
+  DialogClose,
 } from '@/components/ui/dialog';
 import { RiCloseLine } from 'react-icons/ri';
 
@@ -37,8 +34,8 @@ const Portfolio = ({
   const handleDeletePortfolio = (portfolio_id) => {
     api.delete(`/api/v1/freelancer_portfolio/delete_portfolio/${portfolio_id}`).then((data) => {
       setProfileData((prev) => ({
-       ...prev,
-        portfolio: prev.portfolio.filter((portfolio) => portfolio._id!== portfolio_id),
+        ...prev,
+        portfolio: prev.portfolio.filter((portfolio) => portfolio._id !== portfolio_id),
       }));
       return toast({
         className:
@@ -48,7 +45,7 @@ const Portfolio = ({
         variant: 'default',
       });
     });
-  }
+  };
   return (
     <div className='h-full space-y-3'>
       <Dialog>
@@ -91,7 +88,7 @@ const Portfolio = ({
                 />
                 {viewMode === 'edit' && (
                   <DialogTrigger>
-                    <RiCloseLine className='absolute right-[3px] top-[3px] z-50 h-[32px] w-[32px] rounded-full p-[4px] text-white bg-[#3E525B] border' />
+                    <RiCloseLine className='absolute right-[3px] top-[3px] z-50 h-[32px] w-[32px] rounded-full border bg-[#3E525B] p-[4px] text-white' />
                   </DialogTrigger>
                 )}
               </div>
@@ -102,20 +99,14 @@ const Portfolio = ({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Are you sure to delete this portfolio?</DialogTitle>
-            <DialogDescription>
-              It will delete your portfolio permanently.
-            </DialogDescription>
+            <DialogDescription>It will delete your portfolio permanently.</DialogDescription>
           </DialogHeader>
           <DialogFooter className='flex justify-center gap-3'>
             <DialogClose asChild>
-              <button onClick={() => handleDeletePortfolio(portfolioId)}>
-                Yes
-              </button>
+              <button onClick={() => handleDeletePortfolio(portfolioId)}>Yes</button>
             </DialogClose>
             <DialogClose asChild>
-              <button>
-                Cancel
-              </button>
+              <button>Cancel</button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>

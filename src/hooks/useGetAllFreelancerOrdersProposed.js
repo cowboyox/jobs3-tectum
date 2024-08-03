@@ -39,13 +39,13 @@ export const useGetAllFreelancerOrdersProposed = (
           const result = await api.get(
             `/api/v1/freelancer_gig/find_all_orders_on_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}&locations=${locations}`
           );
-          console.log('result in useGetAllFreelancerOrdersProposed:', result);
           const proposals = [];
           const lives = [];
 
           if (result.data.proposals.length > 0) {
             result.data.proposals.map((proposal) => {
               proposals.push({
+                contractId: null, // Moved to the top
                 creator: {
                   fullName: proposal.gigOwner.fullName,
                 },
@@ -60,10 +60,9 @@ export const useGetAllFreelancerOrdersProposed = (
                 minBudget: proposal.freelancerGig.minBudget,
                 proposal: proposal.proposal,
                 proposalId: proposal._id,
-                status: null,
-                contractId: null,
-                walletPublicKey: proposal.proposer?.walletPublicKey,
-                quantity: proposal.quantity,
+                quantity: proposal.quantity, // Moved to the top
+                status: null, // Moved to the top
+                walletPublicKey: proposal.proposer?.walletPublicKey, // Moved to the top
               });
             });
           }
@@ -87,15 +86,19 @@ export const useGetAllFreelancerOrdersProposed = (
                 id: live._id,
                 proposal: live.proposal,
                 proposalId: live._id,
-                contractId: live.contractId,
+                quantity: live?.quantity, // Moved to the top
                 status: live.status,
-                walletPublicKey: live.proposer?.walletPublicKey,
-                quantity: live?.quantity,
+                walletPublicKey: live.proposer?.walletPublicKey, // Moved to the top
               });
             });
           }
 
-          return { lives, proposals, proposalsTotal: result.data.proposalsTotal, livesTotal: result.data.livesTotal };
+          return {
+            lives,
+            livesTotal: result.data.livesTotal,
+            proposals,
+            proposalsTotal: result.data.proposalsTotal,
+          };
         } catch (e) {
           console.error(e);
 
@@ -106,13 +109,13 @@ export const useGetAllFreelancerOrdersProposed = (
       }
     },
     queryKey: [
-        'useGetAllFreelancerOrdersProposed', 
-        profileId,
-        pageNum,
-        itemsPerPage,
-        searchText,
-        filters,
-        locations
+      'useGetAllFreelancerOrdersProposed',
+      profileId,
+      pageNum,
+      itemsPerPage,
+      searchText,
+      filters,
+      locations,
     ],
     staleTime: Infinity,
   });

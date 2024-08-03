@@ -3,8 +3,13 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@/utils/api';
 import { APIS } from '@/utils/constants';
 
-export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters = [], locations = '') => {
-  console.log("useGetClientGigs");
+export const useGetClientGigs = (
+  pageNum,
+  itemsPerPage,
+  searchText = '',
+  filters = [],
+  locations = ''
+) => {
   return useQuery({
     cacheTime: Infinity,
     enabled: pageNum > 0 && itemsPerPage > 0,
@@ -55,17 +60,11 @@ export const useGetClientGigs = (pageNum, itemsPerPage, searchText = '', filters
             } else if (filter.id === 'hourly' && filter.value !== 'any') {
               hourly = [...hourly, filter.value].filter((p) => p !== 'any');
             }
-
-
-            
           });
 
           const { data } = await api.get(
             `${APIS.CL_FIND_GIGS}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&applicants=${applicants}&experience=${experience}&hoursPerWeek=${hoursPerWeek}&location=${location}&timezone=${timezone}&info=${info}&fixed=${fixed}&hourly=${hourly}&locations=${locations}`
           );
-
-          console.log(data);
-
           return data || null;
         } catch (e) {
           console.error(e);

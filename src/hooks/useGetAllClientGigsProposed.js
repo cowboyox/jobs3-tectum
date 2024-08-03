@@ -40,7 +40,6 @@ export const useGetAllClientGigsProposed = (
             `/api/v1/client_gig/find_all_gigs_by_profile_id/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}&locations=${locations}`
           );
 
-          console.log('result in useGetAllClientGigsProposed:', result);
           const proposals = [];
           const lives = [];
 
@@ -84,9 +83,14 @@ export const useGetAllClientGigsProposed = (
             });
           }
 
-          return { lives, proposals, proposalsTotal: result.data.proposalsTotal, livesTotal: result.data.contractsTotal };
+          return {
+            lives,
+            livesTotal: result.data.contractsTotal,
+            proposals,
+            proposalsTotal: result.data.proposalsTotal,
+          };
         } catch (e) {
-          console.error("Error in useGetAllClientGigsProposed:", e);
+          console.error('Error in useGetAllClientGigsProposed:', e);
 
           return null;
         }

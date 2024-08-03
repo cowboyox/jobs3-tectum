@@ -21,36 +21,34 @@ export const StepNumber = () => {
   return stepNumber;
 };
 
-export const NextStep = ({ max, className, isAuth, isWaiting, setStepNumbers, finalButtonName, setIsResumePreview }) => {
+export const NextStep = ({
+  max,
+  className,
+  isAuth,
+  isWaiting,
+  setStepNumbers,
+  finalButtonName,
+  setIsResumePreview,
+}) => {
   const { stepNumber, setStepNumber } = useStep();
-
-  console.log('useContext',stepNumber)
 
   return (
     <>
       {stepNumber < max && (
-        <div className={className} onClick={() => {setStepNumber((prev) => prev + 1); setStepNumbers?.((prev) => prev + 1)}}>
-          {
-            isAuth === false ?
-            'Continue'
-            :
-            'Save and continue'
-          }
+        <div
+          className={className}
+          onClick={() => {
+            setStepNumber((prev) => prev + 1);
+            setStepNumbers?.((prev) => prev + 1);
+          }}
+        >
+          {isAuth === false ? 'Continue' : 'Save and continue'}
         </div>
       )}
       {stepNumber == max && (
-        <button
-          className={className}
-          onClick={() => setIsResumePreview?.(true)}
-          type='submit'
-        >
-          {isWaiting && <Spinner/>}
-          {
-            isAuth === false ?
-            'End'
-            :
-            finalButtonName ? finalButtonName : 'Publish'     
-          }
+        <button className={className} onClick={() => setIsResumePreview?.(true)} type='submit'>
+          {isWaiting && <Spinner />}
+          {isAuth === false ? 'End' : finalButtonName ? finalButtonName : 'Publish'}
         </button>
       )}
     </>

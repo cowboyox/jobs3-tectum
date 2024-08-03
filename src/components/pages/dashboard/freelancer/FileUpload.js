@@ -1,13 +1,9 @@
 import Image from 'next/image';
-import React, { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { GoPlus } from 'react-icons/go';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
-import { Input } from '@/components/ui/input';
 import RadialProgress from '@/components/ui/progress';
 import api from '@/utils/api';
-import { backend_url } from '@/utils/variables';
 import {
   Dialog,
   DialogContent,
@@ -22,8 +18,6 @@ import { RiCloseLine } from 'react-icons/ri';
 
 const FileUpload = ({
   imagePath,
-  setUploadedImagePath,
-  email,
   setProfileData,
   viewMode,
   title,
@@ -73,7 +67,7 @@ const FileUpload = ({
                 className='cursor-pointer text-center'
                 onClick={() => router.push(`../portfolio/create`)}
               >
-                <div className='mx-auto rounded-md flex gap-2 justify-center'>
+                <div className='mx-auto flex justify-center gap-2 rounded-md'>
                   <img
                     className='h-6 w-6 object-contain object-center'
                     src='/assets/images/icons/export.svg'
