@@ -35,6 +35,7 @@ import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
 import { COUNTRIES } from '@/utils/constants';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+// eslint-disable-next-line react-hooks/exhaustive-deps
 
 const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
