@@ -200,6 +200,11 @@ const HeroSection = () => {
           <input 
             type="text" id='search_input'
             onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                searchQuery(e)
+              }
+            }}
             placeholder='Search: Frontend developer, Marketing, Binance, etc.'
             className='w-full bg-transparent text-white h-16 mobile:h-12 mobile:text-sm border-none outline-none'
           /> 
