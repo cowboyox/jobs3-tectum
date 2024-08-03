@@ -6,6 +6,7 @@ import SplitType from 'split-type'
 import Link from 'next/link';
 import Image from 'next/image';
 import Marquee from 'react-fast-marquee';
+import { useRouter } from 'next/navigation';
 
 /*------------- ShadCN imports -------------*/
 import {
@@ -137,6 +138,17 @@ const HeroSection = () => {
     return ()=> ctx.revert();
   }, []);
 
+  const router = useRouter();
+  const [search, setSearch] = useState('');
+  const [searchType, setSearchType] = useState('normal');
+
+  const searchQuery = (e) => {
+    e.preventDefault();
+    router.push(`/jobs?search=${search}&type=${searchType}`);
+  };
+  const onChangeType = (value) => {
+    setSearchType(value);
+  };
   return (
     <div className='w-full relative min-h-screen pt-40 pb-14 flex flex-col justify-center items-center gap-10' ref={heroRef}>
       <div className='container relative'>
@@ -176,7 +188,7 @@ const HeroSection = () => {
         {/*----- Search Bar -----*/}
         {/* Note : Keep ids to not mess the animations */}
         <div className='flex gap-5 mobile:gap-3 bg-[#f5f5f50d] p-5 mobile:p-2 rounded-2xl relative z-20' id='search_bar'>
-          <Select default='classic' id="search_options">
+          <Select default='classic' id="search_options" onValueChange={(e) => onChangeType(e)}>
             <SelectTrigger className="w-20 h-16 mobile:h-12 rounded-xl bg-[#1a272c]">
               <SelectValue placeholder={<CiSearch size={25} />} />
             </SelectTrigger>
@@ -187,6 +199,7 @@ const HeroSection = () => {
           </Select>
           <input 
             type="text" id='search_input'
+            onChange={(e) => setSearch(e.target.value)}
             placeholder='Search: Frontend developer, Marketing, Binance, etc.'
             className='w-full bg-transparent text-white h-16 mobile:h-12 mobile:text-sm border-none outline-none'
           /> 
