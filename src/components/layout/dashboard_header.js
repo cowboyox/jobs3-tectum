@@ -390,7 +390,7 @@ const DashboardHeader = () => {
               </div>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='cursor-pointer rounded py-3 text-lg font-medium hover:bg-[#1B272C]'>
+            {/* <DropdownMenuItem className='cursor-pointer rounded py-3 text-lg font-medium hover:bg-[#1B272C]'>
               <div className='flex items-center gap-2'>
                 <svg
                   fill='none'
@@ -435,9 +435,9 @@ const DashboardHeader = () => {
                     strokeWidth='1.5'
                   />
                 </svg>
-                {/* <h1 className='text-[#96B0BD]'>$THREE Wallet</h1> */}
+                <h1 className='text-[#96B0BD]'>$THREE Wallet</h1>
               </div>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuItem className='cursor-pointer rounded py-3 text-lg font-medium hover:bg-[#1B272C]'>
               <div className='flex items-center gap-2'>
                 <svg

@@ -37,7 +37,7 @@ export const useGetAllClientGigsProposed = (
           });
 
           const result = await api.get(
-            `/api/v1/client_gig/find_all_gigs_by_profile_id/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}&locations=${locations}`
+            `/api/v1/client_gig/find_all_proposals_by_profile_id/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&earned=${earned}&hoursBilled=${hoursBilled}&jobSuccess=${jobSuccess}&languages=${languages}&hourlyRate=${hourlyRate}&locations=${locations}`
           );
 
           const proposals = [];
