@@ -151,7 +151,8 @@ const HeroSection = () => {
 
   const searchQuery = (e) => {
     e.preventDefault();
-    router.push(`/jobs?search=${search}&type=${searchType}`);
+    window.location.href = `/jobs?search=${search}&type=${searchType}`
+    // router.push(`/jobs?search=${search}&type=${searchType}`);
   };
   const onChangeType = (value) => {
     setSearchType(value);
