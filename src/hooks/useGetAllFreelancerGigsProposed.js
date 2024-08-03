@@ -60,9 +60,6 @@ export const useGetAllFreelancerGigsProposed = (
             } else if (filter.id === 'hourly' && filter.value !== 'any') {
               hourly = [...hourly, filter.value].filter((p) => p !== 'any');
             }
-
-
-            
           });
           const result = await api.get(
             `${APIS.FL_FIND_GIGS_PROPOSED_BY_PROFILE_ID}/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&sortby=${sortby}&experience=${experience}&hoursPerWeek=${hoursPerWeek}&location=${location}&timezone=${timezone}&info=${info}&fixed=${fixed}&hourly=${hourly}&locations=${locations}`
@@ -127,7 +124,15 @@ export const useGetAllFreelancerGigsProposed = (
         return null;
       }
     },
-    queryKey: ['useGetAllFreelancerGigsProposed', profileId, pageNum, itemsPerPage, searchText, locations, filters],
+    queryKey: [
+      'useGetAllFreelancerGigsProposed',
+      profileId,
+      pageNum,
+      itemsPerPage,
+      searchText,
+      locations,
+      filters,
+    ],
     staleTime: Infinity,
   });
 };

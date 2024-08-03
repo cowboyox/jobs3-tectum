@@ -430,7 +430,6 @@ const Createportfolio = () => {
     setDocumentFiles(newDocumentFiles);
   };
 
-  console.log("auth.currentProfile._id", auth?.currentProfile?._id);
 
 
   /*------------ Form submission handler ------------*/
@@ -487,7 +486,7 @@ const Createportfolio = () => {
       .post('/api/v1/freelancer_portfolio/create_portfolio', values)
       .then(async (portfolioData) => {
         await api.post(`/api/v1/freelancer_portfolio/upload_attachment/${auth.currentProfile._id}/${portfolioData.data.portfolioId}`, formData, config).then(async (data) => {
-          console.log("Successfully uploaded", data.data.msg[0]);
+          console.log('Successfully uploaded', data.data.msg[0]);
         })
         toast({
           className:

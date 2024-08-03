@@ -49,7 +49,12 @@ const RecentlyViewed = ({ search }) => {
                   )}
                   <div className='flex items-center gap-2'>
                     <GiLaurelCrown className='text-[#34E250]' />
-                    <span>{recent?.creator?.jobSuccessScore[recent?.creator?.jobSuccessScore?.length - 1].score || 0}% Job Success</span>
+                    <span>
+                      {recent?.creator?.jobSuccessScore[
+                        recent?.creator?.jobSuccessScore?.length - 1
+                      ].score || 0}
+                      % Job Success
+                    </span>
                   </div>
                 </div>
                 <div className='flex flex-wrap gap-2'>

@@ -59,6 +59,7 @@ const Stats = ({
   const [filteredApplications, setFilteredApplications] = useState([]);
 
 
+
   useEffect(() => {
     if (clientInfo?.recentHires?.length > 0) {
       if (searchKeywords) {
@@ -220,7 +221,6 @@ const Stats = ({
     }
   };
 
-  console.log("searchType", searchType);
 
   return (
     <div className='min-h-55 mt-10 flex w-full flex-col font-roboto'>

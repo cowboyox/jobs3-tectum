@@ -4,11 +4,9 @@ import Link from 'next/link';
 import MobileNav from '@/components/elements/mobileNav';
 import { useCustomContext } from '@/context/ContextProvider';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useRouter, usePathname } from 'next/navigation'; 
+import { useRouter, usePathname } from 'next/navigation';
 import { useDisconnect } from 'wagmi';
-import {
-  getAssociatedTokenAddressSync,
-} from '@solana/spl-token';
+import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import { usePopupFunctions } from '../../components/popups/popups';
 import Notifications from '@/components/elements/notifications';
@@ -205,24 +203,27 @@ const NewHeader = () => {
     (async () => {
       const info = JSON.parse(localStorage.getItem('jobs_2024_token'));
       let token;
-      
+
       if (info) {
         token = info?.data?.token; // Replace 'your_token_key' with the actual key name
       }
 
       if (wallet && token) {
         try {
-          await api.put(`/api/v1/profile/update-walletPublickey`, JSON.stringify({ walletPublicKey: wallet.publicKey }));
+          await api.put(
+            `/api/v1/profile/update-walletPublickey`,
+            JSON.stringify({ walletPublicKey: wallet.publicKey })
+          );
         } catch (error) {
-          console.log("Error while updating wallet publicKey:", error);
+          console.log('Error while updating wallet publicKey:', error);
         }
       }
     })();
   }, [wallet]);
-  
+
   return (
     <div className='flex px-5 py-8'>
-      <div className='flex justify-between w-full gap-10 mx-auto max-w-7xl mobile:gap-1'>
+      <div className='mx-auto flex w-full max-w-7xl justify-between gap-10 mobile:gap-1'>
         <img src='/assets/images/logo.svg' className='w-44 mobile:w-24' />
         <div className='flex items-center gap-5 mobile:hidden'>
           {menuLinks.map((item, index) => (
@@ -236,8 +237,8 @@ const NewHeader = () => {
           ))}
         </div>
         {!auth && (
-          <div className='flex w-auto gap-4 ml-auto'>
-            <div className='w-full py-4 text-center text-white transition border border-white cursor-pointer whitespace-nowrap rounded-2xl px-7 hover:bg-white hover:text-black mobile:hidden mobile:py-3'>
+          <div className='ml-auto flex w-auto gap-4'>
+            <div className='w-full cursor-pointer whitespace-nowrap rounded-2xl border border-white px-7 py-4 text-center text-white transition hover:bg-white hover:text-black mobile:hidden mobile:py-3'>
               Sign In
             </div>
             <div className='w-full cursor-pointer whitespace-nowrap rounded-2xl bg-[#DC4F13] px-14 py-4 text-center text-white transition hover:bg-[#c2440e] mobile:px-7 mobile:py-3'>
@@ -246,7 +247,7 @@ const NewHeader = () => {
           </div>
         )}
         {auth && (
-          <div className='flex items-center w-full gap-3 md:w-auto md:gap-4 mobile:justify-between'>
+          <div className='flex w-full items-center gap-3 md:w-auto md:gap-4 mobile:justify-between'>
             <div className='flex items-center gap-2 mobile:hidden'>{renderWalletButton()}</div>
             <Select defaultValue={auth?.currentRole} onValueChange={handleChangeRole}>
               <SelectTrigger className='flex w-auto min-w-20 gap-1 rounded-xl bg-[#10191D] py-5 text-base font-normal mobile:order-3 mobile:py-6'>
@@ -319,7 +320,7 @@ const NewHeader = () => {
             </DropdownMenu>
 
             <Notifications className='mobile:order-2' />
-{/* 
+            {/* 
             <DropdownMenu>
               <DropdownMenuTrigger className='mobile:order-4'>
                 <div className='relative w-12 h-12 mobile:h-10 mobile:w-10'>
@@ -348,19 +349,18 @@ const NewHeader = () => {
               </DropdownMenuContent>
             </DropdownMenu> */}
 
-
             <DropdownMenu>
               <DropdownMenuTrigger className='mobile:order-4'>
-                <div className='relative w-12 h-12 mobile:h-10 mobile:w-10'>
+                <div className='relative h-12 w-12 mobile:h-10 mobile:w-10'>
                   <img
-                    className='object-cover w-full h-full rounded-full aspect-square'
+                    className='aspect-square h-full w-full rounded-full object-cover'
                     src={
                       auth?.currentProfile?.avatarURL
                         ? auth?.currentProfile?.avatarURL
                         : '/assets/images/users/user-5.png'
                     }
                   />
-                  <div className='absolute w-2 h-2 bg-green-500 rounded-full bottom-1 right-1' />
+                  <div className='absolute bottom-1 right-1 h-2 w-2 rounded-full bg-green-500' />
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent

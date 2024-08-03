@@ -2,7 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/utils/api';
 
-export const useGetFreelancers = (userId, pageNum, itemsPerPage, searchText = '', filters = [], locations='') => {
+export const useGetFreelancers = (
+  userId,
+  pageNum,
+  itemsPerPage,
+  searchText = '',
+  filters = [],
+  locations = ''
+) => {
   return useQuery({
     cacheTime: Infinity,
     enabled: !!userId && pageNum > 0 && itemsPerPage > 0,

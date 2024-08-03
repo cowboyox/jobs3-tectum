@@ -74,7 +74,6 @@ const roadmap = async () => {
                           <h2 className='milestone'>{milestone.name}</h2>
                         </li>
                         {milestone?.subitems.map((goal, index) => {
-                          // console.log("sub item right => ", goal.column_values)
                           let link = null;
                           if (goal.column_values[4].value) {
                             const { url } = JSON.parse(goal.column_values[4].value);
@@ -188,7 +187,6 @@ const roadmap = async () => {
                           <h2 className='milestone'>{milestone.name}</h2>
                         </li>
                         {milestone?.subitems.map((goal, index) => {
-                          // console.log("sub item left => ", goal.column_values)
                           let link = null;
                           if (goal.column_values[4].value) {
                             const { url } = JSON.parse(goal.column_values[4].value);

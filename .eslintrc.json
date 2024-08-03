@@ -20,20 +20,41 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "unused-imports", "typescript-sort-keys", "sort-keys"],
+  "plugins": [
+    "@typescript-eslint",
+    "unused-imports",
+    "typescript-sort-keys",
+    "sort-keys"
+  ],
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
       }
     }
   },
   "rules": {
-    "prettier/prettier": ["warn", {}, { "usePrettierrc": true }], // should be "error" in production
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "auto"
+      },
+      {
+        "usePrettierrc": true
+      }
+    ], // should be "error" in production
     "import/order": [
       "warn", // should be "error" in production
       {
-        "alphabetize": { "order": "asc", "caseInsensitive": true },
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
         "newlines-between": "always"
       }
     ],
@@ -41,8 +62,21 @@
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-unused-vars": "warn", // should be "error" in production
     "@typescript-eslint/sort-type-constituents": "warn", // should be "error" in production
-    "@typescript-eslint/consistent-type-imports": ["warn", { "prefer": "type-imports" }],
-    "no-console": ["warn", { "allow": ["warn", "error"] }], // should be "error" in production
+    "@typescript-eslint/consistent-type-imports": [
+      "warn",
+      {
+        "prefer": "type-imports"
+      }
+    ],
+    "no-console": [
+      "warn",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
+    ], // should be "error" in production
     "react/self-closing-comp": "off",
     "react-hooks/exhaustive-deps": "warn",
     "react/display-name": "off",
@@ -51,7 +85,12 @@
     "unused-imports/no-unused-imports": "warn", // should be "error" in production
     "unused-imports/no-unused-vars": [
       "warn", // should be "error" in production
-      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
     ],
     "typescript-sort-keys/interface": "warn", // should be "error" in production
     "typescript-sort-keys/string-enum": "warn", // should be "error" in production
@@ -61,7 +100,12 @@
         "ignoreCase": true,
         "ignoreDeclarationSort": true,
         "ignoreMemberSort": false,
-        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
+        "memberSyntaxSortOrder": [
+          "none",
+          "all",
+          "multiple",
+          "single"
+        ],
         "allowSeparatedGroups": false
       }
     ],

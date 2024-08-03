@@ -264,7 +264,6 @@ export const ContextProvider = ({ children }) => {
       otp: credential,
       user_id: verify_id,
     });
-    console.log('data ', data);
     if (data === 'success') return true;
     else return false;
   };
@@ -324,7 +323,7 @@ export const ContextProvider = ({ children }) => {
       parser.href = url;
 
       // Extract the pathname and search parameters
-      const { pathname, search } = parser;
+      const { search } = parser;
 
       // Parse the search parameters to get the 'redirect' value
       const params = new URLSearchParams(search);
@@ -356,7 +355,6 @@ export const ContextProvider = ({ children }) => {
       const { data } = await api.post('/api/v1/user/wallet/login', {
         wallet: wallet.toLowerCase(),
       });
-      console.log({ data });
       localStorage.setItem(
         'jobs_2024_token',
         JSON.stringify({
@@ -403,7 +401,7 @@ export const ContextProvider = ({ children }) => {
       parser.href = url;
 
       // Extract the pathname and search parameters
-      const { pathname, search } = parser;
+      const { search } = parser;
 
       // Parse the search parameters to get the 'redirect' value
       const params = new URLSearchParams(search);

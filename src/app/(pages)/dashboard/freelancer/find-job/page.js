@@ -35,6 +35,7 @@ import api from '@/utils/api';
 import { minutesDifference } from '@/utils/Helpers';
 import { COUNTRIES } from '@/utils/constants';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+// eslint-disable-next-line react-hooks/exhaustive-deps
 
 const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
@@ -74,7 +75,7 @@ const FindJob = () => {
   const [isAiSearch, setIsAiSearch] = useState(false);
   const [isFixed, setIsFixed] = useState(false);
   const [isHourly, setIsHourly] = useState(false);
-  const [isBoth, setIsBoth] = useState(false);
+  // const [isBoth, setIsBoth] = useState(false);
 
   const itemsPerPage = 5;
   const { data: clientGigs } = useGetClientGigs(
@@ -85,7 +86,6 @@ const FindJob = () => {
     locationFilters
   );
 
-console.log('freelancer > find-job > cliengGigs > ',clientGigs)
 
   const [isSmallScreen, setIsSmallScree] = useState(false);
   const descriptionTextMaxLength = 320;
@@ -102,26 +102,26 @@ console.log('freelancer > find-job > cliengGigs > ',clientGigs)
     },
     {
       content: [
-        { category_id: 'amount', category_value: 'any', category_name: 'Any Rate' },
-        { category_id: 'amount', category_value: [0, 100], category_name: '$100 and Below' },
-        { category_id: 'amount', category_value: [100, 500], category_name: '$100 to $500' },
-        { category_id: 'amount', category_value: [500, 1000], category_name: '$500 to $1000' },
-        { category_id: 'amount', category_value: [1000, 5000], category_name: '$1000 to $5000' },
+        { category_id: 'amount', category_name: 'Any Rate', category_value: 'any',  },
+        { category_id: 'amount', category_name: '$100 and Below', category_value: [0, 100],  },
+        { category_id: 'amount', category_name: '$100 to $500', category_value: [100, 500],  },
+        { category_id: 'amount', category_name: '$500 to $1000', category_value: [500, 1000],  },
+        { category_id: 'amount', category_name: '$1000 to $5000', category_value: [1000, 5000],  },
         {
           category_id: 'amount',
-          category_value: [5000, 99999999],
           category_name: '$5000 and Above',
+          category_value: [5000, 99999999],
         },
       ],
       title: 'Amount(Fixed)',
     },
     {
       content: [
-        { category_id: 'hourly', category_value: 'any', category_name: 'Any Rate' },
-        { category_id: 'hourly', category_value: [0, 10], category_name: '$10 and Below' },
-        { category_id: 'hourly', category_value: [10, 30], category_name: '$10 to $30' },
-        { category_id: 'hourly', category_value: [30, 60], category_name: '$30 to $60' },
-        { category_id: 'hourly', category_value: [60, 99999999], category_name: '$60 and Above' },
+        { category_id: 'hourly', category_name: 'Any Rate', category_value: 'any',  },
+        { category_id: 'hourly', category_name: '$10 and Below', category_value: [0, 10],  },
+        { category_id: 'hourly', category_name: '$10 to $30', category_value: [10, 30],  },
+        { category_id: 'hourly', category_name: '$30 to $60', category_value: [30, 60],  },
+        { category_id: 'hourly', category_name: '$60 and Above', category_value: [60, 99999999],  },
       ],
       title: 'Amount(Hourly)',
     },
@@ -267,7 +267,6 @@ console.log('freelancer > find-job > cliengGigs > ',clientGigs)
         gig.reason = reasons[index];
         return gig;
       });
-      console.log('new', gigs);
       setLoading(false);
       setFilteredGigList(gigs);
       setFilteredGigShowModeList(new Array(gigs.length).fill(false));
@@ -583,8 +582,8 @@ console.log('freelancer > find-job > cliengGigs > ',clientGigs)
                         {item.content.map((con, i) => {
                           return (
                             <DropdownItem
-                              category_id={con.category_id + con.category_value}
                               category_name={con.category_name}
+                              category_id={con.category_id + con.category_value}
                               isChecked={
                                 !!filters.find(
                                   (f) =>

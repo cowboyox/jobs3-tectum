@@ -26,6 +26,7 @@ import { timeSincePublication } from '@/utils/Helpers';
 import api from '@/utils/api';
 import { IoLocationOutline } from 'react-icons/io5';
 import { COUNTRIES } from '@/utils/constants';
+import { useRouter } from 'next/navigation';
 
 const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
   return (
@@ -44,6 +45,7 @@ const DropdownItem = ({ onCheckedChange, isChecked, ...props }) => {
 };
 
 const ActiveOrders = ({ searchText, filters }) => {
+  const router = useRouter();
   const auth = useCustomContext();
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [gigsActive, setGigsActive] = useState([]);
@@ -110,7 +112,7 @@ const ActiveOrders = ({ searchText, filters }) => {
               <div className='flex items-center gap-1 rounded-2xl px-3'>
                 <div className='flex flex-1 flex-col items-center justify-between md:flex-row'>
                   <div className='flex items-center gap-4'>
-                    <h3 className='text-md whitespace-nowrap font-semibold text-white md:text-xl'>
+                    <h3 className='text-md whitespace-nowrap font-semibold text-white md:text-xl cursor-pointer' onClick={() => router.push('/dashboard/freelancer/orders')}>
                       {order.gigTitle}
                     </h3>
                   </div>
