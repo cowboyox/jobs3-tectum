@@ -9,8 +9,6 @@ const PostCard = ({ postItem, assetUrls, isBanner }) => {
   const post = postItem && postItem?.fields;
   const imageUrl = post?.postThumbnail?.sys?.id ? assetUrls[post?.postThumbnail.sys.id] : null;
 
-  console.log(`Post: ${post?.title}, Image URL: ${imageUrl}`);
-
   return isBanner == true ? (
     <Link
       className='relative flex flex-col md:col-span-2'

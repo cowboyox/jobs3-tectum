@@ -9,7 +9,7 @@ import NewFooter from '@/components/layout/newFooter';
 
 const NewLayout = ({ children, pageClass }) => {
   return (
-    <div className='flex flex-col w-full xl:justify-center xl:items-center'>
+    <div className='flex w-full flex-col xl:items-center xl:justify-center'>
       <ProgressBar color='#dc4f14' height='4px' options={{ showSpinner: false }} shallowRouting />
       <div className={pageClass + ' max-w-7xl'}>
         <NewHeader />

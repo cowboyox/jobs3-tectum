@@ -678,11 +678,8 @@ const GigPosting = ({ params }) => {
   }, [router, toast]);
 
   const FileChanged = (file) => {
-    console.log('file', file);
-    console.log('file.length', file.length);
     let tmp = [];
     const filesArray = Array.from(file);
-    console.log('filesArray', filesArray);
     filesArray.map((fi) => tmp.push(fi));
     setFiles(filesArray);
     setFiles2(tmp);

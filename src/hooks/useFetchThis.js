@@ -21,7 +21,6 @@ const FetchThis = (api_link) => {
           setLoading(false);
         })
         .catch((error) => {
-          console.log('Feth This failed to fetch the provided data :(');
           console.error(error);
           setError(error);
         });

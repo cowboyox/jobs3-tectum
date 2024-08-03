@@ -1138,9 +1138,13 @@ const SideBar = () => {
         onClick={MobileToggleSidebar}
       >
         <img
-          className={desktopCollapsed ? `mx-auto w-1/2 cursor-pointer` : 'mr-auto w-1/2 cursor-pointer'}
+          className={
+            desktopCollapsed ? `mx-auto w-1/2 cursor-pointer` : 'mr-auto w-1/2 cursor-pointer'
+          }
           src={desktopCollapsed ? '/favicon.ico' : '/assets/images/logo.svg'}
-          onClick={() => {router.push(`/`);}}
+          onClick={() => {
+            router.push(`/`);
+          }}
         />
         <div className='cursor-pointer rounded-[10px] bg-[#1B272C] p-2 md:hidden'>
           <IoMdClose size={25} />

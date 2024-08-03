@@ -6,9 +6,11 @@ import EmptyCard from '@/components/elements/emptyCard';
 import { useCustomContext } from '@/context/ContextProvider';
 import { useGetAllFLRecentViews } from '@/hooks/useGetAllFLRecentViews';
 import { getLocationType } from '@/utils/gigInfo';
+import { useRouter } from 'next/navigation';
 
 const RecentlyViewed = () => {
   const auth = useCustomContext();
+  const router = useRouter();
   const { data } = useGetAllFLRecentViews(auth?.currentProfile?._id);
 
   return (
@@ -33,7 +35,7 @@ const RecentlyViewed = () => {
                       src={'/assets/icons/ActiveOrder.png'}
                       width={45}
                     />
-                    <h3 className='mt-4 text-xl font-[500] text-white'>{gig?.gigTitle}</h3>
+                    <h3 className='mt-4 text-xl font-[500] text-white cursor-pointer' onClick={() => router.push(`/dashboard/freelancer/job-application/${gig._id}`)}>{gig?.gigTitle}</h3>
                   </div>
                   <div className='flex items-center justify-between gap-4'>
                     <p className='text-lg font-[400] text-medGray'>

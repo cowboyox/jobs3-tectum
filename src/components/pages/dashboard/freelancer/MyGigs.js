@@ -2,9 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { FaX } from 'react-icons/fa6';
+import React, { useState } from 'react';
 import { GoPlus } from 'react-icons/go';
 
 import RadialProgress from '@/components/ui/progress';
@@ -37,13 +35,12 @@ const MyGigs = ({
   const router = useRouter();
   const progress = 0;
 
-
   const handleDeleteGig = (gigId) => {
     api.delete(`/api/v1/freelancer_gig/delete_gig/${gigId}`).then((data) => {
       setProfileData((prev) => ({
         ...prev,
-         myGigs: prev.myGigs.filter((mygig) => mygig._id!== gigId),
-       }));
+        myGigs: prev.myGigs.filter((mygig) => mygig._id !== gigId),
+      }));
       return toast({
         className:
           'bg-green-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',
@@ -59,7 +56,7 @@ const MyGigs = ({
       <Dialog>
         <div className='realative flex h-full items-center justify-center'>
           <label
-            className={`flex h-72 w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c]  transition hover:bg-[#23343b]`}
+            className={`flex h-72 w-full items-center justify-center rounded-2xl border border-dashed border-[#526872] bg-[#1a272c] transition hover:bg-[#23343b]`}
           >
             {loading && (
               <div className='max-w-md text-center'>
@@ -83,10 +80,7 @@ const MyGigs = ({
             )}
 
             {imagePath && !loading && (
-              <div
-                className='relative z-10 h-full w-full text-center'
-                
-              >
+              <div className='relative z-10 h-full w-full text-center'>
                 <Image
                   alt='uploaded image'
                   className='aspect-square h-full w-full rounded-xl object-cover opacity-70'
@@ -98,13 +92,18 @@ const MyGigs = ({
                 />
                 {viewMode === 'edit' && (
                   <DialogTrigger>
-                    <RiCloseLine className='absolute right-[3px] top-[3px] z-50 h-[32px] w-[32px] rounded-full p-[4px] text-white bg-[#3E525B] border' />
+                    <RiCloseLine className='absolute right-[3px] top-[3px] z-50 h-[32px] w-[32px] rounded-full border bg-[#3E525B] p-[4px] text-white' />
                   </DialogTrigger>
                 )}
               </div>
             )}
           </label>
-          <div className='absolute z-50 text-center text-base cursor-pointer' onClick={() => router.push(`../my-gigs/edit/${gigId}`)}>{title}</div>
+          <div
+            className='absolute z-50 cursor-pointer text-center text-base'
+            onClick={() => router.push(`../my-gigs/edit/${gigId}`)}
+          >
+            {title}
+          </div>
         </div>
         <DialogContent>
           <DialogHeader>

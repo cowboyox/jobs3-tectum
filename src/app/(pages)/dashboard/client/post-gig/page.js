@@ -728,7 +728,6 @@ const GigPosting = () => {
       requiredSkills: skillSet,
     }));
   }, [skillSet]);
-console.log("postData", postData);
   return (
     <div className='gig_posting mb-4 flex justify-center rounded-xl bg-[#10191d] p-7 mobile:flex-col-reverse mobile:gap-3 mobile:p-2'>
       <Form {...form}>

@@ -10,18 +10,12 @@ export const useGetAllClientOrdersProposed = (
   locations = '',
   filters = []
 ) => {
-  console.log("filters arrived", filters);
-  console.log("pageNum", pageNum);
-  console.log("itemsPerPage", itemsPerPage);
-  console.log("profileId", profileId);
   return useQuery({
     cacheTime: Infinity,
     enabled: !!profileId,
     queryFn: async () => {
       if (profileId && pageNum > 0 && itemsPerPage > 0) {
-        
         try {
-          console.log("filters", filters);
           let payment = ['any'];
           let skills = ['any'];
           let sort = 0;
@@ -46,7 +40,7 @@ export const useGetAllClientOrdersProposed = (
               experience = filter.value;
             } else if (filter.id === 'job_type') {
               payment = [...payment, filter.value].filter((p) => p !== 'any');
-            }  else if (filter.id === 'info') {
+            } else if (filter.id === 'info') {
               info = filter.value;
             } else if (filter.id === 'amount' && filter.value !== 'any') {
               fixed = [...fixed, filter.value].filter((p) => p !== 'any');
@@ -57,14 +51,16 @@ export const useGetAllClientOrdersProposed = (
               hourly = [...hourly, filter.value].filter((p) => p !== 'any');
             }
           });
-          const result = await api.get(`/api/v1/freelancer_gig/find_all_orders_of_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&sortby=${sortby}&experience=${experience}&info=${info}&fixed=${fixed}&hourly=${hourly}&locations=${locations}`);
-          console.log("result in useGetAllClientOrdersProposed:", result);
+          const result = await api.get(
+            `/api/v1/freelancer_gig/find_all_orders_of_client/${profileId}?page=${pageNum}&limit=${itemsPerPage}&searchText=${searchText}&payment=${payment}&skills=${skills}&sort=${sort}&category=${category}&sortby=${sortby}&experience=${experience}&info=${info}&fixed=${fixed}&hourly=${hourly}&locations=${locations}`
+          );
           const proposals = [];
           const lives = [];
 
           if (result.data.proposals.length > 0) {
             result.data.proposals.map((proposal) => {
               proposals.push({
+                contractId: null,
                 creator: {
                   fullName: proposal.proposer.fullName,
                 },
@@ -81,7 +77,6 @@ export const useGetAllClientOrdersProposed = (
                 proposal: proposal.proposal,
                 proposalId: proposal._id,
                 status: null,
-                contractId: null,
                 quantity: proposal.quantity,
               });
             });
@@ -90,11 +85,12 @@ export const useGetAllClientOrdersProposed = (
           if (result.data.lives.length > 0) {
             result.data.lives.map((live) => {
               lives.push({
-                id: live._id,
+                client: live.proposer,
+                contractId: live.contractId,
                 creator: {
                   fullName: live.proposer.fullName,
                 },
-                client: live.proposer,
+                deliveryTime: live.freelancerGig.deliveryTime,
                 gigDescription: live.freelancerGig.gigDescription,
                 gigId: live.freelancerGig._id,
                 gigPostDate: live.freelancerGig.gigPostDate,
@@ -102,20 +98,22 @@ export const useGetAllClientOrdersProposed = (
                   ? live.freelancerGig.gigPrice
                   : `$${live.freelancerGig.minBudget}/hr ~ $${live.freelancerGig.maxBudget}/hr`,
                 gigTitle: live.freelancerGig.gigTitle,
-                status: live.status,
-                contractId: live.contractId,
-                deliveryTime: live.freelancerGig.deliveryTime,
+                id: live._id,
                 proposal: live.proposal,
                 proposalId: live._id,
-                status: live.status,
-                contractId: live.contractId,
-                walletPublicKey: live.proposer?.walletPublicKey,
                 quantity: live?.quantity,
+                status: live.status,
+                walletPublicKey: live.proposer?.walletPublicKey,
               });
             });
           }
 
-          return { lives, proposals, proposalsTotal: result.data.proposalsTotal, livesTotal: result.data.livesTotal };
+          return {
+            lives,
+            proposals,
+            proposalsTotal: result.data.proposalsTotal,
+            livesTotal: result.data.livesTotal,
+          };
         } catch (e) {
           console.error(e);
 
@@ -132,7 +130,7 @@ export const useGetAllClientOrdersProposed = (
       itemsPerPage,
       searchText,
       locations,
-      filters
+      filters,
     ],
     staleTime: Infinity,
   });

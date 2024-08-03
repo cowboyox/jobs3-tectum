@@ -240,7 +240,7 @@ export function SignUpPopup({ onClose, onSwitchPopup }) {
         parser.href = url;
 
         // Extract the pathname and search parameters
-        const { pathname, search } = parser;
+        const { search } = parser;
 
         // Parse the search parameters to get the 'redirect' value
         const params = new URLSearchParams(search);
@@ -485,7 +485,7 @@ export function SignInPopup({ onClose, onSwitchPopup }) {
         parser.href = url;
 
         // Extract the pathname and search parameters
-        const { pathname, search } = parser;
+        const { search } = parser;
 
         // Parse the search parameters to get the 'redirect' value
         const params = new URLSearchParams(search);
@@ -797,7 +797,7 @@ export function VerificationPopup({ onClose }) {
       parser.href = url;
 
       // Extract the pathname and search parameters
-      const { pathname, search } = parser;
+      const { search } = parser;
 
       // Parse the search parameters to get the 'redirect' value
       const params = new URLSearchParams(search);
@@ -923,7 +923,6 @@ export function TypeOfAccount({ onClose, onSwitchPopup }) {
         variant: 'destructive',
       });
     }
-    console.log('chosen -> ', choosen_account_types);
     auth.setRole(choosen_account_types);
     // onClose()
     onSwitchPopup('SignUp');

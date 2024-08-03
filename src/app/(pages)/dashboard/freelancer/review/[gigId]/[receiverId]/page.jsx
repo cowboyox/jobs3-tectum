@@ -47,7 +47,6 @@ const Review = () => {
         variant: 'default',
       });
     } catch (error) {
-      console.log("Error while submitting review:", error);
       toast({
         className:
           'bg-red-500 rounded-xl absolute top-[-94vh] xl:w-[10vw] md:w-[20vw] sm:w-[40vw] xs:[w-40vw] right-0 text-center',

@@ -12,9 +12,6 @@ export const useGetOneToOneMessages = (myProfileId, oppProfileId) => {
           const { data } = await api.get(
             `/api/v1/message/getMessages/${myProfileId}/${oppProfileId}`
           );
-
-          console.log({ data });
-
           return data;
         } catch (e) {
           console.error(e);
