@@ -149,8 +149,8 @@ const CommandEmpty = forwardRef<
     <div
       ref={forwardedRef}
       className={cn('py-6 text-center text-sm', className)}
-      cmdk-empty=""
-      role="presentation"
+      cmdk-empty=''
+      role='presentation'
       {...props}
     />
   );
@@ -184,7 +184,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       inputProps,
       hideClearAllButton = false,
     }: MultipleSelectorProps,
-    ref: React.Ref<MultipleSelectorRef>,
+    ref: React.Ref<MultipleSelectorRef>
   ) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const [open, setOpen] = React.useState(false);
@@ -193,7 +193,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
 
     const [selected, setSelected] = React.useState<Option[]>(value || []);
     const [options, setOptions] = React.useState<GroupOption>(
-      transToGroupOption(arrayDefaultOptions, groupBy),
+      transToGroupOption(arrayDefaultOptions, groupBy)
     );
     const [inputValue, setInputValue] = React.useState('');
     const debouncedSearchTerm = useDebounce(inputValue, delay || 500);
@@ -205,7 +205,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         input: inputRef.current as HTMLInputElement,
         focus: () => inputRef.current?.focus(),
       }),
-      [selected],
+      [selected]
     );
 
     const handleUnselect = React.useCallback(
@@ -214,7 +214,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         setSelected(newOptions);
         onChange?.(newOptions);
       },
-      [onChange, selected],
+      [onChange, selected]
     );
 
     const handleKeyDown = React.useCallback(
@@ -236,7 +236,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
           }
         }
       },
-      [handleUnselect, selected],
+      [handleUnselect, selected]
     );
 
     useEffect(() => {
@@ -280,7 +280,6 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus]);
 
-
     const CreatableItem = () => {
       if (!creatable) return undefined;
       if (
@@ -293,7 +292,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       const Item = (
         <CommandItem
           value={inputValue}
-          className="cursor-pointer"
+          className='cursor-pointer'
           onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -332,7 +331,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       // For async search that showing emptyIndicator
       if (onSearch && !creatable && Object.keys(options).length === 0) {
         return (
-          <CommandItem value="-" disabled>
+          <CommandItem value='-' disabled>
             {emptyIndicator}
           </CommandItem>
         );
@@ -343,7 +342,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
 
     const selectables = React.useMemo<GroupOption>(
       () => removePickedOption(options, selected),
-      [options, selected],
+      [options, selected]
     );
 
     /** Avoid Creatable Selector freezing or lagging when paste a long string. */
@@ -376,27 +375,27 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       >
         <div
           className={cn(
-            'border border-input ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 rounded-xl bg-[#1B272C] px-2 py-2 text-base text-[#96B0BD]',
+            'rounded-xl border border-input bg-[#1B272C] px-2 py-2 text-base text-[#96B0BD] ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
             {
               'px-3 py-4': selected.length !== 0,
               'cursor-text': !disabled && selected.length !== 0,
             },
-            className,
+            className
           )}
           onClick={() => {
             if (disabled) return;
             inputRef.current?.focus();
           }}
         >
-          <div className="relative flex flex-wrap gap-1">
+          <div className='relative flex flex-wrap gap-1'>
             {selected.map((option) => {
               return (
                 <Badge
                   key={option.value}
                   className={cn(
                     'data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground',
-                    'data-[fixed]:bg-muted-foreground data-[fixed]:text-muted data-[fixed]:hover:bg-muted-foreground bg-[#28373E] text-white', 
-                    badgeClassName,
+                    'bg-[#28373E] text-white data-[fixed]:bg-muted-foreground data-[fixed]:text-muted data-[fixed]:hover:bg-muted-foreground',
+                    badgeClassName
                   )}
                   data-fixed={option.fixed}
                   data-disabled={disabled || undefined}
@@ -405,7 +404,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                   <button
                     className={cn(
                       'ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                      (disabled || option.fixed) && 'hidden',
+                      (disabled || option.fixed) && 'hidden'
                     )}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
@@ -418,7 +417,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     }}
                     onClick={() => handleUnselect(option)}
                   >
-                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                    <X className='h-3 w-3 text-muted-foreground hover:text-foreground' />
                   </button>
                 </Badge>
               );
@@ -452,32 +451,32 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                   'px-3 py-2': selected.length === 0,
                   'ml-1': selected.length !== 0,
                 },
-                inputProps?.className,
+                inputProps?.className
               )}
             />
             <button
-              type="button"
+              type='button'
               onClick={() => {
-                setSelected(selected.filter((s) => s.fixed))
-                onChange?.(selected.filter((s) => s.fixed))
+                setSelected(selected.filter((s) => s.fixed));
+                onChange?.(selected.filter((s) => s.fixed));
               }}
               className={cn(
-                "absolute right-0 h-6 w-6 p-0",
+                'absolute right-0 h-6 w-6 p-0',
                 (hideClearAllButton ||
                   disabled ||
                   selected.length < 1 ||
                   selected.filter((s) => s.fixed).length === selected.length) &&
-                  'hidden',
+                  'hidden'
               )}
             >
               <X />
             </button>
           </div>
         </div>
-        <div className="relative">
+        <div className='relative'>
           {open === true && (
             <CommandList
-              className="absolute top-3 z-10 w-full border bg-popover bg-[#1B272C] shadow-md outline-none animate-in rounded-xl"
+              className='absolute top-3 z-10 w-full rounded-xl border bg-[#1B272C] bg-popover shadow-md outline-none animate-in'
               onMouseLeave={() => {
                 mouseOn.current = false;
               }}
@@ -494,9 +493,9 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                 <>
                   {EmptyItem()}
                   {CreatableItem()}
-                  {!selectFirstItem && <CommandItem value="-" className="hidden" />}
+                  {!selectFirstItem && <CommandItem value='-' className='hidden' />}
                   {Object.entries(selectables).map(([key, dropdowns]) => (
-                    <CommandGroup key={key} heading={key} className="h-full overflow-auto">
+                    <CommandGroup key={key} heading={key} className='h-full overflow-auto'>
                       <>
                         {dropdowns.map((option) => {
                           return (
@@ -520,7 +519,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                               }}
                               className={cn(
                                 'cursor-pointer',
-                                option.disable && 'cursor-default text-muted-foreground',
+                                option.disable && 'cursor-default text-muted-foreground'
                               )}
                             >
                               {option.label}
@@ -537,7 +536,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         </div>
       </Command>
     );
-  },
+  }
 );
 
 MultipleSelector.displayName = 'MultipleSelector';

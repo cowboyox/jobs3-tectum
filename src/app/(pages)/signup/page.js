@@ -196,11 +196,9 @@ const Signup = () => {
       new_choosen_account.push(id);
     });
     auth.setRole(new_choosen_account);
-    console.log("new_choosen_account", new_choosen_account);
     setStep(1);
   };
 
-  console.log("user.role", auth?.user?.role);
 
 
 

@@ -5,8 +5,9 @@ import Video from 'next-video';
 
 const SignSidebar = () => {
   return (
-    <div className='fixed left-0 top-0 z-40 flex h-[100vh] w-[500px] -translate-x-full items-center justify-center lg:translate-x-0' 
-    style={{backgroundImage: "url('assets/images/signup_background.png')"}}
+    <div
+      className='fixed left-0 top-0 z-40 flex h-[100vh] w-[500px] -translate-x-full items-center justify-center lg:translate-x-0'
+      style={{ backgroundImage: "url('assets/images/signup_background.png')" }}
     >
       {/* <Video
         src={videoFile}

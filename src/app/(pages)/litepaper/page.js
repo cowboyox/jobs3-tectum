@@ -23,7 +23,6 @@ const Litepaper = () => {
   useEffect(() => {
     async function fetchListOfPages() {
       document.getElementById('mask').style.display = 'flex';
-      // console.log("result:", user_response.data)
       const res = await client.orgs.listSpacesInOrganizationById(org_id);
       const { items } = res.data;
       const space_res = await client.spaces.listPages(items[1].id);

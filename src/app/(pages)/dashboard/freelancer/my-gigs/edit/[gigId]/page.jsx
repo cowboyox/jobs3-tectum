@@ -501,7 +501,6 @@ const EditGig = () => {
     }
   }, [gigInfo, auth]);
 
-  console.log("gigInfo", gigInfo);
 
   const newQuestionRef = useRef(null);
   const newAnswerPlaceholderRef = useRef(null);

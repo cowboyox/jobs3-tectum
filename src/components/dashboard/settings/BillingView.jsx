@@ -28,7 +28,7 @@ const BillingView = () => {
         try {
           await api.put(`/api/v1/profile/update-walletPublickey`, JSON.stringify({ walletPublicKey: wallet.publicKey }));
         } catch (error) {
-          console.log("Error while updating wallet publicKey:", error);
+          console.log('Error while updating wallet publicKey:', error);
         }
       }
     })();

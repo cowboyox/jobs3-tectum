@@ -92,7 +92,6 @@ export const formatDate = (dateString) => {
   ];
 
   const date = new Date(dateString);
-  console.log('date: ' + date);
   const month = months[date.getMonth()];
   const day = date.getDate();
   const year = date.getFullYear();

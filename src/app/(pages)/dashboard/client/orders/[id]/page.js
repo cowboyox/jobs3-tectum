@@ -191,7 +191,7 @@ const OrderPage = ({ params }) => {
 
       const signature = await sendTransaction(transaction, connection, { skipPreflight: true });
 
-      console.log("Your transaction signature for approving the contract", signature);
+      
 
       await connection.confirmTransaction(signature, "confirmed");
 

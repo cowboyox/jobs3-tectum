@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FaX } from 'react-icons/fa6';
 
 import { Separator } from '@/components/ui/seperator';

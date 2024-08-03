@@ -138,7 +138,6 @@ const Offer = () => {
     filters
   );
 
-  console.log("orders", orders);
 
   useEffect(() => {
     if (mode == 'live') {

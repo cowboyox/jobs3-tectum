@@ -603,11 +603,9 @@ const CreateGig = () => {
       },
     };
 
-    console.log("values", values);
     await api
       .post('/api/v1/freelancer_gig/post_gig', values)
       .then(async (gigData) => {
-        console.log("_gigData", gigData);
         await api
           .post(
             `/api/v1/freelancer_gig/upload_attachment/${auth.currentProfile._id}/${gigData.data.gigId}`,

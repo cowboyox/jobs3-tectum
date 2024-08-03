@@ -10,7 +10,6 @@ const CreateRow = ({ Id }) => {
     router.push('/dashboard/freelancer/my-gigs/create');
   };
   const auth = useCustomContext();
-  console.log("auth.currentProfile", auth.currentProfile);
 
   return (
     <div className='mobile:flex-col flex w-full items-center justify-end gap-4 rounded-xl bg-[#10191d] p-8'>
