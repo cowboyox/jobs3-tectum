@@ -582,7 +582,7 @@ const FindJob = () => {
                         {item.content.map((con, i) => {
                           return (
                             <DropdownItem
-                            category_name={con.category_name}
+                              category_name={con.category_name}
                               category_id={con.category_id + con.category_value}
                               isChecked={
                                 !!filters.find(
