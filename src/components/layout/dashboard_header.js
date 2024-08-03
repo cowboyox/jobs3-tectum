@@ -440,7 +440,7 @@ const DashboardHeader = () => {
                     strokeWidth='1.5'
                   />
                 </svg>
-                <h1 className='text-[#96B0BD]'>$THREE Wallet</h1>
+                // <h1 className='text-[#96B0BD]'>$THREE Wallet</h1>
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem className='cursor-pointer rounded py-3 text-lg font-medium hover:bg-[#1B272C]'>
@@ -481,7 +481,7 @@ const DashboardHeader = () => {
                     strokeWidth='1.5'
                   />
                 </svg>
-                <h1 className='text-[#96B0BD]'>Refer a Friend</h1>
+                <h1 className='text-[#96B0BD]' onClick={() => router.push('/refer')}>Refer a Friend</h1>
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem
