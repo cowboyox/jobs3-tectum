@@ -74,7 +74,7 @@ const FindJob = () => {
   const [isAiSearch, setIsAiSearch] = useState(false);
   const [isFixed, setIsFixed] = useState(false);
   const [isHourly, setIsHourly] = useState(false);
-  const [isBoth, setIsBoth] = useState(false);
+  // const [isBoth, setIsBoth] = useState(false);
 
   const itemsPerPage = 5;
   const { data: clientGigs } = useGetClientGigs(
